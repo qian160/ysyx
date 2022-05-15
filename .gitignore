@@ -1,5 +1,3 @@
-*.*
-*
 !*/
 !/nemu/*
 !/nexus-am/*
@@ -11,3 +9,4 @@
 !.gitignore
 !init.sh
 /npc/*
+/nvboard
