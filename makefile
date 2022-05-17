@@ -28,7 +28,7 @@ WAVE = gtkwave wave.vcd
 
 #start compile and simulate
 com:
-	python3 $(NVBOARD_HOME)/scripts/auto_pin_bind.py $(BIND) $(AUTO_BIND_SRC)	#BIND THE PORT
+	python3 $(NVBOARD_HOME)/scripts/auto_pin_bind.py $(BIND) $(AUTO_BIND_SRC)	#BIND THE PORT, write a bind.nxdc first
 	$(VERILATOR)
 	$(BIN)
 run :
@@ -36,6 +36,12 @@ run :
 #run gtkwave
 wave:
 	$(WAVE)
+
+light:
+
+mux:
+
+decoder:
 
 clean:
 	rm -rf wave.vcd
