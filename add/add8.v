@@ -10,7 +10,7 @@ module add8(
 
 	wire c;
 
-	add4_full_fast a0(
+	add4 a0(
 		.a(a[3:0]),
 		.b(b[3:0]),
 		.cin(cin),
@@ -18,7 +18,7 @@ module add8(
 		.s(s[3:0])
 	);
 
-	add4_full_fast a1(
+	add4 a1(
 		.a(a[7:4]),
 		.b(b[7:4]),
 		.cin(c),
