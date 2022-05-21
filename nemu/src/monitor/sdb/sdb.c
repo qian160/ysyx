@@ -116,6 +116,7 @@ void sdb_mainloop() {
         char * addition = strtok(NULL," ");
         cmd = strcat(cmd," ");
         cmd = strcat(cmd,addition);
+        printf("%s\n",addition);
         printf("%s\n",cmd);
     }
     char *args = cmd + strlen(cmd) + 1;
