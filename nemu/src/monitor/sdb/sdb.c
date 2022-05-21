@@ -4,6 +4,7 @@
 #include <readline/history.h>
 #include "sdb.h"
 #include <utils.h>
+#include "../../isa/riscv64/local-include/reg.h"
 static int is_batch_mode = false;
 
 void init_regex();
@@ -40,6 +41,7 @@ static int cmd_q(char *args) {
 
 static int cmd_si(){
   cpu_exec(1);
+  gpr(5)=gpr(5)+4;
   return 0;  
 }
 
