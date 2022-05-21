@@ -114,14 +114,13 @@ void sdb_mainloop() {
     if (strcmp(cmd,"info") == 0)
     {
         char * addition = strtok(NULL," ");
-        //cmd = strcat(cmd," ");
         printf("%s\n",addition);
-        cmd = strcat(cmd,"114");
-        cmd = strcat(cmd,"114");
-        cmd = strcat(cmd,"114");
-        cmd = strcat(cmd,"114");
+        char t[20];
+        strcpy(t,cmd);
+        strcat(t," ");
+        strcat(t,addition);
+        printf("%s\n",t);
         cmd = strcat(cmd,addition);
-        printf("%s\n",addition);
         printf("%s\n",cmd);
     }
     char *args = cmd + strlen(cmd) + 1;
