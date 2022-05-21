@@ -120,7 +120,7 @@ void sdb_mainloop() {
         strcat(t," ");
         strcat(t,addition);
         printf("%s\n",t);
-        cmd = strcat(cmd,addition);
+        cmd = t; 
         printf("%s\n",cmd);
     }
     char *args = cmd + strlen(cmd) + 1;
