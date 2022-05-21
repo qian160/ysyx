@@ -3,7 +3,7 @@
 #include <readline/readline.h>
 #include <readline/history.h>
 #include "sdb.h"
-
+#include <utils.h>
 static int is_batch_mode = false;
 
 void init_regex();
