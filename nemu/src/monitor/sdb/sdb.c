@@ -111,6 +111,8 @@ void sdb_mainloop() {
     /* treat the remaining string as the arguments,
      * which may need further parsing
      */
+    if (strcmp(cmd,"info") == 0)
+      printf("ohhhhhh\n\n\n\n\n\n");
     char *args = cmd + strlen(cmd) + 1;
     if (args >= str_end) {
       args = NULL;
