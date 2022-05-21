@@ -116,14 +116,13 @@ void sdb_mainloop() {
         //info need one more argument
         //if we strcat the cmd directly, it will overlay the following characters, which will affect the value of addition
         char * addition = strtok(NULL," ");
-        printf("%s\n",addition);
         char t[20];
         strcpy(t,cmd);
         strcat(t," ");
         strcat(t,addition);
         cmd = t; 
     }
-    
+
     char *args = cmd + strlen(cmd) + 1;
     if (args >= str_end) {
       args = NULL;
