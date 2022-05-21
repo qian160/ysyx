@@ -39,14 +39,23 @@ static int cmd_q(char *args) {
   return -1;
 }
 
+void foo(){
+  return ;
+}
+
 static int cmd_si(){
   cpu_exec(1);
   gpr(5)=gpr(5)+4;
+  foo();
   return 0;  
 }
 
 static int cmd_info_r(){
   isa_reg_display();
+  return 0;
+}
+
+static int cmd_x(){
   return 0;
 }
 
@@ -62,7 +71,7 @@ static struct {
   { "q", "Exit NEMU", cmd_q },
   { "si", "step single instrction", cmd_si},
   { "info r", "print all regs' information", cmd_info_r},
-
+  { "x", "examine the memory", cmd_x},
 
   /* TODO: Add more commands */
 
@@ -139,6 +148,7 @@ void sdb_mainloop() {
     for (i = 0; i < NR_CMD; i ++) {
       if (strcmp(cmd, cmd_table[i].name) == 0) {
         if (cmd_table[i].handler(args) < 0) { return; }
+        //notice that a function call happens here!
         break;
       }
     }
