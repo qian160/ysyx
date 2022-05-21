@@ -4,7 +4,9 @@
             "name": "Linux",
             "includePath": [
                 "${workspaceFolder}/**",
-                "/home/s081/Downloads/verilator/include"
+                "/home/s081/Downloads/verilator/include",
+                "/home/s081/Downloads/ysyx-workbench/nvboard/include",
+                "/usr/include/SDL2"
             ],
             "defines": [],
             "compilerPath": "/usr/bin/gcc",
