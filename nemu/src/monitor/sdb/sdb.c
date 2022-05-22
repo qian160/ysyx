@@ -31,10 +31,7 @@ static char* rl_gets() {
 }
 
 void examine_memory(int n, uint64_t p){
-  printf("%lld\n",p);
-  char * t = (char *)p;
-  printf("p:%p\n",t);
-  //printf("%2x",*(char *));
+  printf("%2x",*((char *)p));
   return;
 }
 
