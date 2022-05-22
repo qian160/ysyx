@@ -5,6 +5,9 @@
 #include "sdb.h"
 #include <utils.h>
 #include "../../isa/riscv64/local-include/reg.h"
+
+uint64_t pmem_read(paddr_t addr, int len) ;
+
 static int is_batch_mode = false;
 
 #define uint64_t  long long
@@ -33,11 +36,18 @@ static char* rl_gets() {
 void examine_memory(int n, uint64_t p){
   //if we directly derefference the pointer, we are in fact examing our real computer's address!!!
   printf("start address: 0x%llx\n",p);
-  printf("%x",*((char *)p));
+  p = (uint32_t)p;
+  for (int i = 0 ; i < n ; i++)
+  {
+    printf("%8lx  ",pmem_read(p,4));
+    p = p + 4;
+  }
+  
   return;
+
 }
 
-unsigned uint64_t str2hex(char *s ){
+unsigned uint64_t str2hex(char *s ){  //use sscanf instead
   uint64_t result = 0, temp = 0;
   for (int i = 0; i< strlen(s) ; i++)
   {
@@ -82,7 +92,7 @@ static int cmd_info(char * args){
   char * arg = strtok(args," ");
   if( arg == NULL) 
   {
-    printf("\33[40;31mneed an argument!\33[0m\n");
+    printf("\33[40;33mneed an argument!\33[0m\n");
     return 0;
   }
   if(strcmp(arg,"r") == 0)
@@ -97,7 +107,7 @@ static int cmd_x(char * args){
   char * addrp = strtok(NULL," ");
 
   int64_t  num = atoi(nump);
-  uint64_t addr = str2hex(addrp);
+  uint64_t addr = str2hex(addrp);   //an easier way: use sscanf
 
   examine_memory(num,addr);
   //here we dont do mem check. we pass the job to that em function
