@@ -58,10 +58,12 @@ unsigned uint64_t str2hex(char *s ){
 }
 
 static int cmd_x(char * args){
-  char * num = strtok(args," ");
-  char * addr = strtok(NULL," ");
+  char * nump = strtok(args," ");
+  char * addrp = strtok(NULL," ");
 
-  printf("\033[40;33m args: %s\n num: %s\n addr: %s\n  \033[0m\n",args,num,addr);
+  int64_t  num = atoi(nump);
+  printf("num: %ld\n",num);
+  printf("\033[40;33m args: %s\n num: %s\n addr: %s\n  \033[0m\n",args,nump,addrp);
   return 0;
 }
 
