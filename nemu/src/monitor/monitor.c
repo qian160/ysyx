@@ -51,6 +51,7 @@ static long load_img() {
   return size;
 }
 
+//at boot time.
 static int parse_args(int argc, char *argv[]) {
   const struct option table[] = {
     {"batch"    , no_argument      , NULL, 'b'},

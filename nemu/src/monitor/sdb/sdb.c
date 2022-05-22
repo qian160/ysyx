@@ -39,7 +39,7 @@ void examine_memory(int n, uint64_t p){
   p = (uint32_t)p;
   for (int i = 0 ; i < n ; i++)
   {
-    printf("%8lx  ",pmem_read(p,4));
+    printf("%08lx  ",pmem_read(p,4));
     p = p + 4;
   }
   
@@ -170,7 +170,8 @@ void sdb_mainloop() {
 
   for (char *str; (str = rl_gets()) != NULL; ) {
     char *str_end = str + strlen(str);
-
+    for(int i = 0 ; i< strlen(str) ; i++)
+      str[i] |=0x20;    //convert to a b c ...z 
     /* extract the first token as the command */
     char *cmd = strtok(str, " ");
     if (cmd == NULL) { continue; }
