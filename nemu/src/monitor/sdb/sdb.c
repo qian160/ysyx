@@ -50,7 +50,12 @@ static int cmd_info_r(){
   return 0;
 }
 
+unsigned long long str2hex(char *s ){
+  return 0;
+}
+
 static int cmd_x(char * args){
+
   printf("\033[40;33m%s\033[0m\n",args);
   return 0;
 }
