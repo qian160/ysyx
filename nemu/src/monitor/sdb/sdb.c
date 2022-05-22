@@ -33,10 +33,9 @@ static char* rl_gets() {
   return line_read;
 }
 
-void examine_memory(int n, uint64_t p){
+void examine_memory(int n, uint32_t p){
   //if we directly derefference the pointer, we are in fact examing our real computer's address!!!
-  printf("\33[40;32m 0x%llx\33[0m: ",p);   //green
-  p = (uint32_t)p;
+  printf("\33[40;32m 0x%x\33[0m: ",p);   //green
   char cnt = 0;
   for (int i = 0 ; i < n ; i++)
   {
@@ -47,7 +46,7 @@ void examine_memory(int n, uint64_t p){
     {
       cnt = 0;
       printf("\n");
-      printf("\33[40;32m 0x%llx\33[0m: ",p);
+      printf("\33[40;32m 0x%x\33[0m: ",p);
     }
   }
   printf("\n");
@@ -55,8 +54,8 @@ void examine_memory(int n, uint64_t p){
 
 }
 
-unsigned uint64_t str2hex(char *s ){  //use sscanf instead
-  uint64_t result = 0, temp = 0;
+uint32_t str2hex(char *s ){  //use sscanf instead
+  uint32_t result = 0, temp = 0;
   for (int i = 0; i< strlen(s) ; i++)
   {
 
