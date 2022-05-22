@@ -35,12 +35,17 @@ void examine_memory(int n, char *p){
 }
 
 unsigned uint64_t str2hex(char *s ){
-  //uint64_t result = 0;
+  uint64_t result = 0, temp = 0;
   for (int i = 0; i< strlen(s) ; i++)
   {
-    printf("%d\n",s[i]);
+
+    if(s[i] >= '0' && s[i] <= '9' ) temp = s[i]  - '0';
+    if(s[i] >= 'a' && s[i] <= 'z' ) temp = s[i]  - 'a' + 10;
+    if(s[i] >= 'A' && s[i] <= 'Z' ) temp = s[i]  - 'A' + 10;
+
+    result = (result << 4 ) + temp;
   }
-  printf("total:%ld\n",strlen(s));
+  printf("RESULT = %lld\n",result);
   return 0;
 }
 
