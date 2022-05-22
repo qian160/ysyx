@@ -13,6 +13,9 @@ int main(int argc, char *argv[]) {
   init_monitor(argc, argv);
 #endif
 
+  for(int i = 0 ; i < argc; i++)
+    printf("%s\n",argv[i]);
+
   /* Start engine. */
   engine_start();
 

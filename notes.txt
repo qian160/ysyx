@@ -1,0 +1,10 @@
+some_module xxx(
+	.a(a),
+	.b(b),
+	...
+);
+
+they all have the same name!
+short cut:
+
+some_module xxx(.*);

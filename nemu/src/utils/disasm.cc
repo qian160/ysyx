@@ -17,11 +17,11 @@
 #if defined(__GNUC__) && !defined(__clang__)
 #pragma GCC diagnostic pop
 #endif
-
+/*
 #if LLVM_VERSION_MAJOR < 11
 #error Please use LLVM with major version >= 11
 #endif
-
+*/
 using namespace llvm;
 
 static llvm::MCDisassembler *gDisassembler = nullptr;
@@ -69,7 +69,9 @@ extern "C" void init_disasm(const char *triple) {
   gIP = target->createMCInstPrinter(llvm::Triple(gTriple),
       AsmInfo->getAssemblerDialect(), *AsmInfo, *gMII, *gMRI);
   gIP->setPrintImmHex(true);
+#if LLVM_VERSION_MAJOR >= 11
   gIP->setPrintBranchImmAsAddress(true);
+#endif
 }
 
 extern "C" void disassemble(char *str, int size, uint64_t pc, uint8_t *code, int nbyte) {
@@ -86,4 +88,5 @@ extern "C" void disassemble(char *str, int size, uint64_t pc, uint8_t *code, int
   const char *p = s.c_str() + skip;
   assert((int)s.length() - skip < size);
   strcpy(str, p);
+
 }
