@@ -31,7 +31,7 @@ static char* rl_gets() {
 }
 
 void examine_memory(int n, uint64_t p){
-  //if we directly derefference the pointer, we are examing our real computer's address!!!
+  //if we directly derefference the pointer, we are in fact examing our real computer's address!!!
   printf("start address: 0x%llx\n",p);
   printf("%x",*((char *)p));
   return;
@@ -78,8 +78,10 @@ static int cmd_si(char * args){
   return 0;
 }  
 
-static int cmd_info_r(){
-  isa_reg_display();
+static int cmd_info(char * args){
+  char * arg = strtok(args," ");
+  if(strcmp(arg,"r") == 0)
+    isa_reg_display();
   return 0;
 }
 
@@ -109,7 +111,7 @@ static struct {
   { "c", "Continue the execution of the program", cmd_c },
   { "q", "Exit NEMU", cmd_q },
   { "si", "step single instrction", cmd_si},
-  { "info r", "print all regs' information", cmd_info_r},
+  { "info", "print all regs' information", cmd_info},
   { "x", "examine the memory", cmd_x},
 
   /* TODO: Add more commands */
@@ -161,17 +163,6 @@ void sdb_mainloop() {
     /* treat the remaining string as the arguments,
      * which may need further parsing
      */
-    if (strcmp(cmd,"info") == 0)
-    {
-        //info need one more argument
-        //if we strcat the cmd directly, it will overlay the following characters, which will affect the value of addition
-        char * addition = strtok(NULL," ");
-        char t[20];
-        strcpy(t,cmd);
-        strcat(t," ");
-        strcat(t,addition);
-        cmd = t; 
-    }
 
     char *args = cmd + strlen(cmd) + 1;
     if (args >= str_end) {
