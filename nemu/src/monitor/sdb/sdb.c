@@ -30,12 +30,11 @@ static char* rl_gets() {
   return line_read;
 }
 
-void examine_memory(int n, int64_t p){
-  int q = 114;
-  printf("%ld\n",p);
+void examine_memory(int n, uint64_t p){
+  printf("%lld\n",p);
   char * t = (char *)p;
   printf("p:%p\n",t);
-  printf("%2x",*(char *)&q);
+  //printf("%2x",*(char *));
   return;
 }
 
