@@ -122,7 +122,7 @@ static int cmd_help(char *args) {
   else {
     for (i = 0; i < NR_CMD; i ++) {
       if (strcmp(arg, cmd_table[i].name) == 0) {
-        printf("%10s - %30s\n", cmd_table[i].name, cmd_table[i].description);
+        printf("\033[40;31m%s - %s\033[0m\n", cmd_table[i].name, cmd_table[i].description);
         return 0;
       }
     }
