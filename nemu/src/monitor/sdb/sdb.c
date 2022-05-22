@@ -80,6 +80,11 @@ static int cmd_si(char * args){
 
 static int cmd_info(char * args){
   char * arg = strtok(args," ");
+  if( arg == NULL) 
+  {
+    printf("need a argument!\n");
+    return 0;
+  }
   if(strcmp(arg,"r") == 0)
     isa_reg_display();
   return 0;
