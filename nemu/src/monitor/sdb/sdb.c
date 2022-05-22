@@ -31,6 +31,7 @@ static char* rl_gets() {
 }
 
 void examine_memory(int n, uint64_t p){
+  //if we directly derefference the pointer, we are examing our real computer's address!!!
   printf("start address: 0x%llx\n",p);
   printf("%x",*((char *)p));
   return;
@@ -61,11 +62,21 @@ static int cmd_q(char *args) {
   return -1;
 }
 
-static int cmd_si(){
-  cpu_exec(1);
-  gpr(5)=gpr(5)+4;    //maybe there is a  bug
-  return 0;  
-}
+static int cmd_si(char * args){
+  char *arg = strtok(NULL," ");  
+  int steps = 0;  
+  if(arg == NULL){  
+      cpu_exec(1);  
+      return 0;  
+  }  
+  sscanf(arg, "%d", &steps);  
+  if(steps<0){  
+      printf("negetve steops!!\n");  
+      return 0;  
+  }   
+  cpu_exec(steps);  
+  return 0;
+}  
 
 static int cmd_info_r(){
   isa_reg_display();
