@@ -31,7 +31,8 @@ static char* rl_gets() {
 }
 
 void examine_memory(int n, uint64_t p){
-  printf("%2x",*((char *)p));
+  printf("%llx",p);
+  //printf("%2x",*((char *)p));
   return;
 }
 
@@ -79,8 +80,6 @@ static int cmd_x(char * args){
 
   int64_t  num = atoi(nump);
   uint64_t addr = str2hex(addrp);
-
-  printf("\033[40;33m args: %s\n num: %s\n addr: %s\n  \033[0m\n",args,nump,addrp);
 
   examine_memory(num,addr);
   //here we dont do mem check. we pass the job to that em function
