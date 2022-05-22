@@ -49,7 +49,7 @@ unsigned uint64_t str2hex(char *s ){
 
     result = (result << 4 ) + temp;
   }
-  return 0;
+  return result;
 }
 
 //cmd for user input
