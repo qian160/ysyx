@@ -82,7 +82,7 @@ static int cmd_info(char * args){
   char * arg = strtok(args," ");
   if( arg == NULL) 
   {
-    printf("\33[40;33mneed an argument!\31[0m\n");
+    printf("\33[40;33mneed an argument!\33[0m\n");
     return 0;
   }
   if(strcmp(arg,"r") == 0)
