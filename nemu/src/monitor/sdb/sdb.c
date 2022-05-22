@@ -7,6 +7,8 @@
 #include "../../isa/riscv64/local-include/reg.h"
 static int is_batch_mode = false;
 
+#define uint64_t  long long
+
 void init_regex();
 void init_wp_pool();
 
@@ -50,13 +52,16 @@ static int cmd_info_r(){
   return 0;
 }
 
-unsigned long long str2hex(char *s ){
+unsigned uint64_t str2hex(char *s ){
+
   return 0;
 }
 
 static int cmd_x(char * args){
+  char * num = strtok(args," ");
+  char * addr = strtok(NULL," ");
 
-  printf("\033[40;33m%s\033[0m\n",args);
+  printf("\033[40;33m args: %s\n num: %s\n addr: %s\n  \033[0m\n",args,num,addr);
   return 0;
 }
 
