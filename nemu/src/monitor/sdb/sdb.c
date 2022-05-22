@@ -54,20 +54,6 @@ void examine_memory(int n, uint32_t p){
 
 }
 
-uint32_t str2hex(char *s ){  //use sscanf instead
-  uint32_t result = 0, temp = 0;
-  for (int i = 0; i< strlen(s) ; i++)
-  {
-
-    if(s[i] >= '0' && s[i] <= '9' ) temp = s[i]  - '0';
-    if(s[i] >= 'a' && s[i] <= 'z' ) temp = s[i]  - 'a' + 10;
-    if(s[i] >= 'A' && s[i] <= 'Z' ) temp = s[i]  - 'A' + 10;
-
-    result = (result << 4 ) + temp;
-  }
-  return result;
-}
-
 //cmd for user input
 static int cmd_c(char *args) {
   cpu_exec(-1);
@@ -114,7 +100,8 @@ static int cmd_x(char * args){
   char * addrp = strtok(NULL," ");
 
   int64_t  num = atoi(nump);
-  uint64_t addr = str2hex(addrp);   //an easier way: use sscanf
+  uint32_t addr; 
+  sscanf(addrp,"%x",&addr); 
 
   examine_memory(num,addr);
   //here we dont do mem check. we pass the job to that em function
