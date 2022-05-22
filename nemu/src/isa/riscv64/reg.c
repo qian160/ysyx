@@ -11,7 +11,7 @@ const char *regs[] = {
 void isa_reg_display() {
 	for (int i = 0; i <= 31; i ++) 
     //-代表左对齐
-  printf("\033[40;31m%s\t\t%-16lx\t%-16ld\n\033[0m", regs[i],gpr(i),gpr(i));
+  printf("\033[40;31m%s\t\t%-16lx\t%-16ld\033[0m\n", regs[i],gpr(i),gpr(i));
 }
 
 word_t isa_reg_str2val(const char *s, bool *success) {
