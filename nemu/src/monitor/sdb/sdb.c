@@ -35,12 +35,20 @@ static char* rl_gets() {
 
 void examine_memory(int n, uint64_t p){
   //if we directly derefference the pointer, we are in fact examing our real computer's address!!!
-  printf("start address: 0x%llx\n",p);
+  printf("\33[40;35m 0x%llx \33[0m :",p);   //purple
   p = (uint32_t)p;
+  char cnt = 0;
   for (int i = 0 ; i < n ; i++)
   {
-    printf("\33[40;32m%08lx\33[0m  ",pmem_read(p,1));
+    printf("\33[40;31m%02lx\33[0m  ",pmem_read(p,1));   //yellow
     p = p + 1;
+    cnt ++;
+    if(cnt == (char)4)
+    {
+      cnt = 0;
+      printf("\n");
+      printf("\33[40;35m 0x%llx \33[0m :",p);
+    }
   }
   printf("\n");
   return;
