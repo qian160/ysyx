@@ -47,7 +47,7 @@ void examine_memory(int n, uint64_t p){
     {
       cnt = 0;
       printf("\n");
-      printf("\33[40;35m 0x%llx \33[0m :",p);
+      printf("\33[40;35m 0x%llx\33[0m: ",p);
     }
   }
   printf("\n");
