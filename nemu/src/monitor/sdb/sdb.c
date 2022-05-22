@@ -31,8 +31,8 @@ static char* rl_gets() {
 }
 
 void examine_memory(int n, uint64_t p){
-  printf("start address: %llx\n",p);
-  //printf("%2x",*((char *)p));
+  printf("start address: 0x%llx\n",p);
+  printf("%x",*((char *)p));
   return;
 }
 
