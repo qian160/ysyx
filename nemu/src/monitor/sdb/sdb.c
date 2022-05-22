@@ -116,7 +116,7 @@ static int cmd_help(char *args) {
   if (arg == NULL) {
     /* no argument given */
     for (i = 0; i < NR_CMD; i ++) {
-      printf("\033[40;38m%8s - %-s\033[0m\n", cmd_table[i].name, cmd_table[i].description);
+      printf("\033[40;39m%8s - %-s\033[0m\n", cmd_table[i].name, cmd_table[i].description);
     }
   }
   else {
