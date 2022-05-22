@@ -30,11 +30,25 @@ static char* rl_gets() {
   return line_read;
 }
 
+void examine_memory(int n, char *p){
+  return;
+}
+
+unsigned uint64_t str2hex(char *s ){
+  //uint64_t result = 0;
+  for (int i = 0; i< strlen(s) ; i++)
+  {
+    printf("%d\n",s[i]);
+  }
+  printf("total:%ld\n",strlen(s));
+  return 0;
+}
+
+//cmd for user input
 static int cmd_c(char *args) {
   cpu_exec(-1);
   return 0;
 }
-
 
 static int cmd_q(char *args) {
   nemu_state.state = NEMU_QUIT;
@@ -52,20 +66,22 @@ static int cmd_info_r(){
   return 0;
 }
 
-unsigned uint64_t str2hex(char *s ){
-
-  return 0;
-}
 
 static int cmd_x(char * args){
+
   char * nump = strtok(args," ");
   char * addrp = strtok(NULL," ");
 
   int64_t  num = atoi(nump);
-  printf("num: %ld\n",num);
+  uint64_t addr = str2hex(addrp);
+
   printf("\033[40;33m args: %s\n num: %s\n addr: %s\n  \033[0m\n",args,nump,addrp);
+
+  examine_memory(num,(char *)addr);
+  //here we dont do mem check. we pass the job to that em function
   return 0;
 }
+
 
 static int cmd_help(char *args);
 
