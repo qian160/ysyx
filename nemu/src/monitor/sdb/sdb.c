@@ -6,7 +6,7 @@
 #include <utils.h>
 #include "../../isa/riscv64/local-include/reg.h"
 
-uint64_t pmem_read(paddr_t addr, int len) ;
+uint64_t pmem_read(paddr_t addr, int len);
 
 static int is_batch_mode = false;
 
