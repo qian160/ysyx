@@ -17,11 +17,9 @@
 #if defined(__GNUC__) && !defined(__clang__)
 #pragma GCC diagnostic pop
 #endif
-/*
 #if LLVM_VERSION_MAJOR < 11
 #error Please use LLVM with major version >= 11
 #endif
-*/
 using namespace llvm;
 
 static llvm::MCDisassembler *gDisassembler = nullptr;
