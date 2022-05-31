@@ -6,7 +6,12 @@
 #include <regex.h>
 
 enum {
-  TK_NOTYPE = 256, TK_EQ,
+  TK_NOTYPE = 256, 
+  TK_EQ = 0, 
+  TK_PLUS = 1, 
+  TK_SUB =2, 
+  TK_MULT = 4, 
+  TK_DIV = 8
 
   /* TODO: Add more token types */
 
@@ -21,7 +26,7 @@ static struct rule {
    * Pay attention to the precedence level of different rules.
    */
 
-  {" +", TK_NOTYPE},    // spaces
+  {" +", TK_NOTYPE},    // spaces, " +" means more than 1 spaces
   {"\\+", '+'},         // plus
   {"==", TK_EQ},        // equal
 };
