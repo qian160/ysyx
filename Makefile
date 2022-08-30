@@ -1,8 +1,8 @@
-STUID = ysyx_22040000
+STUID = 114514
 STUNAME = 张三
 
 # DO NOT modify the following code!!!
-TRACER = tracer-ysyx2204
+TRACER = 1919810
 GITFLAGS = -q --author='$(TRACER) <tracer@ysyx.org>' --no-verify --allow-empty
 
 YSYX_HOME = $(NEMU_HOME)/..
@@ -39,5 +39,5 @@ endef
 
 _default:
 	@echo "Please run 'make' under subprojects."
-
+	
 .PHONY: .git_commit .clean_index _default

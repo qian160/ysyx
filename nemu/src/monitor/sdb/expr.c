@@ -7,12 +7,8 @@
 
 enum {
   TK_NOTYPE = 256, 
-  TK_EQ = 0, 
-  TK_PLUS = 1, 
-  TK_SUB =2, 
-  TK_MULT = 4, 
-  TK_DIV = 8
-
+  TK_EQ, 
+  TK_DECIMAL
   /* TODO: Add more token types */
 
 };
@@ -27,8 +23,13 @@ static struct rule {
    */
 
   {" +", TK_NOTYPE},    // spaces, " +" means more than 1 spaces
-  {"\\+", '+'},         // plus
+  {"\\+", '+'},         // plus,'+' has special meaning thus need some \s.But \+ also can mean multiple \s, so we need 2 \s to force the transform
   {"==", TK_EQ},        // equal
+  {"-",'-'},            //sub
+  {"\\*",'*'},            //multiply
+  {"/",'/'},
+  {"[0-9]+",TK_DECIMAL}
+
 };
 
 #define NR_REGEX ARRLEN(rules)
