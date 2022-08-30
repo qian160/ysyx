@@ -88,7 +88,7 @@ static int cmd_info(char * args){
   if( arg == NULL) 
   {
     //printf("\33[40;33mneed an argument!\33[0m\n");
-    printf(ANSI_FMT("need an argument", ANSI_FG_YELLOW));
+    printf(ANSI_FMT("need an argument!\n", ANSI_FG_YELLOW));
     return 0;
   }
   if(strcmp(arg,"r") == 0)
