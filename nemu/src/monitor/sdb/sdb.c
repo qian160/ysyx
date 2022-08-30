@@ -103,10 +103,10 @@ static int cmd_x(char * args){
   char * addrp = strtok(NULL," ");
 
   int64_t  num = atoi(nump);
-  uint32_t addr; 
-  sscanf(addrp,"%x",&addr); 
-
-  examine_memory(num,addr);
+  int64_t addr; 
+  sscanf(addrp,"%lx",&addr); 
+  printf(ANSI_FMT("[little endian, the MSB is located at low adress]\n",ANSI_FG_PINK));
+  examine_memory(num, addr);
   //here we dont do mem check. we pass the job to that em function
   return 0;
 }

@@ -62,7 +62,7 @@ static int parse_args(int argc, char *argv[]) {
     {"img"      , required_argument, NULL, 'i'},
     {0          , 0                , NULL,  0 },
   };
-  int o;
+  int o;                                        //here i add an 'i' opt
   while ( (o = getopt_long(argc, argv, "-bhl:d:p:i:", table, NULL)) != -1) {
     switch (o) {
       case 'b': sdb_set_batch_mode(); break;
@@ -77,7 +77,7 @@ static int parse_args(int argc, char *argv[]) {
         printf("\t-l,--log=FILE           output log to FILE\n");
         printf("\t-d,--diff=REF_SO        run DiffTest with reference REF_SO\n");
         printf("\t-p,--port=PORT          run DiffTest with port PORT\n");
-
+        printf("\t-i,--img=FILE           use the img FILE"); //new add
         printf("\n");
         exit(0);
     }
