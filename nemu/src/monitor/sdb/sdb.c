@@ -17,6 +17,7 @@ void init_wp_pool();
 
 /* We use the `readline' library to provide more flexibility to read from stdin. */
 static char* rl_gets() {
+  /*
   static char *line_read = NULL;
 
   if (line_read) {
@@ -25,7 +26,8 @@ static char* rl_gets() {
   }
 
   line_read = readline("(nemu) ");
-
+  */
+  char * line_read = readline("(nemu)" );
   if (line_read && *line_read) {
     add_history(line_read);
   }
@@ -33,22 +35,24 @@ static char* rl_gets() {
   return line_read;
 }
 
-void examine_memory(int n, uint32_t p){
+void examine_memory(int n, int64_t p){
   //if we directly derefference the pointer, we are in fact examing our real computer's address!!!
-  printf("\33[40;32m 0x%x\33[0m: ",p);   //green
+  
+  printf(ANSI_FMT(" 0x%lx: ",ANSI_FG_MAGENTA), p);
   char cnt = 0;
   for (int i = 0 ; i < n ; i++)
   {
-    printf("\33[40;33m%02lx\33[0m  ",pmem_read(p,1));   //yellow
-    p = p + 1;
+    printf(ANSI_FMT("%02lx  ", ANSI_FG_YELLOW),pmem_read(p, 1));
+    p ++;
     cnt ++;
     if(cnt == (char)4)
     {
       cnt = 0;
       printf("\n");
-      printf("\33[40;32m 0x%x\33[0m: ",p);
+      printf(ANSI_FMT(" 0x%lx: ",ANSI_FG_MAGENTA), p);
     }
   }
+  
   printf("\n");
   return;
 
@@ -74,7 +78,7 @@ static int cmd_si(char * args){
   }  
   sscanf(arg, "%d", &steps);  
   if(steps<0){  
-      printf("negetve steops!!\n");  
+      printf("negetve steps!!\n");  
       return 0;  
   }   
   cpu_exec(steps);  
@@ -85,7 +89,8 @@ static int cmd_info(char * args){
   char * arg = strtok(args," ");
   if( arg == NULL) 
   {
-    printf("\33[40;33mneed an argument!\33[0m\n");
+    //printf("\33[40;33mneed an argument!\33[0m\n");
+    printf(ANSI_FMT("need an argument!\n", ANSI_FG_PINK));
     return 0;
   }
   if(strcmp(arg,"r") == 0)
@@ -100,10 +105,10 @@ static int cmd_x(char * args){
   char * addrp = strtok(NULL," ");
 
   int64_t  num = atoi(nump);
-  uint32_t addr; 
-  sscanf(addrp,"%x",&addr); 
-
-  examine_memory(num,addr);
+  int64_t addr; 
+  sscanf(addrp,"%lx",&addr); 
+  printf(ANSI_FMT("[little endian, the MSB is located at low adress]\n",ANSI_FG_PINK));
+  examine_memory(num, addr);
   //here we dont do mem check. we pass the job to that em function
   return 0;
 }
@@ -137,13 +142,15 @@ static int cmd_help(char *args) {
   if (arg == NULL) {
     /* no argument given */
     for (i = 0; i < NR_CMD; i ++) {
-      printf("\033[40;32m%8s - %-s\033[0m\n", cmd_table[i].name, cmd_table[i].description);
+      printf(ANSI_FMT("%8s - %-s\n", ANSI_FG_GREEN), cmd_table[i].name, cmd_table[i].description);
+      //printf("\033[40;32m%8s - %-s\033[0m\n", cmd_table[i].name, cmd_table[i].description);
     }
   }
   else {
     for (i = 0; i < NR_CMD; i ++) {
       if (strcmp(arg, cmd_table[i].name) == 0) {
-        printf("%s - %s\n", cmd_table[i].name, cmd_table[i].description);
+        printf(ANSI_FMT("%8s - %-s\n", ANSI_FG_GREEN), cmd_table[i].name, cmd_table[i].description);
+        //printf("%s - %s\n", cmd_table[i].name, cmd_table[i].description);
         return 0;
       }
     }
