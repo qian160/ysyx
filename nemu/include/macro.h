@@ -16,7 +16,7 @@
 #define ARRLEN(arr) (int)(sizeof(arr) / sizeof(arr[0])) //the '\0' is included
 
 // macro concatenation
-#define concat_temp(x, y) x ## y    //114 ## 514 = 114514 (decimal, not string)
+#define concat_temp(x, y) x ## y    //connect any 2 tokens. Like 114 ## 514 = 114514, x ## y = xy
 #define concat(x, y) concat_temp(x, y)
 #define concat3(x, y, z) concat(concat(x, y), z)
 #define concat4(x, y, z, w) concat3(concat(x, y), z, w)
@@ -25,22 +25,17 @@
 // macro testing
 // See https://stackoverflow.com/questions/26099745/test-if-preprocessor-symbol-is-defined-inside-macro
 #define CHOOSE2nd(a, b, ...) b
-#define MUX_WITH_COMMA(contain_comma, a, b) CHOOSE2nd(contain_comma a, b)         //just a posibillty, not 100% with comma 
-/*if the 1st arg ends with a comma, then it will connect with the second arg. So only 2 args are passed to CHOOSE2nd, and we will choose b
-  if not, iit will still connect with the 2nd arg. But this time there are 3 args passed to CHOOSE2nd. And we will choose a*/
+#define MUX_WITH_COMMA(contain_comma, a, b) CHOOSE2nd(contain_comma a, b)
 #define MUX_MACRO_PROPERTY(p, macro, a, b) MUX_WITH_COMMA(concat(p, macro), a, b)   
-///p can also be understood as prefix?
-//define placeholders for some property
-//WTF??
-#define __P_DEF_0  X,
+///here the property of a macro means its value(0 / 1)
+//define placeholders for some property. these will cause a "contain_comma"
+#define __P_DEF_0  X, //there is a comma?
 #define __P_DEF_1  X,
 #define __P_ONE_1  X,
 #define __P_ZERO_0 X,
-// define some selection functions based on the properties of BOOLEAN macro
+// define some selection functions based on the properties of BOOLEAN macro(that is, the macro's value should be 1 or 0)
 #define MUXDEF(macro, X, Y)  MUX_MACRO_PROPERTY(__P_DEF_, macro, X, Y)
-//if macro is defined, then the first 2 arguments connect together into one argument. And we choose the 2nd arg which is X
-//if macro is not defined,  then we will go into the 
-#define MUXNDEF(macro, X, Y) MUX_MACRO_PROPERTY(__P_DEF_, macro, Y, X)
+#define MUXNDEF(macro, X, Y) MUX_MACRO_PROPERTY(__P_DEF_, macro, Y, X)  //here we change the order of X, Y
 #define MUXONE(macro, X, Y)  MUX_MACRO_PROPERTY(__P_ONE_, macro, X, Y)
 #define MUXZERO(macro, X, Y) MUX_MACRO_PROPERTY(__P_ZERO_,macro, X, Y)
 
