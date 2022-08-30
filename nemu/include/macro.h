@@ -28,8 +28,11 @@
 #define MUX_MACRO_PROPERTY(p, macro, a, b) MUX_WITH_COMMA(concat(p, macro), a, b)   
 ///here the property of a macro means its value(0 / 1)
 //define placeholders for some property. these will cause a "contain_comma"
-#define __P_DEF_0  X, //there is a comma?
-#define __P_DEF_1  X,
+/*argument passed to CHOOSE2nd : good match vs bad match
+  good : X(just a placeholder), X, Y    bad: __P_DEF{/ONE/ZERO}_macroname X, Y(there is a space in the 1st arg). 
+  seems like a grammer mistake? But no big deal since preprocess stage obly expand the macro and doesn't check teh mistakes. And since we naver choose the 1st arg, the mistake will never be taken in the future stage*/
+#define __P_DEF_0  X,   //only good match will generate this comma, which divide the args
+#define __P_DEF_1  X,   //a comma is generated when a match happens. Or 
 #define __P_ONE_1  X,
 #define __P_ZERO_0 X,
 // define some selection functions based on the properties of BOOLEAN macro(that is, the macro's value should be 1 or 0)
@@ -96,3 +99,16 @@
     ioe_write(reg, &__io_param); })
 
 #endif
+
+#define TRACE_STRINGIFY(item) "" #item
+#define TRACE(macro, message)                          \
+    do {                                               \
+        if (strcmp( #macro, TRACE_STRINGIFY(macro)))   \
+            printf("%s\n, "message);                   \
+    } while (0)
+
+/*generally, a macro's value is different from its name(from the view of string)
+  for things like #define foo bar, the argument of TRACE_STRINGIFY will be substituted by bar.
+  and for those macros not defined, the argument won't have the chance to be subsituted. So 2 string would be the same
+
+*/
