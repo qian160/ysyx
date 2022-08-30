@@ -35,7 +35,7 @@ static char* rl_gets() {
   return line_read;
 }
 
-void examine_memory(int n, uint32_t p){
+void examine_memory(int n, int64_t p){
   //if we directly derefference the pointer, we are in fact examing our real computer's address!!!
   //printf("\33[40;32m 0x%x\33[0m: ",p);   //green
   printf(ANSI_FMT(" 0x%x: ",ANSI_FG_MAGENTA), p);
