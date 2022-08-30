@@ -76,7 +76,7 @@ static int cmd_si(char * args){
   }  
   sscanf(arg, "%d", &steps);  
   if(steps<0){  
-      printf("negetve steops!!\n");  
+      printf("negetve steps!!\n");  
       return 0;  
   }   
   cpu_exec(steps);  
@@ -88,7 +88,7 @@ static int cmd_info(char * args){
   if( arg == NULL) 
   {
     //printf("\33[40;33mneed an argument!\33[0m\n");
-    printf(ANSI_FMT("need an argument!\n", ANSI_FG_YELLOW));
+    printf(ANSI_FMT("need an argument!\n", ANSI_FG_CYAN));
     return 0;
   }
   if(strcmp(arg,"r") == 0)
