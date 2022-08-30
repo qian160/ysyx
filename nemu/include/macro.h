@@ -6,9 +6,8 @@
 // macro stringizing
 ///the # and ## operator is only avaliable at preprocess stage
 
-//#define str_temp(x) #x
-//#define str(x) str_temp(x)
-#define str(x) #x   //simpler?
+#define str_temp(x) #x
+#define str(x) str_temp(x)
 // strlen() for string constant
 #define STRLEN(CONST_STR) (sizeof(CONST_STR) - 1)       //== strlen lib function
 
@@ -29,7 +28,9 @@
 #define MUX_MACRO_PROPERTY(p, macro, a, b) MUX_WITH_COMMA(concat(p, macro), a, b)   
 ///here the property of a macro means its value(0 / 1)
 //define placeholders for some property. these will cause a "contain_comma"
-#define __P_DEF_0  X, //there is a comma?
+//argument passed to CHOOSE2nd : good match vs bad match
+//good : X, X, Y    bad: __P_DEF{/ONE/ZERO}_macroname X, Y. seems like a grammer mistake? but no big deal since we will pick the 2nd arg not the 1st
+#define __P_DEF_0  X,   //only good match will generate this comma, which divide the args
 #define __P_DEF_1  X,
 #define __P_ONE_1  X,
 #define __P_ZERO_0 X,
