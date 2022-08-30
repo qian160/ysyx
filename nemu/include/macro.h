@@ -8,8 +8,7 @@
 
 //#define str_temp(x) #x
 //#define str(x) str_temp(x)
-#define str(x) #x
-/* note: we can't use #define str(x)#x. in macro expandsion, there is an order problem */
+#define str(x) #x   //simpler?
 // strlen() for string constant
 #define STRLEN(CONST_STR) (sizeof(CONST_STR) - 1)       //== strlen lib function
 
@@ -17,7 +16,7 @@
 #define ARRLEN(arr) (int)(sizeof(arr) / sizeof(arr[0])) //the '\0' is included
 
 // macro concatenation
-#define concat_temp(x, y) x ## y    //114 ## 514 = 114514 (decimal, not string)
+#define concat_temp(x, y) x ## y    //connect any 2 tokens. Like 114 ## 514 = 114514, x ## y = xy
 #define concat(x, y) concat_temp(x, y)
 #define concat3(x, y, z) concat(concat(x, y), z)
 #define concat4(x, y, z, w) concat3(concat(x, y), z, w)
@@ -26,17 +25,18 @@
 // macro testing
 // See https://stackoverflow.com/questions/26099745/test-if-preprocessor-symbol-is-defined-inside-macro
 #define CHOOSE2nd(a, b, ...) b
-#define MUX_WITH_COMMA(contain_comma, a, b) CHOOSE2nd(contain_comma a, b)           //choose 3rd?
-#define MUX_MACRO_PROPERTY(p, macro, a, b) MUX_WITH_COMMA(concat(p, macro), a, b)   //choose 4th?
-//define placeholders for some property
-//WTF??
-#define __P_DEF_0  X,
+#define MUX_WITH_COMMA(contain_comma, a, b) CHOOSE2nd(contain_comma a, b)
+#define MUX_MACRO_PROPERTY(p, macro, a, b) MUX_WITH_COMMA(concat(p, macro), a, b)   
+///here the property of a macro means its value(0 / 1)
+//define placeholders for some property. these will cause a "contain_comma"
+#define __P_DEF_0  X, //there is a comma?
 #define __P_DEF_1  X,
 #define __P_ONE_1  X,
 #define __P_ZERO_0 X,
-// define some selection functions based on the properties of BOOLEAN macro
+// define some selection functions based on the properties of BOOLEAN macro(that is, the macro's value should be 1 or 0)
 #define MUXDEF(macro, X, Y)  MUX_MACRO_PROPERTY(__P_DEF_, macro, X, Y)
-#define MUXNDEF(macro, X, Y) MUX_MACRO_PROPERTY(__P_DEF_, macro, Y, X)
+#define MUXNDEF(macro, X, Y) MUX_MACRO_PROPERTY(__P_DEF_, macro, Y, X)  //here we change the order of X, Y
+//the following macro could generate a strange comma. Since the value of macro may not match the placeholders. Like P_ONE_0
 #define MUXONE(macro, X, Y)  MUX_MACRO_PROPERTY(__P_ONE_, macro, X, Y)
 #define MUXZERO(macro, X, Y) MUX_MACRO_PROPERTY(__P_ZERO_,macro, X, Y)
 
