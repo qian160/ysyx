@@ -12,7 +12,7 @@ void isa_reg_display() {
 
 	for (int i = 0; i <= 31; i ++) 
     //-代表左对齐,31 = yellow
-    printf(ANSI_FMT("%s\t\t0x%-16lx\t%-16ld\n", ANSI_FG_GREEN), regs[i], gpr(i), gpr(i));
+    printf(ANSI_FMT("%s\t\t0x%-16lx\t%-16ld\n", ANSI_FG_YELLOW), regs[i], gpr(i), gpr(i));
   //printf("\033[40;38m%s\t\t%-16lx\t%-16ld\n\033[0m", regs[i],gpr(i),gpr(i));
 }
 
