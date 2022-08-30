@@ -40,7 +40,7 @@ void examine_memory(int n, int64_t p){
 
   for(int i = 0; i < n; i += 4)
   {
-    printf(ANSI_FMT(" 0x%lx: %02lx\n",ANSI_BG_YELLOW), p, pmem_read(p, 4));
+    printf(ANSI_FMT(" 0x%lx: %02lx\n",ANSI_FG_YELLOW), p, pmem_read(p, 4));
     p += 4;
     
   }
