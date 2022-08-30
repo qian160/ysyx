@@ -16,6 +16,7 @@ int main(int argc, char *argv[]) {
   for(int i = 0 ; i < argc; i++)
     printf("%s\n",argv[i]);
 
+  printf("%d\n", MUXDEF(ITRACE_COND, 1, 0));
   /* Start engine. */
   engine_start();
 

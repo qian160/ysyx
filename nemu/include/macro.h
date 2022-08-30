@@ -36,7 +36,6 @@
 // define some selection functions based on the properties of BOOLEAN macro(that is, the macro's value should be 1 or 0)
 #define MUXDEF(macro, X, Y)  MUX_MACRO_PROPERTY(__P_DEF_, macro, X, Y)
 #define MUXNDEF(macro, X, Y) MUX_MACRO_PROPERTY(__P_DEF_, macro, Y, X)  //here we change the order of X, Y
-//the following macro could generate a strange comma. Since the value of macro may not match the placeholders. Like P_ONE_0
 #define MUXONE(macro, X, Y)  MUX_MACRO_PROPERTY(__P_ONE_, macro, X, Y)
 #define MUXZERO(macro, X, Y) MUX_MACRO_PROPERTY(__P_ZERO_,macro, X, Y)
 
