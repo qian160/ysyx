@@ -37,25 +37,12 @@ static char* rl_gets() {
 
 void examine_memory(int n, int64_t p){
   //if we directly derefference the pointer, we are in fact examing our real computer's address!!!
-  /*
-  printf(ANSI_FMT(" 0x%lx: ",ANSI_FG_MAGENTA), p);
-  char cnt = 0;
-  for (int i = 0 ; i < n ; i++)
-  {
-    printf(ANSI_FMT("%02lx  ", ANSI_FG_YELLOW),pmem_read(p, 1));
-    p ++;
-    cnt ++;
-    if(cnt == (char)4)
-    {
-      cnt = 0;
-      printf("\n");
-      printf(ANSI_FMT(" 0x%lx: ",ANSI_FG_MAGENTA), p);
-    }
-  }
-  */
+
   for(int i = 0; i < n; i += 4)
   {
     printf(ANSI_FMT(" 0x%lx: %02lx\n",ANSI_BG_YELLOW), p, pmem_read(p, 4));
+    p += 4;
+    
   }
   printf("\n");
   return;
