@@ -8,8 +8,7 @@
 
 #define str_temp(x) #x
 #define str(x) str_temp(x)
-
-//#define str(x) #x   ///maybe x is an int? 
+/* note: we can't use #define str(x)#x due to the macro expand rule*/
 // strlen() for string constant
 #define STRLEN(CONST_STR) (sizeof(CONST_STR) - 1)       //== strlen lib function
 
@@ -19,7 +18,6 @@
 // macro concatenation
 #define concat_temp(x, y) x ## y    //114 ## 514 = 114514 (decimal, not string)
 #define concat(x, y) concat_temp(x, y)
-//#define concat(x, y) x ## y
 #define concat3(x, y, z) concat(concat(x, y), z)
 #define concat4(x, y, z, w) concat3(concat(x, y), z, w)
 #define concat5(x, y, z, v, w) concat4(concat(x, y), z, v, w)
