@@ -4,18 +4,22 @@
 #include <string.h>
 
 // macro stringizing
+///the # and ## operator is only avaliable at preprocess stage
+
 #define str_temp(x) #x
 #define str(x) str_temp(x)
 
+//#define str(x) #x   ///maybe x is an int? 
 // strlen() for string constant
-#define STRLEN(CONST_STR) (sizeof(CONST_STR) - 1)
+#define STRLEN(CONST_STR) (sizeof(CONST_STR) - 1)       //== strlen lib function
 
 // calculate the length of an array
-#define ARRLEN(arr) (int)(sizeof(arr) / sizeof(arr[0]))
+#define ARRLEN(arr) (int)(sizeof(arr) / sizeof(arr[0])) //the '\0' is included
 
 // macro concatenation
-#define concat_temp(x, y) x ## y
+#define concat_temp(x, y) x ## y    //114 ## 514 = 114514 (decimal, not string)
 #define concat(x, y) concat_temp(x, y)
+//#define concat(x, y) x ## y
 #define concat3(x, y, z) concat(concat(x, y), z)
 #define concat4(x, y, z, w) concat3(concat(x, y), z, w)
 #define concat5(x, y, z, v, w) concat4(concat(x, y), z, v, w)
@@ -23,9 +27,10 @@
 // macro testing
 // See https://stackoverflow.com/questions/26099745/test-if-preprocessor-symbol-is-defined-inside-macro
 #define CHOOSE2nd(a, b, ...) b
-#define MUX_WITH_COMMA(contain_comma, a, b) CHOOSE2nd(contain_comma a, b)
-#define MUX_MACRO_PROPERTY(p, macro, a, b) MUX_WITH_COMMA(concat(p, macro), a, b)
-// define placeholders for some property
+#define MUX_WITH_COMMA(contain_comma, a, b) CHOOSE2nd(contain_comma a, b)           //choose 3rd?
+#define MUX_MACRO_PROPERTY(p, macro, a, b) MUX_WITH_COMMA(concat(p, macro), a, b)   //choose 4th?
+//define placeholders for some property
+//WTF??
 #define __P_DEF_0  X,
 #define __P_DEF_1  X,
 #define __P_ONE_1  X,
@@ -45,8 +50,9 @@
 // test if a boolean macro is defined to 0
 #define ISZERO(macro) MUXZERO(macro, 1, 0)
 // test if a macro of ANY type is defined
+///we do this by compare macro name and its value. eg if we use #define foo bar, then the macro name is not equal to its value
 // NOTE1: it ONLY works inside a function, since it calls `strcmp()`
-// NOTE2: macros defined to themselves (#define A A) will get wrong results
+// NOTE2: macros defined to themselves (#define A A) will get wrong results. Since its name = its value, the test will be past
 #define isdef(macro) (strcmp("" #macro, "" str(macro)) != 0)
 
 // simplification for conditional compilation
