@@ -140,13 +140,15 @@ static int cmd_help(char *args) {
   if (arg == NULL) {
     /* no argument given */
     for (i = 0; i < NR_CMD; i ++) {
-      printf("\033[40;32m%8s - %-s\033[0m\n", cmd_table[i].name, cmd_table[i].description);
+      printf(ANSI_FMT("%8s - %-s", ANSI_FG_GREEN), cmd_table[i].name, cmd_table[i].description);
+      //printf("\033[40;32m%8s - %-s\033[0m\n", cmd_table[i].name, cmd_table[i].description);
     }
   }
   else {
     for (i = 0; i < NR_CMD; i ++) {
       if (strcmp(arg, cmd_table[i].name) == 0) {
-        printf("%s - %s\n", cmd_table[i].name, cmd_table[i].description);
+        printf(ANSI_FMT("%8s - %-s", ANSI_FG_GREEN), cmd_table[i].name, cmd_table[i].description);
+        //printf("%s - %s\n", cmd_table[i].name, cmd_table[i].description);
         return 0;
       }
     }
