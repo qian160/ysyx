@@ -6,9 +6,10 @@
 // macro stringizing
 ///the # and ## operator is only avaliable at preprocess stage
 
-#define str_temp(x) #x
-#define str(x) str_temp(x)
-/* note: we can't use #define str(x)#x due to the macro expand rule*/
+//#define str_temp(x) #x
+//#define str(x) str_temp(x)
+#define str(x) #x
+/* note: we can't use #define str(x)#x. in macro expandsion, there is an order problem */
 // strlen() for string constant
 #define STRLEN(CONST_STR) (sizeof(CONST_STR) - 1)       //== strlen lib function
 
