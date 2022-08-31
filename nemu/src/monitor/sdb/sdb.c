@@ -11,7 +11,7 @@ extern const char* regs[];
 static int is_batch_mode = false;
 #define NR_CMD ARRLEN(cmd_table)
 
-#include "cmd.h"
+#include "cmd.h"  //put this under all the definations
 
 #define uint64_t  long long
 
