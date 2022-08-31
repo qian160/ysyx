@@ -89,8 +89,9 @@ void init_regex() {   //called by init_sdb()
 }
 
 typedef struct token {
-  int type;
-  char str[32];
+  int   type;
+  char  str[32];
+  int   index;
 }Token;
 
 static Token tokens[32] __attribute__((used)) = {};
@@ -178,7 +179,7 @@ int find_prime_idx()    //the prime opt should have low privilege
   nr_token = 0;
 
   while (e[position] != '\0') {
-    /*debug use*/printf(ANSI_FMT("%s\n", ANSI_FG_MAGENTA), e + position);
+    printf(ANSI_FMT("%s\n", ANSI_FG_MAGENTA), e + position);
     /* Try all rules one by one. */
     for (i = 0; i < NR_REGEX; i ++) {                      //so must starts at 0, since we want to get the tokens in order
       if (regexec(&re[i], e + position, 1, &pmatch, 0) == 0 && pmatch.rm_so == 0) { //e starts with a token
@@ -187,7 +188,6 @@ int find_prime_idx()    //the prime opt should have low privilege
 
         Log("match rules[%d] = \"%s\" at position %d with len %d: %.*s",
             i, rules[i].regex, position, substr_len, substr_len, substr_start);
-
 
         /* TODO: Now a new token is recognized with rules[i]. Add codes
          * to record the token in the array `tokens'. For certain types
@@ -198,10 +198,11 @@ int find_prime_idx()    //the prime opt should have low privilege
         if(rules[i].token_type != TK_NOTYPE){
             char * token = (char *)malloc(substr_len + 1);
             for(int t = 0; t < substr_len; t++)
-            token[t] = e[position+t];
+              token[t] = e[position+t];
             token[substr_len] = '\0';
 
             strcpy(tokens[nr_token].str, token);
+            tokens[nr_token].index = pmatch.rm_so;
             tokens[nr_token++].type = rules[i].token_type;
         }
 
@@ -225,10 +226,12 @@ int find_prime_idx()    //the prime opt should have low privilege
   {
     char * temp = tokens[i].str;
     int type = tokens[i].type;
-    printf(ANSI_FMT("token[%2d] = %-8s\ttype = %d\n", ANSI_FG_YELLOW),i, temp, type);
+    int index = tokens[i].index;
+    printf(ANSI_FMT("token[%2d] = %-8s\ttype = %d\tindex = %d\n", ANSI_FG_YELLOW),i, temp, type, index);
   }
   printf("check: %d\n", check_parentheses(0, elen - 1));
   printf("prime: %d\n", find_prime_idx());
+  //------
   return true;
 }
 
