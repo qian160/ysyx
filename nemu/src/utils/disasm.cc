@@ -81,9 +81,7 @@ extern "C" void disassemble(char *str, int size, uint64_t pc, uint8_t *code, int
   std::string s;
   raw_string_ostream os(s);
   
-  std::cout<<"here?"<<std::endl;
   gIP->printInst(&inst, pc, "", *gSTI, os);
-  std::cout<<"here?"<<std::endl;
 
   int skip = s.find_first_not_of('\t');
   const char *p = s.c_str() + skip;
