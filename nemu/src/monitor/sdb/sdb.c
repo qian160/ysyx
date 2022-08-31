@@ -122,6 +122,7 @@ static int cmd_x(char * args){  //usage: x num addr
 
 static int cmd_r(){
   printf("do you want to restart the program?(y/n) \n");
+  getchar();  //enter
   char c = getchar();
   if(c == 'y')
   {
@@ -129,6 +130,8 @@ static int cmd_r(){
     for(int i = 0; i < 32; i++)
       regs[i] = 0;
   }
+  else
+    printf("canceled\n");
   return 0;
 }
 
