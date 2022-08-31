@@ -136,7 +136,7 @@ bool check_parentheses(int p, int q){
   return S.top == 0;
 }
 
-int find_prime()    //the prime opt should have low privilege
+int find_prime_idx()    //the prime opt should have low privilege
 {
   int priv = 114514;
   int oldpriv = 1919810;
@@ -163,6 +163,7 @@ int find_prime()    //the prime opt should have low privilege
     else if(type == TK_RIGHT){
       priv = oldpriv;
     }
+    printf("round%d, idx = %d, type = %d\n", i, index, type );
   }
   return index;
 }
