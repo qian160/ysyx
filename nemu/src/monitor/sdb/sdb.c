@@ -107,8 +107,7 @@ static int cmd_info(char * args){
   return 0;
 }
 
-static int cmd_x(char * args){
-
+static int cmd_x(char * args){  //usage: x num addr
   char * nump = strtok(args," ");
   char * addrp = strtok(NULL," ");
 
