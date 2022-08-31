@@ -120,6 +120,10 @@ static int cmd_x(char * args){  //usage: x num addr
   return 0;
 }
 
+static int cmd_r(){
+  cpu.pc  = 0x80000000;
+  return 0;
+}
 
 static int cmd_help(char *args);
 
@@ -132,8 +136,9 @@ static struct {
   { "c", "Continue the execution of the program", cmd_c },
   { "q", "Exit NEMU", cmd_q },
   { "si", "step single instrction", cmd_si},
-  { "info", "print the specific reg's information, r for all", cmd_info},
-  { "x", "examine the memory", cmd_x},
+  { "info", "print the specific reg's value, r for all", cmd_info},
+  { "x", "examine the memory. Usage: x num addr", cmd_x},
+  { "r", "restart and run the program", cmd_r},
 
   /* TODO: Add more commands */
 
@@ -180,7 +185,7 @@ void sdb_mainloop() {   //get command
     char *str_end = str + strlen(str);
     for(int i = 0 ; i< strlen(str) ; i++)
       str[i] |= 0x20;    //convert to a b c ...z .大小写都能用
-    /* extract the first token as the command */
+      /* extract the first token as the command */
     char *cmd = strtok(str, " ");
     if (cmd == NULL) { continue; }
 
@@ -201,8 +206,7 @@ void sdb_mainloop() {   //get command
     int i;
     for (i = 0; i < NR_CMD; i ++) {
       if (strcmp(cmd, cmd_table[i].name) == 0) {
-        if (cmd_table[i].handler(args) < 0) { return; }
-        //notice that a function call happens here!
+        if (cmd_table[i].handler(args) < 0) { return; } //error when running
         break;
       }
     }
