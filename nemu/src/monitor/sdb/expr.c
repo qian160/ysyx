@@ -53,15 +53,15 @@ static struct rule {
    * Pay attention to the precedence level of different rules.
    */
 
+  {"[0-9]+",          TK_DECNUM},
+  {"0[xX][0-9a-f]+",  TK_HEXNUM},
   {"==",              TK_EQ},       // equal
   {"\\*",             TK_MULT},     // mult and div should be treated before add/sub
   {"/",               TK_DIV},   
   {"-",               TK_SUB},      // sub  
   {"\\+",             TK_ADD},      // plus,'+' has special meaning thus need some \. \+ means '+'. However to recognize the first \ we need another \.
-  {"[0-9]+",          TK_DECNUM},
-  {"0[xX][0-9a-f]+",  TK_HEXNUM},
-//{" +",              TK_NOTYPE},   // multiple spaces, not addition
-//{"\\s+",            TK_NOTYPE},   // white spaces
+  {" +",              TK_NOTYPE},   // multiple spaces, not addition
+  {"\\s+",            TK_NOTYPE},   // white spaces
 //  {"<<",              TK_SL},
 //  {">>",              TK_SR},
 
@@ -107,7 +107,7 @@ static int nr_token __attribute__((used))  = 0;
     printf(ANSI_FMT("%s\n", ANSI_FG_MAGENTA), e + position);
     /* Try all rules one by one. */
     for (i = 0; i < NR_REGEX; i ++) {                         //here is the bug. this condition forces us to match from beginning so whitespace will not be skipped
-      if (regexec(&re[i], e + position, 1, &pmatch, 0) == 0 /*&& pmatch.rm_so == 0 */) { //e starts with a token
+      if (regexec(&re[i], e + position, 1, &pmatch, 0) == 0 && pmatch.rm_so == 0) { //e starts with a token
         char *substr_start = e + position;
         int substr_len = pmatch.rm_eo;
 
