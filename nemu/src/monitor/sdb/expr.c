@@ -14,8 +14,8 @@ enum {
   TK_DIV,   //0101
   TK_ADD ,  //0110
   TK_SUB,   //0111.for arith type, bit(3) = 0 and bit(2) = 1. That is TK < 8 && tk(2) = 1
-//  TK_SL,    //shift left
-//  TK_SR,    //shift right
+  TK_LEFT,
+  TK_RIGHT,
   /* TODO: Add more token types */
 
 };
@@ -62,8 +62,8 @@ static struct rule {
   {"\\+",             TK_ADD},      // plus,'+' has special meaning thus need some \. \+ means '+'. However to recognize the first \ we need another \.
   {" +",              TK_NOTYPE},   // multiple spaces, not addition
   {"\\s+",            TK_NOTYPE},   // white spaces
-//  {"<<",              TK_SL},
-//  {">>",              TK_SR},
+  {"\\(",             TK_LEFT},
+  {"\\)",             TK_RIGHT},
 
 };
 
@@ -106,7 +106,7 @@ static int nr_token __attribute__((used))  = 0;
   while (e[position] != '\0') {
     printf(ANSI_FMT("%s\n", ANSI_FG_MAGENTA), e + position);
     /* Try all rules one by one. */
-    for (i = 0; i < NR_REGEX; i ++) {                         //here is the bug. this condition forces us to match from beginning so whitespace will not be skipped
+    for (i = 0; i < NR_REGEX; i ++) {                      //so must starts at 0, since we want to get the tokens in order
       if (regexec(&re[i], e + position, 1, &pmatch, 0) == 0 && pmatch.rm_so == 0) { //e starts with a token
         char *substr_start = e + position;
         int substr_len = pmatch.rm_eo;
@@ -130,7 +130,6 @@ static int nr_token __attribute__((used))  = 0;
             strcpy(tokens[nr_token].str, token);
             tokens[nr_token++].type = rules[i].token_type;
         }
-
 
         position += substr_len;
 /*
