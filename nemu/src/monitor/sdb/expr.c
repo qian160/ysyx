@@ -96,6 +96,40 @@ typedef struct token {
 static Token tokens[32] __attribute__((used)) = {};
 static int nr_token __attribute__((used))  = 0;
 
+typedef struct{
+  char parentheses[20];
+  int  top;
+}easyStack;    //for parentheses check. No boundary check
+
+easyStack S;
+
+void push(char c){
+  S.parentheses[S.top++] = c;
+}
+
+bool pop(){
+  if(S.top == 0) return false;
+  S.top--;
+  return true;
+}
+
+bool check_parentheses(int p, int q){
+  if( p < q ) return false;
+  S.top = 0;    ///reset the stack
+  for(; p < q; p++){
+    char temp = tokens[p].str[0];
+    if(temp == '(')
+      push('(');
+    else if(temp == ')'){
+      push(')');
+      if(S.top > 1 && S.parentheses[S.top -2] == '(')
+        S.top -= 2;
+    }
+  }
+  return true;
+}
+
+
 /*static*/ bool make_token(char *e) {
   int position = 0;
   int i;
@@ -154,47 +188,10 @@ static int nr_token __attribute__((used))  = 0;
     int type = tokens[i].type;
     printf(ANSI_FMT("token[%2d] = %-8s\ttype = %d\n", ANSI_FG_YELLOW),i, temp, type);
   }
-  printf("check: d\n", check_parentheses(0, elen - 1));
+  printf("check: %d\n", check_parentheses(0, elen - 1));
   return true;
 }
 
-typedef struct{
-  char parentheses[20];
-  int  top;
-}easyStack;    //for parentheses check. No boundary check
-
-easyStack S;
-
-void push(char c){
-  S.parentheses[S.top++] = c;
-}
-
-bool pop(){
-  if(S.top == 0) return false;
-  S.top--;
-  return true;
-}
-
-bool check_parentheses(int p, int q){
-  if( p < q ) return false;
-  S.top = 0;    ///reset the stack
-  for(; p < q; p++){
-    char temp = tokens[p].str[0];
-    if(temp == '(')
-      push('(');
-    else if(temp == ')'){
-      push(')');
-      if(S.top > 1 && S.parentheses[S.top -2] == '(')
-        S.top -= 2;
-    }
-  }
-  return true;
-}
-/*
-int64_t eval(int p, int q){
-
-}
-*/
 word_t expr(char *e, bool *success) {
   if (!make_token(e)) {
     *success = false;
