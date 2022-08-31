@@ -35,8 +35,6 @@ static void exec_once(Decode *s, vaddr_t pc) {
 
   //
   p += snprintf(p, sizeof(s->logbuf), FMT_WORD ":", s->pc);
-  snprintf(p, sizeof(s->logbuf), FMT_WORD ":", s->pc);
-  snprintf(p, sizeof(s->logbuf), FMT_WORD ":", s->pc);
 
   int ilen = s->snpc - s->pc;
   int i;
@@ -45,7 +43,7 @@ static void exec_once(Decode *s, vaddr_t pc) {
     p += snprintf(p, 4, " %02x", inst[i]);
   }
 
-  //printf("\033[40;30m   %s    \033[0m\n",s->logbuf);
+  printf("\033[40;30m   %s    \033[0m\n",s->logbuf);
 
   int ilen_max = MUXDEF(CONFIG_ISA_x86, 8, 4);
   int space_len = ilen_max - ilen;
