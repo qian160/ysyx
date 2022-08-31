@@ -141,7 +141,7 @@ int find_prime()    //the prime opt should have low privilege
   int priv = 114514;
   int oldpriv = 1919810;
   int index = 0;
-  for(int i = 0; i < NR_REGEX; i++ ){
+  for(int i = 0; i < nr_token; i++ ){
     int type = tokens[i].type;
 
     if(type == TK_ADD || type == TK_SUB){
