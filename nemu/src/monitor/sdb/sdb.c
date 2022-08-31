@@ -7,7 +7,7 @@
 #include "../../isa/riscv64/local-include/reg.h"
 
 uint64_t pmem_read(paddr_t addr, int len);
-
+extern const char* regs[];
 static int is_batch_mode = false;
 
 #define uint64_t  long long
@@ -51,7 +51,6 @@ void examine_memory(int n, int64_t p){
       printf(ANSI_FMT(" 0x%lx: ",ANSI_FG_MAGENTA), p);
     }
   }
-  
   printf("\n");
   return;
 
@@ -94,9 +93,19 @@ static int cmd_info(char * args){
   }
   if(strcmp(arg,"r") == 0)
     isa_reg_display();
+  else
+  {
+    for (int i = 0; i <= 31; i ++)
+    {
+      const char * reg = regs[i];  //width??
+      if(strcmp(arg, reg) == 0){
+        printf(ANSI_FMT("%s\t\t0x%-16lx\t%-16ld\n", ANSI_FG_PINK), reg, gpr(i), gpr(i));
+        return 0;
+      }
+    }
+  }
   return 0;
 }
-
 
 static int cmd_x(char * args){
 
@@ -124,7 +133,7 @@ static struct {
   { "c", "Continue the execution of the program", cmd_c },
   { "q", "Exit NEMU", cmd_q },
   { "si", "step single instrction", cmd_si},
-  { "info", "print all regs' information", cmd_info},
+  { "info", "print the specific reg's information, r for all", cmd_info},
   { "x", "examine the memory", cmd_x},
 
   /* TODO: Add more commands */
