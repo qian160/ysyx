@@ -121,13 +121,16 @@ static int nr_token __attribute__((used))  = 0;
          */
 
         //produce the token and copy it to the array
-        char * token = (char *)malloc(substr_len + 1);
-        for(int t = 0; t < substr_len; t++)
-          token[t] = e[position+t];
-        token[substr_len] = '\0';
+        if(rules[i].token_type != TK_NOTYPE){
+            char * token = (char *)malloc(substr_len + 1);
+            for(int t = 0; t < substr_len; t++)
+            token[t] = e[position+t];
+            token[substr_len] = '\0';
 
-        strcpy(tokens[nr_token].str, token);
-        tokens[nr_token++].type = rules[i].token_type;
+            strcpy(tokens[nr_token].str, token);
+            tokens[nr_token++].type = rules[i].token_type;
+        }
+
 
         position += substr_len;
 /*
