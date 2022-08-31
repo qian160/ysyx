@@ -136,6 +136,37 @@ bool check_parentheses(int p, int q){
   return S.top == 0;
 }
 
+int find_prime()    //the prime opt should have low privilege
+{
+  int priv = 114514;
+  int oldpriv = 1919810;
+  int index = 0;
+  for(int i = 0; i < NR_REGEX; i++ ){
+    int type = tokens[i].type;
+
+    if(type == TK_ADD || type == TK_SUB){
+      if(priv >= 0){
+        priv = 0;
+        index = i;
+      }
+    }
+    else if(type == TK_DIV || type == TK_MULT){
+      if(priv >= 1){
+        priv = 1;
+        index = i;
+      }
+    }
+    else if(type == TK_LEFT){
+      oldpriv = priv;
+      priv = -1;    //temorarily refuse any requests 
+    }
+    else if(type == TK_RIGHT){
+      priv = oldpriv;
+    }
+  }
+  return index;
+}
+
 //generate tokens using the expr
 /*static*/ bool make_token(char *e) {
   int position = 0;
@@ -198,37 +229,6 @@ bool check_parentheses(int p, int q){
   printf("check: %d\n", check_parentheses(0, elen - 1));
   printf("prime: %d\n", find_prime());
   return true;
-}
-
-int find_prime()    //the prime opt should have low privilege
-{
-  int priv = 114514;
-  int oldpriv = 1919810;
-  int index = 0;
-  for(int i = 0; i < NR_REGEX; i++ ){
-    int type = tokens[i].type;
-
-    if(type == TK_ADD || type == TK_SUB){
-      if(priv >= 0){
-        priv = 0;
-        index = i;
-      }
-    }
-    else if(type == TK_DIV || type == TK_MULT){
-      if(priv >= 1){
-        priv = 1;
-        index = i;
-      }
-    }
-    else if(type == TK_LEFT){
-      oldpriv = priv;
-      priv = -1;    //temorarily refuse any requests 
-    }
-    else if(type == TK_RIGHT){
-      priv = oldpriv;
-    }
-  }
-  return index;
 }
 
 word_t expr(char *e, bool *success) {
