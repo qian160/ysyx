@@ -136,6 +136,7 @@ bool check_parentheses(int p, int q){
   int i;
   regmatch_t pmatch;
   /**/int elen = strlen(e);
+  printf("elen: %d\n",elen);
 
   nr_token = 0;
 
