@@ -114,7 +114,7 @@ bool pop(){
 }
 
 bool check_parentheses(int p, int q){
-  if( p < q ) return false;
+  if( p > q ) return false;
   S.top = 0;    ///reset the stack
   for(; p < q; p++){
     char temp = tokens[p].str[0];
