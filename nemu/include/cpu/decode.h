@@ -5,8 +5,8 @@
 
 typedef struct Decode {
   vaddr_t pc;
-  vaddr_t snpc; // static next pc
-  vaddr_t dnpc; // dynamic next pc
+  vaddr_t snpc; // static next pc, which is pc + 4
+  vaddr_t dnpc; // dynamic next pc, branch, jump, or exception
   ISADecodeInfo isa;
   IFDEF(CONFIG_ITRACE, char logbuf[128]);
 } Decode;
