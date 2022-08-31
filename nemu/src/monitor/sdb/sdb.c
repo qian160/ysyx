@@ -9,6 +9,7 @@
 uint64_t pmem_read(paddr_t addr, int len);
 extern const char* regs[];
 static int is_batch_mode = false;
+#define NR_CMD ARRLEN(cmd_table)
 
 #define uint64_t  long long
 
@@ -153,8 +154,6 @@ static struct {
   /* TODO: Add more commands */
 
 };
-
-#define NR_CMD ARRLEN(cmd_table)
 
 static int cmd_help(char *args) {
   /* extract the first argument */
