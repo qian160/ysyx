@@ -126,7 +126,6 @@ bool check_parentheses(int p, int q){
         S.top -= 2;
     }
   }
-  printf("top = %d\n", S.top);
   return S.top == 0;
 }
 
@@ -136,12 +135,11 @@ bool check_parentheses(int p, int q){
   int i;
   regmatch_t pmatch;
   /**/int elen = strlen(e);
-  printf("elen: %d\n",elen);
 
   nr_token = 0;
 
   while (e[position] != '\0') {
-    printf(ANSI_FMT("%s\n", ANSI_FG_MAGENTA), e + position);
+    /*debug use*/printf(ANSI_FMT("%s\n", ANSI_FG_MAGENTA), e + position);
     /* Try all rules one by one. */
     for (i = 0; i < NR_REGEX; i ++) {                      //so must starts at 0, since we want to get the tokens in order
       if (regexec(&re[i], e + position, 1, &pmatch, 0) == 0 && pmatch.rm_so == 0) { //e starts with a token
