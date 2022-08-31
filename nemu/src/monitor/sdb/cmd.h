@@ -72,14 +72,14 @@ static int cmd_info(char * args){
         printf(ANSI_FMT("need an argument!\n", ANSI_FG_PINK));
         return 0;
     }
-    if(strcmp(arg,"r") == 0)
+    if(streq(arg,"r"))
         isa_reg_display();
     else
     {
         for (int i = 0; i <= 31; i ++)
         {
             const char * reg = regs[i];
-            if(strcmp(arg, reg) == 0){
+            if(streq(arg, reg)){
                 printf(ANSI_FMT("%s\t\t0x%-16lx\t%-16ld\n", ANSI_FG_PINK), reg, gpr(i), gpr(i));
                 return 0;
         }
