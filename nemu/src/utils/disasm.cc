@@ -1,8 +1,9 @@
+//.cc is the format of c++ source file
 #if defined(__GNUC__) && !defined(__clang__)
 #pragma GCC diagnostic push
 #pragma GCC diagnostic ignored "-Wmaybe-uninitialized"
 #endif
-
+#include<iostream>    //debug
 #include "llvm/MC/MCAsmInfo.h"
 #include "llvm/MC/MCContext.h"
 #include "llvm/MC/MCDisassembler/MCDisassembler.h"
@@ -71,7 +72,6 @@ extern "C" void init_disasm(const char *triple) {
   gIP->setPrintBranchImmAsAddress(true);
 #endif
 }
-
 extern "C" void disassemble(char *str, int size, uint64_t pc, uint8_t *code, int nbyte) {
   MCInst inst;
   llvm::ArrayRef<uint8_t> arr(code, nbyte);
@@ -80,6 +80,7 @@ extern "C" void disassemble(char *str, int size, uint64_t pc, uint8_t *code, int
 
   std::string s;
   raw_string_ostream os(s);
+  
   gIP->printInst(&inst, pc, "", *gSTI, os);
 
   int skip = s.find_first_not_of('\t');

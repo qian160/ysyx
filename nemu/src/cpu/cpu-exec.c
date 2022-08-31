@@ -27,13 +27,14 @@ static void trace_and_difftest(Decode *_this, vaddr_t dnpc) {
 
 static void exec_once(Decode *s, vaddr_t pc) {
   s->pc = pc;
-  s->snpc = pc;
+  s->snpc = pc; //+4?
+  /**/printf("%lx\t%lx\n",s -> snpc, s -> dnpc);
   isa_exec_once(s);
-  cpu.pc = s->dnpc;
+  cpu.pc = s->dnpc; //dnpc is updated in inst fetch, currently pc + 4
 #ifdef CONFIG_ITRACE
   char *p = s->logbuf;
 
-  //
+  /**/printf("%lx\t%lx\n",s -> snpc, s -> dnpc);
   p += snprintf(p, sizeof(s->logbuf), FMT_WORD ":", s->pc);
 
   int ilen = s->snpc - s->pc;
@@ -42,7 +43,6 @@ static void exec_once(Decode *s, vaddr_t pc) {
   for (i = ilen - 1; i >= 0; i --) {
     p += snprintf(p, 4, " %02x", inst[i]);
   }
-
   //printf("\033[40;30m   %s    \033[0m\n",s->logbuf);
 
   int ilen_max = MUXDEF(CONFIG_ISA_x86, 8, 4);
@@ -86,7 +86,7 @@ void assert_fail_msg() {
 
 /* Simulate how the CPU works. */
 void cpu_exec(uint64_t n) {
-  g_print_step = (n < MAX_INST_TO_PRINT);
+  g_print_step = (n < MAX_INST_TO_PRINT); //Greater than max PRINT STEPs
   //state machine, check the states first and change it
   switch (nemu_state.state) {
     case NEMU_END: case NEMU_ABORT:

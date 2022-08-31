@@ -47,7 +47,6 @@ void sdb_mainloop() {   //get command
     cmd_c(NULL);
     return;
   }
-
   for (char *str; (str = rl_gets()) != NULL; ) {
     char *str_end = str + strlen(str);
     for(int i = 0 ; i< strlen(str) ; i++)

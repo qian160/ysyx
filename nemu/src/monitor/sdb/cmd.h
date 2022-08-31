@@ -12,6 +12,8 @@ extern const char* regs[];
 static int is_batch_mode = false;
 #define NR_CMD ARRLEN(cmd_table)
 *///these definations can be used
+
+bool make_token(char * expr);
 void examine_memory(int n, int64_t p){
   //if we directly derefference the pointer, we are in fact examing our real computer's address!!!
     printf(ANSI_FMT(" 0x%lx: ",ANSI_FG_MAGENTA), p);
@@ -34,12 +36,14 @@ void examine_memory(int n, int64_t p){
 
 //cmd for user input
 static int cmd_c(char *args) {
-    cpu_exec(-1);
+    cpu_exec(-1);   //as many steps as possible
     return 0;
 }
 
 static int cmd_p(char *expr){
     printf(ANSI_FMT("%s\n",ANSI_FG_MAGENTA), expr);
+    if(make_token(expr) == false)
+        printf(ANSI_FMT("illegal expr\n",ANSI_FG_RED));
     return 0;
 }
 
@@ -72,14 +76,14 @@ static int cmd_info(char * args){
         printf(ANSI_FMT("need an argument!\n", ANSI_FG_PINK));
         return 0;
     }
-    if(strcmp(arg,"r") == 0)
+    if(streq(arg, "r"))
         isa_reg_display();
     else
     {
         for (int i = 0; i <= 31; i ++)
         {
             const char * reg = regs[i];
-            if(strcmp(arg, reg) == 0){
+            if(streq(arg, reg)){
                 printf(ANSI_FMT("%s\t\t0x%-16lx\t%-16ld\n", ANSI_FG_PINK), reg, gpr(i), gpr(i));
                 return 0;
         }
@@ -147,7 +151,8 @@ static int cmd_help(char *args) {
     }
     else {
         for (i = 0; i < NR_CMD; i ++) {
-            if (strcmp(arg, cmd_table[i].name) == 0) {
+//            if (strcmp(arg, cmd_table[i].name) == 0) {
+            if (streq(arg, cmd_table[i].name)) {
                 printf(ANSI_FMT("%8s - %-s\n", ANSI_FG_GREEN), cmd_table[i].name, cmd_table[i].description);
                 return 0;
             }
