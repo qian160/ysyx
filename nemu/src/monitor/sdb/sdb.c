@@ -97,7 +97,7 @@ static int cmd_info(char * args){
   {
     for (int i = 0; i <= 31; i ++)
     {
-      const char * reg = regs[i];  //width??
+      const char * reg = regs[i];
       if(strcmp(arg, reg) == 0){
         printf(ANSI_FMT("%s\t\t0x%-16lx\t%-16ld\n", ANSI_FG_PINK), reg, gpr(i), gpr(i));
         return 0;
@@ -121,7 +121,14 @@ static int cmd_x(char * args){  //usage: x num addr
 }
 
 static int cmd_r(){
-  cpu.pc  = 0x80000000;
+  printf("do you want to restart the program?(y/n) \n");
+  char c = getchar();
+  if(c == 'y')
+  {
+    cpu.pc  = 0x80000000;
+    for(int i = 0; i < 32; i++)
+      regs[i] = 0;
+  }
   return 0;
 }
 
