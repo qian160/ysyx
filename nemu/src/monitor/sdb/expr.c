@@ -53,8 +53,6 @@ static struct rule {
    * Pay attention to the precedence level of different rules.
    */
 
-  {" +",              TK_NOTYPE},   // multiple spaces, not addition
-  {"\\s+",            TK_NOTYPE},   // white spaces
   {"[0-9]+",          TK_DECNUM},
   {"0[xX][0-9a-f]+",  TK_HEXNUM},
   {"==",              TK_EQ},       // equal
@@ -62,6 +60,8 @@ static struct rule {
   {"/",               TK_DIV},   
   {"-",               TK_SUB},      // sub  
   {"\\+",             TK_ADD},      // plus,'+' has special meaning thus need some \. \+ means '+'. However to recognize the first \ we need another \.
+  {" +",              TK_NOTYPE},   // multiple spaces, not addition
+  {"\\s+",            TK_NOTYPE},   // white spaces
 //  {"<<",              TK_SL},
 //  {">>",              TK_SR},
 
