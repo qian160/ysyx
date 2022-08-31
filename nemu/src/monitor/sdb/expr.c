@@ -109,7 +109,7 @@ bool push(char c){
     return false;
   }
   S.parentheses[S.top++] = c;
-  return turn;
+  return true;
 }
 
 bool pop(){
