@@ -142,7 +142,11 @@ static int nr_token __attribute__((used))  = 0;
     }
   }
   for(int i =0 ; i < nr_token; i++)
-    puts(tokens[i].str);
+  {
+    char * temp = tokens[i].str;
+    int type = tokens[i].type;
+    printf(ANSI_FMT("tk = %s\ttype = %d\n", ANSI_FG_YELLOW), temp, type);
+  }
 
   return true;
 }
