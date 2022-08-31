@@ -170,6 +170,7 @@ void push(char c){
 bool pop(){
   if(S.top == 0) return false;
   S.top--;
+  return true;
 }
 
 bool check_parentheses(int p, int q){
@@ -186,12 +187,11 @@ bool check_parentheses(int p, int q){
     }
   }
 }
-
+/*
 int64_t eval(int p, int q){
 
 }
-
-
+*/
 word_t expr(char *e, bool *success) {
   if (!make_token(e)) {
     *success = false;
