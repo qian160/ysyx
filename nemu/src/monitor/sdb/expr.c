@@ -129,7 +129,7 @@ static int nr_token __attribute__((used))  = 0;
         strcpy(tokens[nr_token].str, token);
         tokens[nr_token++].type = rules[i].token_type;
 
-        position += //substr_len;
+        position += substr_len;
 /*
         switch (rules[i].token_type) {
           default: //TODO();
