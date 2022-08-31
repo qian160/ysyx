@@ -186,6 +186,7 @@ bool check_parentheses(int p, int q){
         S.top -= 2;
     }
   }
+  return true;
 }
 /*
 int64_t eval(int p, int q){
