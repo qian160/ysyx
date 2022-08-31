@@ -14,6 +14,8 @@ enum {
   TK_SUB, //0101
   TK_MULT,//0110
   TK_DIV, //0111.for arith type, bit(3) = 0 and bit(2) = 1. use (TK % 8) ^ 0b0100 to recognize
+  TK_SL,  //shift left
+  TK_SR,  //shift right
   /* TODO: Add more token types */
 
 };
@@ -27,15 +29,17 @@ static struct rule {
    * Pay attention to the precedence level of different rules.
    */
 
-  {" +",              TK_NOTYPE},    // multiple spaces, not addition
-  {"\\s+",            TK_NOTYPE},  // spaces
-  {"\\+",             TK_ADD},         // plus,'+' has special meaning thus need some \. \+ means '+'. However to recognize the first \ we need another \.
-  {"==",              TK_EQ},        // equal
-  {"-",               TK_SUB},            // sub
-  {"\\*",             TK_MULT},          // multiply
-  {"/",               TK_DIV},
+  {" +",              TK_NOTYPE},   // multiple spaces, not addition
+  {"\\s+",            TK_NOTYPE},   // spaces
+  {"\\+",             TK_ADD},      // plus,'+' has special meaning thus need some \. \+ means '+'. However to recognize the first \ we need another \.
+  {"==",              TK_EQ},       // equal
+  {"-",               TK_SUB},      // sub
+  {"\\*",             TK_MULT},     // multiply
+  {"/",               TK_DIV},      
   {"[0-9]+",          TK_DECNUM},
   {"0[xX][0-9a-f]+",  TK_HEXNUM},
+  {"<<",              TK_SL},
+  {">>",              TK_SR},
 
 };
 

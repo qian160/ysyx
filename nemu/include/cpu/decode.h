@@ -5,8 +5,8 @@
 
 typedef struct Decode {
   vaddr_t pc;
-  vaddr_t snpc; // static next pc, initialized to pc and used to call inst_fetch
-  vaddr_t dnpc; // dynamic next pc
+  vaddr_t snpc; // static(also default) next pc, that is pc + 4. It is performed automically in inst_fetch
+  vaddr_t dnpc; // dynamic next pc. Currently no branch or other inst is implemented, so set dnpc = snpc. A mux is needed in the future. set in decode_exec
   ISADecodeInfo isa;
   IFDEF(CONFIG_ITRACE, char logbuf[128]); //decode information
 } Decode;
