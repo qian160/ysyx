@@ -202,7 +202,7 @@ int find_prime_idx()    //the prime opt should have low privilege
             token[substr_len] = '\0';
 
             strcpy(tokens[nr_token].str, token);
-            tokens[nr_token].index = pmatch.rm_so;
+            tokens[nr_token].index = position;
             tokens[nr_token++].type = rules[i].token_type;
         }
 
