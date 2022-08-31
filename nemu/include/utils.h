@@ -61,3 +61,5 @@ uint64_t get_time();
 
 
 #endif
+
+#define streq(x, y) (strcmp(x, y) == 0)
