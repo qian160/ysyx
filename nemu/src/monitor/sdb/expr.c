@@ -52,9 +52,8 @@ static struct rule {
   /* TODO: Add more rules.
    * Pay attention to the precedence level of different rules.
    */
-
-  {"[0-9]+",          TK_DECNUM},
   {"0[xX][0-9a-f]+",  TK_HEXNUM},
+  {"[0-9]+",          TK_DECNUM},
   {"==",              TK_EQ},       // equal
   {"\\*",             TK_MULT},     // mult and div should be treated before add/sub
   {"/",               TK_DIV},   
