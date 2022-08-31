@@ -123,6 +123,8 @@ static int cmd_x(char * args){  //usage: x num addr
 static int cmd_r(){
   printf("do you want to restart the program?(y/n) \n");
   char c = getchar();
+  putchar(c);
+  putchar('\n');
   if(c == 'y')
   {
     cpu.pc  = 0x80000000;
