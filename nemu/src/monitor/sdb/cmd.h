@@ -90,7 +90,7 @@ static int cmd_r(){
     {
         cpu.pc  = 0x80000000;
         for(int i = 0; i < 32; i++)
-            regs[i] = 0;
+            gpr(i) = 0;
     }
     else
         printf("canceled\n");
