@@ -44,6 +44,7 @@ enum {
         2 = REG_NOTEOL  not end of line?
 
 */
+
 static struct rule {
   const char *regex;
   int token_type;
@@ -52,7 +53,7 @@ static struct rule {
   /* TODO: Add more rules.
    * Pay attention to the precedence level of different rules.
    */
-  {"0[xX][0-9a-f]+",  TK_HEXNUM},
+  {"0[xX][0-9a-f]+",  TK_HEXNUM},   //check before DECNUM, or the 0 prefix will be lost
   {"[0-9]+",          TK_DECNUM},
   {"==",              TK_EQ},       // equal
   {"\\*",             TK_MULT},     // mult and div should be treated before add/sub
@@ -153,6 +154,41 @@ static int nr_token __attribute__((used))  = 0;
   }
 
   return true;
+}
+
+typedef struct{
+  char parentheses[20];
+  int  top;
+}easyStack;    //for parentheses check. No boundary check
+
+easyStack S;
+
+void push(char c){
+  S.parentheses[S.top++] = c;
+}
+
+bool pop(){
+  if(S.top == 0) return false;
+  S.top--;
+}
+
+bool check_parentheses(int p, int q){
+  if( p < q ) return false;
+  S.top = 0;    ///reset the stack
+  for(; p < q; p++){
+    char temp = tokens[p].str[0];
+    if(temp == '(')
+      push('(');
+    else if(temp == ')'){
+      push(')');
+      if(S.top > 1 && S.parentheses[S.top -2] == '(')
+        S.top -= 2;
+    }
+  }
+}
+
+int64_t eval(int p, int q){
+
 }
 
 
