@@ -37,7 +37,6 @@ static char* rl_gets() {
 
 void examine_memory(int n, int64_t p){
   //if we directly derefference the pointer, we are in fact examing our real computer's address!!!
-  
   printf(ANSI_FMT(" 0x%lx: ",ANSI_FG_MAGENTA), p);
   char cnt = 0;
   for (int i = 0 ; i < n ; i++)
@@ -163,7 +162,7 @@ void sdb_set_batch_mode() {
   is_batch_mode = true;
 }
 
-void sdb_mainloop() {
+void sdb_mainloop() {   //get command
   if (is_batch_mode) {
     cmd_c(NULL);
     return;
