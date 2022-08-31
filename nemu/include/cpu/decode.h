@@ -5,10 +5,10 @@
 
 typedef struct Decode {
   vaddr_t pc;
-  vaddr_t snpc; // static next pc, which is pc + 4
-  vaddr_t dnpc; // dynamic next pc, branch, jump, or exception
+  vaddr_t snpc; // static next pc, initialized to pc and used to call inst_fetch
+  vaddr_t dnpc; // dynamic next pc
   ISADecodeInfo isa;
-  IFDEF(CONFIG_ITRACE, char logbuf[128]);
+  IFDEF(CONFIG_ITRACE, char logbuf[128]); //decode information
 } Decode;
 
 // --- pattern matching mechanism ---

@@ -33,7 +33,7 @@ static void exec_once(Decode *s, vaddr_t pc) {
 #ifdef CONFIG_ITRACE
   char *p = s->logbuf;
 
-  //
+  /**/printf("%lx\t%lx",s -> snpc, s -> dnpc);
   p += snprintf(p, sizeof(s->logbuf), FMT_WORD ":", s->pc);
 
   int ilen = s->snpc - s->pc;
@@ -64,9 +64,6 @@ static void execute(uint64_t n) {
     exec_once(&s, cpu.pc);
     g_nr_guest_inst ++;
     trace_and_difftest(&s, cpu.pc);
-    puts(s.logbuf);
-    puts(s.logbuf);
-    puts(s.logbuf);
     if (nemu_state.state != NEMU_RUNNING) break;
     IFDEF(CONFIG_DEVICE, device_update());
   }
