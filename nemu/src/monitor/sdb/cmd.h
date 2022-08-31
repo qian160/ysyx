@@ -34,12 +34,14 @@ void examine_memory(int n, int64_t p){
 
 //cmd for user input
 static int cmd_c(char *args) {
-    cpu_exec(-1);
+    cpu_exec(-1);   //as many steps as possible
     return 0;
 }
 
 static int cmd_p(char *expr){
     printf(ANSI_FMT("%s\n",ANSI_FG_MAGENTA), expr);
+    if(make_token(expr) == false)
+        printf(ANSI_FMT("illegal expr\n",ANSI_FG_RED));
     return 0;
 }
 
@@ -72,7 +74,7 @@ static int cmd_info(char * args){
         printf(ANSI_FMT("need an argument!\n", ANSI_FG_PINK));
         return 0;
     }
-    if(streq(arg,"r"))
+    if(streq(arg, "r"))
         isa_reg_display();
     else
     {

@@ -1,6 +1,7 @@
 {
     "files.associations": {
         "common.h": "c",
-        "reg.h": "c"
+        "reg.h": "c",
+        "regex.h": "c"
     }
 }
