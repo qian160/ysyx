@@ -196,6 +196,7 @@ bool check_parentheses(int p, int q){
     printf(ANSI_FMT("token[%2d] = %-8s\ttype = %d\n", ANSI_FG_YELLOW),i, temp, type);
   }
   printf("check: %d\n", check_parentheses(0, elen - 1));
+  printf("prime: %d\n", find_prime());
   return true;
 }
 
@@ -204,7 +205,7 @@ int find_prime()    //the prime opt should have low privilege
   int priv = 114514;
   int oldpriv = 1919810;
   int index = 0;
-  for(int i = 0; i < NR_REGEX; I++ ){
+  for(int i = 0; i < NR_REGEX; i++ ){
     int type = tokens[i].type;
 
     if(type == TK_ADD || type == TK_SUB){
