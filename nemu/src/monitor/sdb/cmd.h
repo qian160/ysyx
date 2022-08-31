@@ -147,7 +147,8 @@ static int cmd_help(char *args) {
     }
     else {
         for (i = 0; i < NR_CMD; i ++) {
-            if (strcmp(arg, cmd_table[i].name) == 0) {
+//            if (strcmp(arg, cmd_table[i].name) == 0) {
+            if (streq(arg, cmd_table[i].name)) {
                 printf(ANSI_FMT("%8s - %-s\n", ANSI_FG_GREEN), cmd_table[i].name, cmd_table[i].description);
                 return 0;
             }
