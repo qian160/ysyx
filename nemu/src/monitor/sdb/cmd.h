@@ -39,7 +39,7 @@ static int cmd_c(char *args) {
     cpu_exec(-1);   //as many steps as possible
     return 0;
 }
-
+//small bug: don't contain the whole expr in a ()
 static int cmd_p(char *expr){
     printf(ANSI_FMT("%s\n",ANSI_FG_MAGENTA), expr);
     if(make_token(expr) == false)

@@ -28,13 +28,11 @@ static void trace_and_difftest(Decode *_this, vaddr_t dnpc) {
 static void exec_once(Decode *s, vaddr_t pc) {
   s->pc = pc;
   s->snpc = pc; //+4?
-  /**/printf("%lx\t%lx\n",s -> snpc, s -> dnpc);
   isa_exec_once(s);
   cpu.pc = s->dnpc; //dnpc is updated in inst fetch, currently pc + 4
 #ifdef CONFIG_ITRACE
   char *p = s->logbuf;
 
-  /**/printf("%lx\t%lx\n",s -> snpc, s -> dnpc);
   p += snprintf(p, sizeof(s->logbuf), FMT_WORD ":", s->pc);
 
   int ilen = s->snpc - s->pc;

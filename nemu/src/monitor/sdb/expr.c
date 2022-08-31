@@ -3,7 +3,7 @@
 /* We use the POSIX regex functions to process regular expressions.
  * Type 'man regex' for more information about POSIX regex functions.
  */
-#include <regex.h>
+#include <regex.h>        // % 8, >= 4
 #define is_arith(TK) ((TK & 0b111) & 0b0100)
 enum {
   TK_NOTYPE, 
@@ -14,8 +14,8 @@ enum {
   TK_DIV,   //0101
   TK_ADD ,  //0110
   TK_SUB,   //0111.for arith type, bit(3) = 0 and bit(2) = 1. That is TK < 8 && tk(2) = 1
-//  TK_SL,    //shift left
-//  TK_SR,    //shift right
+  TK_LEFT,
+  TK_RIGHT,
   /* TODO: Add more token types */
 
 };
@@ -44,6 +44,7 @@ enum {
         2 = REG_NOTEOL  not end of line?
 
 */
+
 static struct rule {
   const char *regex;
   int token_type;
@@ -52,9 +53,8 @@ static struct rule {
   /* TODO: Add more rules.
    * Pay attention to the precedence level of different rules.
    */
-
+  {"0[xX][0-9a-f]+",  TK_HEXNUM},   //check before DECNUM, or the 0 prefix will be lost
   {"[0-9]+",          TK_DECNUM},
-  {"0[xX][0-9a-f]+",  TK_HEXNUM},
   {"==",              TK_EQ},       // equal
   {"\\*",             TK_MULT},     // mult and div should be treated before add/sub
   {"/",               TK_DIV},   
@@ -62,8 +62,8 @@ static struct rule {
   {"\\+",             TK_ADD},      // plus,'+' has special meaning thus need some \. \+ means '+'. However to recognize the first \ we need another \.
   {" +",              TK_NOTYPE},   // multiple spaces, not addition
   {"\\s+",            TK_NOTYPE},   // white spaces
-//  {"<<",              TK_SL},
-//  {">>",              TK_SR},
+  {"\\(",             TK_LEFT},
+  {"\\)",             TK_RIGHT},
 
 };
 
@@ -96,15 +96,89 @@ typedef struct token {
 static Token tokens[32] __attribute__((used)) = {};
 static int nr_token __attribute__((used))  = 0;
 
+typedef struct{
+  char parentheses[20];
+  int  top;
+}easyStack;    //for parentheses check. No boundary check
+
+easyStack S;
+
+bool push(char c){
+  if(S.top == ARRLEN(S.parentheses)){
+    printf(ANSI_FMT("the stack is full...\n",ANSI_FG_RED));
+    return false;
+  }
+  S.parentheses[S.top++] = c;
+  return true;
+}
+
+bool pop(){
+  if(S.top == 0) return false;
+  S.top--;
+  return true;
+}
+#define LEFT  '('
+#define RIGHT ')'
+
+bool check_parentheses(int p, int q){
+  if( p > q ) return false; //something went wrong...
+  S.top = 0;    ///reset the stack
+  for(; p < q; p++){
+    char type = tokens[p].type;
+    if(type == TK_LEFT)
+      push(LEFT);
+    else if(type == TK_RIGHT){
+      push(RIGHT);
+      if(S.top > 1 && S.parentheses[S.top -2] == LEFT)
+        S.top -= 2;
+    }
+  }
+  return S.top == 0;
+}
+
+int find_prime_idx()    //the prime opt should have low privilege
+{
+  int priv = 114514;
+  int oldpriv = 1919810;
+  int index = 0;
+  for(int i = 0; i < nr_token; i++ ){
+    int type = tokens[i].type;
+
+    if(type == TK_ADD || type == TK_SUB){
+      if(priv >= 0){
+        priv = 0;
+        index = i;
+      }
+    }
+    else if(type == TK_DIV || type == TK_MULT){
+      if(priv >= 1){
+        priv = 1;
+        index = i;
+      }
+    }
+    else if(type == TK_LEFT){
+      oldpriv = priv;
+      priv = -1;    //temorarily refuse any requests 
+    }
+    else if(type == TK_RIGHT){
+      priv = oldpriv;
+    }
+    printf("round%d, idx = %d, type = %d\n", i, index, type );
+  }
+  return index;
+}
+
+//generate tokens using the expr
 /*static*/ bool make_token(char *e) {
   int position = 0;
   int i;
   regmatch_t pmatch;
+  /**/int elen = strlen(e);
 
   nr_token = 0;
 
   while (e[position] != '\0') {
-    printf(ANSI_FMT("%s\n", ANSI_FG_MAGENTA), e + position);
+    /*debug use*/printf(ANSI_FMT("%s\n", ANSI_FG_MAGENTA), e + position);
     /* Try all rules one by one. */
     for (i = 0; i < NR_REGEX; i ++) {                      //so must starts at 0, since we want to get the tokens in order
       if (regexec(&re[i], e + position, 1, &pmatch, 0) == 0 && pmatch.rm_so == 0) { //e starts with a token
@@ -131,7 +205,6 @@ static int nr_token __attribute__((used))  = 0;
             tokens[nr_token++].type = rules[i].token_type;
         }
 
-
         position += substr_len;
 /*
         switch (rules[i].token_type) {
@@ -147,16 +220,17 @@ static int nr_token __attribute__((used))  = 0;
       return false;
     }
   }
+  //debug
   for(int i =0 ; i < nr_token; i++)
   {
     char * temp = tokens[i].str;
     int type = tokens[i].type;
     printf(ANSI_FMT("token[%2d] = %-8s\ttype = %d\n", ANSI_FG_YELLOW),i, temp, type);
   }
-
+  printf("check: %d\n", check_parentheses(0, elen - 1));
+  printf("prime: %d\n", find_prime_idx());
   return true;
 }
-
 
 word_t expr(char *e, bool *success) {
   if (!make_token(e)) {
