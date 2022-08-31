@@ -145,7 +145,7 @@ static int nr_token __attribute__((used))  = 0;
   {
     char * temp = tokens[i].str;
     int type = tokens[i].type;
-    printf(ANSI_FMT("tk = %8s\ttype = %d\n", ANSI_FG_YELLOW), temp, type);
+    printf(ANSI_FMT("tk = %-8s\ttype = %d\n", ANSI_FG_YELLOW), temp, type);
   }
 
   return true;
