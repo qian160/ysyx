@@ -6,9 +6,14 @@
 #include <regex.h>
 
 enum {
-  TK_NOTYPE = 256, 
+  TK_NOTYPE, 
+  TK_DECNUM,
+  TK_HEXNUM,
   TK_EQ, 
-  TK_DECIMAL
+  TK_ADD, //0100, 4
+  TK_SUB, //0101
+  TK_MULT,//0110
+  TK_DIV, //0111.for arith type, bit(3) = 0 and bit(2) = 1. use (TK % 8) ^ 0b0100 to recognize
   /* TODO: Add more token types */
 
 };
@@ -22,13 +27,15 @@ static struct rule {
    * Pay attention to the precedence level of different rules.
    */
 
-  {" +", TK_NOTYPE},    // spaces, " +" means more than 1 spaces
-  {"\\+", '+'},         // plus,'+' has special meaning thus need some \s.But \+ also can mean multiple \s, so we need 2 \s to force the transform
-  {"==", TK_EQ},        // equal
-  {"-",'-'},            //sub
-  {"\\*",'*'},            //multiply
-  {"/",'/'},
-  {"[0-9]+",TK_DECIMAL}
+  {" +",              TK_NOTYPE},    // multiple spaces, not addition
+  {"\\s+",            TK_NOTYPE},  // spaces
+  {"\\+",             TK_ADD},         // plus,'+' has special meaning thus need some \. \+ means '+'. However to recognize the first \ we need another \.
+  {"==",              TK_EQ},        // equal
+  {"-",               TK_SUB},            // sub
+  {"\\*",             TK_MULT},          // multiply
+  {"/",               TK_DIV},
+  {"[0-9]+",          TK_DECNUM},
+  {"0[xX][0-9a-f]+",  TK_HEXNUM},
 
 };
 
@@ -56,7 +63,7 @@ void init_regex() {
 typedef struct token {
   int type;
   char str[32];
-} Token;
+}Token;
 
 static Token tokens[32] __attribute__((used)) = {};
 static int nr_token __attribute__((used))  = 0;
