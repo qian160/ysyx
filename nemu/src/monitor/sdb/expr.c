@@ -53,13 +53,13 @@ static struct rule {
    * Pay attention to the precedence level of different rules.
    */
 
-  {"[0-9]+",          TK_DECNUM},
-  {"0[xX][0-9a-f]+",  TK_HEXNUM},
   {"==",              TK_EQ},       // equal
   {"\\*",             TK_MULT},     // mult and div should be treated before add/sub
   {"/",               TK_DIV},   
   {"-",               TK_SUB},      // sub  
   {"\\+",             TK_ADD},      // plus,'+' has special meaning thus need some \. \+ means '+'. However to recognize the first \ we need another \.
+  {"[0-9]+",          TK_DECNUM},
+  {"0[xX][0-9a-f]+",  TK_HEXNUM},
 //{" +",              TK_NOTYPE},   // multiple spaces, not addition
 //{"\\s+",            TK_NOTYPE},   // white spaces
 //  {"<<",              TK_SL},
