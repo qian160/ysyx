@@ -60,8 +60,8 @@ static struct rule {
   {"/",               TK_DIV},   
   {"-",               TK_SUB},      // sub  
   {"\\+",             TK_ADD},      // plus,'+' has special meaning thus need some \. \+ means '+'. However to recognize the first \ we need another \.
-  {" +",              TK_NOTYPE},   // multiple spaces, not addition
-  {"\\s+",            TK_NOTYPE},   // white spaces
+//{" +",              TK_NOTYPE},   // multiple spaces, not addition
+//{"\\s+",            TK_NOTYPE},   // white spaces
 //  {"<<",              TK_SL},
 //  {">>",              TK_SR},
 
@@ -106,8 +106,8 @@ static int nr_token __attribute__((used))  = 0;
   while (e[position] != '\0') {
     printf(ANSI_FMT("%s\n", ANSI_FG_MAGENTA), e + position);
     /* Try all rules one by one. */
-    for (i = 0; i < NR_REGEX; i ++) {
-      if (regexec(&re[i], e + position, 1, &pmatch, 0) == 0 && pmatch.rm_so == 0) { //e starts with a token
+    for (i = 0; i < NR_REGEX; i ++) {                         //here is the bug. this condition forces us to match from beginning so whitespace will not be skipped
+      if (regexec(&re[i], e + position, 1, &pmatch, 0) == 0 /*&& pmatch.rm_so == 0 */) { //e starts with a token
         char *substr_start = e + position;
         int substr_len = pmatch.rm_eo;
 
@@ -119,6 +119,8 @@ static int nr_token __attribute__((used))  = 0;
          * to record the token in the array `tokens'. For certain types
          * of tokens, some extra actions should be performed.
          */
+
+        //produce the token and copy it to the array
         char * token = (char *)malloc(substr_len + 1);
         for(int t = 0; t < substr_len; t++)
           token[t] = e[position+t];
@@ -127,7 +129,7 @@ static int nr_token __attribute__((used))  = 0;
         strcpy(tokens[nr_token].str, token);
         tokens[nr_token++].type = rules[i].token_type;
 
-        position += substr_len;
+        position += //substr_len;
 /*
         switch (rules[i].token_type) {
           default: //TODO();
