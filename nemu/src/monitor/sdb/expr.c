@@ -126,7 +126,7 @@ bool check_parentheses(int p, int q){
         S.top -= 2;
     }
   }
-  return true;
+  return S.top == 0;
 }
 
 
