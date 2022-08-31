@@ -58,7 +58,7 @@ static void exec_once(Decode *s, vaddr_t pc) {
 }
 
 static void execute(uint64_t n) {
-  Decode s;
+  Decode s;   //pc, dnpc, snpc, isa, logbuf
   //execuate n steps
   for (;n > 0; n --) {
     exec_once(&s, cpu.pc);
