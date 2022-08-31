@@ -29,7 +29,7 @@ static void exec_once(Decode *s, vaddr_t pc) {
   s->pc = pc;
   s->snpc = pc; //+4?
   isa_exec_once(s);
-  cpu.pc = s->dnpc;
+  cpu.pc = s->dnpc; //dnpc is updated in inst fetch, currently pc + 4
 #ifdef CONFIG_ITRACE
   char *p = s->logbuf;
 
