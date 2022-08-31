@@ -3,7 +3,7 @@
 /* We use the POSIX regex functions to process regular expressions.
  * Type 'man regex' for more information about POSIX regex functions.
  */
-#include <regex.h>
+#include <regex.h>        // % 8, >= 4
 #define is_arith(TK) ((TK & 0b111) & 0b0100)
 enum {
   TK_NOTYPE, 
@@ -103,8 +103,13 @@ typedef struct{
 
 easyStack S;
 
-void push(char c){
+bool push(char c){
+  if(S.top == ARRLEN(S.parentheses)){
+    printf(ANSI_FMT("the stack is full...\n",ANSI_FG_RED));
+    return false;
+  }
   S.parentheses[S.top++] = c;
+  return turn;
 }
 
 bool pop(){
@@ -112,24 +117,26 @@ bool pop(){
   S.top--;
   return true;
 }
+#define LEFT  '('
+#define RIGHT ')'
 
 bool check_parentheses(int p, int q){
-  if( p > q ) return false;
+  if( p > q ) return false; //something went wrong...
   S.top = 0;    ///reset the stack
   for(; p < q; p++){
-    char temp = tokens[p].str[0];
-    if(temp == '(')
-      push('(');
-    else if(temp == ')'){
-      push(')');
-      if(S.top > 1 && S.parentheses[S.top -2] == '(')
+    char type = tokens[p].type;
+    if(type == TK_LEFT)
+      push(LEFT);
+    else if(type == TK_RIGHT){
+      push(RIGHT);
+      if(S.top > 1 && S.parentheses[S.top -2] == LEFT)
         S.top -= 2;
     }
   }
   return S.top == 0;
 }
 
-
+//generate tokens using the expr
 /*static*/ bool make_token(char *e) {
   int position = 0;
   int i;
@@ -190,6 +197,37 @@ bool check_parentheses(int p, int q){
   }
   printf("check: %d\n", check_parentheses(0, elen - 1));
   return true;
+}
+
+int find_prime()    //the prime opt should have low privilege
+{
+  int priv = 114514;
+  int oldpriv = 1919810;
+  int index = 0;
+  for(int i = 0; i < NR_REGEX; I++ ){
+    int type = tokens[i].type;
+
+    if(type == TK_ADD || type == TK_SUB){
+      if(priv >= 0){
+        priv = 0;
+        index = i;
+      }
+    }
+    else if(type == TK_DIV || type == TK_MULT){
+      if(priv >= 1){
+        priv = 1;
+        index = i;
+      }
+    }
+    else if(type == TK_LEFT){
+      oldpriv = priv;
+      priv = -1;    //temorarily refuse any requests 
+    }
+    else if(type == TK_RIGHT){
+      priv = oldpriv;
+    }
+  }
+  return index;
 }
 
 word_t expr(char *e, bool *success) {
