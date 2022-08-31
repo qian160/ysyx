@@ -53,8 +53,8 @@ static struct rule {
    * Pay attention to the precedence level of different rules.
    */
 
-//  {" +",              TK_NOTYPE},   // multiple spaces, not addition
-//  {"\\s+",            TK_NOTYPE},   // white spaces
+  {" +",              TK_NOTYPE},   // multiple spaces, not addition
+  {"\\s+",            TK_NOTYPE},   // white spaces
   {"[0-9]+",          TK_DECNUM},
   {"0[xX][0-9a-f]+",  TK_HEXNUM},
   {"==",              TK_EQ},       // equal
