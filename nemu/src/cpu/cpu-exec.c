@@ -64,6 +64,9 @@ static void execute(uint64_t n) {
     exec_once(&s, cpu.pc);
     g_nr_guest_inst ++;
     trace_and_difftest(&s, cpu.pc);
+    puts(s.logbuf);
+    puts(s.logbuf);
+    puts(s.logbuf);
     if (nemu_state.state != NEMU_RUNNING) break;
     IFDEF(CONFIG_DEVICE, device_update());
   }
@@ -85,7 +88,7 @@ void assert_fail_msg() {
 
 /* Simulate how the CPU works. */
 void cpu_exec(uint64_t n) {
-  g_print_step = (n < MAX_INST_TO_PRINT);
+  g_print_step = (n < MAX_INST_TO_PRINT); //Greater than max PRINT STEPs
   //state machine, check the states first and change it
   switch (nemu_state.state) {
     case NEMU_END: case NEMU_ABORT:
