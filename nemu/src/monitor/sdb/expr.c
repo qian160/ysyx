@@ -106,7 +106,7 @@ static int nr_token __attribute__((used))  = 0;
   while (e[position] != '\0') {
     printf(ANSI_FMT("%s\n", ANSI_FG_MAGENTA), e + position);
     /* Try all rules one by one. */
-    for (i = 0; i < NR_REGEX; i ++) {                         //here is the bug. this condition forces us to match from beginning so whitespace will not be skipped
+    for (i = 0; i < NR_REGEX; i ++) {                      //so must starts at 0, since we want to get the tokens in order
       if (regexec(&re[i], e + position, 1, &pmatch, 0) == 0 && pmatch.rm_so == 0) { //e starts with a token
         char *substr_start = e + position;
         int substr_len = pmatch.rm_eo;
@@ -119,13 +119,18 @@ static int nr_token __attribute__((used))  = 0;
          * to record the token in the array `tokens'. For certain types
          * of tokens, some extra actions should be performed.
          */
-        char * token = (char *)malloc(substr_len + 1);
-        for(int t = 0; t < substr_len; t++)
-          token[t] = e[position+t];
-        token[substr_len] = '\0';
 
-        strcpy(tokens[nr_token].str, token);
-        tokens[nr_token++].type = rules[i].token_type;
+        //produce the token and copy it to the array
+        if(rules[i].token_type != TK_NOTYPE){
+            char * token = (char *)malloc(substr_len + 1);
+            for(int t = 0; t < substr_len; t++)
+            token[t] = e[position+t];
+            token[substr_len] = '\0';
+
+            strcpy(tokens[nr_token].str, token);
+            tokens[nr_token++].type = rules[i].token_type;
+        }
+
 
         position += substr_len;
 /*
