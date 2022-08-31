@@ -10,7 +10,6 @@ uint64_t pmem_read(paddr_t addr, int len);
 extern const char* regs[];
 static int is_batch_mode = false;
 #define NR_CMD ARRLEN(cmd_table)
-bool make_token(char * expr);
 
 #include "cmd.h"  //put this under all the definations
 
