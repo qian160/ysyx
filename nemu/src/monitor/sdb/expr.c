@@ -100,6 +100,7 @@ static int nr_token __attribute__((used))  = 0;
   int position = 0;
   int i;
   regmatch_t pmatch;
+  /**/int elen = strlen(e);
 
   nr_token = 0;
 
@@ -146,13 +147,14 @@ static int nr_token __attribute__((used))  = 0;
       return false;
     }
   }
+  //debug
   for(int i =0 ; i < nr_token; i++)
   {
     char * temp = tokens[i].str;
     int type = tokens[i].type;
     printf(ANSI_FMT("token[%2d] = %-8s\ttype = %d\n", ANSI_FG_YELLOW),i, temp, type);
   }
-
+  printf("check: d\n", check_parentheses(0, elen - 1));
   return true;
 }
 
