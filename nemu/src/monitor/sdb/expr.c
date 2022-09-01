@@ -273,12 +273,12 @@ word_t calculate(int p, int q, bool * success){
       case(TK_DIV):  return calculate(p, prime - 1, success) / calculate( prime + 1, q, success);
       case(TK_DECNUM):{
         word_t temp;
-        sscanf(tk_val, "%ld", temp);
+        sscanf(tk_val, "%ld", &temp);
         return temp;
       }
       case(TK_HEXNUM):{
         word_t temp;
-        sscanf(tk_val, "%lx", temp);
+        sscanf(tk_val, "%lx", &temp);
         return temp;
       }
       default: break;
