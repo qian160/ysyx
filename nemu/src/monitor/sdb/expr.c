@@ -116,7 +116,7 @@ bool pop(){
 #define LEFT  '('
 #define RIGHT ')'
 
-bool check_parentheses(int p, int q){   //scan the array and use a stack
+bool check_parentheses(int p, int q, char * removed){   //scan the array and use a stack
   if( p > q ) return false; //something went wrong...
   S.top = 0;    ///reset the stack
   //if surrounded by a pair of parentheses, just throw it away
@@ -241,9 +241,15 @@ word_t calculate(int p, int q, bool * success){
   if(p > q || !success || p < 0 || q < 0){
     return 0;
   }
-  if(!check_parentheses(p, q)){
+  char * removed = (char *)malloc(1);
+  *removed = false;
+  if(!check_parentheses(p, q, removed)){
     printf(ANSI_FMT("illegal expression\n",ANSI_FG_RED));
     return 0;
+  }
+  if(*removed){
+    p++;
+    q--;
   }
   int prime = find_prime_idx(p, q);
   int type  = tokens[prime].type;
@@ -269,7 +275,7 @@ word_t calculate(int p, int q, bool * success){
       return 0;
     }
   }
-  else if(check_parentheses(p, q)){      //here the 3rd arg is not used
+  else {
     switch(type){
       case(TK_ADD):  return P1 + P2; 
       case(TK_SUB):  return P1 - P2;
