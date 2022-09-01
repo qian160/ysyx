@@ -259,7 +259,7 @@ word_t calculate(int p, int q, bool * success){
   int type  = tokens[prime].type;
   if(p == q || type == TK_DECNUM || type == TK_HEXNUM){      //can directly return
     //int numtype   = tokens[p].type;
-    //char * tk_val = tokens[p].str;
+    char * tk_val = tokens[p].str;
     word_t result;
     if(type == TK_DECNUM){
       sscanf(tk_val, "%ld", &result);
