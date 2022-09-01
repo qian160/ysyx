@@ -41,7 +41,9 @@ static int cmd_c(char *args) {
 //small bug: don't contain the whole expr in a ()
 static int cmd_p(char *expr){
     printf(ANSI_FMT("%s\n",ANSI_FG_MAGENTA), expr);
-    expr(expr);
+    bool * success = (bool *)malloc(sizeof(bool));
+    *success = true;
+    expr(expr, success);
     //    printf(ANSI_FMT("illegal expr\n",ANSI_FG_RED));
     return 0;
 }
