@@ -255,6 +255,7 @@ word_t calculate(int p, int q, bool * success){
   if(p > q || !success || p < 0 || q < 0){
     return 0;
   }
+  //must perform parentheses check before finding the prime. Or the parentheses will affect the find
   if(!check_parentheses(p, q)){
     Log("illegal expression\n");
     return 0;
@@ -262,10 +263,6 @@ word_t calculate(int p, int q, bool * success){
   int prime = find_prime_idx(p, q);
   int type  = tokens[prime].type;
   if(p == q || type == TK_DECNUM || type == TK_HEXNUM){      //can directly return
-    //int numtype   = tokens[p].type;
-    Log("the substr is :\n");
-    for(int x=p;x<=q;x++)
-      printf("%s\t", tokens[x].str);
     char * tk_val = tokens[p].str;
     word_t result;
     if(type == TK_DECNUM){
@@ -282,8 +279,7 @@ word_t calculate(int p, int q, bool * success){
       return 0;
     }
   }
-  else if(check_parentheses(p, q)){
-
+  else{
     switch(type){
       case(TK_ADD):  {
         Log("%ld + %ld = %ld\n", P1, P2, P1 + P2);
@@ -301,20 +297,6 @@ word_t calculate(int p, int q, bool * success){
         Log("%ld / %ld = %ld\n", P1, P2, P1 / P2);
         return calculate(p, prime - 1, success) / calculate( prime + 1, q, success);
       }
-      //after remove the parentheses, the following case will apprear: 
-      //although p != q (q = p + 2 in fact), tokens[p] = decnum, tokens[p+1]=tokens[p+2]= ""
-      /*
-      case(TK_DECNUM):{
-        word_t temp;
-        sscanf(tk_val, "%ld", &temp);
-        return temp;
-      }
-      case(TK_HEXNUM):{
-        word_t temp;
-        sscanf(tk_val, "%lx", &temp);
-        return temp;
-      }
-      */
       default: printf("hope this will not happen......\n");
     }
   }
