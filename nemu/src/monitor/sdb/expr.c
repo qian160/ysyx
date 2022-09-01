@@ -125,6 +125,7 @@ bool check_parentheses(int p, int q){   //scan the array and use a stack
     tokens[q].type = TK_NOTYPE;
     strcpy(tokens[p].str, "removed");
     strcpy(tokens[q].str, "removed");
+    Log("a match happened\n");
     /*
     for(int i = p; i <= q - 2; i++){
       tokens[i] = tokens[i+1];
