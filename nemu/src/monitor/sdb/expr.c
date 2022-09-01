@@ -255,10 +255,11 @@ word_t calculate(int p, int q, bool * success){
   if(p > q || !success || p < 0 || q < 0){
     return 0;
   }
-  int type = tokens[p].type;
+  int prime = find_prime_idx(p, q);
+  int type  = tokens[prime].type;
   char * tk_val = tokens[p].str;
   word_t result;
-  if(p == q){      //can directly return
+  if(p == q || type == TK_DECNUM || type == TK_HEXNUM){      //can directly return
     if(type == TK_DECNUM){
       sscanf(tk_val, "%ld", &result);
       return result;
@@ -274,8 +275,6 @@ word_t calculate(int p, int q, bool * success){
     }
   }
   else if(check_parentheses(p, q)){
-    int prime = find_prime_idx(p, q);
-    int type  = tokens[prime].type;
     switch(type){
       case(TK_ADD):  {
         Log("%ld + %ld = %ld\n", P1, P2, P1 + P2);
@@ -293,7 +292,8 @@ word_t calculate(int p, int q, bool * success){
         Log("%ld / %ld = %ld\n", P1, P2, P1 / P2);
         return calculate(p, prime - 1, success) / calculate( prime + 1, q, success);
       }
-      //sometimes only 1 token is left, and we can't find an arith token
+      //after remove the parentheses, the following case will apprear: 
+      //q = p + 2, tokens[p] = decnum, tokens[p+1]=tokens[p+2]= ""
       /*
       case(TK_DECNUM):{
         word_t temp;
@@ -306,12 +306,7 @@ word_t calculate(int p, int q, bool * success){
         return temp;
       }
       */
-      default: {
-        printf("emmm, p = %d, q = %d, token = %s\n", p, q, tk_val);
-        for(int n = p; n <= q; n++ )
-          printf("%s, ",tokens[n].str);
-        printf("\n");
-      }
+      default: printf("hope this will not happen......\n");
     }
   }
   return 0; //will not be execuated..
