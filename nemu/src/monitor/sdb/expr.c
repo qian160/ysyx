@@ -255,11 +255,10 @@ word_t calculate(int p, int q, bool * success){
   if(p > q || !success || p < 0 || q < 0){
     return 0;
   }
-  int prime = find_prime_idx(p, q);
-  int type  = tokens[prime].type;
+  int type = tokens[p].type;
   char * tk_val = tokens[p].str;
   word_t result;
-  if(p == q || type == TK_DECNUM || type == TK_HEXNUM){      //can directly return
+  if(p == q || ){      //can directly return
     if(type == TK_DECNUM){
       sscanf(tk_val, "%ld", &result);
       return result;
@@ -275,6 +274,8 @@ word_t calculate(int p, int q, bool * success){
     }
   }
   else if(check_parentheses(p, q)){
+    int prime = find_prime_idx(p, q);
+    int type  = tokens[prime].type;
     switch(type){
       case(TK_ADD):  {
         Log("%ld + %ld = %ld\n", P1, P2, P1 + P2);
