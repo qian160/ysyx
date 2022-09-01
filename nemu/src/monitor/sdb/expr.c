@@ -276,10 +276,6 @@ word_t calculate(int p, int q, bool * success){
   else if(check_parentheses(p, q)){
     int prime = find_prime_idx(p, q);
     int type  = tokens[prime].type;
-    Log("the substr after check is:\n");
-    for(int l = p; l <= q; l++)
-      printf("%s\t", tokens[l].str);
-    printf("\n");
     switch(type){
       case(TK_ADD):  {
         Log("%ld + %ld = %ld\n", P1, P2, P1 + P2);
@@ -298,6 +294,7 @@ word_t calculate(int p, int q, bool * success){
         return calculate(p, prime - 1, success) / calculate( prime + 1, q, success);
       }
       //sometimes only 1 token is left, and we can't find an arith token
+      /*
       case(TK_DECNUM):{
         word_t temp;
         sscanf(tk_val, "%ld", &temp);
@@ -308,7 +305,8 @@ word_t calculate(int p, int q, bool * success){
         sscanf(tk_val, "%lx", &temp);
         return temp;
       }
-      default: return 0;
+      */
+      default: printf("emmm, %s\n", tk_val);
     }
   }
   return 0; //will not be execuated..
