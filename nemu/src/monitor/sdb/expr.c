@@ -255,15 +255,15 @@ word_t calculate(int p, int q, bool * success){
   if(p > q || !success || p < 0 || q < 0){
     return 0;
   }
-  int type = tokens[p].type;
-  char * tk_val = tokens[p].str;
-  word_t result;
-  if(p == q ){      //can directly return
-    if(type == TK_DECNUM){
+  if(p == q || tokens[p].type + tokens[q].type == 0){      //can directly return
+    int numtype   = tokens[p].type;
+    char * tk_val = tokens[p].str;
+    word_t result;
+    if(numtype == TK_DECNUM){
       sscanf(tk_val, "%ld", &result);
       return result;
     }
-    else if(type == TK_HEXNUM){
+    else if(numtype == TK_HEXNUM){
       sscanf(tk_val, "%lx", &result);
       return result;
     }
@@ -294,8 +294,8 @@ word_t calculate(int p, int q, bool * success){
         return calculate(p, prime - 1, success) / calculate( prime + 1, q, success);
       }
       //after remove the parentheses, the following case will apprear: 
-      //q = p + 2, tokens[p] = decnum, tokens[p+1]=tokens[p+2]= ""
-      
+      //although p != q (q = p + 2 in fact), tokens[p] = decnum, tokens[p+1]=tokens[p+2]= ""
+      /*
       case(TK_DECNUM):{
         word_t temp;
         sscanf(tk_val, "%ld", &temp);
@@ -306,7 +306,7 @@ word_t calculate(int p, int q, bool * success){
         sscanf(tk_val, "%lx", &temp);
         return temp;
       }
-      
+      */
       default: printf("hope this will not happen......\n");
     }
   }
