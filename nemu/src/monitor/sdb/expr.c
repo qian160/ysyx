@@ -185,7 +185,7 @@ int find_prime_idx()    //the prime opt should have low privilege
       if (regexec(&re[i], e + position, 1, &pmatch, 0) == 0 && pmatch.rm_so == 0) { //e starts with a token
         char *substr_start __attribute__((unused)) = e + position ;
         int substr_len = pmatch.rm_eo;
-
+        //print the debug information, disabled now
         //Log("match rules[%d] = \"%s\" at position %d with len %d: %.*s",
         //    i, rules[i].regex, position, substr_len, substr_len, substr_start);
 
@@ -230,7 +230,7 @@ int find_prime_idx()    //the prime opt should have low privilege
     printf(ANSI_FMT("token[%2d] = %-8s\ttype = %d\tindex = %d\n", ANSI_FG_YELLOW),i, temp, type, index);
   }
   printf("check: %d\n", check_parentheses(0, elen - 1));
-  printf("prime: %d\n", find_prime_idx());
+  printf("prime token index: %d\n", find_prime_idx());
   Log("test...\n");
   //------
   return true;
