@@ -136,11 +136,13 @@ bool check_parentheses(int p, int q){   //scan the array and use a stack
     for(int i = p; i <= q - 2; i++){
       tokens[i] = tokens[i+1];
     }
+    //remove the tokens
     nr_token -= 2;
     tokens[nr_token].type = TK_NOTYPE;
     tokens[nr_token + 1].type = TK_NOTYPE;
     strcpy(tokens[nr_token].str, "");
     strcpy(tokens[nr_token + 1].str, "");
+
     printf("\nnew array:\n");
     for(int k = p; k <= q - 2; k++)
       printf("%s\t", tokens[k].str);
@@ -257,7 +259,6 @@ word_t calculate(int p, int q, bool * success){
   char * tk_val = tokens[p].str;
   word_t result;
   if(p == q){      //can directly return
-    Log("the token is %s\n", tk_val);
     if(type == TK_DECNUM){
       sscanf(tk_val, "%ld", &result);
       return result;
@@ -275,6 +276,10 @@ word_t calculate(int p, int q, bool * success){
   else if(check_parentheses(p, q)){
     int prime = find_prime_idx(p, q);
     int type  = tokens[prime].type;
+    Log("the substr after check is:\n");
+    for(int l = p; l <= q; l++)
+      printf("%s\t", tokens[l].str);
+    printf("\n");
     switch(type){
       case(TK_ADD):  {
         Log("%ld + %ld = %ld\n", P1, P2, P1 + P2);
