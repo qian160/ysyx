@@ -137,7 +137,7 @@ bool check_parentheses(int p, int q){
   return S.top == 0;
 }
 
-int find_prime_idx()    //the prime opt should have low privilege
+int find_prime_idx(int p, int q)    //the prime opt should have low privilege
 {
   int priv = 114514;
   int oldpriv = 1919810;
@@ -230,7 +230,7 @@ static bool make_token(char *e) {
     printf(ANSI_FMT("token[%2d] = %-8s\ttype = %d\tindex = %d\n", ANSI_FG_YELLOW),i, temp, type, index);
   }
   printf("check: %d\n", check_parentheses(0, elen - 1));
-  printf("prime is: token[%2d]\n", find_prime_idx());
+  printf("prime is: token[%2d]\n", find_prime_idx(0, nr_token));
   Log("test...\n");
   //------
   return true;
@@ -238,7 +238,15 @@ static bool make_token(char *e) {
 
 int calculate(int p, int q, bool * success){
   if(p > q){
-
+    *success = false;
+    return 0;
+  }
+  else if(p == q && !is_arith(tokens[p].type)){
+    *success = false;
+    return 0;
+  }
+  else{
+    int prime = find_prime_idx()
   }
 }
 
