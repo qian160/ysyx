@@ -237,17 +237,37 @@ static bool make_token(char *e) {
 }
 
 int calculate(int p, int q, bool * success){
-  if(p > q){
-    *success = false;
+  int result = 0;
+  if(p > q || !success){
     return 0;
   }
-  else if(p == q && !is_arith(tokens[p].type)){
-    *success = false;
-    return 0;
+  else if(p == q){      //can directly return
+    int type = tokens[p].type;
+    char * tk_val = tokens[p].str;
+    if(type == TK_DECNUM){
+      sscanf(tk_val, "%d", &result);
+      return result;
+    }
+    else if(type == TK_HEXNUM){
+      sscanf(tk_val, "%x", &result);
+      return result;
+    }
+    else{
+      *success = false;
+      return 0;
+    }
   }
   else{
     int prime = find_prime_idx(p, q);
+    int type  = tokens[prime].type;
+    case(type){
+      TK_ADD:  result = result + calculate(p, prime - 1, success) + calculate( prime + 1, q, success);break;
+      TK_SUB:  result = result + calculate(p, prime - 1, success) - calculate( prime + 1, q, success);break;
+      TK_MULT: result = result + calculate(p, prime - 1, success) * calculate( prime + 1, q, success);break;
+      TK_DIV:  result = result + calculate(p, prime - 1, success) / calculate( prime + 1, q, success);break;
+    }
   }
+  return 0; //will not be execuated..
 }
 
 word_t expr(char *e, bool *success) {   //the main calculate function. first make the token
@@ -255,9 +275,11 @@ word_t expr(char *e, bool *success) {   //the main calculate function. first mak
     *success = false;
     return 0;
   }
-
-  /* TODO: Insert codes to evaluate the expression. */
-  //TODO();
-
-  return 0;
+  //find prime, then recursively call calculate.left side's  p and q is (p, prime - 1), right (prime + 1, q). use "case prime" statement
+  int prime = find_prime_idx(0, nr_token);
+  int result = calculate(0, nr_token, success);
+  if(!success){
+    printf(ANSI_FMT("invalid expression!\n",ANSI_FG_RED));
+  }
+  return result;
 }
