@@ -136,6 +136,8 @@ bool check_parentheses(int p, int q){   //scan the array and use a stack
       tokens[i] = tokens[i+1];
     }
     nr_token -= 2;
+    tokens[nr_token].type = TK_NOTYPE;
+    tokens[nr_token + 1].type = TK_NOTYPE;
     printf("\nnew array:\n");
     for(int k = p; k <= q - 2; k++)
       printf("%s\t", tokens[k].str);
@@ -279,7 +281,7 @@ word_t calculate(int p, int q, bool * success){
         Log("%ld + %ld = %ld\n", P1, P2, P1 + P2);
         return calculate(p, prime - 1, success) + calculate( prime + 1, q, success);
       }
-      case(TK_SUB):  {
+      case(TK_SUB):  {    
         Log("%ld - %ld = %ld\n", P1, P2, P1 - P2);
         return calculate(p, prime - 1, success) - calculate( prime + 1, q, success);
       }
