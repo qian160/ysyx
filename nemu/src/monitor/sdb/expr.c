@@ -281,23 +281,11 @@ word_t calculate(int p, int q, bool * success){
   }
   else{
     switch(type){
-      case(TK_ADD):  {
-        Log("%ld + %ld = %ld\n", P1, P2, P1 + P2);
-        return calculate(p, prime - 1, success) + calculate( prime + 1, q, success);
-      }
-      case(TK_SUB):  {    
-        Log("%ld - %ld = %ld\n", P1, P2, P1 - P2);
-        return calculate(p, prime - 1, success) - calculate( prime + 1, q, success);
-      }
-      case(TK_MULT): {
-        Log("%ld * %ld = %ld\n", P1, P2, P1 * P2);
-        return calculate(p, prime - 1, success) * calculate( prime + 1, q, success);
-      }
-      case(TK_DIV): {
-        Log("%ld / %ld = %ld\n", P1, P2, P1 / P2);
-        return calculate(p, prime - 1, success) / calculate( prime + 1, q, success);
-      }
-      default: printf("hope this will not happen......\n");
+      case(TK_ADD): return P1 + P2;
+      case(TK_SUB): return P1 - P2;
+      case(TK_MULT):return P1 * P2;
+      case(TK_DIV): return P1 / P2;
+      default: Assert(1,"hope this will not happen......\n");
     }
   }
   return 0; //will not be execuated..
