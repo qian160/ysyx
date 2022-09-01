@@ -125,7 +125,7 @@ bool check_parentheses(int p, int q){   //scan the array and use a stack
   S.top = 0;    ///reset the stack
   //if surrounded by a pair of parentheses, just throw it away
   if(tokens[p].type == TK_LEFT && tokens[q].type == TK_RIGHT){
-    printf("parentheses pair found. old array:\n")
+    printf("parentheses pair found. old array:\n");
     for(int j = p; j < q; j++)
       printf("%s\t", tokens[j].str);
     for(int i = p; i < q - 2; i++){
