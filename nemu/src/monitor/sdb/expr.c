@@ -250,6 +250,7 @@ word_t calculate(int p, int q, bool * success){
   Log("calculate form %d to %d\n", p, q);
   word_t result;
   if(p == q || type == TK_DECNUM || type == TK_HEXNUM){      //can directly return
+    Log("type = %d\tvalue = %s\n", type, tk_val);
     if(type == TK_DECNUM){
       sscanf(tk_val, "%ld", &result);
       Log("the decimal is %ld\n", result);
