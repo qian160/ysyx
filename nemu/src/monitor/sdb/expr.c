@@ -238,13 +238,13 @@ static bool make_token(char *e) {
 
 word_t calculate(int p, int q, bool * success){
   //find prime, if only 1 token is found, directly return. else recursively call calculate itself
-  word_t result;
-  if(p > q || !success){
+  if(p > q || !success || p < 0 || q < 0){
     return 0;
   }
-  else if(p == q){      //can directly return
-    int type = tokens[p].type;
-    char * tk_val = tokens[p].str;
+  int type = tokens[p].type;
+  char * tk_val = tokens[p].str;
+  word_t result;
+  if(p == q){      //can directly return
     Log("the token is %s\n", tk_val);
     if(type == TK_DECNUM){
       Log("decimal token found: %s\n", tk_val);
