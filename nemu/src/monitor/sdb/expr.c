@@ -116,7 +116,7 @@ bool pop(){
 #define LEFT  '('
 #define RIGHT ')'
 
-bool check_parentheses(int p, int q, char* removed){   //scan the array and use a stack
+bool check_parentheses(int p, int q){   //scan the array and use a stack
   if( p > q ) return false; //something went wrong...
   S.top = 0;    ///reset the stack
   Log("start check......\n");
@@ -134,9 +134,8 @@ bool check_parentheses(int p, int q, char* removed){   //scan the array and use 
     nr_token -= 2;
     tokens[nr_token].type = TK_NOTYPE;
     tokens[nr_token + 1].type = TK_NOTYPE;
-    strcpy(tokens[nr_token].str, "114");
-    strcpy(tokens[nr_token + 1].str, "114");
-    *removed = true;
+    strcpy(tokens[nr_token].str, "removed");
+    strcpy(tokens[nr_token + 1].str, "removed");
   }
   for(; p <= q; p++){
     char type = tokens[p].type;
@@ -241,13 +240,10 @@ word_t calculate(int p, int q, bool * success){
   if(p > q || !success || p < 0 || q < 0){
     return 0;
   }
-  char * removed = (char *)malloc(1);
-  *removed = false;
-  if(!check_parentheses(p, q, removed)){
+  if(!check_parentheses(p, q)){
     printf(ANSI_FMT("illegal expression\n",ANSI_FG_RED));
     return 0;
   }
-  if(*removed) q -= 2;
   int prime = find_prime_idx(p, q);
   int type  = tokens[prime].type;
   char * tk_val = tokens[p].str;
@@ -269,7 +265,7 @@ word_t calculate(int p, int q, bool * success){
       return 0;
     }
   }
-  else if(check_parentheses(p, q, removed)){      //here the 3rd arg is not used
+  else if(check_parentheses(p, q)){      //here the 3rd arg is not used
     switch(type){
       case(TK_ADD): Log("%ld + %ld = %ld\n", P1, P2, P1 + P2); return P1 + P2; 
       case(TK_SUB): Log("%ld - %ld = %ld\n", P1, P2, P1 - P2); return P1 - P2;
