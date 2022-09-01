@@ -183,7 +183,7 @@ int find_prime_idx()    //the prime opt should have low privilege
     /* Try all rules one by one. */
     for (i = 0; i < NR_REGEX; i ++) {                      //so must starts at 0, since we want to get the tokens in order
       if (regexec(&re[i], e + position, 1, &pmatch, 0) == 0 && pmatch.rm_so == 0) { //e starts with a token
-        char *substr_start = e + position;
+        char *substr_start = e + position __attribute__((unused));
         int substr_len = pmatch.rm_eo;
 
         //Log("match rules[%d] = \"%s\" at position %d with len %d: %.*s",
