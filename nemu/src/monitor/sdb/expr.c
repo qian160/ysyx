@@ -271,6 +271,7 @@ word_t calculate(int p, int q, bool * success){
       case(TK_SUB):  return calculate(p, prime - 1, success) - calculate( prime + 1, q, success);
       case(TK_MULT): return calculate(p, prime - 1, success) * calculate( prime + 1, q, success);
       case(TK_DIV):  return calculate(p, prime - 1, success) / calculate( prime + 1, q, success);
+      //sometimes only 1 token is left, and we can't find an arith token
       case(TK_DECNUM):{
         word_t temp;
         sscanf(tk_val, "%ld", &temp);
@@ -281,7 +282,7 @@ word_t calculate(int p, int q, bool * success){
         sscanf(tk_val, "%lx", &temp);
         return temp;
       }
-      default: break;
+      default: return 0;
     }
   }
   return 0; //will not be execuated..
