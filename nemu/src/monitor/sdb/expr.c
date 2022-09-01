@@ -230,7 +230,7 @@ int find_prime_idx()    //the prime opt should have low privilege
     printf(ANSI_FMT("token[%2d] = %-8s\ttype = %d\tindex = %d\n", ANSI_FG_YELLOW),i, temp, type, index);
   }
   printf("check: %d\n", check_parentheses(0, elen - 1));
-  printf("prime token index: %d\n", find_prime_idx());
+  printf("prime is: token[%2d]\n", find_prime_idx());
   Log("test...\n");
   //------
   return true;
