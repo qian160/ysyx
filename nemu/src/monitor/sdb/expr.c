@@ -133,8 +133,8 @@ bool check_parentheses(int p, int q, char* removed){   //scan the array and use 
     nr_token -= 2;
     tokens[nr_token].type = TK_NOTYPE;
     tokens[nr_token + 1].type = TK_NOTYPE;
-    strcpy(tokens[nr_token].str, "");
-    strcpy(tokens[nr_token + 1].str, "");
+    strcpy(tokens[nr_token].str, "114");
+    strcpy(tokens[nr_token + 1].str, "114");
     *removed = true;
   }
   for(; p <= q; p++){
