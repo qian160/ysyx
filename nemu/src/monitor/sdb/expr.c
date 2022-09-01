@@ -306,7 +306,7 @@ word_t calculate(int p, int q, bool * success){
         return temp;
       }
       */
-      default: printf("emmm, %s\n", tk_val);
+      default: printf("emmm, p = %d, q = %d, token = %s\n", p, q, tk_val);
     }
   }
   return 0; //will not be execuated..
