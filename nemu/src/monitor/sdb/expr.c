@@ -127,11 +127,11 @@ bool check_parentheses(int p, int q){   //scan the array and use a stack
   for(; p < q; p++){
     char type = tokens[p].type;
     if(type == TK_LEFT)
-      if(!push(LEFT))return false;
+      push(LEFT);
     else if(type == TK_RIGHT){
-      if(!push(RIGHT))return false;
+      push(RIGHT);
       if(S.top > 1 && S.parentheses[S.top -2] == LEFT)
-        S.top -= 2;   //pop 2
+        S.top -= 2;
     }
   }
   return S.top == 0;
