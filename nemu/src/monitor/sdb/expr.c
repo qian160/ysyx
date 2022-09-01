@@ -89,11 +89,11 @@ typedef struct token {
   char  str[32];
 }Token;
 
-static Token tokens[32] __attribute__((used)) = {};
+static Token tokens[100] __attribute__((used)) = {};
 static int nr_token __attribute__((used))  = 0;
 
 typedef struct{
-  char parentheses[20];
+  char parentheses[20];   //20 is very enough
   int  top;
 }easyStack;    //for parentheses check. No boundary check
 
