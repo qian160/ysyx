@@ -181,6 +181,13 @@ int find_prime_idx(int p, int q)    //the prime opt should have low privilege
     else if(type == TK_RIGHT){
       priv = oldpriv;
     }
+    else if(type == TK_DECNUM || type == TK_HEXNUM){
+      if(priv >= 810){
+        priv = 810;
+        index = p;
+      }
+
+    }
   }
   Log("index = %d\n",index);
   return index;
