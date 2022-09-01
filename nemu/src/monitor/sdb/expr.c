@@ -139,7 +139,7 @@ bool check_parentheses(int p, int q){   //scan the array and use a stack
     }
     nr_token -= 2;
     printf("\nnew array:\n");
-    for(int k = 0; k < nr_token; k++)
+    for(int k = p; k <= q - 2; k++)
       printf("%s\t", tokens[k].str);
 
   }
