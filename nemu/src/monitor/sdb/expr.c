@@ -222,14 +222,12 @@ static bool make_token(char *e) {
     }
   }
   //debug
-  
   for(int i =0 ; i < nr_token; i++)
   {
     char * temp = tokens[i].str;
     int type = tokens[i].type;
     printf(ANSI_FMT("token[%2d] = %-8s\ttype = %d\n", ANSI_FG_YELLOW),i, temp, type);
   }
-  
   //------
   return true;
 }
@@ -238,6 +236,7 @@ static bool make_token(char *e) {
 
 word_t calculate(int p, int q, bool * success){
   //find prime, if only 1 token is found, directly return. else recursively call calculate itself
+  assert(tokens[2].type == TK_HEXNUM);
   if(p > q || !success || p < 0 || q < 0){
     return 0;
   }
