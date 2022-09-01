@@ -170,7 +170,7 @@ int find_prime_idx()    //the prime opt should have low privilege
 }
 
 //this function will add tokens to the array
-/*static*/ bool make_token(char *e) {
+static bool make_token(char *e) {
   int position = 0;
   int i;
   regmatch_t pmatch;
@@ -236,14 +236,20 @@ int find_prime_idx()    //the prime opt should have low privilege
   return true;
 }
 
-word_t expr(char *e, bool *success) {
+int calculate(int p, int q, bool * success){
+  if(p > q){
+
+  }
+}
+
+word_t expr(char *e, bool *success) {   //the main calculate function. first make the token
   if (!make_token(e)) {
     *success = false;
     return 0;
   }
 
   /* TODO: Insert codes to evaluate the expression. */
-  TODO();
+  //TODO();
 
   return 0;
 }
