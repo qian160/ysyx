@@ -258,7 +258,7 @@ word_t calculate(int p, int q, bool * success){
   int type = tokens[p].type;
   char * tk_val = tokens[p].str;
   word_t result;
-  if(p == q || ){      //can directly return
+  if(p == q ){      //can directly return
     if(type == TK_DECNUM){
       sscanf(tk_val, "%ld", &result);
       return result;
