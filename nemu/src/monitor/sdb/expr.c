@@ -124,24 +124,26 @@ bool check_parentheses(int p, int q){   //scan the array and use a stack
   if( p > q ) return false; //something went wrong...
   S.top = 0;    ///reset the stack
   printf(ANSI_FMT("start check....the substr is:\n",ANSI_FG_MAGENTA));
-  for(int k = p; k < q; k++)
+  for(int k = p; k <= q; k++)
     printf("%s\t", tokens[k].str);
   printf("\n");
   //if surrounded by a pair of parentheses, just throw it away
   if(tokens[p].type == TK_LEFT && tokens[q].type == TK_RIGHT){
     printf("parentheses pair found. old array:\n");
-    for(int j = p; j < q; j++)
+    for(int j = p; j <= q; j++)
       printf("%s\t", tokens[j].str);
-    for(int i = p; i < q - 2; i++){
+    for(int i = p; i <= q - 2; i++){
       tokens[i] = tokens[i+1];
     }
     nr_token -= 2;
+    tokens[nr_token].type = TK_NOTYPE;
+    tokens[nr_token + 1].type = TK_NOTYPE;
     printf("\nnew array:\n");
-    for(int k = 0; k < nr_token; k++)
+    for(int k = p; k <= q - 2; k++)
       printf("%s\t", tokens[k].str);
 
   }
-  for(; p < q; p++){
+  for(; p <= q; p++){
     char type = tokens[p].type;
     if(type == TK_LEFT)
       push(LEFT);
@@ -151,6 +153,7 @@ bool check_parentheses(int p, int q){   //scan the array and use a stack
         S.top -= 2;
     }
   }
+  printf("check result: %d\n", S.top == 0);
   return S.top == 0;
 }
 
@@ -159,7 +162,7 @@ int find_prime_idx(int p, int q)    //the prime opt should have low privilege
   int priv = 114514;      //very high privilege, so any new income will be lower than it and replace it
   int oldpriv = 1919810;
   int index = 0;
-  for(int i = p; i < q; i++ ){
+  for(int i = p; i <= q; i++ ){
     int type = tokens[i].type;
 
     if(type == TK_ADD || type == TK_SUB){
@@ -181,8 +184,8 @@ int find_prime_idx(int p, int q)    //the prime opt should have low privilege
     else if(type == TK_RIGHT){
       priv = oldpriv;
     }
-    Log("round%d, idx = %d, type = %d\n", i, index, type );
   }
+  printf(ANSI_FMT("the prime is: %s\n",ANSI_FG_YELLOW),tokens[index].str);
   return index;
 }
 
@@ -274,10 +277,22 @@ word_t calculate(int p, int q, bool * success){
     int type  = tokens[prime].type;
     Log("prime: %2d,\ttype: %d", prime, type);
     switch(type){
-      case(TK_ADD):  return calculate(p, prime - 1, success) + calculate( prime + 1, q, success);
-      case(TK_SUB):  return calculate(p, prime - 1, success) - calculate( prime + 1, q, success);
-      case(TK_MULT): return calculate(p, prime - 1, success) * calculate( prime + 1, q, success);
-      case(TK_DIV):  return calculate(p, prime - 1, success) / calculate( prime + 1, q, success);
+      case(TK_ADD):  {
+        Log("%ld + %ld = %ld\n", P1, P2, P1 + P2);
+        return calculate(p, prime - 1, success) + calculate( prime + 1, q, success);
+      }
+      case(TK_SUB):  {    
+        Log("%ld - %ld = %ld\n", P1, P2, P1 - P2);
+        return calculate(p, prime - 1, success) - calculate( prime + 1, q, success);
+      }
+      case(TK_MULT): {
+        Log("%ld * %ld = %ld\n", P1, P2, P1 * P2);
+        return calculate(p, prime - 1, success) * calculate( prime + 1, q, success);
+      }
+      case(TK_DIV): {
+        Log("%ld / %ld = %ld\n", P1, P2, P1 / P2);
+        return calculate(p, prime - 1, success) / calculate( prime + 1, q, success);
+      }
       //sometimes only 1 token is left, and we can't find an arith token
       case(TK_DECNUM):{
         word_t temp;
@@ -300,7 +315,7 @@ word_t expr(char *e, bool *success) {   //the main calculate function. first mak
     *success = false;
     return 0;
   }
-  word_t result = calculate(0, nr_token, success);
+  word_t result = calculate(0, nr_token - 1, success);
   if(!success){
     printf(ANSI_FMT("invalid expression!\n",ANSI_FG_RED));
   }
