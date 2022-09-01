@@ -89,11 +89,11 @@ typedef struct token {
   char  str[32];
 }Token;
 
-static Token tokens[32] __attribute__((used)) = {};
+static Token tokens[100] __attribute__((used)) = {};
 static int nr_token __attribute__((used))  = 0;
 
 typedef struct{
-  char parentheses[20];
+  char parentheses[20];   //20 is very enough
   int  top;
 }easyStack;    //for parentheses check. No boundary check
 
@@ -125,9 +125,7 @@ bool check_parentheses(int p, int q, char * removed){   //scan the array and use
     tokens[p].type = TK_NOTYPE;
     tokens[q].type = TK_NOTYPE;
     strcpy(tokens[p].str, "removed");
-    strcpy(tokens[q].str, "removed");
-    Log("a match happened\n");
-    
+    strcpy(tokens[q].str, "removed");    
 
     /*
     for(int i = p; i <= q - 2; i++){
@@ -158,7 +156,6 @@ int find_prime_idx(int p, int q)    //the prime opt should have low privilege
   int priv = 114514;      //very high privilege, so any new income will be lower than it and replace it
   int oldpriv = 1919810;
   int index = p;
-  Log("find form %d to %d\n", p, q);
   for(; p <= q; p++ ){
     int type = tokens[p].type;
 
@@ -189,7 +186,6 @@ int find_prime_idx(int p, int q)    //the prime opt should have low privilege
 
     }
   }
-  Log("index = %d\n",index);
   return index;
 }
 
@@ -263,18 +259,14 @@ word_t calculate(int p, int q, bool * success){
   int prime = find_prime_idx(p, q);
   int type  = tokens[prime].type;
   char * tk_val = tokens[p].str;
-  Log("calculate form %d to %d\n", p, q);
   word_t result;
   if(p == q || type == TK_DECNUM || type == TK_HEXNUM){      //can directly return
-    Log("type = %d\tvalue = %s\n", type, tk_val);
     if(type == TK_DECNUM){
       sscanf(tk_val, "%ld", &result);
-      Log("p = %d\tq = %d\tthe decimal is %ld\n", p, q, result);
       return result;
     }
     else if(type == TK_HEXNUM){
       sscanf(tk_val, "%lx", &result);
-      Log("p = %d\tq = %d\tthe heximal is %ld\n",p, q, result);
       return result;
     }
     else{   //the single token should be of numeric type, not others
@@ -289,7 +281,7 @@ word_t calculate(int p, int q, bool * success){
       case(TK_SUB):  return P1 - P2;
       case(TK_MULT): return P1 * P2;
       case(TK_DIV):  return P1 / P2;
-      default: printf("bad type: %d\n",type);//Assert(0, "hope this would not happen...\n");
+      default: Assert(0, "hope this would not happen...\n");
     }
   }
   return 0; //will not be execuated..
