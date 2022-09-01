@@ -247,14 +247,17 @@ word_t calculate(int p, int q, bool * success){
     char * tk_val = tokens[p].str;
     Log("the token is %s\n", tk_val);
     if(type == TK_DECNUM){
+      Log("decimal token found: %s\n", tk_val);
       sscanf(tk_val, "%ld", &result);
       return result;
     }
     else if(type == TK_HEXNUM){
+      Log("heximal token found: %s\n", tk_val);
       sscanf(tk_val, "%lx", &result);
       return result;
     }
     else{   //the single token should be of numeric type, not others
+      Log("bad token: %s\n", tk_val);
       *success = false;
       return 0;
     }
