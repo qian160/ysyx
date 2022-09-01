@@ -306,7 +306,12 @@ word_t calculate(int p, int q, bool * success){
         return temp;
       }
       */
-      default: printf("emmm, p = %d, q = %d, token = %s\n", p, q, tk_val);
+      default: {
+        printf("emmm, p = %d, q = %d, token = %s\n", p, q, tk_val);
+        for(int n = p; n <= q; n++ )
+          printf("%s, ",tokens[n].str);
+        printf("\n;")
+      }
     }
   }
   return 0; //will not be execuated..
