@@ -247,11 +247,11 @@ word_t calculate(int p, int q, bool * success){
     char * tk_val = tokens[p].str;
     Log("the token is %s\n", tk_val);
     if(type == TK_DECNUM){
-      sscanf(tk_val, "%d", &result);
+      sscanf(tk_val, "%ld", &result);
       return result;
     }
     else if(type == TK_HEXNUM){
-      sscanf(tk_val, "%x", &result);
+      sscanf(tk_val, "%lx", &result);
       return result;
     }
     else{
