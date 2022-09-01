@@ -55,7 +55,7 @@ static int cmd_q(char *args) {
     return -1;
 }
 
-static void cmd_clear(){
+static int cmd_clear(){
     system("clear");
 }
 
