@@ -275,7 +275,6 @@ word_t calculate(int p, int q, bool * success){
   else if(check_parentheses(p, q)){
     int prime = find_prime_idx(p, q);
     int type  = tokens[prime].type;
-    Log("prime: %2d,\ttype: %d", prime, type);
     switch(type){
       case(TK_ADD):  {
         Log("%ld + %ld = %ld\n", P1, P2, P1 + P2);
