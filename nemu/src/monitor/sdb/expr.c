@@ -91,7 +91,6 @@ void init_regex() {   //called by init_sdb()
 typedef struct token {
   int   type;
   char  str[32];
-  int   index;
 }Token;
 
 static Token tokens[32] __attribute__((used)) = {};
@@ -124,6 +123,13 @@ bool pop(){
 bool check_parentheses(int p, int q){   //scan the array and use a stack
   if( p > q ) return false; //something went wrong...
   S.top = 0;    ///reset the stack
+  //if surrounded by a pair of parentheses, just throw it away
+  if(tokens[p] == LEFT && tokens[q] == RIGHT){
+    for(int i = p; i < q - 2; i++){
+      tokens[i] = tokens[i+1];
+    }
+    nr_token -= 2;
+  }
   for(; p < q; p++){
     char type = tokens[p].type;
     if(type == TK_LEFT)
@@ -139,7 +145,7 @@ bool check_parentheses(int p, int q){   //scan the array and use a stack
 
 int find_prime_idx(int p, int q)    //the prime opt should have low privilege
 {
-  int priv = 114514;
+  int priv = 114514;      //very high privilege, so any new income will be lower than it and replace it
   int oldpriv = 1919810;
   int index = 0;
   for(int i = p; i < q; i++ ){
@@ -185,16 +191,10 @@ static bool make_token(char *e) {
       if (regexec(&re[i], e + position, 1, &pmatch, 0) == 0 && pmatch.rm_so == 0) { //e starts with a token
         char *substr_start __attribute__((unused)) = e + position ;
         int substr_len = pmatch.rm_eo;
-        //print the debug information, disabled now
         //Log("match rules[%d] = \"%s\" at position %d with len %d: %.*s",
         //    i, rules[i].regex, position, substr_len, substr_len, substr_start);
 
-        /* TODO: Now a new token is recognized with rules[i]. Add codes
-         * to record the token in the array `tokens'. For certain types
-         * of tokens, some extra actions should be performed.
-         */
-
-        //produce the token and copy it to the array
+        //produce the token string and copy it to the array
         if(rules[i].token_type != TK_NOTYPE){
             char * token = (char *)malloc(substr_len + 1);
             for(int t = 0; t < substr_len; t++)
@@ -202,7 +202,6 @@ static bool make_token(char *e) {
             token[substr_len] = '\0';
 
             strcpy(tokens[nr_token].str, token);
-            tokens[nr_token].index = position;
             tokens[nr_token++].type = rules[i].token_type;
         }
 
@@ -227,7 +226,7 @@ static bool make_token(char *e) {
     char * temp = tokens[i].str;
     int type = tokens[i].type;
     int index = tokens[i].index;
-    printf(ANSI_FMT("token[%2d] = %-8s\ttype = %d\tindex = %d\n", ANSI_FG_YELLOW),i, temp, type, index);
+    printf(ANSI_FMT("token[%2d] = %-8s\ttype = %d\n", ANSI_FG_YELLOW),i, temp, type);
   }
   Log("check: %d\n", check_parentheses(0, elen - 1));
   Log("prime is: token[%2d]\n", find_prime_idx(0, nr_token - 1)); // -1 is important, since the last index will be accessed
@@ -235,6 +234,8 @@ static bool make_token(char *e) {
   //------
   return true;
 }
+#define P1 calculate(p, prime - 1, success)
+#define P2 calculate(prime + 1, q, success)
 
 word_t calculate(int p, int q, bool * success){
   //find prime, if only 1 token is found, directly return. else recursively call calculate itself
@@ -262,6 +263,7 @@ word_t calculate(int p, int q, bool * success){
       return 0;
     }
   }
+  else if(check_parentheses(p, q))
   else{
     int prime = find_prime_idx(p, q);
     int type  = tokens[prime].type;
