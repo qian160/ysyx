@@ -245,6 +245,7 @@ word_t calculate(int p, int q, bool * success){
   }
   int prime = find_prime_idx(p, q);
   int type  = tokens[prime].type;
+  printf(ANSI_FMT("type is %d\n",ANSI_FG_RED), type);
   char * tk_val = tokens[p].str;
   Log("calculate form %d to %d\n", p, q);
   word_t result;
