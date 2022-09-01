@@ -225,7 +225,6 @@ static bool make_token(char *e) {
   {
     char * temp = tokens[i].str;
     int type = tokens[i].type;
-    int index = tokens[i].index;
     printf(ANSI_FMT("token[%2d] = %-8s\ttype = %d\n", ANSI_FG_YELLOW),i, temp, type);
   }
   Log("check: %d\n", check_parentheses(0, elen - 1));
@@ -263,8 +262,7 @@ word_t calculate(int p, int q, bool * success){
       return 0;
     }
   }
-  else if(check_parentheses(p, q))
-  else{
+  else if(check_parentheses(p, q)){
     int prime = find_prime_idx(p, q);
     int type  = tokens[prime].type;
     Log("prime: %2d,\ttype: %d", prime, type);
