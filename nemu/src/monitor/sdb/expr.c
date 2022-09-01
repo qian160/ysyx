@@ -124,7 +124,7 @@ bool check_parentheses(int p, int q){   //scan the array and use a stack
   if( p > q ) return false; //something went wrong...
   S.top = 0;    ///reset the stack
   //if surrounded by a pair of parentheses, just throw it away
-  if(tokens[p] == LEFT && tokens[q] == RIGHT){
+  if(tokens[p].type == TK_LEFT && tokens[q].type == TK_RIGHT){
     for(int i = p; i < q - 2; i++){
       tokens[i] = tokens[i+1];
     }
