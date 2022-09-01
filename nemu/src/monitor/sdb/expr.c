@@ -182,6 +182,7 @@ int find_prime_idx(int p, int q)    //the prime opt should have low privilege
       priv = oldpriv;
     }
   }
+  Log("index = %d\n",index);
   return index;
 }
 
