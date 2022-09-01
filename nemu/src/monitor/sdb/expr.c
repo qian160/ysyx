@@ -121,17 +121,17 @@ bool pop(){
 #define LEFT  '('
 #define RIGHT ')'
 
-bool check_parentheses(int p, int q){
+bool check_parentheses(int p, int q){   //scan the array and use a stack
   if( p > q ) return false; //something went wrong...
   S.top = 0;    ///reset the stack
   for(; p < q; p++){
     char type = tokens[p].type;
     if(type == TK_LEFT)
-      push(LEFT);
+      if(!push(LEFT))return false;
     else if(type == TK_RIGHT){
-      push(RIGHT);
+      if(!push(RIGHT))return false;
       if(S.top > 1 && S.parentheses[S.top -2] == LEFT)
-        S.top -= 2;
+        S.top -= 2;   //pop 2
     }
   }
   return S.top == 0;
