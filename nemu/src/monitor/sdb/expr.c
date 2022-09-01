@@ -248,17 +248,16 @@ word_t calculate(int p, int q, bool * success){
   char * tk_val = tokens[p].str;
   Log("calculate form %d to %d\n", p, q);
   word_t result;
-  assert(tokens[2].type == TK_HEXNUM);
   if(p == q || type == TK_DECNUM || type == TK_HEXNUM){      //can directly return
     Log("type = %d\tvalue = %s\n", type, tk_val);
     if(type == TK_DECNUM){
       sscanf(tk_val, "%ld", &result);
-      Log("the decimal is %ld\n", result);
+      Log("p = %d\tq = %d\tthe decimal is %ld\n", p, q, result);
       return result;
     }
     else if(type == TK_HEXNUM){
       sscanf(tk_val, "%lx", &result);
-      Log("the heximal is %ld\n",result);
+      Log("p = %d\tq = %d\tthe heximal is %ld\n",p, q, result);
       return result;
     }
     else{   //the single token should be of numeric type, not others
