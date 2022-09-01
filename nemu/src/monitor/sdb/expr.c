@@ -263,9 +263,9 @@ word_t calculate(int p, int q, bool * success){
   else if(check_parentheses(p, q)){
     switch(type){
       case(TK_ADD): Log("%ld + %ld = %ld\n", P1, P2, P1 + P2); return P1 + P2; 
-      case(TK_SUB): Log("%ld + %ld = %ld\n", P1, P2, P1 + P2); return P1 - P2;
-      case(TK_MULT):Log("%ld + %ld = %ld\n", P1, P2, P1 + P2); return P1 * P2;
-      case(TK_DIV): Log("%ld + %ld = %ld\n", P1, P2, P1 + P2); return P1 / P2;
+      case(TK_SUB): Log("%ld - %ld = %ld\n", P1, P2, P1 - P2); return P1 - P2;
+      case(TK_MULT):Log("%ld * %ld = %ld\n", P1, P2, P1 * P2); return P1 * P2;
+      case(TK_DIV): Log("%ld / %ld = %ld\n", P1, P2, P1 / P2); return P1 / P2;
       default: Assert(0, "hope this would not happen...\n");
     }
   }
