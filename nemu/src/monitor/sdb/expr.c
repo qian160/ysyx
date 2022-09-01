@@ -117,6 +117,7 @@ bool pop(){
 #define RIGHT ')'
 
 bool check_parentheses(int p, int q){   //scan the array and use a stack
+  assert(tokens[2].type == TK_HEXNUM);
   if( p > q ) return false; //something went wrong...
   S.top = 0;    ///reset the stack
   //if surrounded by a pair of parentheses, just throw it away
@@ -152,6 +153,7 @@ bool check_parentheses(int p, int q){   //scan the array and use a stack
 
 int find_prime_idx(int p, int q)    //the prime opt should have low privilege
 {
+  assert(tokens[2].type == TK_HEXNUM);
   int priv = 114514;      //very high privilege, so any new income will be lower than it and replace it
   int oldpriv = 1919810;
   int index = 0;
@@ -236,7 +238,6 @@ static bool make_token(char *e) {
 
 word_t calculate(int p, int q, bool * success){
   //find prime, if only 1 token is found, directly return. else recursively call calculate itself
-  assert(tokens[2].type == TK_HEXNUM);
   if(p > q || !success || p < 0 || q < 0){
     return 0;
   }
