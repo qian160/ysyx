@@ -122,6 +122,7 @@ bool check_parentheses(int p, int q, char* removed){   //scan the array and use 
   Log("start check......\n");
   for(int i = p; i <= q; i++)
     printf("%s\t", tokens[i].str);
+  putchar('\n');
   //if surrounded by a pair of parentheses, just throw it away
   if(tokens[p].type == TK_LEFT && tokens[q].type == TK_RIGHT){
     for(int i = p; i <= q - 2; i++){
