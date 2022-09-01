@@ -126,7 +126,7 @@ bool check_parentheses(int p, int q){   //scan the array and use a stack
   printf(ANSI_FMT("start check....the substr is:\n",ANSI_FG_MAGENTA));
   for(int k = p; k < q; k++)
     printf("%s\t", tokens[k].str);
-    printf("\n");
+  printf("\n");
   printf(ANSI_FMT("token[p] = %s\n",ANSI_FG_YELLOW),tokens[p].str);
   printf(ANSI_FMT("token[q] = %s\n",ANSI_FG_YELLOW),tokens[q].str);
   //if surrounded by a pair of parentheses, just throw it away
