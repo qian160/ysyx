@@ -125,17 +125,18 @@ bool check_parentheses(int p, int q){   //scan the array and use a stack
   putchar('\n');
   //if surrounded by a pair of parentheses, just throw it away
   if(tokens[p].type == TK_LEFT && tokens[q].type == TK_RIGHT){
+    tokens[p].type = TK_NOTYPE;
+    tokens[q].type = TK_NOTYPE;
+    /*
     for(int i = p; i <= q - 2; i++){
       tokens[i] = tokens[i+1];
     }
-    //remove the tokens(parentheses)
-    //this will cause problems...when we remove parentheses in the left side, the right side's expr will be influenced
-    //a guess: if a parenthese is removed, in the next find_prime_idx call the q will be set to q - 2?
     nr_token -= 2;
     tokens[nr_token].type = TK_NOTYPE;
     tokens[nr_token + 1].type = TK_NOTYPE;
     strcpy(tokens[nr_token].str, "removed");
     strcpy(tokens[nr_token + 1].str, "removed");
+    */
   }
   for(; p <= q; p++){
     char type = tokens[p].type;
