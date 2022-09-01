@@ -123,6 +123,9 @@ bool pop(){
 bool check_parentheses(int p, int q){   //scan the array and use a stack
   if( p > q ) return false; //something went wrong...
   S.top = 0;    ///reset the stack
+  printf(ANSI_FMT("start check....the substr is:\n",ANSI_FG_MAGENTA));
+  for(int k = 0; k < nr_token; k++)
+    printf("%s\t", tokens[k].str);
   //if surrounded by a pair of parentheses, just throw it away
   if(tokens[p].type == TK_LEFT && tokens[q].type == TK_RIGHT){
     printf("parentheses pair found. old array:\n");
