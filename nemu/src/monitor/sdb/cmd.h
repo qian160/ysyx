@@ -43,7 +43,7 @@ static int cmd_p(char *e){
     printf(ANSI_FMT("%s\n",ANSI_FG_MAGENTA), e);
     bool * success = (bool *)malloc(sizeof(bool));
     *success = true;
-    expr(e, success);
+    word_t result = expr(e, success);
     //    printf(ANSI_FMT("illegal expr\n",ANSI_FG_RED));
     return 0;
 }

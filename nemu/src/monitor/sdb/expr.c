@@ -266,6 +266,7 @@ int calculate(int p, int q, bool * success){
       case(TK_SUB):  result = result + calculate(p, prime - 1, success) - calculate( prime + 1, q, success);break;
       case(TK_MULT): result = result + calculate(p, prime - 1, success) * calculate( prime + 1, q, success);break;
       case(TK_DIV):  result = result + calculate(p, prime - 1, success) / calculate( prime + 1, q, success);break;
+      default: break;
     }
   }
   return 0; //will not be execuated..
@@ -276,7 +277,8 @@ word_t expr(char *e, bool *success) {   //the main calculate function. first mak
     *success = false;
     return 0;
   }
-  int result = calculate(0, nr_token, success);
+  //word_t result = calculate(0, nr_token, success);
+word_t result = 0;
   if(!success){
     printf(ANSI_FMT("invalid expression!\n",ANSI_FG_RED));
   }
