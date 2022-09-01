@@ -132,6 +132,7 @@ bool check_parentheses(int p, int q){   //scan the array and use a stack
     printf("parentheses pair found. old array:\n");
     for(int j = p; j <= q; j++)
       printf("%s\t", tokens[j].str);
+    //if q == nr_token - 1. ... else ...s
     for(int i = p; i <= q - 2; i++){
       tokens[i] = tokens[i+1];
     }
@@ -257,12 +258,10 @@ word_t calculate(int p, int q, bool * success){
   if(p == q){      //can directly return
     Log("the token is %s\n", tk_val);
     if(type == TK_DECNUM){
-      Log("decimal token found: %s\n", tk_val);
       sscanf(tk_val, "%ld", &result);
       return result;
     }
     else if(type == TK_HEXNUM){
-      Log("heximal token found: %s\n", tk_val);
       sscanf(tk_val, "%lx", &result);
       return result;
     }
