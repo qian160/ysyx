@@ -238,7 +238,7 @@ static bool make_token(char *e) {
 
 word_t calculate(int p, int q, bool * success){
   //find prime, if only 1 token is found, directly return. else recursively call calculate itself
-  word_t result = 0;
+  word_t result;
   if(p > q || !success){
     return 0;
   }
@@ -254,7 +254,7 @@ word_t calculate(int p, int q, bool * success){
       sscanf(tk_val, "%lx", &result);
       return result;
     }
-    else{
+    else{   //the single token should be of numeric type, not others
       *success = false;
       return 0;
     }
@@ -264,10 +264,10 @@ word_t calculate(int p, int q, bool * success){
     int type  = tokens[prime].type;
     Log("prime: %2d,\ttype: %d", prime, type);
     switch(type){
-      case(TK_ADD):  result = result + calculate(p, prime - 1, success) + calculate( prime + 1, q, success);break;
-      case(TK_SUB):  result = result + calculate(p, prime - 1, success) - calculate( prime + 1, q, success);break;
-      case(TK_MULT): result = result + calculate(p, prime - 1, success) * calculate( prime + 1, q, success);break;
-      case(TK_DIV):  result = result + calculate(p, prime - 1, success) / calculate( prime + 1, q, success);break;
+      case(TK_ADD):  return calculate(p, prime - 1, success) + calculate( prime + 1, q, success);
+      case(TK_SUB):  return calculate(p, prime - 1, success) - calculate( prime + 1, q, success);
+      case(TK_MULT): return calculate(p, prime - 1, success) * calculate( prime + 1, q, success);
+      case(TK_DIV):  return calculate(p, prime - 1, success) / calculate( prime + 1, q, success);
       default: break;
     }
   }
