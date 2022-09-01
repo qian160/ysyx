@@ -5,16 +5,16 @@
 #include <regex.h>        // % 8, >= 4
 #define is_arith(TK) ((TK & 0b111) & 0b0100)
 enum {
-  TK_NOTYPE, 
   TK_DECNUM,
   TK_HEXNUM,
   TK_EQ, 
+  TK_LEFT,
   TK_MULT,  //0100, 4
   TK_DIV,   //0101
   TK_ADD ,  //0110
   TK_SUB,   //0111.for arith type, bit(3) = 0 and bit(2) = 1. That is TK < 8 && tk(2) = 1
-  TK_LEFT,
   TK_RIGHT,
+  TK_NOTYPE, 
   /* TODO: Add more token types */
 
 };
