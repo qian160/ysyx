@@ -185,7 +185,6 @@ static bool make_token(char *e) {
   nr_token = 0;
 
   while (e[position] != '\0') {
-    //printf(ANSI_FMT("%s\n", ANSI_FG_MAGENTA), e + position);
     /* Try all rules one by one. */
     for (i = 0; i < NR_REGEX; i ++) {                     
       if (regexec(&re[i], e + position, 1, &pmatch, 0) == 0 && pmatch.rm_so == 0) { //the latter condition says that we should collect the token in order
