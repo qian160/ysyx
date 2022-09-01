@@ -44,7 +44,10 @@ static int cmd_p(char *e){
     bool * success = (bool *)malloc(sizeof(bool));
     *success = true;
     word_t result = expr(e, success);
-    //    printf(ANSI_FMT("illegal expr\n",ANSI_FG_RED));
+    if(!success)
+        printf(ANSI_FMT("illegal expr\n",ANSI_FG_RED));
+    else
+        printf("the result is %ld\n", result);
     return 0;
 }
 
