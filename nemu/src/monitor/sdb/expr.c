@@ -230,7 +230,7 @@ static bool make_token(char *e) {
     printf(ANSI_FMT("token[%2d] = %-8s\ttype = %d\tindex = %d\n", ANSI_FG_YELLOW),i, temp, type, index);
   }
   Log("check: %d\n", check_parentheses(0, elen - 1));
-  Log("prime is: token[%2d]\n", find_prime_idx(0, nr_token));
+  Log("prime is: token[%2d]\n", find_prime_idx(0, nr_token - 1)); // -1 is important, since the last index will be accessed
   Log("test...\n");
   //------
   return true;
