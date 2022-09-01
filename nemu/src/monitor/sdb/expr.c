@@ -169,7 +169,7 @@ int find_prime_idx()    //the prime opt should have low privilege
   return index;
 }
 
-//generate tokens using the expr
+//this function will add tokens to the array
 /*static*/ bool make_token(char *e) {
   int position = 0;
   int i;
@@ -231,6 +231,7 @@ int find_prime_idx()    //the prime opt should have low privilege
   }
   printf("check: %d\n", check_parentheses(0, elen - 1));
   printf("prime: %d\n", find_prime_idx());
+  Log("test...\n");
   //------
   return true;
 }
