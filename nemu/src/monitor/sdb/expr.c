@@ -89,8 +89,8 @@ void init_regex() {   //called by init_sdb()
 }
 
 typedef struct token {
-  int type;
-  char str[32];
+  int   type;
+  char  str[32];
 }Token;
 
 static Token tokens[32] __attribute__((used)) = {};
@@ -120,9 +120,27 @@ bool pop(){
 #define LEFT  '('
 #define RIGHT ')'
 
-bool check_parentheses(int p, int q){
+bool check_parentheses(int p, int q){   //scan the array and use a stack
   if( p > q ) return false; //something went wrong...
   S.top = 0;    ///reset the stack
+  printf(ANSI_FMT("start check....the substr is:\n",ANSI_FG_MAGENTA));
+  for(int k = p; k < q; k++)
+    printf("%s\t", tokens[k].str);
+  printf("\n");
+  //if surrounded by a pair of parentheses, just throw it away
+  if(tokens[p].type == TK_LEFT && tokens[q].type == TK_RIGHT){
+    printf("parentheses pair found. old array:\n");
+    for(int j = p; j < q; j++)
+      printf("%s\t", tokens[j].str);
+    for(int i = p; i < q - 2; i++){
+      tokens[i] = tokens[i+1];
+    }
+    nr_token -= 2;
+    printf("\nnew array:\n");
+    for(int k = 0; k < nr_token; k++)
+      printf("%s\t", tokens[k].str);
+
+  }
   for(; p < q; p++){
     char type = tokens[p].type;
     if(type == TK_LEFT)
@@ -136,12 +154,12 @@ bool check_parentheses(int p, int q){
   return S.top == 0;
 }
 
-int find_prime_idx()    //the prime opt should have low privilege
+int find_prime_idx(int p, int q)    //the prime opt should have low privilege
 {
-  int priv = 114514;
+  int priv = 114514;      //very high privilege, so any new income will be lower than it and replace it
   int oldpriv = 1919810;
   int index = 0;
-  for(int i = 0; i < nr_token; i++ ){
+  for(int i = p; i < q; i++ ){
     int type = tokens[i].type;
 
     if(type == TK_ADD || type == TK_SUB){
@@ -163,42 +181,34 @@ int find_prime_idx()    //the prime opt should have low privilege
     else if(type == TK_RIGHT){
       priv = oldpriv;
     }
-    printf("round%d, idx = %d, type = %d\n", i, index, type );
+    Log("round%d, idx = %d, type = %d\n", i, index, type );
   }
   return index;
 }
 
-//generate tokens using the expr
-/*static*/ bool make_token(char *e) {
+//this function will add tokens to the array
+static bool make_token(char *e) {
   int position = 0;
   int i;
   regmatch_t pmatch;
-  /**/int elen = strlen(e);
 
   nr_token = 0;
 
   while (e[position] != '\0') {
-    /*debug use*/printf(ANSI_FMT("%s\n", ANSI_FG_MAGENTA), e + position);
+    printf(ANSI_FMT("%s\n", ANSI_FG_MAGENTA), e + position);
     /* Try all rules one by one. */
     for (i = 0; i < NR_REGEX; i ++) {                      //so must starts at 0, since we want to get the tokens in order
       if (regexec(&re[i], e + position, 1, &pmatch, 0) == 0 && pmatch.rm_so == 0) { //e starts with a token
-        char *substr_start = e + position;
+        char *substr_start __attribute__((unused)) = e + position ;
         int substr_len = pmatch.rm_eo;
+        //Log("match rules[%d] = \"%s\" at position %d with len %d: %.*s",
+        //    i, rules[i].regex, position, substr_len, substr_len, substr_start);
 
-        Log("match rules[%d] = \"%s\" at position %d with len %d: %.*s",
-            i, rules[i].regex, position, substr_len, substr_len, substr_start);
-
-
-        /* TODO: Now a new token is recognized with rules[i]. Add codes
-         * to record the token in the array `tokens'. For certain types
-         * of tokens, some extra actions should be performed.
-         */
-
-        //produce the token and copy it to the array
+        //produce the token string and copy it to the array
         if(rules[i].token_type != TK_NOTYPE){
             char * token = (char *)malloc(substr_len + 1);
             for(int t = 0; t < substr_len; t++)
-            token[t] = e[position+t];
+              token[t] = e[position+t];
             token[substr_len] = '\0';
 
             strcpy(tokens[nr_token].str, token);
@@ -227,19 +237,72 @@ int find_prime_idx()    //the prime opt should have low privilege
     int type = tokens[i].type;
     printf(ANSI_FMT("token[%2d] = %-8s\ttype = %d\n", ANSI_FG_YELLOW),i, temp, type);
   }
-  printf("check: %d\n", check_parentheses(0, elen - 1));
-  printf("prime: %d\n", find_prime_idx());
+  //------
   return true;
 }
+#define P1 calculate(p, prime - 1, success)
+#define P2 calculate(prime + 1, q, success)
 
-word_t expr(char *e, bool *success) {
+word_t calculate(int p, int q, bool * success){
+  //find prime, if only 1 token is found, directly return. else recursively call calculate itself
+  if(p > q || !success || p < 0 || q < 0){
+    return 0;
+  }
+  int type = tokens[p].type;
+  char * tk_val = tokens[p].str;
+  word_t result;
+  if(p == q){      //can directly return
+    Log("the token is %s\n", tk_val);
+    if(type == TK_DECNUM){
+      Log("decimal token found: %s\n", tk_val);
+      sscanf(tk_val, "%ld", &result);
+      return result;
+    }
+    else if(type == TK_HEXNUM){
+      Log("heximal token found: %s\n", tk_val);
+      sscanf(tk_val, "%lx", &result);
+      return result;
+    }
+    else{   //the single token should be of numeric type, not others
+      Log("bad token: %s\n", tk_val);
+      *success = false;
+      return 0;
+    }
+  }
+  else if(check_parentheses(p, q)){
+    int prime = find_prime_idx(p, q);
+    int type  = tokens[prime].type;
+    Log("prime: %2d,\ttype: %d", prime, type);
+    switch(type){
+      case(TK_ADD):  return calculate(p, prime - 1, success) + calculate( prime + 1, q, success);
+      case(TK_SUB):  return calculate(p, prime - 1, success) - calculate( prime + 1, q, success);
+      case(TK_MULT): return calculate(p, prime - 1, success) * calculate( prime + 1, q, success);
+      case(TK_DIV):  return calculate(p, prime - 1, success) / calculate( prime + 1, q, success);
+      //sometimes only 1 token is left, and we can't find an arith token
+      case(TK_DECNUM):{
+        word_t temp;
+        sscanf(tk_val, "%ld", &temp);
+        return temp;
+      }
+      case(TK_HEXNUM):{
+        word_t temp;
+        sscanf(tk_val, "%lx", &temp);
+        return temp;
+      }
+      default: return 0;
+    }
+  }
+  return 0; //will not be execuated..
+}
+
+word_t expr(char *e, bool *success) {   //the main calculate function. first make the token
   if (!make_token(e)) {
     *success = false;
     return 0;
   }
-
-  /* TODO: Insert codes to evaluate the expression. */
-  TODO();
-
-  return 0;
+  word_t result = calculate(0, nr_token, success);
+  if(!success){
+    printf(ANSI_FMT("invalid expression!\n",ANSI_FG_RED));
+  }
+  return result;
 }

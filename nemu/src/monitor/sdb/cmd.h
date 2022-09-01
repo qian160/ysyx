@@ -13,7 +13,6 @@ static int is_batch_mode = false;
 #define NR_CMD ARRLEN(cmd_table)
 *///these definations can be used
 
-bool make_token(char * expr);
 void examine_memory(int n, int64_t p){
   //if we directly derefference the pointer, we are in fact examing our real computer's address!!!
     printf(ANSI_FMT(" 0x%lx: ",ANSI_FG_MAGENTA), p);
@@ -40,10 +39,15 @@ static int cmd_c(char *args) {
     return 0;
 }
 //small bug: don't contain the whole expr in a ()
-static int cmd_p(char *expr){
-    printf(ANSI_FMT("%s\n",ANSI_FG_MAGENTA), expr);
-    if(make_token(expr) == false)
+static int cmd_p(char *expression){
+    printf(ANSI_FMT("%s\n",ANSI_FG_MAGENTA), expression);
+    bool * success = (bool *)malloc(sizeof(bool));
+    *success = true;
+    word_t result = expr(expression, success);
+    if(!success)
         printf(ANSI_FMT("illegal expr\n",ANSI_FG_RED));
+    else
+        printf("the result is %ld\n", result);
     return 0;
 }
 
