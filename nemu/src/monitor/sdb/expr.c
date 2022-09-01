@@ -121,14 +121,15 @@ bool check_parentheses(int p, int q, char * removed){   //scan the array and use
   S.top = 0;    ///reset the stack
   //if surrounded by a pair of parentheses, just throw it away
   if(tokens[p].type == TK_LEFT && tokens[q].type == TK_RIGHT){
-    /*
+    
     tokens[p].type = TK_NOTYPE;
     tokens[q].type = TK_NOTYPE;
     strcpy(tokens[p].str, "removed");
     strcpy(tokens[q].str, "removed");
     Log("a match happened\n");
-    */
+    
 
+    /*
     for(int i = p; i <= q - 2; i++){
       tokens[i] = tokens[i+1];
     }
@@ -137,7 +138,7 @@ bool check_parentheses(int p, int q, char * removed){   //scan the array and use
     tokens[nr_token + 1].type = TK_NOTYPE;
     strcpy(tokens[nr_token].str, "removed");
     strcpy(tokens[nr_token + 1].str, "removed");
-
+    */
   }
   for(; p <= q; p++){
     char type = tokens[p].type;
