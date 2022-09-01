@@ -276,19 +276,19 @@ word_t calculate(int p, int q, bool * success){
     Log("prime: %2d,\ttype: %d", prime, type);
     switch(type){
       case(TK_ADD):  {
-        Log("%ld + %ld = %ld", P1, P2, P1 + P2);
+        Log("%ld + %ld = %ld\n", P1, P2, P1 + P2);
         return calculate(p, prime - 1, success) + calculate( prime + 1, q, success);
       }
       case(TK_SUB):  {
-        Log("%ld - %ld = %ld", P1, P2, P1 - P2);
+        Log("%ld - %ld = %ld\n", P1, P2, P1 - P2);
         return calculate(p, prime - 1, success) - calculate( prime + 1, q, success);
       }
       case(TK_MULT): {
-        Log("%ld * %ld = %ld", P1, P2, P1 * P2);
+        Log("%ld * %ld = %ld\n", P1, P2, P1 * P2);
         return calculate(p, prime - 1, success) * calculate( prime + 1, q, success);
       }
       case(TK_DIV): {
-        Log("%ld / %ld = %ld", P1, P2, P1 / P2);
+        Log("%ld / %ld = %ld\n", P1, P2, P1 / P2);
         return calculate(p, prime - 1, success) / calculate( prime + 1, q, success);
       }
       //sometimes only 1 token is left, and we can't find an arith token
