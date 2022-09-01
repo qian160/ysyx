@@ -127,8 +127,6 @@ bool check_parentheses(int p, int q){   //scan the array and use a stack
   for(int k = p; k <= q; k++)
     printf("%s\t", tokens[k].str);
   printf("\n");
-  printf(ANSI_FMT("token[p] = %s\n",ANSI_FG_YELLOW),tokens[p].str);
-  printf(ANSI_FMT("token[q] = %s\n",ANSI_FG_YELLOW),tokens[q].str);
   //if surrounded by a pair of parentheses, just throw it away
   if(tokens[p].type == TK_LEFT && tokens[q].type == TK_RIGHT){
     printf("parentheses pair found. old array:\n");
@@ -277,10 +275,22 @@ word_t calculate(int p, int q, bool * success){
     int type  = tokens[prime].type;
     Log("prime: %2d,\ttype: %d", prime, type);
     switch(type){
-      case(TK_ADD):  return calculate(p, prime - 1, success) + calculate( prime + 1, q, success);
-      case(TK_SUB):  return calculate(p, prime - 1, success) - calculate( prime + 1, q, success);
-      case(TK_MULT): return calculate(p, prime - 1, success) * calculate( prime + 1, q, success);
-      case(TK_DIV):  return calculate(p, prime - 1, success) / calculate( prime + 1, q, success);
+      case(TK_ADD):  {
+        Log("%ld + %ld = %ld", P1, P2, P1 + P2);
+        return calculate(p, prime - 1, success) + calculate( prime + 1, q, success);
+      }
+      case(TK_SUB):  {
+        Log("%ld - %ld = %ld", P1, P2, P1 - P2);
+        return calculate(p, prime - 1, success) - calculate( prime + 1, q, success);
+      }
+      case(TK_MULT): {
+        Log("%ld * %ld = %ld", P1, P2, P1 * P2);
+        return calculate(p, prime - 1, success) * calculate( prime + 1, q, success);
+      }
+      case(TK_DIV): {
+        Log("%ld / %ld = %ld", P1, P2, P1 / P2);
+        return calculate(p, prime - 1, success) / calculate( prime + 1, q, success);
+      }
       //sometimes only 1 token is left, and we can't find an arith token
       case(TK_DECNUM):{
         word_t temp;
