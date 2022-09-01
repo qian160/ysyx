@@ -237,6 +237,7 @@ static bool make_token(char *e) {
 }
 
 int calculate(int p, int q, bool * success){
+  //find prime, if only 1 token is found, directly return. else recursively call calculate itself
   int result = 0;
   if(p > q || !success){
     return 0;
@@ -275,8 +276,6 @@ word_t expr(char *e, bool *success) {   //the main calculate function. first mak
     *success = false;
     return 0;
   }
-  //find prime, then recursively call calculate.left side's  p and q is (p, prime - 1), right (prime + 1, q). use "case prime" statement
-  int prime = find_prime_idx(0, nr_token);
   int result = calculate(0, nr_token, success);
   if(!success){
     printf(ANSI_FMT("invalid expression!\n",ANSI_FG_RED));
