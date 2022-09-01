@@ -302,7 +302,7 @@ word_t expr(char *e, bool *success) {   //the main calculate function. first mak
     *success = false;
     return 0;
   }
-  word_t result = calculate(0, nr_token - 1, success);
+  word_t result = calculate(0, nr_token, success);
   if(!success){
     printf(ANSI_FMT("invalid expression!\n",ANSI_FG_RED));
   }
