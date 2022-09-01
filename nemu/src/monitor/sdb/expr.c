@@ -161,7 +161,7 @@ int find_prime_idx(int p, int q)    //the prime opt should have low privilege
   int priv = 114514;      //very high privilege, so any new income will be lower than it and replace it
   int oldpriv = 1919810;
   int index = 0;
-  for(int i = p; i < q; i++ ){
+  for(int i = p; i <= q; i++ ){
     int type = tokens[i].type;
 
     if(type == TK_ADD || type == TK_SUB){
@@ -302,7 +302,7 @@ word_t expr(char *e, bool *success) {   //the main calculate function. first mak
     *success = false;
     return 0;
   }
-  word_t result = calculate(0, nr_token, success);
+  word_t result = calculate(0, nr_token - 1, success);
   if(!success){
     printf(ANSI_FMT("invalid expression!\n",ANSI_FG_RED));
   }
