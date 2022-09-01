@@ -143,7 +143,7 @@ bool check_parentheses(int p, int q){   //scan the array and use a stack
       printf("%s\t", tokens[k].str);
 
   }
-  for(; p < q; p++){
+  for(; p <= q; p++){
     char type = tokens[p].type;
     if(type == TK_LEFT)
       push(LEFT);
