@@ -310,7 +310,7 @@ word_t calculate(int p, int q, bool * success){
         printf("emmm, p = %d, q = %d, token = %s\n", p, q, tk_val);
         for(int n = p; n <= q; n++ )
           printf("%s, ",tokens[n].str);
-        printf("\n;")
+        printf("\n");
       }
     }
   }
