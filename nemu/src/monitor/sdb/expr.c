@@ -142,7 +142,7 @@ int find_prime_idx(int p, int q)    //the prime opt should have low privilege
   int priv = 114514;
   int oldpriv = 1919810;
   int index = 0;
-  for(int i = 0; i < nr_token; i++ ){
+  for(int i = p; i < q; i++ ){
     int type = tokens[i].type;
 
     if(type == TK_ADD || type == TK_SUB){
@@ -164,7 +164,7 @@ int find_prime_idx(int p, int q)    //the prime opt should have low privilege
     else if(type == TK_RIGHT){
       priv = oldpriv;
     }
-    printf("round%d, idx = %d, type = %d\n", i, index, type );
+    Log("round%d, idx = %d, type = %d\n", i, index, type );
   }
   return index;
 }
