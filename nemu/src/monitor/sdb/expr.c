@@ -5,16 +5,16 @@
 #include <regex.h>        // % 8, >= 4
 #define is_arith(TK) ((TK & 0b111) & 0b0100)
 enum {
-  TK_NOTYPE, 
   TK_DECNUM,
   TK_HEXNUM,
   TK_EQ, 
+  TK_LEFT,
   TK_MULT,  //0100, 4
   TK_DIV,   //0101
   TK_ADD ,  //0110
   TK_SUB,   //0111.for arith type, bit(3) = 0 and bit(2) = 1. That is TK < 8 && tk(2) = 1
-  TK_LEFT,
   TK_RIGHT,
+  TK_NOTYPE, 
   /* TODO: Add more token types */
 
 };
@@ -119,20 +119,24 @@ bool pop(){
 bool check_parentheses(int p, int q){   //scan the array and use a stack
   if( p > q ) return false; //something went wrong...
   S.top = 0;    ///reset the stack
-  Log("start check......\n");
-  for(int i = p; i <= q; i++)
-    printf("%s\t", tokens[i].str);
   //if surrounded by a pair of parentheses, just throw it away
   if(tokens[p].type == TK_LEFT && tokens[q].type == TK_RIGHT){
+    /*
+    tokens[p].type = TK_NOTYPE;
+    tokens[q].type = TK_NOTYPE;
+    strcpy(tokens[p].str, "removed");
+    strcpy(tokens[q].str, "removed");
+    Log("a match happened\n");
+    */
+
     for(int i = p; i <= q - 2; i++){
       tokens[i] = tokens[i+1];
     }
-    //remove the tokens(parentheses)
     nr_token -= 2;
     tokens[nr_token].type = TK_NOTYPE;
     tokens[nr_token + 1].type = TK_NOTYPE;
-    strcpy(tokens[nr_token].str, "");
-    strcpy(tokens[nr_token + 1].str, "");
+    strcpy(tokens[nr_token].str, "removed");
+    strcpy(tokens[nr_token + 1].str, "removed");
 
   }
   for(; p <= q; p++){
@@ -152,7 +156,8 @@ int find_prime_idx(int p, int q)    //the prime opt should have low privilege
 {
   int priv = 114514;      //very high privilege, so any new income will be lower than it and replace it
   int oldpriv = 1919810;
-  int index = 0;
+  int index = p;
+  Log("find form %d to %d\n", p, q);
   for(; p <= q; p++ ){
     int type = tokens[p].type;
 
@@ -219,14 +224,12 @@ static bool make_token(char *e) {
     }
   }
   //debug
-  
   for(int i =0 ; i < nr_token; i++)
   {
     char * temp = tokens[i].str;
     int type = tokens[i].type;
     printf(ANSI_FMT("token[%2d] = %-8s\ttype = %d\n", ANSI_FG_YELLOW),i, temp, type);
   }
-  
   //------
   return true;
 }
@@ -244,17 +247,20 @@ word_t calculate(int p, int q, bool * success){
   }
   int prime = find_prime_idx(p, q);
   int type  = tokens[prime].type;
+  printf(ANSI_FMT("type = %d\nprime = %d\n",ANSI_FG_RED), type, prime);
   char * tk_val = tokens[p].str;
+  Log("calculate form %d to %d\n", p, q);
   word_t result;
   if(p == q || type == TK_DECNUM || type == TK_HEXNUM){      //can directly return
+    Log("type = %d\tvalue = %s\n", type, tk_val);
     if(type == TK_DECNUM){
       sscanf(tk_val, "%ld", &result);
-      Log("the decimal is %ld\n", result);
+      Log("p = %d\tq = %d\tthe decimal is %ld\n", p, q, result);
       return result;
     }
     else if(type == TK_HEXNUM){
       sscanf(tk_val, "%lx", &result);
-      Log("the heximal is %ld\n",result);
+      Log("p = %d\tq = %d\tthe heximal is %ld\n",p, q, result);
       return result;
     }
     else{   //the single token should be of numeric type, not others
@@ -263,12 +269,12 @@ word_t calculate(int p, int q, bool * success){
       return 0;
     }
   }
-  else if(check_parentheses(p, q)){
+  else if(check_parentheses(p, q)){      //here the 3rd arg is not used
     switch(type){
-      case(TK_ADD): Log("%ld + %ld = %ld\n", P1, P2, P1 + P2); return P1 + P2; 
-      case(TK_SUB): Log("%ld - %ld = %ld\n", P1, P2, P1 - P2); return P1 - P2;
-      case(TK_MULT):Log("%ld * %ld = %ld\n", P1, P2, P1 * P2); return P1 * P2;
-      case(TK_DIV): Log("%ld / %ld = %ld\n", P1, P2, P1 / P2); return P1 / P2;
+      case(TK_ADD):  return P1 + P2; 
+      case(TK_SUB):  return P1 - P2;
+      case(TK_MULT): return P1 * P2;
+      case(TK_DIV):  return P1 / P2;
       default: Assert(0, "hope this would not happen...\n");
     }
   }
