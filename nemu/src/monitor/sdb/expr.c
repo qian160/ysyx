@@ -255,6 +255,10 @@ word_t calculate(int p, int q, bool * success){
   if(p > q || !success || p < 0 || q < 0){
     return 0;
   }
+  if(!check_parentheses(p, q)){
+    Log("illegal expression\n");
+    return 0;
+  }
   int prime = find_prime_idx(p, q);
   int type  = tokens[prime].type;
   if(p == q || type == TK_DECNUM || type == TK_HEXNUM){      //can directly return
