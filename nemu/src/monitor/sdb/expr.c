@@ -132,6 +132,9 @@ bool check_parentheses(int p, int q){   //scan the array and use a stack
     printf("parentheses pair found. old array:\n");
     for(int j = p; j <= q; j++)
       printf("%s\t", tokens[j].str);
+    printf("type:\n");
+    for(int j = p; j <= q; j++)
+      printf("%d\t", tokens[j].type);
     //if q == nr_token - 1. ... else ...s
     for(int i = p; i <= q - 2; i++){
       tokens[i] = tokens[i+1];
@@ -142,6 +145,9 @@ bool check_parentheses(int p, int q){   //scan the array and use a stack
     printf("\nnew array:\n");
     for(int k = p; k <= q - 2; k++)
       printf("%s\t", tokens[k].str);
+    printf("types:\n");
+    for(int k = p; k <= q; k++)
+      printf("%d\t",tokens[k].type);
 
   }
   for(; p <= q; p++){
