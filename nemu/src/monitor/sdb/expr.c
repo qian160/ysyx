@@ -259,6 +259,9 @@ word_t calculate(int p, int q, bool * success){
   int type  = tokens[prime].type;
   if(p == q || type == TK_DECNUM || type == TK_HEXNUM){      //can directly return
     //int numtype   = tokens[p].type;
+    Log("the substr is :\n");
+    for(int x=p;x<=q;x++)
+      printf("%s\t", tokens[x].str);
     char * tk_val = tokens[p].str;
     word_t result;
     if(type == TK_DECNUM){
