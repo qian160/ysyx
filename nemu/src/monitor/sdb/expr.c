@@ -219,12 +219,7 @@ static bool make_token(char *e) {
         }
 
         position += substr_len;
-/*
-        switch (rules[i].token_type) {
-          default: //TODO();
-        }
-*/
-        //break;
+        break;
       }
     }
 
@@ -251,18 +246,20 @@ word_t calculate(int p, int q, bool * success){
   if(p > q || !success || p < 0 || q < 0){
     return 0;
   }
-  int type = tokens[p].type;
+  if(!check_parentheses(p, q)){
+    printf(ANSI_FMT("illegal expression\n",ANSI_FG_RED));
+    return 0;
+  }
+  int prime = find_prime_idx(p, q);
+  int type  = tokens[prime].type;
   char * tk_val = tokens[p].str;
   word_t result;
   if(p == q){      //can directly return
-    Log("the token is %s\n", tk_val);
     if(type == TK_DECNUM){
-      Log("decimal token found: %s\n", tk_val);
       sscanf(tk_val, "%ld", &result);
       return result;
     }
     else if(type == TK_HEXNUM){
-      Log("heximal token found: %s\n", tk_val);
       sscanf(tk_val, "%lx", &result);
       return result;
     }
@@ -273,27 +270,13 @@ word_t calculate(int p, int q, bool * success){
     }
   }
   else if(check_parentheses(p, q)){
-    int prime = find_prime_idx(p, q);
-    int type  = tokens[prime].type;
-    Log("prime: %2d,\ttype: %d", prime, type);
     switch(type){
-      case(TK_ADD):  {
-        Log("%ld + %ld = %ld\n", P1, P2, P1 + P2);
-        return calculate(p, prime - 1, success) + calculate( prime + 1, q, success);
-      }
-      case(TK_SUB):  {    
-        Log("%ld - %ld = %ld\n", P1, P2, P1 - P2);
-        return calculate(p, prime - 1, success) - calculate( prime + 1, q, success);
-      }
-      case(TK_MULT): {
-        Log("%ld * %ld = %ld\n", P1, P2, P1 * P2);
-        return calculate(p, prime - 1, success) * calculate( prime + 1, q, success);
-      }
-      case(TK_DIV): {
-        Log("%ld / %ld = %ld\n", P1, P2, P1 / P2);
-        return calculate(p, prime - 1, success) / calculate( prime + 1, q, success);
-      }
+      case(TK_ADD): return P1 + P2; 
+      case(TK_SUB): return P1 - P2;
+      case(TK_MULT):return P1 * P2;
+      case(TK_DIV): return P1 / P2;
       //sometimes only 1 token is left, and we can't find an arith token
+      /*
       case(TK_DECNUM):{
         word_t temp;
         sscanf(tk_val, "%ld", &temp);
@@ -304,7 +287,8 @@ word_t calculate(int p, int q, bool * success){
         sscanf(tk_val, "%lx", &temp);
         return temp;
       }
-      default: return 0;
+      */
+      default: Assert(0, "hope this would not happen...\n");
     }
   }
   return 0; //will not be execuated..
