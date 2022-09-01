@@ -123,16 +123,8 @@ bool pop(){
 bool check_parentheses(int p, int q){   //scan the array and use a stack
   if( p > q ) return false; //something went wrong...
   S.top = 0;    ///reset the stack
-  printf(ANSI_FMT("start check....the substr is:\n",ANSI_FG_MAGENTA));
-  for(int k = p; k <= q; k++)
-    printf("%s\t", tokens[k].str);
-  printf("\n");
   //if surrounded by a pair of parentheses, just throw it away
   if(tokens[p].type == TK_LEFT && tokens[q].type == TK_RIGHT){
-    printf("parentheses pair found. old array:\n");
-    for(int j = p; j <= q; j++)
-      printf("%s\t", tokens[j].str);
-    //if q == nr_token - 1. ... else ...s
     for(int i = p; i <= q - 2; i++){
       tokens[i] = tokens[i+1];
     }
@@ -142,10 +134,6 @@ bool check_parentheses(int p, int q){   //scan the array and use a stack
     tokens[nr_token + 1].type = TK_NOTYPE;
     strcpy(tokens[nr_token].str, "");
     strcpy(tokens[nr_token + 1].str, "");
-
-    printf("\nnew array:\n");
-    for(int k = p; k <= q - 2; k++)
-      printf("%s\t", tokens[k].str);
   }
   for(; p <= q; p++){
     char type = tokens[p].type;
@@ -157,7 +145,6 @@ bool check_parentheses(int p, int q){   //scan the array and use a stack
         S.top -= 2;
     }
   }
-  printf("check result: %d\n", S.top == 0);
   return S.top == 0;
 }
 
@@ -223,12 +210,6 @@ static bool make_token(char *e) {
         }
 
         position += substr_len;
-/*
-        switch (rules[i].token_type) {
-          default: //TODO();
-        }
-*/
-        break;
       }
     }
 
@@ -238,17 +219,19 @@ static bool make_token(char *e) {
     }
   }
   //debug
+  /*
   for(int i =0 ; i < nr_token; i++)
   {
     char * temp = tokens[i].str;
     int type = tokens[i].type;
     printf(ANSI_FMT("token[%2d] = %-8s\ttype = %d\n", ANSI_FG_YELLOW),i, temp, type);
   }
+  */
   //------
   return true;
 }
-#define P1 calculate(p, prime - 1, success)
-#define P2 calculate(prime + 1, q, success)
+#define P1 calculate(p, prime - 1, success)   //left side sub-expr
+#define P2 calculate(prime + 1, q, success)   //right side
 
 word_t calculate(int p, int q, bool * success){
   //find prime, if only 1 token is found, directly return. else recursively call calculate itself
