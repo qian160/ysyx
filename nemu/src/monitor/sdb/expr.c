@@ -154,6 +154,7 @@ int find_prime_idx(int p, int q)    //the prime opt should have low privilege
   int priv = 114514;      //very high privilege, so any new income will be lower than it and replace it
   int oldpriv = 1919810;
   int index = 0;
+  Log("find form %d to %d\n", p, q);
   for(; p <= q; p++ ){
     int type = tokens[p].type;
 
@@ -246,6 +247,7 @@ word_t calculate(int p, int q, bool * success){
   int prime = find_prime_idx(p, q);
   int type  = tokens[prime].type;
   char * tk_val = tokens[p].str;
+  Log("calculate form %d to %d\n", p, q);
   word_t result;
   if(p == q || type == TK_DECNUM || type == TK_HEXNUM){      //can directly return
     if(type == TK_DECNUM){
@@ -266,10 +268,10 @@ word_t calculate(int p, int q, bool * success){
   }
   else if(check_parentheses(p, q)){      //here the 3rd arg is not used
     switch(type){
-      case(TK_ADD): Log("%ld + %ld = %ld\n", P1, P2, P1 + P2); return P1 + P2; 
-      case(TK_SUB): Log("%ld - %ld = %ld\n", P1, P2, P1 - P2); return P1 - P2;
-      case(TK_MULT):Log("%ld * %ld = %ld\n", P1, P2, P1 * P2); return P1 * P2;
-      case(TK_DIV): Log("%ld / %ld = %ld\n", P1, P2, P1 / P2); return P1 / P2;
+      case(TK_ADD):  return P1 + P2; 
+      case(TK_SUB):  return P1 - P2;
+      case(TK_MULT): return P1 * P2;
+      case(TK_DIV):  return P1 / P2;
       default: Assert(0, "hope this would not happen...\n");
     }
   }
