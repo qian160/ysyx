@@ -116,19 +116,20 @@ bool pop(){
 #define LEFT  '('
 #define RIGHT ')'
 
-bool check_parentheses(int p, int q){   //scan the array and use a stack
+bool check_parentheses(int p, int q, char * removed){   //scan the array and use a stack
   if( p > q ) return false; //something went wrong...
   S.top = 0;    ///reset the stack
   //if surrounded by a pair of parentheses, just throw it away
   if(tokens[p].type == TK_LEFT && tokens[q].type == TK_RIGHT){
-    /*
+    
     tokens[p].type = TK_NOTYPE;
     tokens[q].type = TK_NOTYPE;
     strcpy(tokens[p].str, "removed");
     strcpy(tokens[q].str, "removed");
     Log("a match happened\n");
-    */
+    
 
+    /*
     for(int i = p; i <= q - 2; i++){
       tokens[i] = tokens[i+1];
     }
@@ -137,7 +138,7 @@ bool check_parentheses(int p, int q){   //scan the array and use a stack
     tokens[nr_token + 1].type = TK_NOTYPE;
     strcpy(tokens[nr_token].str, "removed");
     strcpy(tokens[nr_token + 1].str, "removed");
-
+    */
   }
   for(; p <= q; p++){
     char type = tokens[p].type;
@@ -180,7 +181,15 @@ int find_prime_idx(int p, int q)    //the prime opt should have low privilege
     else if(type == TK_RIGHT){
       priv = oldpriv;
     }
+    else if(type == TK_DECNUM || type == TK_HEXNUM){
+      if(priv >= 810){
+        priv = 810;
+        index = p;
+      }
+
+    }
   }
+  Log("index = %d\n",index);
   return index;
 }
 
@@ -241,13 +250,18 @@ word_t calculate(int p, int q, bool * success){
   if(p > q || !success || p < 0 || q < 0){
     return 0;
   }
-  if(!check_parentheses(p, q)){
+  char * removed = (char *)malloc(1);
+  *removed = false;
+  if(!check_parentheses(p, q, removed)){
     printf(ANSI_FMT("illegal expression\n",ANSI_FG_RED));
     return 0;
   }
+  if(*removed){
+    p++;
+    q--;
+  }
   int prime = find_prime_idx(p, q);
   int type  = tokens[prime].type;
-  printf(ANSI_FMT("type = %d\nprime = %d\n",ANSI_FG_RED), type, prime);
   char * tk_val = tokens[p].str;
   Log("calculate form %d to %d\n", p, q);
   word_t result;
@@ -269,13 +283,13 @@ word_t calculate(int p, int q, bool * success){
       return 0;
     }
   }
-  else if(check_parentheses(p, q)){      //here the 3rd arg is not used
+  else {
     switch(type){
       case(TK_ADD):  return P1 + P2; 
       case(TK_SUB):  return P1 - P2;
       case(TK_MULT): return P1 * P2;
       case(TK_DIV):  return P1 / P2;
-      default: Assert(0, "hope this would not happen...\n");
+      default: printf("bad type: %d\n",type);//Assert(0, "hope this would not happen...\n");
     }
   }
   return 0; //will not be execuated..
