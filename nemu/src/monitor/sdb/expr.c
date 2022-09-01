@@ -127,6 +127,8 @@ bool check_parentheses(int p, int q){   //scan the array and use a stack
   if(tokens[p].type == TK_LEFT && tokens[q].type == TK_RIGHT){
     tokens[p].type = TK_NOTYPE;
     tokens[q].type = TK_NOTYPE;
+    strcpy(tokens[p].str, "removed");
+    strcpy(tokens[q].str, "removed");
     /*
     for(int i = p; i <= q - 2; i++){
       tokens[i] = tokens[i+1];
