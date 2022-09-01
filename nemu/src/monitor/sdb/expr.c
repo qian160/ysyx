@@ -129,19 +129,15 @@ bool check_parentheses(int p, int q){   //scan the array and use a stack
   printf("\n");
   //if surrounded by a pair of parentheses, just throw it away
   if(tokens[p].type == TK_LEFT && tokens[q].type == TK_RIGHT){
-    printf("parentheses pair found. old array:\n");
-    for(int j = p; j <= q; j++)
-      printf("%s\t", tokens[j].str);
     for(int i = p; i <= q - 2; i++){
       tokens[i] = tokens[i+1];
     }
+    //remove the tokens
     nr_token -= 2;
     tokens[nr_token].type = TK_NOTYPE;
     tokens[nr_token + 1].type = TK_NOTYPE;
-    printf("\nnew array:\n");
-    for(int k = p; k <= q - 2; k++)
-      printf("%s\t", tokens[k].str);
-
+    strcpy(tokens[nr_token].str, "");
+    strcpy(tokens[nr_token + 1].str, "");
   }
   for(; p <= q; p++){
     char type = tokens[p].type;
@@ -153,7 +149,7 @@ bool check_parentheses(int p, int q){   //scan the array and use a stack
         S.top -= 2;
     }
   }
-  printf("check result: %d\n", S.top == 0);
+  //printf("check result: %d\n", S.top == 0);
   return S.top == 0;
 }
 
@@ -185,7 +181,7 @@ int find_prime_idx(int p, int q)    //the prime opt should have low privilege
       priv = oldpriv;
     }
   }
-  printf(ANSI_FMT("the prime is: %s\n",ANSI_FG_YELLOW),tokens[index].str);
+  //printf(ANSI_FMT("the prime is: %s\n",ANSI_FG_YELLOW),tokens[index].str);
   return index;
 }
 
@@ -219,12 +215,6 @@ static bool make_token(char *e) {
         }
 
         position += substr_len;
-/*
-        switch (rules[i].token_type) {
-          default: //TODO();
-        }
-*/
-        break;
       }
     }
 
@@ -257,12 +247,10 @@ word_t calculate(int p, int q, bool * success){
   if(p == q){      //can directly return
     Log("the token is %s\n", tk_val);
     if(type == TK_DECNUM){
-      Log("decimal token found: %s\n", tk_val);
       sscanf(tk_val, "%ld", &result);
       return result;
     }
     else if(type == TK_HEXNUM){
-      Log("heximal token found: %s\n", tk_val);
       sscanf(tk_val, "%lx", &result);
       return result;
     }
@@ -275,25 +263,12 @@ word_t calculate(int p, int q, bool * success){
   else if(check_parentheses(p, q)){
     int prime = find_prime_idx(p, q);
     int type  = tokens[prime].type;
-    Log("prime: %2d,\ttype: %d", prime, type);
     switch(type){
-      case(TK_ADD):  {
-        Log("%ld + %ld = %ld\n", P1, P2, P1 + P2);
-        return calculate(p, prime - 1, success) + calculate( prime + 1, q, success);
-      }
-      case(TK_SUB):  {    
-        Log("%ld - %ld = %ld\n", P1, P2, P1 - P2);
-        return calculate(p, prime - 1, success) - calculate( prime + 1, q, success);
-      }
-      case(TK_MULT): {
-        Log("%ld * %ld = %ld\n", P1, P2, P1 * P2);
-        return calculate(p, prime - 1, success) * calculate( prime + 1, q, success);
-      }
-      case(TK_DIV): {
-        Log("%ld / %ld = %ld\n", P1, P2, P1 / P2);
-        return calculate(p, prime - 1, success) / calculate( prime + 1, q, success);
-      }
-      //sometimes only 1 token is left, and we can't find an arith token
+      case(TK_ADD):  return P1 + P2;
+      case(TK_SUB):  return P1 - P2;  
+      case(TK_MULT): return P1 * P2;
+      case(TK_DIV):  return P1 / P2;
+      //NEED TO IMPROVE
       case(TK_DECNUM):{
         word_t temp;
         sscanf(tk_val, "%ld", &temp);
