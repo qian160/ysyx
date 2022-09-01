@@ -229,8 +229,8 @@ static bool make_token(char *e) {
     int index = tokens[i].index;
     printf(ANSI_FMT("token[%2d] = %-8s\ttype = %d\tindex = %d\n", ANSI_FG_YELLOW),i, temp, type, index);
   }
-  printf("check: %d\n", check_parentheses(0, elen - 1));
-  printf("prime is: token[%2d]\n", find_prime_idx(0, nr_token));
+  Log("check: %d\n", check_parentheses(0, elen - 1));
+  Log("prime is: token[%2d]\n", find_prime_idx(0, nr_token));
   Log("test...\n");
   //------
   return true;
@@ -262,6 +262,7 @@ word_t calculate(int p, int q, bool * success){
   else{
     int prime = find_prime_idx(p, q);
     int type  = tokens[prime].type;
+    Log("prime: %2d,\ttype: %d", prime, type);
     switch(type){
       case(TK_ADD):  result = result + calculate(p, prime - 1, success) + calculate( prime + 1, q, success);break;
       case(TK_SUB):  result = result + calculate(p, prime - 1, success) - calculate( prime + 1, q, success);break;
