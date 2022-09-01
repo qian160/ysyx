@@ -295,7 +295,7 @@ word_t calculate(int p, int q, bool * success){
       }
       //after remove the parentheses, the following case will apprear: 
       //q = p + 2, tokens[p] = decnum, tokens[p+1]=tokens[p+2]= ""
-      /*
+      
       case(TK_DECNUM):{
         word_t temp;
         sscanf(tk_val, "%ld", &temp);
@@ -306,7 +306,7 @@ word_t calculate(int p, int q, bool * success){
         sscanf(tk_val, "%lx", &temp);
         return temp;
       }
-      */
+      
       default: printf("hope this will not happen......\n");
     }
   }
