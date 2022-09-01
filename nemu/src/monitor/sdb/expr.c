@@ -236,15 +236,16 @@ static bool make_token(char *e) {
   return true;
 }
 
-int calculate(int p, int q, bool * success){
+word_t calculate(int p, int q, bool * success){
   //find prime, if only 1 token is found, directly return. else recursively call calculate itself
-  int result = 0;
+  word_t result = 0;
   if(p > q || !success){
     return 0;
   }
   else if(p == q){      //can directly return
     int type = tokens[p].type;
     char * tk_val = tokens[p].str;
+    Log("the token is %s\n", tk_val);
     if(type == TK_DECNUM){
       sscanf(tk_val, "%d", &result);
       return result;
@@ -277,8 +278,7 @@ word_t expr(char *e, bool *success) {   //the main calculate function. first mak
     *success = false;
     return 0;
   }
-  //word_t result = calculate(0, nr_token, success);
-word_t result = 0;
+  word_t result = calculate(0, nr_token, success);
   if(!success){
     printf(ANSI_FMT("invalid expression!\n",ANSI_FG_RED));
   }
