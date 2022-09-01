@@ -255,7 +255,7 @@ word_t calculate(int p, int q, bool * success){
     if(type == TK_DECNUM){
       sscanf(tk_val, "%ld", &result);
       Log("the decimal is %ld\n", result);
-      return result;`
+      return result;
     }
     else if(type == TK_HEXNUM){
       sscanf(tk_val, "%lx", &result);
@@ -268,7 +268,7 @@ word_t calculate(int p, int q, bool * success){
       return 0;
     }
   }
-  else if(check_parentheses(p, q)){
+  else if(check_parentheses(p, q, removed)){      //here the 3rd arg is not used
     switch(type){
       case(TK_ADD): Log("%ld + %ld = %ld\n", P1, P2, P1 + P2); return P1 + P2; 
       case(TK_SUB): Log("%ld - %ld = %ld\n", P1, P2, P1 - P2); return P1 - P2;
