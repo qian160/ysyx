@@ -153,6 +153,7 @@ bool check_parentheses(int p, int q){   //scan the array and use a stack
         S.top -= 2;
     }
   }
+  printf("check result: %d\n", S.top == 0);
   return S.top == 0;
 }
 
