@@ -154,7 +154,7 @@ int find_prime_idx(int p, int q)    //the prime opt should have low privilege
 {
   int priv = 114514;      //very high privilege, so any new income will be lower than it and replace it
   int oldpriv = 1919810;
-  int index = 0;
+  int index = p;
   Log("find form %d to %d\n", p, q);
   for(; p <= q; p++ ){
     int type = tokens[p].type;
