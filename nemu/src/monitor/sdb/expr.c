@@ -255,15 +255,17 @@ word_t calculate(int p, int q, bool * success){
   if(p > q || !success || p < 0 || q < 0){
     return 0;
   }
-  if(p == q || tokens[p].type + tokens[q].type == 0){      //can directly return
-    int numtype   = tokens[p].type;
-    char * tk_val = tokens[p].str;
+  int prime = find_prime_idx(p, q);
+  int type  = tokens[prime].type;
+  if(p == q || type == TK_DECNUM || type == TK_HEXNUM){      //can directly return
+    //int numtype   = tokens[p].type;
+    //char * tk_val = tokens[p].str;
     word_t result;
-    if(numtype == TK_DECNUM){
+    if(type == TK_DECNUM){
       sscanf(tk_val, "%ld", &result);
       return result;
     }
-    else if(numtype == TK_HEXNUM){
+    else if(type == TK_HEXNUM){
       sscanf(tk_val, "%lx", &result);
       return result;
     }
@@ -274,8 +276,7 @@ word_t calculate(int p, int q, bool * success){
     }
   }
   else if(check_parentheses(p, q)){
-    int prime = find_prime_idx(p, q);
-    int type  = tokens[prime].type;
+
     switch(type){
       case(TK_ADD):  {
         Log("%ld + %ld = %ld\n", P1, P2, P1 + P2);
