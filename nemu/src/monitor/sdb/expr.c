@@ -185,6 +185,7 @@ int find_prime_idx(int p, int q)    //the prime opt should have low privilege
     }
     Log("round%d, idx = %d, type = %d\n", i, index, type );
   }
+  printf(ANSI_FMT("the prime is: %s\n",ANSI_FG_YELLOW),tokens[index].str);
   return index;
 }
 
