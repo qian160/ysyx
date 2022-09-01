@@ -246,7 +246,7 @@ int calculate(int p, int q, bool * success){
     return 0;
   }
   else{
-    int prime = find_prime_idx();
+    int prime = find_prime_idx(p, q);
   }
 }
 
