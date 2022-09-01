@@ -260,11 +260,11 @@ int calculate(int p, int q, bool * success){
   else{
     int prime = find_prime_idx(p, q);
     int type  = tokens[prime].type;
-    case(type){
-      TK_ADD:  result = result + calculate(p, prime - 1, success) + calculate( prime + 1, q, success);break;
-      TK_SUB:  result = result + calculate(p, prime - 1, success) - calculate( prime + 1, q, success);break;
-      TK_MULT: result = result + calculate(p, prime - 1, success) * calculate( prime + 1, q, success);break;
-      TK_DIV:  result = result + calculate(p, prime - 1, success) / calculate( prime + 1, q, success);break;
+    switch(type){
+      case(TK_ADD):  result = result + calculate(p, prime - 1, success) + calculate( prime + 1, q, success);break;
+      case(TK_SUB):  result = result + calculate(p, prime - 1, success) - calculate( prime + 1, q, success);break;
+      case(TK_MULT): result = result + calculate(p, prime - 1, success) * calculate( prime + 1, q, success);break;
+      case(TK_DIV):  result = result + calculate(p, prime - 1, success) / calculate( prime + 1, q, success);break;
     }
   }
   return 0; //will not be execuated..
