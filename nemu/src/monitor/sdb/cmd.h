@@ -40,14 +40,13 @@ static int cmd_c(char *args) {
 }
 //small bug: don't contain the whole expr in a ()
 static int cmd_p(char *expression){
-    printf(ANSI_FMT("%s\n",ANSI_FG_MAGENTA), expression);
     bool * success = (bool *)malloc(sizeof(bool));
     *success = true;
     word_t result = expr(expression, success);
     if(!success)
         printf(ANSI_FMT("illegal expr\n",ANSI_FG_RED));
     else
-        printf("the result is %ld\n", result);
+        printf(ANSI_FMT("%ld\t%lx\n",ANSI_FG_YELLOW),result);
     return 0;
 }
 
