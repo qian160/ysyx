@@ -162,7 +162,7 @@ bool check_parentheses(int p, int q, char * removed){   //scan the array and use
 typedef struct {
   int priv[10];
   int top;
-}privStack;   //for privilege recovery in prime find
+}privStack;   //for privilege recovery in prime find. nested parentheses will need this
 
 privStack PS;
 
@@ -208,7 +208,6 @@ int find_prime_idx(int p, int q)    //the prime opt should have low privilege
   }
   return index;
 }
-
 //this function will add tokens to the array
 
 static bool make_token(char *e) {
@@ -264,26 +263,39 @@ static bool make_token(char *e) {
   //------
   return true;
 }
-
+/*
 #define P1 calculate(p, prime - 1, success)
 #define P2 calculate(prime + 1, q, success)
-
+*/
+#define P1 calculate(sp1, eq1, success)
+#define P2 calculate(sp2, eq2, success)
 
 word_t calculate(int p, int q, bool * success){
   //find prime, if only 1 token is found, directly return. else recursively call calculate itself
   if(p > q || !success || p < 0 || q < 0){
     return 0;
   }
-  char * removed = (char *)malloc(1);   //the number of pair of parentheses removed
-  *removed = 0;
+
+  char * removed1 = (char *)malloc(1);   //the number of pair of parentheses removed
+  *removed1 = 0;
+  char * removed2 = (char *)malloc(1);
+  *removed2 = 0;
   //a guess: find prime before check parentheses. Though this method will check parenthese twice...
+  /*
   if(!check_parentheses(p, q, removed)){
     printf(ANSI_FMT("illegal expression\n",ANSI_FG_RED));
     return 0;
   }
   p += *removed;
   q -= *removed;
+  */
   int prime = find_prime_idx(p, q);
+  if(!check_parentheses(p, prime -1, removed1) || !check_parentheses(prime + 1, q, removed2)){
+    printf(ANSI_FMT("illegal expression\n",ANSI_FG_RED));
+    return 0;
+  }
+  int sp1 = p + *removed1, sp2 = prime + 1 + *removed2;
+  int eq1 = prime - 1 - *removed1, eq2 = q - *removed2;
   int type  = tokens[prime].type;
   char * tk_val = tokens[p].str;
   word_t result;
