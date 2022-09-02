@@ -89,11 +89,11 @@ typedef struct token {
   char  str[32];
 }Token;
 
-static Token tokens[100] __attribute__((used)) = {};
+static Token tokens[1000] __attribute__((used)) = {};   //for test, we enlarge the buffer size
 static int nr_token __attribute__((used))  = 0;
 
 typedef struct{
-  char parentheses[20];   //20 is very enough
+  char parentheses[200];   //20 is very enough
   int  top;
 }easyStack;    //for parentheses check. No boundary check
 
@@ -126,44 +126,31 @@ bool check_parentheses(int p, int q, char * removed){   //scan the array and use
   if( p > q ) return false; //something went wrong...
   S.top = 0;    ///reset the stack
   //if surrounded by a pair of parentheses, just throw it away
+  Log("check from %d to %d... the original substr is\n", p, q);
+  for(int i = p; i <= q; i++)
+    printf("%s  ",tokens[i].str);
+  putchar('\n');
   int sp = p, eq = q;   //startt of p && end of q
-  while((tokens[sp].type == TK_LEFT && tokens[eq].type == TK_RIGHT)){
-    strcpy(tokens[sp].str, "removed");
-    strcpy(tokens[eq].str, "removed");    
-    tokens[sp++].type = TK_NOTYPE;
-    tokens[eq--].type = TK_NOTYPE;
+  while(tokens[sp++].type == TK_LEFT && tokens[eq--].type == TK_RIGHT){
+    strcpy(tokens[sp-1].str, "removed");
+    strcpy(tokens[eq+1].str, "removed");    
+    tokens[sp-1].type = TK_NOTYPE;
+    tokens[eq+1].type = TK_NOTYPE;
     (*removed)++;
-  };
-  sp--;eq++;
-  //if(tokens[p].type == TK_LEFT && tokens[q].type == TK_RIGHT){
-  /*
-  if(sp <= eq){
-    tokens[sp].type = TK_NOTYPE;
-    tokens[eq].type = TK_NOTYPE;
-    strcpy(tokens[sp].str, "removed");
-    strcpy(tokens[eq].str, "removed");    
-
-    //
-    for(int i = p; i <= q - 2; i++){
-      tokens[i] = tokens[i+1];
-    }
-    nr_token -= 2;
-    tokens[nr_token].type = TK_NOTYPE;
-    tokens[nr_token + 1].type = TK_NOTYPE;
-    strcpy(tokens[nr_token].str, "removed");
-    strcpy(tokens[nr_token + 1].str, "removed");
-    
   }
-  */
+  sp--;eq++;
+  int t1 = sp, t2 = eq;
+  Log("after chek, the substr is:\n");
+  for(int i = t1; i <= t2; i++)
+    printf("%s  ",tokens[i].str);
+  putchar('\n');
   for(; sp <= eq; sp++){
     char type = tokens[sp].type;
     if(type == TK_LEFT){
       push(LEFT);
-      Log("p = %d, a left found\n",sp);
     }
     else if(type == TK_RIGHT){
       push(RIGHT);
-      Log("p = %d, a right found\n",sp);
       if(S.top > 1 && S.parentheses[S.top -2] == LEFT)
         S.top -= 2;
 
@@ -255,7 +242,8 @@ static bool make_token(char *e) {
       return false;
     }
   }
-  //debug
+//how to define?
+#ifdef PRINT_TOKEN
   printf("the tokens are:\n");
   for(int i =0 ; i < nr_token; i++)
   {
@@ -265,6 +253,7 @@ static bool make_token(char *e) {
   }
   putchar('\n');
   putchar('\n');
+#endif
   //------
   return true;
 }
@@ -276,16 +265,6 @@ word_t calculate(int p, int q, bool * success){
   if(p > q || !success || p < 0 || q < 0){
     return 0;
   }
-  /*
-  Log("calculate from %d to %d...\nthe substr is:\n",p, q);
-  for(int j = p; j <= q; j++)
-    printf("%s ", tokens[j].str);
-  putchar('\n');
-  Log("the types are:\n");
-  for(int j = p; j <= q; j++)
-    printf("%d ", tokens[j].type);
-  putchar('\n');
-  */
   char * removed = (char *)malloc(1);   //the number of pair of parentheses removed
   *removed = 0;
   if(!check_parentheses(p, q, removed)){
@@ -327,6 +306,7 @@ word_t calculate(int p, int q, bool * success){
 
 word_t expr(char *e, bool *success) {   //the main calculate function. first make the token
   if (!make_token(e)) {
+    printf(ANSI_FMT("check for bad tokens!\n",ANSI_FG_RED));
     *success = false;
     return 0;
   }
