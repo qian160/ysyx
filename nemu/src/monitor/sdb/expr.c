@@ -321,12 +321,12 @@ word_t calculate(int p, int q, bool * success){
   }
   else {
     switch(type){
-      case(TK_ADD):  return P1 +  P2; 
-      case(TK_SUB):  return P1 -  P2;
-      case(TK_MULT): return P1 *  P2;
-      case(TK_DIV):  return P1 /  P2;
-      case(TK_SL):   return P1 << P2;
-      case(TK_SR):   return P1 >> P2;
+      case(TK_ADD):  Log("%ld + %ld = %ld", P1, P2, P1 + P2);return P1 +  P2; 
+      case(TK_SUB):  Log("%ld - %ld = %ld", P1, P2, P1 - P2);return P1 -  P2;
+      case(TK_MULT): Log("%ld * %ld = %ld", P1, P2, P1 * P2);return P1 *  P2;
+      case(TK_DIV):  Log("%ld / %ld = %ld", P1, P2, P1 / P2);return P1 /  P2;
+      case(TK_SL):   Log("%ld << %ld = %ld", P1, P2, P1 << P2);return P1 << P2;
+      case(TK_SR):   Log("%ld >> %ld = %ld", P1, P2, P1 >> P2);return P1 >> P2;
       default: Assert(0, "bad type: %d\n",type);//return(calculate(p + 1, q - 1, success));//
     }
   }
