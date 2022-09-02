@@ -335,7 +335,7 @@ word_t calculate(int p, int q, bool * success){
       //well, we still need this... consider expressions like a singal number like 1
       default: 
       {
-        word_t resultt;
+        word_t result;
         if(type == TK_DECNUM){
           sscanf(tokens[prime].str, "%ld", &result);
         }
