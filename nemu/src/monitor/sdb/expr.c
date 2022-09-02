@@ -286,23 +286,7 @@ word_t calculate(int p, int q, bool * success){
   if(p > q || !success || p < 0 || q < 0){
     return 0;
   }
-
-  char * removed1 = (char *)malloc(1);   //the number of pair of parentheses removed
-  *removed1 = 0;
-  char * removed2 = (char *)malloc(1);
-  *removed2 = 0;
-
-  int prime = find_prime_idx(p, q);
-  bool checkLeft  = check_parentheses(p, prime - 1, removed1);
-  bool checkRight = check_parentheses(prime + 1, q, removed2);
-  //Log("p = %d, q = %d, prime = %d, left check: %d, right check: %d\n",p, q, prime, checkLeft, checkRight);
-  if(!checkLeft || !checkRight){
-    printf(ANSI_FMT("illegal expression\n",ANSI_FG_RED));
-    return 0;
-  }
-  int sp1 = p + *removed1, sp2 = prime + 1 + *removed2;
-  int eq1 = prime - 1 - *removed1, eq2 = q - *removed2;
-  int type  = tokens[prime].type;
+  int type  = tokens[p].type;
   char * tk_val = tokens[p].str;
   word_t result;
   if(p == q /*|| type == TK_DECNUM || type == TK_HEXNUM*/){      //can directly return
@@ -321,6 +305,22 @@ word_t calculate(int p, int q, bool * success){
     }
   }
   else {
+    char * removed1 = (char *)malloc(1);   //the number of pair of parentheses removed
+    *removed1 = 0;
+    char * removed2 = (char *)malloc(1);
+    *removed2 = 0;
+
+    int prime = find_prime_idx(p, q);
+    type = tokens[prime].type;
+    bool checkLeft  = check_parentheses(p, prime - 1, removed1);
+    bool checkRight = check_parentheses(prime + 1, q, removed2);
+    //Log("p = %d, q = %d, prime = %d, left check: %d, right check: %d\n",p, q, prime, checkLeft, checkRight);
+    if(!checkLeft || !checkRight){
+      printf(ANSI_FMT("illegal expression\n",ANSI_FG_RED));
+      return 0;
+    }
+    int sp1 = p + *removed1, sp2 = prime + 1 + *removed2;
+    int eq1 = prime - 1 - *removed1, eq2 = q - *removed2;
     switch(type){
       case(TK_ADD):  return P1 +  P2; 
       case(TK_SUB):  return P1 -  P2;
