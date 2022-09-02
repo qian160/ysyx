@@ -267,7 +267,7 @@ static bool make_token(char *e) {
             token[substr_len] = '\0';
 
             //strcpy(tokens[nr_token].str, token);
-            strncpy(tokens[nr_token].e + position, substr_len);
+            strncpy(tokens[nr_token].str, e + position, substr_len);
             tokens[nr_token].str[substr_len] = '\0';
             tokens[nr_token].type = rules[i].token_type;
             tokens[nr_token++].priv = rules[i].priv;
