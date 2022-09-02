@@ -121,12 +121,12 @@ void tranverse(){
 }
 #define LEFT  '('
 #define RIGHT ')'
-
+//when only 1 token exists, the argument  prime - 1 will be bad...
 bool check_parentheses(int p, int q, char * removed){   //scan the array and use a stack
   //if( p > q ) return false; //something went wrong...
   S.top = 0;    ///reset the stack
   //if surrounded by a pair of parentheses, just throw it away
-  Log("check from %d to %d... the original substr is\n", p, q);
+  //Log("check from %d to %d... the original substr is\n", p, q);
   for(int i = p; i <= q; i++)
     printf("%s  ",tokens[i].str);
   putchar('\n');
@@ -140,7 +140,7 @@ bool check_parentheses(int p, int q, char * removed){   //scan the array and use
   }
 
   int t1 = sp, t2 = eq;
-  Log("after chek, the substr is from %d to %d:\n", t1, t2);
+  //Log("after chek, the substr is from %d to %d:\n", t1, t2);
   for(int i = t1; i <= t2; i++)
     printf("%s  ",tokens[i].str);
   putchar('\n');
@@ -291,10 +291,10 @@ word_t calculate(int p, int q, bool * success){
   int prime = find_prime_idx(p, q);
   bool checkLeft  = check_parentheses(p, prime - 1, removed1);
   bool checkRight = check_parentheses(prime + 1, q, removed2);
-  Log("p = %d, q = %d, prime = %d, left check: %d, right check: %d\n",p, q, prime, checkLeft, checkRight);
+  //Log("p = %d, q = %d, prime = %d, left check: %d, right check: %d\n",p, q, prime, checkLeft, checkRight);
   if(!checkLeft || !checkRight){
     printf(ANSI_FMT("illegal expression\n",ANSI_FG_RED));
-    //return 0;
+    return 0;
   }
   int sp1 = p + *removed1, sp2 = prime + 1 + *removed2;
   int eq1 = prime - 1 - *removed1, eq2 = q - *removed2;
