@@ -133,6 +133,7 @@ bool check_parentheses(int p, int q, char * removed){   //scan the array and use
     strcpy(tokens[eq].str, "removed");    
     tokens[sp++].type = TK_NOTYPE;
     tokens[eq--].type = TK_NOTYPE;
+    (*removed)++;
   };
   sp--;eq++;
   //if(tokens[p].type == TK_LEFT && tokens[q].type == TK_RIGHT){
@@ -168,7 +169,7 @@ bool check_parentheses(int p, int q, char * removed){   //scan the array and use
         S.top -= 2;
 
     }
-    printf("the stack is:\n");
+    Log("the stack is:\n");
     tranverse();
   }
   return S.top == 0;
@@ -287,15 +288,13 @@ word_t calculate(int p, int q, bool * success){
     printf("%d ", tokens[j].type);
   putchar('\n');
   char * removed = (char *)malloc(1);
-  *removed = false;
+  *removed = 0;
   if(!check_parentheses(p, q, removed)){
     printf(ANSI_FMT("illegal expression\n",ANSI_FG_RED));
     return 0;
   }
-  if(*removed){
-    p++;
-    q--;
-  }
+  p += *removed;
+  q -= *removed;
   int prime = find_prime_idx(p, q);
   int type  = tokens[prime].type;
   char * tk_val = tokens[p].str;
