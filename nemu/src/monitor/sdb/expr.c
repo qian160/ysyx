@@ -2,17 +2,19 @@
 /* We use the POSIX regex functions to process regular expressions.
  * Type 'man regex' for more information about POSIX regex functions.
  */
-#include <regex.h>        // % 8, >= 4
-#define is_arith(TK) ((TK & 0b111) & 0b0100)
+#include <regex.h>        
+#define is_arith(TK) (TK >= TK_MULT && TK <= TK_SR)
 enum {
   TK_DECNUM,
   TK_HEXNUM,
   TK_EQ, 
   TK_LEFT,
   TK_MULT,  //0100, 4
-  TK_DIV,   //0101
-  TK_ADD ,  //0110
-  TK_SUB,   //0111.for arith type, bit(3) = 0 and bit(2) = 1. That is TK < 8 && tk(2) = 1
+  TK_DIV,   //0101, 5
+  TK_ADD ,  //0110, 6
+  TK_SUB,   //0111, 7
+  TK_SL,    //1000, 8
+  TK_SR,    //1001, 9
   TK_RIGHT,
   TK_NOTYPE, 
   /* TODO: Add more token types */
@@ -61,6 +63,8 @@ static struct rule {
   {"\\s+",            TK_NOTYPE},   // white spaces
   {"\\(",             TK_LEFT},
   {"\\)",             TK_RIGHT},
+  {"<<",              TK_SL},
+  {">>",              TK_SR},
 };
 
 #define NR_REGEX ARRLEN(rules)
@@ -283,15 +287,7 @@ word_t calculate(int p, int q, bool * success){
   *removed1 = 0;
   char * removed2 = (char *)malloc(1);
   *removed2 = 0;
-  //a guess: find prime before check parentheses. Though this method will check parenthese twice...
-  /*
-  if(!check_parentheses(p, q, removed)){
-    printf(ANSI_FMT("illegal expression\n",ANSI_FG_RED));
-    return 0;
-  }
-  p += *removed;
-  q -= *removed;
-  */
+
   int prime = find_prime_idx(p, q);
   bool checkLeft  = check_parentheses(p, prime - 1, removed1);
   bool checkRight = check_parentheses(prime + 1, q, removed2);
@@ -322,10 +318,12 @@ word_t calculate(int p, int q, bool * success){
   }
   else {
     switch(type){
-      case(TK_ADD):  return P1 + P2; 
-      case(TK_SUB):  return P1 - P2;
-      case(TK_MULT): return P1 * P2;
-      case(TK_DIV):  return P1 / P2;
+      case(TK_ADD):  return P1 +  P2; 
+      case(TK_SUB):  return P1 -  P2;
+      case(TK_MULT): return P1 *  P2;
+      case(TK_DIV):  return P1 /  P2;
+      case(TK_SL):   return P1 << P2;
+      case(TK_SR):   return P1 >> P2;
       default: Assert(0, "bad type: %d\n",type);//return(calculate(p + 1, q - 1, success));//
     }
   }
