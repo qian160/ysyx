@@ -193,7 +193,6 @@ privStack PS;
 static int dominant_operator(int start, int end)
 {	
   int op = start, pri_min = 10;	
-  Log("search from %d to %d\n",start, end);
   for (int i = start; i <= end;i ++)
   {		
     Log("before:i = %d, priv_min = %d, token_priv = %d\n", i, pri_min, tokens[i].priv);
@@ -213,9 +212,8 @@ static int dominant_operator(int start, int end)
       op = i;      
       pri_min = tokens[op].priv;
     }  
-    Log("after:i = %d, priv_min = %d, token_priv = %d\n", i, pri_min, tokens[i].priv);
   }	
-  printf(ANSI_FMT("the prime is %s\n",ANSI_FG_YELLOW),tokens[op].str);
+  printf(ANSI_FMT("the prime is %s, at index %d\n",ANSI_FG_YELLOW),tokens[op].str, op);
   return op;
 }
 //this function will add tokens to the array
