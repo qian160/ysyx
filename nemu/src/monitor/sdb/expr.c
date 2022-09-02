@@ -52,6 +52,9 @@ enum {
         1 = REG_NOTBOL  not begin of line?
         2 = REG_NOTEOL  not end of line?
 */
+//match: the bra is good but not the first case.
+
+typedef enum {  BRA_SURRONDED, MATCH, DISMATCH } check_bra;
 
 static struct rule {
   const char *regex;
@@ -190,55 +193,41 @@ typedef struct {
 
 privStack PS;
 
-int find_prime_idx(int p, int q)    //the prime opt should have low privilege
-{
-  int priv = 114514;      //very high privilege, so any new income will be lower than it and replace it
-  int index = p;
-  /*
-  Log("find from %d to %d...\nthe substr is:\n",p, q);
-  for(int j = p; j <= q; j++)
-    printf("%s  ", tokens[j].str);
-  putchar('\n');
-  */
-  PS.top = 0;
-  Log("from %d to %d", p, q);
-  while(tokens[p].type == LEFT && tokens[q].type == RIGHT){
-    p++;
-    q--;
-  }
-  for(; p <= q; p++ ){
-    int type = tokens[p].type;
-    if(type == ADD || type == SUB || type == SL || type == SR){
-      if(priv >= 0){
-        priv = 0;
-        index = p;
-      }
+static int dominant_operator(int start, int end)
+{	
+  int op = start, pri_min = 10;	
+  Log("search from %d to %d\n",start, end);
+  for (int i = start; i <= end;i ++)	
+  {		
+    if (tokens[i].type == HEXNUM || tokens[i].type == DECNUM || tokens[i].type == REG)
+      continue;
+    //number can't be operator
+    int bra_count = 0;		
+    bool flag = true;		
+    for (int j = i - 1; j >= start; j--)
+    { 			
+      if (tokens[j].type == LEFT) 
+      {        
+        if (bra_count == 0) 
+        {          
+          flag = false;          
+          break;        
+        }        
+        bra_count--;      
+      }			
+      if (tokens[j].type == RIGHT)
+        bra_count++; 		
     }
-    else if(type == DIV || type == MULT){
-      if(priv >= 1){
-        priv  = 1;
-        index = p;
-      }
-    }
-    else if(type == LEFT){
-      PS.priv[PS.top++] = priv;
-      priv = -1;    //temorarily refuse any requests 
-    }
-    else if(type == RIGHT){
-      priv = PS.priv[--PS.top];
-    }
-    //default 
-    /*
-    else if(type == DECNUM || type == HEXNUM){
-      if(priv >= 810){
-        priv = 810;
-        index = p;
-      }
-    }
-    */
-  }
-  Log("the prime is %s\n", tokens[index].str);
-  return index;
+    if (!flag)      
+      continue;		
+    if (tokens[i].priv <= pri_min) 
+    {      
+      op = i;      
+      pri_min = tokens[op].priv;
+    }  
+  }	
+  printf(ANSI_FMT("the prime is %s\n",ANSI_FG_YELLOW),tokens[op].str);
+  return op;
 }
 //this function will add tokens to the array
 
@@ -258,15 +247,8 @@ static bool make_token(char *e) {
         //Log("match rules[%d] = \"%s\" at position %d with len %d: %.*s",
         //    i, rules[i].regex, position, substr_len, substr_len, substr_start);
 
-        //produce the token string and copy it to the array
         //empty token could just be thrown away
         if(rules[i].token_type != NOTYPE){
-            char * token = (char *)malloc(substr_len + 1);
-            for(int t = 0; t < substr_len; t++)
-              token[t] = e[position+t];
-            token[substr_len] = '\0';
-
-            //strcpy(tokens[nr_token].str, token);
             strncpy(tokens[nr_token].str, e + position, substr_len);
             tokens[nr_token].str[substr_len] = '\0';
             tokens[nr_token].type = rules[i].token_type;
