@@ -162,7 +162,7 @@ bool check_parentheses(int p, int q, char * removed){   //scan the array and use
 typedef struct {
   int priv[10];
   int top;
-}privStack;   //for privilege recovery in prime find
+}privStack;   //for privilege recovery in prime find. nested parentheses will need this
 
 privStack PS;
 
@@ -208,7 +208,6 @@ int find_prime_idx(int p, int q)    //the prime opt should have low privilege
   }
   return index;
 }
-
 //this function will add tokens to the array
 
 static bool make_token(char *e) {
