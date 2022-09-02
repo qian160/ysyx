@@ -123,7 +123,7 @@ void tranverse(){
 #define RIGHT ')'
 
 bool check_parentheses(int p, int q, char * removed){   //scan the array and use a stack
-  if( p > q ) return false; //something went wrong...
+  //if( p > q ) return false; //something went wrong...
   S.top = 0;    ///reset the stack
   //if surrounded by a pair of parentheses, just throw it away
   Log("check from %d to %d... the original substr is\n", p, q);
