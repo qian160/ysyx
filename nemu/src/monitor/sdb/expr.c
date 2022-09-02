@@ -329,7 +329,7 @@ word_t calculate(int p, int q, bool * success){
     if(!checkLeft || !checkRight){
       if(check_parentheses(p, q, removed1)){}   //maybe also acceptable?
       else if(!(type == TK_DECNUM || type == TK_HEXNUM)){
-        printf(ANSI_FMT("illegal expression...maybe bugs also\n",ANSI_FG_RED));
+        printf(ANSI_FMT("illegal expression...maybe bugs also. type = %d\n",ANSI_FG_RED), type);
         return 0;
       }
     }
