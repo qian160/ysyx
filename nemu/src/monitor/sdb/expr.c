@@ -283,27 +283,10 @@ word_t calculate(int p, int q, bool * success){
   //find prime, if only 1 token is found, directly return. else recursively call calculate itself
   if(p > q || !success || p < 0 || q < 0){
     return 0;
-  }
-
-  char * removed1 = (char *)malloc(1);   //the number of pair of parentheses removed
-  *removed1 = 0;
-  char * removed2 = (char *)malloc(1);
-  *removed2 = 0;
-
-  int prime = find_prime_idx(p, q);
-  Log(ANSI_FMT("prime = %s",ANSI_FG_YELLOW),tokens[prime].str);
-  bool checkLeft  = check_parentheses(p, prime - 1, removed1);
-  bool checkRight = check_parentheses(prime + 1, q, removed2);
-  //Log("p = %d, q = %d, prime = %d, left check: %d, right check: %d\n",p, q, prime, checkLeft, checkRight);
-  if(!checkLeft || !checkRight){
-    printf(ANSI_FMT("illegal expression\n",ANSI_FG_RED));
-    return 0;
-  }
-  int sp1 = p + *removed1, sp2 = prime + 1 + *removed2;
-  int eq1 = prime - 1 - *removed1, eq2 = q - *removed2;
-  int type  = tokens[prime].type;
-  char * tk_val = tokens[p].str;
+  }  
   word_t result;
+  int type  = tokens[p].type;
+  char * tk_val = tokens[p].str;
   if(p == q || type == TK_DECNUM || type == TK_HEXNUM){      //can directly return
     if(type == TK_DECNUM){
       sscanf(tk_val, "%ld", &result);
@@ -320,6 +303,24 @@ word_t calculate(int p, int q, bool * success){
     }
   }
   else {
+    char * removed1 = (char *)malloc(1);   //the number of pair of parentheses removed
+    *removed1 = 0;
+    char * removed2 = (char *)malloc(1);
+    *removed2 = 0;
+
+    int prime = find_prime_idx(p, q);
+    Log(ANSI_FMT("prime = %s",ANSI_FG_YELLOW),tokens[prime].str);
+    bool checkLeft  = check_parentheses(p, prime - 1, removed1);
+    bool checkRight = check_parentheses(prime + 1, q, removed2);
+    //Log("p = %d, q = %d, prime = %d, left check: %d, right check: %d\n",p, q, prime, checkLeft, checkRight);
+    if(!checkLeft || !checkRight){
+      printf(ANSI_FMT("illegal expression\n",ANSI_FG_RED));
+      return 0;
+    }
+    int sp1 = p + *removed1, sp2 = prime + 1 + *removed2;
+    int eq1 = prime - 1 - *removed1, eq2 = q - *removed2;
+    type  = tokens[prime].type;
+    
     switch(type){
       case(TK_ADD):  Log("%ld + %ld = %ld", P1, P2, P1 + P2);return P1 +  P2; 
       case(TK_SUB):  Log("%ld - %ld = %ld", P1, P2, P1 - P2);return P1 -  P2;
