@@ -161,7 +161,7 @@ int check_parentheses(int p, int q){   //scan the array and use a stack
   bool continous2    = ((q > 1 )) && ((tokens[p].type == LEFT && tokens[p+1].type == LEFT) \
                                     || (tokens[q].type == RIGHT && tokens[q-1].type == RIGHT));
   int braCount = 0;
-  Log("check from % to %d, the substr is\n",p , q);
+  Log("check from %d to %d, the substr is\n",p , q);
   for(int i = p; i<= q; i++)
     printf("%s  ",tokens[i].str);
   putchar('\n');
