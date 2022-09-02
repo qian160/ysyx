@@ -213,6 +213,7 @@ int find_prime_idx(int p, int q)    //the prime opt should have low privilege
       }
     }
   }
+  Log("from %d to %d, the prime is %s", p, q, tokens[index].str);
   return index;
 }
 //this function will add tokens to the array
