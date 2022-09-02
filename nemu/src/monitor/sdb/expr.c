@@ -126,10 +126,12 @@ bool check_parentheses(int p, int q, char * removed){   //scan the array and use
   //if( p > q ) return false; //something went wrong...
   S.top = 0;    ///reset the stack
   //if surrounded by a pair of parentheses, just throw it away
-  //Log("check from %d to %d... the original substr is\n", p, q);
+  /*
+  Log("check from %d to %d... the original substr is\n", p, q);
   for(int i = p; i <= q; i++)
     printf("%s  ",tokens[i].str);
   putchar('\n');
+  */
   int sp = p, eq = q;   //start of p && end of q
   while((tokens[sp].type == TK_LEFT && tokens[eq].type == TK_RIGHT)){ //logic short-circuting
     strcpy(tokens[sp].str, "removed");
@@ -140,10 +142,12 @@ bool check_parentheses(int p, int q, char * removed){   //scan the array and use
   }
 
   int t1 = sp, t2 = eq;
-  //Log("after chek, the substr is from %d to %d:\n", t1, t2);
+  /*
+  Log("after chek, the substr is from %d to %d:\n", t1, t2);
   for(int i = t1; i <= t2; i++)
     printf("%s  ",tokens[i].str);
   putchar('\n');
+  */
   for(; sp <= eq; sp++){
     char type = tokens[sp].type;
     if(type == TK_LEFT){
