@@ -314,7 +314,8 @@ word_t calculate(int p, int q, bool * success){
     char * removed2 = (char *)malloc(1);
     *removed2 = 0;
     /*it's hard to decide which function to call first(find vs check)
-      if we call find first, 
+      if we call find first, the left && right 2 substrs will be divided and this may affect the check
+      but if we call check first, since not all the left-most parentheses match with the right-most ones, it may not remove the tokens correctly
     */
     int prime = find_prime_idx(p, q);
     type = tokens[prime].type;
