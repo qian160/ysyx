@@ -190,6 +190,9 @@ int find_prime_idx(int p, int q)    //the prime opt should have low privilege
   */
   PS.top = 0;
   Log("from %d to %d", p, q);
+  while(tokens[p].type == TK_LEFT && tokens[q].type == TK_RIGHT){
+    p++;q--;
+  }
   for(; p <= q; p++ ){
     int type = tokens[p].type;
     if(type == TK_ADD || type == TK_SUB || type == TK_SL || type == TK_SR){
