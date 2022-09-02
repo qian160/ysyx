@@ -216,11 +216,13 @@ int find_prime_idx(int p, int q)    //the prime opt should have low privilege
       priv = PS.priv[--PS.top];
     }
     //default 
+    /*
     else if(type == TK_DECNUM || type == TK_HEXNUM){
       if(priv >= 810){
         priv = 810;
         index = p;
       }
+      */
     }
   }
   Log("the prime is %s\n", tokens[index].str);
