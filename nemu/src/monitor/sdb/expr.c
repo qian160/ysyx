@@ -250,6 +250,7 @@ word_t calculate(int l, int r){
       sscanf(tokens[l].str,"%lx",&num);
 
   else if (check_parentheses (l,r))return calculate (l + 1, r - 1);
+  }
   else {
 		int op = find_prime_idx (l, r);
     Log("the op is %s\n", tokens[op].str);
@@ -282,8 +283,6 @@ word_t calculate(int l, int r){
   }
 	assert (1);
 	return -123456;
-  }
-  return 0;
 }
 
 word_t expr(char *e, bool *success) {
