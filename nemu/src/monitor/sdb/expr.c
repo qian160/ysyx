@@ -325,7 +325,7 @@ word_t calculate(int p, int q, bool * success){
     //some preprocess must be done before the substr's check...
     bool checkLeft  = check_parentheses(p, prime - 1, removed1);
     bool checkRight = check_parentheses(prime + 1, q, removed2);
-    //Log("p = %d, q = %d, prime = %d, left check: %d, right check: %d\n",p, q, prime, checkLeft, checkRight);
+    Log("p = %d, q = %d, prime = %d, left check: %d, right check: %d, full check: %d\n",p, q, prime, checkLeft, checkRight, check_parentheses(p, q, removed1));
     if(!checkLeft || !checkRight){
       if(check_parentheses(p, q, removed1)){}   //maybe also acceptable?
       else if(!(type == TK_DECNUM || type == TK_HEXNUM)){
