@@ -319,11 +319,12 @@ word_t calculate(int p, int q, bool * success){
     */
     int prime = find_prime_idx(p, q);
     type = tokens[prime].type;
+    //some preprocess must be done before the substr's check...
     bool checkLeft  = check_parentheses(p, prime - 1, removed1);
     bool checkRight = check_parentheses(prime + 1, q, removed2);
     //Log("p = %d, q = %d, prime = %d, left check: %d, right check: %d\n",p, q, prime, checkLeft, checkRight);
     if(!checkLeft || !checkRight){
-      if(!(type == TK_DECNUM || type == TK_HEXNUM)){
+      if(!(type == TK_DECNUM || type == TK_HEXNUM || is_arith(type))){
         printf(ANSI_FMT("illegal expression...maybe bugs also\n",ANSI_FG_RED));
         return 0;
       }
@@ -337,7 +338,7 @@ word_t calculate(int p, int q, bool * success){
       case(TK_DIV):  return P1 /  P2;
       case(TK_SL):   return P1 << P2;
       case(TK_SR):   return P1 >> P2;
-      //well, we still need this... consider expressions like a singal number like 1
+      //well, we still need this... just consider expressions like a singal number such as: 1
       default: 
       {
         word_t result;
