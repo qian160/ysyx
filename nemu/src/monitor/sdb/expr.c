@@ -3,7 +3,7 @@
  * Type 'man regex' for more information about POSIX regex functions.
  */
 #include <regex.h>        
-#define is_arith(TK) (TK >= MULT && TK <= SR)
+#define is_arith(TK) (TK >= MULT && TK <= AND)
 enum {
   DECNUM,
   HEXNUM,
