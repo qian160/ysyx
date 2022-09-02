@@ -324,8 +324,8 @@ word_t calculate(int p, int q, bool * success){
     //Log("p = %d, q = %d, prime = %d, left check: %d, right check: %d\n",p, q, prime, checkLeft, checkRight);
     if(!checkLeft || !checkRight){
       if(!(type == TK_DECNUM || type == TK_HEXNUM)){
-        printf(ANSI_FMT("illegal expression\n",ANSI_FG_RED));
-        //return 0;
+        printf(ANSI_FMT("illegal expression...maybe bugs also\n",ANSI_FG_RED));
+        return 0;
       }
     }
     int sp1 = p + *removed1, sp2 = prime + 1 + *removed2;
