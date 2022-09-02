@@ -113,6 +113,12 @@ bool pop(){
   S.top--;
   return true;
 }
+
+void tranverse(){
+  for(int i = 0; i < S.top; i++)
+    printf("%c\n", S.parentheses[i]);
+  putchar('\n');
+}
 #define LEFT  '('
 #define RIGHT ')'
 
@@ -147,6 +153,7 @@ bool check_parentheses(int p, int q, char * removed){   //scan the array and use
       if(S.top > 1 && S.parentheses[S.top -2] == LEFT)
         S.top -= 2;
     }
+    tranverse();
   }
   return S.top == 0;
 }
@@ -158,7 +165,7 @@ int find_prime_idx(int p, int q)    //the prime opt should have low privilege
   int index = p;
   Log("find from %d to %d...the substr is:\n",p, q);
   for(int j = p; j <= q; j++)
-    printf("%s\t", tokens[j].str);
+    printf("%s  ", tokens[j].str);
   putchar('\n');
   for(; p <= q; p++ ){
     int type = tokens[p].type;
@@ -254,7 +261,7 @@ word_t calculate(int p, int q, bool * success){
   }
   Log("calculate from %d to %d...the substr is:\n",p, q);
   for(int j = p; j <= q; j++)
-    printf("%s\t", tokens[j].str);
+    printf("%s ", tokens[j].str);
   putchar('\n');
   char * removed = (char *)malloc(1);
   *removed = false;
