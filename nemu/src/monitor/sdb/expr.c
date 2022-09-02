@@ -318,7 +318,7 @@ word_t calculate(int p, int q, bool * success){
       so far I have not solved this puzzle yet. I'm just tyring to avoid some of these bugs.
       The good news is that as long as you don't write strange expressions, the result should be correct
     */
-    int prime = find_prime_idx(p, q);
+    int prime = dominant_operator(p, q);
     type = tokens[prime].type;
     //some preprocess must be done before the substr's check...
     bool checkLeft  = check_parentheses(p, prime - 1, removed1);
