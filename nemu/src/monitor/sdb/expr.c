@@ -290,10 +290,12 @@ word_t calculate(int p, int q, bool * success){
   if(p == q || type == TK_DECNUM || type == TK_HEXNUM){      //can directly return
     if(type == TK_DECNUM){
       sscanf(tk_val, "%ld", &result);
+      Log("decimal found: %d\n",result);
       return result;
     }
     else if(type == TK_HEXNUM){
       sscanf(tk_val, "%lx", &result);
+      Log("hexcimal found: %d\n",result);
       return result;
     }
     else{   //the single token should be of numeric type, not others
@@ -320,7 +322,7 @@ word_t calculate(int p, int q, bool * success){
     int sp1 = p + *removed1, sp2 = prime + 1 + *removed2;
     int eq1 = prime - 1 - *removed1, eq2 = q - *removed2;
     type  = tokens[prime].type;
-    
+
     switch(type){
       case(TK_ADD):  Log("%ld + %ld = %ld", P1, P2, P1 + P2);return P1 +  P2; 
       case(TK_SUB):  Log("%ld - %ld = %ld", P1, P2, P1 - P2);return P1 -  P2;
