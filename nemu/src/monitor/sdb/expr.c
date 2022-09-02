@@ -125,7 +125,6 @@ void tranverse(){
 bool check_parentheses(int p, int q, char * removed){   //scan the array and use a stack
   if( p > q ) return false; //something went wrong...
   S.top = 0;    ///reset the stack
-  Log("check from %d to %d\n", p, q);
   //if surrounded by a pair of parentheses, just throw it away
   int sp = p, eq = q;   //startt of p && end of q
   while((tokens[sp].type == TK_LEFT && tokens[eq].type == TK_RIGHT)){
