@@ -315,7 +315,7 @@ word_t calculate(int p, int q, bool * success){
       case(TK_SUB):  return P1 - P2;
       case(TK_MULT): return P1 * P2;
       case(TK_DIV):  return P1 / P2;
-      default: Assert(0, "hope this would not happen...\n");
+      default: printf("nothing will be done\n");//Assert(0, "hope this would not happen...\n");
     }
   }
   return 0; //will not be execuated..
