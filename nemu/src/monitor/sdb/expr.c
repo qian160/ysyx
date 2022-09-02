@@ -139,6 +139,7 @@ bool check_parentheses(int p, int q, char * removed){   //scan the array and use
     printf("%s  ",tokens[i].str);
   putchar('\n');
   */
+  if(p > q || q < 0 || q < 0) return true;
   int sp = p, eq = q;   //start of p && end of q
   while((tokens[sp].type == TK_LEFT && tokens[eq].type == TK_RIGHT)){ //logic short-circuting
     strcpy(tokens[sp].str, "removed");
