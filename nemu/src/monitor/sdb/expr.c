@@ -159,11 +159,16 @@ bool check_parentheses(int p, int q, char * removed){   //scan the array and use
   }
   return S.top == 0;
 }
+typedef struct {
+  int priv[10];
+  int top;
+}privStack;   //for privilege recovery in prime find
+
+privStack PS;
 
 int find_prime_idx(int p, int q)    //the prime opt should have low privilege
 {
   int priv = 114514;      //very high privilege, so any new income will be lower than it and replace it
-  int oldpriv = 1919810;
   int index = p;
   /*
   Log("find from %d to %d...\nthe substr is:\n",p, q);
@@ -171,6 +176,7 @@ int find_prime_idx(int p, int q)    //the prime opt should have low privilege
     printf("%s  ", tokens[j].str);
   putchar('\n');
   */
+  PS.top = 0;
   for(; p <= q; p++ ){
     int type = tokens[p].type;
     if(type == TK_ADD || type == TK_SUB){
@@ -186,11 +192,11 @@ int find_prime_idx(int p, int q)    //the prime opt should have low privilege
       }
     }
     else if(type == TK_LEFT){
-      oldpriv = priv;
+      PS.priv[PS.top++] = priv;
       priv = -1;    //temorarily refuse any requests 
     }
     else if(type == TK_RIGHT){
-      priv = oldpriv;
+      priv = PS.priv[--PS.top];
     }
     //default 
     else if(type == TK_DECNUM || type == TK_HEXNUM){
