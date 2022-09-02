@@ -290,6 +290,7 @@ word_t calculate(int p, int q, bool * success){
   *removed2 = 0;
 
   int prime = find_prime_idx(p, q);
+  Log("prime = %s\n", tokens[prime].str);
   bool checkLeft  = check_parentheses(p, prime - 1, removed1);
   bool checkRight = check_parentheses(prime + 1, q, removed2);
   //Log("p = %d, q = %d, prime = %d, left check: %d, right check: %d\n",p, q, prime, checkLeft, checkRight);
