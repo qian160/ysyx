@@ -313,13 +313,15 @@ word_t calculate(int p, int q, bool * success){
     *removed1 = 0;
     char * removed2 = (char *)malloc(1);
     *removed2 = 0;
-
+    /*it's hard to decide which function to call first(find vs check)
+      if we call find first, 
+    */
     int prime = find_prime_idx(p, q);
     type = tokens[prime].type;
     bool checkLeft  = check_parentheses(p, prime - 1, removed1);
     bool checkRight = check_parentheses(prime + 1, q, removed2);
     //Log("p = %d, q = %d, prime = %d, left check: %d, right check: %d\n",p, q, prime, checkLeft, checkRight);
-    if(!checkLeft || !checkRight){
+    if(!checkLeft || !checkRight || ((!checkLeft || ! checkRight ) && type == TK_DECNUM || type == TK_HEXNUM)){
       printf(ANSI_FMT("illegal expression\n",ANSI_FG_RED));
       return 0;
     }
