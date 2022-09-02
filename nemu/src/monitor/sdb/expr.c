@@ -155,7 +155,8 @@ void tranverse(){
   b.left = '(' && right = ')' && have more than 1 continous bras one one side
 
   as for the 6th case....
-  how about ignoring all the cases and just try if we can throw? 
+  since hard to decide, let's come to the rude way.
+  how about forgetting about all the cases and just have a try to see if we can throw? 
   1.left = .... right = ...
   2.have a try if we can throw. if it turns out to be can && cond 1 is true, then throw
 
@@ -264,7 +265,7 @@ static bool make_token(char *e) {
     }
   }
 //how to define?
-//#ifdef PRINT_TOKEN
+#ifdef PRINT_TOKEN
   printf("here are the tokens:\n");
   for(int i =0 ; i < nr_token; i++)
   {
@@ -275,7 +276,7 @@ static bool make_token(char *e) {
   }
   putchar('\n');
   putchar('\n');
-//#endif
+#endif
   //------
   return true;
 }
