@@ -317,11 +317,7 @@ word_t calculate(int p, int q, bool * success){
       if we call find first, the left && right 2 substrs will be divided and this may affect the check
       but if we call check first, since not all the left-most parentheses match with the right-most ones, it may not remove the tokens correctly
     */
-    while (/* condition */)
-    {
-      /* code */
-    }
-    (tokens[p].type == TK_LEFT && tokens[q].type == TK_RIGHT){
+    while(tokens[p].type == TK_LEFT && tokens[q].type == TK_RIGHT){
       tokens[p++].type = TK_NOTYPE;
       tokens[q--].type = TK_NOTYPE;
     }
