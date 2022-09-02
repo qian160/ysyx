@@ -271,10 +271,7 @@ static bool make_token(char *e) {
   //------
   return true;
 }
-/*
-#define P1 calculate(p, prime - 1, success)
-#define P2 calculate(prime + 1, q, success)
-*/
+
 #define P1 calculate(sp1, eq1, success)
 #define P2 calculate(sp2, eq2, success)
 
@@ -325,7 +322,7 @@ word_t calculate(int p, int q, bool * success){
       case(TK_DIV):  return P1 /  P2;
       case(TK_SL):   return P1 << P2;
       case(TK_SR):   return P1 >> P2;
-      default: Assert(0, "bad type: %d\n",type);//return(calculate(p + 1, q - 1, success));//
+      default: Assert(0, "bad type: hope this would not happen.......%d\n",type);
     }
   }
   return 0; //will not be execuated..
