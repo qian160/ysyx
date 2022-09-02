@@ -130,8 +130,8 @@ bool check_parentheses(int p, int q, char * removed){   //scan the array and use
   for(int i = p; i <= q; i++)
     printf("%s  ",tokens[i].str);
   putchar('\n');
-  int sp = p, eq = q;   //startt of p && end of q
-  while(tokens[sp++].type == TK_LEFT && tokens[eq--].type == TK_RIGHT){
+  int sp = p, eq = q;   //start of p && end of q
+  while((tokens[sp++].type == TK_LEFT && tokens[eq--].type == TK_RIGHT)){
     strcpy(tokens[sp-1].str, "removed");
     strcpy(tokens[eq+1].str, "removed");    
     tokens[sp-1].type = TK_NOTYPE;
@@ -139,7 +139,7 @@ bool check_parentheses(int p, int q, char * removed){   //scan the array and use
     (*removed)++;
   }
   Log("after check, p = %d, q = %d\n",sp, eq);
-  if(sp^eq){
+  if(sp < eq){
     sp--;eq++;
   }
   int t1 = sp, t2 = eq;
