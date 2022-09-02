@@ -156,7 +156,7 @@ bool check_parentheses(int p, int q, char * removed){   //scan the array and use
 
     }
   }
-  Log("check from %d to %d: %d",p, q, S.top == 0);
+  Log("check result: %d", S.top == 0);
   return S.top == 0;
 }
 typedef struct {
