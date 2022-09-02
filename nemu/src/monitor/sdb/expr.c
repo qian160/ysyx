@@ -202,25 +202,15 @@ static int dominant_operator(int start, int end)
     if (tokens[i].type == HEXNUM || tokens[i].type == DECNUM || tokens[i].type == REG)
       continue;
     //number can't be operator
-    int bra_count = 0;		
-    bool flag = true;		
-    for (int j = i - 1; j >= start; j--)
-    { 			
-      if (tokens[j].type == LEFT) 
-      {        
-        if (bra_count == 0) 
-        {          
-          flag = false;          
-          break;        
-        }        
-        bra_count--;      
-      }			
-      if (tokens[j].type == RIGHT)
-        bra_count++; 		
+    if(tokens[i].type == LEFT){
+      PS.priv[PS.top++] = pri_min;   //temporarily refuse any requests
+      pri_min = -1;
     }
-    if (!flag)      
-      continue;		
-    if (tokens[i].priv <= pri_min) 
+    else if(tokens[i].type == RIGHT){
+      if(PS.top == 0) Assert(0, "bra error\n");
+      pri_min = PS.priv[--PS.top];
+    }
+    else if (tokens[i].priv <= pri_min) 
     {      
       op = i;      
       pri_min = tokens[op].priv;
