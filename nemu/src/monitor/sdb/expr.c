@@ -244,6 +244,7 @@ static bool make_token(char *e) {
         //    i, rules[i].regex, position, substr_len, substr_len, substr_start);
 
         //produce the token string and copy it to the array
+
         if(rules[i].token_type != TK_NOTYPE){
             char * token = (char *)malloc(substr_len + 1);
             for(int t = 0; t < substr_len; t++)
@@ -331,7 +332,19 @@ word_t calculate(int p, int q, bool * success){
       case(TK_DIV):  return P1 /  P2;
       case(TK_SL):   return P1 << P2;
       case(TK_SR):   return P1 >> P2;
-      default: Assert(0, "bad type: hope this would not happen.......%d\n",type);
+      //well, we still need this... consider expressions like a singal number like 1
+      default: 
+      {
+        word_t resultt;
+        if(type == TK_DECNUM){
+          sscanf(tokens[prime].str, "%ld", &result);
+        }
+        else if(type == TK_HEXNUM){
+          sscanf(tokens[prime].str, "%lx", &result);
+        }
+        return result;
+      }
+      //Assert(0, "bad type: hope this would not happen.......%d\n",type);
     }
   }
   return 0; //will not be execuated..
