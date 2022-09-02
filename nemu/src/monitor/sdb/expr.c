@@ -18,6 +18,7 @@ enum {
   TK_RIGHT,
   TK_NOTYPE, 
   TK_REG,
+  TK_POINTER,
   /* TODO: Add more token types */
 
 };
@@ -67,7 +68,7 @@ static struct rule {
   {"<<",              TK_SL},
   {">>",              TK_SR},
   {"$[a-zA-Z]{2}",    TK_REG},
-  {"\\*"}
+  //{"\\*",             TK_POINTER},
 };
 
 #define NR_REGEX ARRLEN(rules)
