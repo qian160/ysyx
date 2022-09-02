@@ -290,12 +290,12 @@ word_t calculate(int p, int q, bool * success){
   if(p == q || type == TK_DECNUM || type == TK_HEXNUM){      //can directly return
     if(type == TK_DECNUM){
       sscanf(tk_val, "%ld", &result);
-      Log("decimal found: %d\n",result);
+      Log("decimal found: %ld\n",result);
       return result;
     }
     else if(type == TK_HEXNUM){
       sscanf(tk_val, "%lx", &result);
-      Log("hexcimal found: %d\n",result);
+      Log("hexcimal found: %ld\n",result);
       return result;
     }
     else{   //the single token should be of numeric type, not others
