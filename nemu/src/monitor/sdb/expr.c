@@ -139,9 +139,7 @@ bool check_parentheses(int p, int q, char * removed){   //scan the array and use
     (*removed)++;
   }
   Log("after check, p = %d, q = %d\n",sp, eq);
-  if(sp < eq){
-    sp--;eq++;
-  }
+
   int t1 = sp, t2 = eq;
   Log("after chek, the substr is from %d to %d:\n", t1, t2);
   for(int i = t1; i <= t2; i++)
