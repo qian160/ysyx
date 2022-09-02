@@ -125,9 +125,9 @@ void tranverse(){
 bool check_parentheses(int p, int q, char * removed){   //scan the array and use a stack
   if( p > q ) return false; //something went wrong...
   S.top = 0;    ///reset the stack
+  Log("check from %d to %d\n", p, q);
   //if surrounded by a pair of parentheses, just throw it away
   if(tokens[p].type == TK_LEFT && tokens[q].type == TK_RIGHT){
-    
     tokens[p].type = TK_NOTYPE;
     tokens[q].type = TK_NOTYPE;
     strcpy(tokens[p].str, "removed");
@@ -146,12 +146,16 @@ bool check_parentheses(int p, int q, char * removed){   //scan the array and use
   }
   for(; p <= q; p++){
     char type = tokens[p].type;
-    if(type == TK_LEFT)
+    if(type == TK_LEFT){
       push(LEFT);
+      Log("p = %d, a left found\n",p);
+    }
     else if(type == TK_RIGHT){
       push(RIGHT);
+      Log("p = %d, a right found\n",p);
       if(S.top > 1 && S.parentheses[S.top -2] == LEFT)
         S.top -= 2;
+
     }
     printf("the stack is:\n");
     tranverse();
