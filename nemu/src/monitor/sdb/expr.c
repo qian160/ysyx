@@ -54,7 +54,7 @@ enum {
 */
 //match: the bra is good but not the first case.
 
-static enum {  BRA_SURROUNDED, MATCH, DISMATCH, };
+enum {  BRA_SURROUNDED, MATCH, DISMATCH, };
 
 static struct rule {
   const char *regex;
