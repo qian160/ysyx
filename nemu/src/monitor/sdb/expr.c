@@ -198,7 +198,7 @@ static int dominant_operator(int start, int end)
   Log("search from %d to %d\n",start, end);
   for (int i = start; i <= end;i ++)
   {		
-    log("i = %d, priv_min = %d, token_priv = %d\n", i, pri_min, tokens[i].priv);
+    Log("i = %d, priv_min = %d, token_priv = %d\n", i, pri_min, tokens[i].priv);
     if (tokens[i].type == HEXNUM || tokens[i].type == DECNUM || tokens[i].type == REG)
       continue;
     //number can't be operator
