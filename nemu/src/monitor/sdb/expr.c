@@ -267,6 +267,7 @@ word_t calculate(int p, int q, bool * success){
   }
   char * removed = (char *)malloc(1);   //the number of pair of parentheses removed
   *removed = 0;
+  //a guess: find prime before check parentheses. Though this method will check parenthese twice...
   if(!check_parentheses(p, q, removed)){
     printf(ANSI_FMT("illegal expression\n",ANSI_FG_RED));
     return 0;
