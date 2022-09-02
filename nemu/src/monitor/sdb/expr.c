@@ -138,9 +138,10 @@ bool check_parentheses(int p, int q, char * removed){   //scan the array and use
     tokens[eq+1].type = TK_NOTYPE;
     (*removed)++;
   }
-  sp--;eq++;
+  if(sp^eq)
+    sp--;eq++;
   int t1 = sp, t2 = eq;
-  Log("after chek, the substr is:\n");
+  Log("after chek, the substr is from %d to %d:\n", t1, t2);
   for(int i = t1; i <= t2; i++)
     printf("%s  ",tokens[i].str);
   putchar('\n');
