@@ -7,6 +7,7 @@
 
 // this should be enough
 static char buf[65536] = {};
+static int index = 0;
 static char code_buf[65536 + 128] = {}; // a little larger than `buf`
 static char *code_format =
 "#include <stdio.h>\n"
@@ -15,9 +16,40 @@ static char *code_format =
 "  printf(\"%%u\", result); "
 "  return 0; "
 "}";
+void gen_num()
+{
+	int length = rand() % 10;
+	int i = length;
+	while(i--)
+	{
+		buf[index] = rand() % 10 + '0';		//bug: start at 0
+	}
+}
+
+void gen_left(){
+	buf[index++] = '(';
+}
+
+void gen_op()
+{
+	char * op ={'+', '-', '*', '/'};
+	int idx = rand() % 4;
+	buf[index++] = op[idx];
+}
+
+void gen_right()
+{
+	buf[index++] = ')';
+}
 
 static void gen_rand_expr() {
-  buf[0] = '\0';
+	int r = rand() % 3;
+	switch(r)
+	{
+		case(0):gen_num();break;
+		case(1):gen_left();gen_rand_expr();gen_right();break;
+		case(2);gen_rand_expr();gen_op();gen_rand_expr();break;
+	}
 }
 
 int main(int argc, char *argv[]) {
