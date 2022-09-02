@@ -177,14 +177,13 @@ int find_prime_idx(int p, int q)    //the prime opt should have low privilege
 {
   int priv = 114514;      //very high privilege, so any new income will be lower than it and replace it
   int index = p;
-  
+  /*
   Log("find from %d to %d...\nthe substr is:\n",p, q);
   for(int j = p; j <= q; j++)
     printf("%s  ", tokens[j].str);
   putchar('\n');
-  
+  */
   PS.top = 0;
-  int pp = p, qq = q;
   for(; p <= q; p++ ){
     int type = tokens[p].type;
     if(type == TK_ADD || type == TK_SUB || type == TK_SL || type == TK_SR){
@@ -214,7 +213,7 @@ int find_prime_idx(int p, int q)    //the prime opt should have low privilege
       }
     }
   }
-  Log("from %d to %d, the prime is %s", pp, qq, tokens[index].str);
+  Log("from %d to %d, the prime is %s", p, q, tokens[index].str);
   return index;
 }
 //this function will add tokens to the array
@@ -283,19 +282,33 @@ word_t calculate(int p, int q, bool * success){
   //find prime, if only 1 token is found, directly return. else recursively call calculate itself
   if(p > q || !success || p < 0 || q < 0){
     return 0;
-  }  
-  word_t result;
-  int type  = tokens[p].type;
+  }
+
+  char * removed1 = (char *)malloc(1);   //the number of pair of parentheses removed
+  *removed1 = 0;
+  char * removed2 = (char *)malloc(1);
+  *removed2 = 0;
+
+  int prime = find_prime_idx(p, q);
+  bool checkLeft  = check_parentheses(p, prime - 1, removed1);
+  bool checkRight = check_parentheses(prime + 1, q, removed2);
+  //Log("p = %d, q = %d, prime = %d, left check: %d, right check: %d\n",p, q, prime, checkLeft, checkRight);
+  if(!checkLeft || !checkRight){
+    printf(ANSI_FMT("illegal expression\n",ANSI_FG_RED));
+    return 0;
+  }
+  int sp1 = p + *removed1, sp2 = prime + 1 + *removed2;
+  int eq1 = prime - 1 - *removed1, eq2 = q - *removed2;
+  int type  = tokens[prime].type;
   char * tk_val = tokens[p].str;
-  if(p == q ){      //can directly return
+  word_t result;
+  if(p == q || type == TK_DECNUM || type == TK_HEXNUM){      //can directly return
     if(type == TK_DECNUM){
       sscanf(tk_val, "%ld", &result);
-      Log("decimal found: %ld\n",result);
       return result;
     }
     else if(type == TK_HEXNUM){
       sscanf(tk_val, "%lx", &result);
-      Log("hexcimal found: %ld\n",result);
       return result;
     }
     else{   //the single token should be of numeric type, not others
@@ -305,44 +318,14 @@ word_t calculate(int p, int q, bool * success){
     }
   }
   else {
-    char * removed1 = (char *)malloc(1);   //the number of pair of parentheses removed
-    *removed1 = 0;
-    char * removed2 = (char *)malloc(1);
-    *removed2 = 0;
-
-    int prime = find_prime_idx(p, q);
-    printf(ANSI_FMT("line 314, prime = %s",ANSI_FG_YELLOW),tokens[prime].str);
-    bool checkLeft  = check_parentheses(p, prime - 1, removed1);
-    bool checkRight = check_parentheses(prime + 1, q, removed2);
-    //Log("p = %d, q = %d, prime = %d, left check: %d, right check: %d\n",p, q, prime, checkLeft, checkRight);
-    if(!checkLeft || !checkRight){
-      printf(ANSI_FMT("illegal expression\n",ANSI_FG_RED));
-      return 0;
-    }
-    int sp1 = p + *removed1, sp2 = prime + 1 + *removed2;
-    int eq1 = prime - 1 - *removed1, eq2 = q - *removed2;
-    type  = tokens[prime].type;
-
     switch(type){
-      case(TK_ADD):  Log("%ld + %ld = %ld", P1, P2, P1 + P2);return P1 +  P2; 
-      case(TK_SUB):  Log("%ld - %ld = %ld", P1, P2, P1 - P2);return P1 -  P2;
-      case(TK_MULT): Log("%ld * %ld = %ld", P1, P2, P1 * P2);return P1 *  P2;
-      case(TK_DIV):  Log("%ld / %ld = %ld", P1, P2, P1 / P2);return P1 /  P2;
-      case(TK_SL):   Log("%ld << %ld = %ld", P1, P2, P1 << P2);return P1 << P2;
-      case(TK_SR):   Log("%ld >> %ld = %ld", P1, P2, P1 >> P2);return P1 >> P2;
-      //well, we have to add this...
-      default: {
-        word_t result;
-        if(type == TK_DECNUM){
-          sscanf(tokens[prime].str, "%ld", &result);
-        }
-        else if( type == TK_HEXNUM){
-          sscanf(tokens[prime].str, "%lx", &result);
-        }
-        return result;
-      }
-      
-      //Assert(0, "bad type: %d\n",type);//return(calculate(p + 1, q - 1, success));//
+      case(TK_ADD):  return P1 +  P2; 
+      case(TK_SUB):  return P1 -  P2;
+      case(TK_MULT): return P1 *  P2;
+      case(TK_DIV):  return P1 /  P2;
+      case(TK_SL):   return P1 << P2;
+      case(TK_SR):   return P1 >> P2;
+      default: Assert(0, "bad type: %d\n",type);//return(calculate(p + 1, q - 1, success));//
     }
   }
   return 0; //will not be execuated..
