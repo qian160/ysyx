@@ -153,6 +153,7 @@ bool check_parentheses(int p, int q, char * removed){   //scan the array and use
       if(S.top > 1 && S.parentheses[S.top -2] == LEFT)
         S.top -= 2;
     }
+    printf("the stack is:\n");
     tranverse();
   }
   return S.top == 0;
