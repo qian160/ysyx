@@ -222,8 +222,8 @@ int find_prime_idx(int p, int q)    //the prime opt should have low privilege
         priv = 810;
         index = p;
       }
-      */
     }
+    */
   }
   Log("the prime is %s\n", tokens[index].str);
   return index;
