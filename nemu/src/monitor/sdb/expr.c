@@ -176,6 +176,30 @@ bool check_parentheses(int p, int q, char * removed){   //scan the array and use
   return S.top == 0;
 }
 
+int find_prime_idx(int p, int q){
+  int i,j;
+	int min_priority = 114514;
+	int oper = p;
+	for (i = p; i <= q;i ++)
+	{ //number should not be prime operator
+		if (tokens[i].type == DECNUM || tokens[i].type == HEXNUM || tokens[i].type == REG)
+			continue;
+		int cnt = 0;
+		bool key = true;
+		for (j = i - 1; j >= p ;j --)
+		{ 
+			if (tokens[j].type == '(' && !cnt){key = false;break;}
+			if (tokens[j].type == '(')cnt --;
+			if (tokens[j].type == ')')cnt ++; 
+		}
+		if (!key)continue;
+		if (tokens[i].priority <= min_priority){
+      min_priority = tokens[i].priority;
+      oper = i;
+    }
+  }
+	return oper;
+}
 //this function will add tokens to the array
 
 static bool make_token(char *e) {
