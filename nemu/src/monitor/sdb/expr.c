@@ -54,7 +54,7 @@ enum {
 */
 //match: the bra is good but not the first case.
 
-enum {  BRA_SURROUNDED, MATCH, DISMATCH };
+static enum {  BRA_SURROUNDED, MATCH, DISMATCH };
 
 static struct rule {
   const char *regex;
@@ -142,25 +142,42 @@ void tranverse(){
     printf("%c\n", S.parentheses[i]);
   putchar('\n');
 }
+
+/*  about surrounding:
+  1.(1 + 2)       okay  2.(1 + 2) + (3 + 4) not okay!
+  3.(3 * (2 + 1)) okay  4.((1 + 2) * 3)     okay
+  5.(((1 + 2)))   okay
+
+  the rule seems to be:
+  a.left = '(' && right = ')' &&  #bras = 2 (easy case)
+  b.left = '(' && right = ')' && have more than 1 continous bras one one side
+
+*/
 //when only 1 token exists, the argument  prime - 1 will be bad...
 int check_parentheses(int p, int q){   //scan the array and use a stack
   if( p > q ) return DISMATCH; //something went wrong...
   S.top = 0;    ///reset the stack
-  bool surround_flag = (tokens[p].type == LEFT && tokens[q].type == RIGHT);
+  bool surround_flag = (tokens[p].type == LEFT && tokens[q].type == RIGHT); //this must be true if you want to return a bra_surrounded
+  bool continous2    = (q > 1 ) && (tokens[p].type == LEFT && tokens[p+1].type == LEFT) \
+                                    || (tokens[q].type == RIGHT && tokens[q-1].type == RIGHT);
+  int braCount = 0;
   for(; p <= q; p++){
     char type = tokens[p].type;
     if(type == LEFT){
       push(LEFT);
+      braCount++;
     }
     else if(type == RIGHT){
       push(RIGHT);
+      braCount++;
       if(S.top > 1 && S.parentheses[S.top -2] == LEFT)
         S.top -= 2;
     }
   }
-  if(S.top == 0 && surround_flag) return BRA_SURROUNDED;
-  else if(S.top == 0) return MATCH;
-  else return DISMATCH;
+  bool easyCase = (braCount == 2);
+  if(S.top != 0) return DISMATCH;
+  else if(surround_flag && (easyCase || continous2)) return BRA_SURROUNDED;
+  else return MATCH;
 }
 typedef struct {
   int priv[10];
