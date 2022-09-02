@@ -108,15 +108,15 @@ void init_regex() {   //called by init_sdb()
 
 typedef struct token {
   int   type;
-  char  str[32];
+  char  str[32];    //name
   int   priv;
 }Token;
 
-static Token tokens[1000] __attribute__((used)) = {};   //for test, we enlarge the buffer size
+static Token tokens[2000] __attribute__((used)) = {};   //for test, we enlarge the buffer size
 static int nr_token __attribute__((used))  = 0;
 
 typedef struct{
-  char parentheses[200];   //20 is very enough
+  char parentheses[2000];   //20 is very enough
   int  top;
 }easyStack;    //for parentheses check. No boundary check
 
