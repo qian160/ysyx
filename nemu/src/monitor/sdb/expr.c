@@ -147,10 +147,17 @@ void tranverse(){
   1.(1 + 2)       okay  2.(1 + 2) + (3 + 4) not okay!
   3.(3 * (2 + 1)) okay  4.((1 + 2) * 3)     okay
   5.(((1 + 2)))   okay
+  
+  6(1 + (2) + 3). okay!!!
 
   the rule seems to be:
   a.left = '(' && right = ')' &&  #bras = 2 (easy case)
   b.left = '(' && right = ')' && have more than 1 continous bras one one side
+
+  as for the 6th case....
+  how about ignoring all the cases and just try if we can throw? 
+  1.left = .... right = ...
+  2.have a try if we can throw. if it turns out to be can && cond 1 is true, then throw
 
 */
 //when only 1 token exists, the argument  prime - 1 will be bad...
@@ -158,25 +165,40 @@ int check_parentheses(int p, int q){   //scan the array and use a stack
   if( p > q ) return DISMATCH; //something went wrong...
   S.top = 0;    ///reset the stack
   bool surround_flag = (tokens[p].type == LEFT && tokens[q].type == RIGHT); //this must be true if you want to return a bra_surrounded
-  bool continous2    = ((q > 1 )) && ((tokens[p].type == LEFT && tokens[p+1].type == LEFT) \
-                                    || (tokens[q].type == RIGHT && tokens[q-1].type == RIGHT));
-  int braCount = 0;
+  bool removeSafe = false;
+  //test if we can safely remove the bras
+  if(surround_flag){
+    for(int j = p + 1; j <= q - 1; j++){
+      char type = tokens[j].type;
+      if(type == LEFT){
+        push(LEFT);
+      }
+      else if(type == RIGHT){
+        push(RIGHT);
+        if(S.top > 1 && S.parentheses[S.top -2] == LEFT)
+          S.top -= 2;
+      }
+    }
+    removeSafe = S.top == 0;
+  }
+  S.top = 0;
+  Log("check from %d to %d, the substr is\n",p , q);
+  for(int i = p; i<= q; i++)
+    printf("%s  ",tokens[i].str);
+  putchar('\n');
   for(; p <= q; p++){
     char type = tokens[p].type;
     if(type == LEFT){
       push(LEFT);
-      braCount++;
     }
     else if(type == RIGHT){
       push(RIGHT);
-      braCount++;
       if(S.top > 1 && S.parentheses[S.top -2] == LEFT)
         S.top -= 2;
     }
   }
-  bool easyCase = (braCount == 2);
   if(S.top != 0) return DISMATCH;
-  else if(surround_flag && (easyCase || continous2)) return BRA_SURROUNDED;
+  else if(surround_flag && removeSafe) return BRA_SURROUNDED;
   else return MATCH;
 }
 typedef struct {
@@ -189,6 +211,10 @@ privStack PS;
 static int dominant_operator(int start, int end)
 {	
   int op = start, pri_min = 10;	
+  Log("find from %d to %d, the substr is:\n",start, end);
+  for(int i = start; i <= end; i++)
+    printf("%s  ",tokens[i].str);
+  putchar('\n');
   for (int i = start; i <= end;i ++)
   {		
     if (tokens[i].type == HEXNUM || tokens[i].type == DECNUM || tokens[i].type == REG)
