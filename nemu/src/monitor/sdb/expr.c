@@ -193,6 +193,9 @@ privStack PS;
 static int dominant_operator(int start, int end)
 {	
   int op = start, pri_min = 10;	
+  while(tokens[start].type == LEFT && tokens[end].type == RIGHT){
+    start ++; end --;
+  }
   for (int i = start; i <= end;i ++)
   {		
     //Log("before:i = %d, priv_min = %d, token_priv = %d\n", i, pri_min, tokens[i].priv);
