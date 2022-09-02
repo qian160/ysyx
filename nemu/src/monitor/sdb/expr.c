@@ -138,6 +138,7 @@ bool check_parentheses(int p, int q, char * removed){   //scan the array and use
     tokens[eq+1].type = TK_NOTYPE;
     (*removed)++;
   }
+  Log("after check, p = %d, q = %d\n",sp, eq);
   if(sp^eq){
     sp--;eq++;
   }
