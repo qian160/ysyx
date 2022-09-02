@@ -131,11 +131,11 @@ bool check_parentheses(int p, int q, char * removed){   //scan the array and use
     printf("%s  ",tokens[i].str);
   putchar('\n');
   int sp = p, eq = q;   //start of p && end of q
-  while((tokens[sp++].type == TK_LEFT && tokens[eq--].type == TK_RIGHT)){
-    strcpy(tokens[sp-1].str, "removed");
-    strcpy(tokens[eq+1].str, "removed");    
-    tokens[sp-1].type = TK_NOTYPE;
-    tokens[eq+1].type = TK_NOTYPE;
+  while((tokens[sp].type == TK_LEFT && tokens[eq].type == TK_RIGHT)){ //logic short-circuting
+    strcpy(tokens[sp].str, "removed");
+    strcpy(tokens[eq].str, "removed");    
+    tokens[sp++].type = TK_NOTYPE;
+    tokens[eq--].type = TK_NOTYPE;
     (*removed)++;
   }
   Log("after check, p = %d, q = %d\n",sp, eq);
