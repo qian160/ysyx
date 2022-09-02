@@ -302,7 +302,7 @@ word_t calculate(int p, int q, bool * success){
       case(TK_SUB):  return P1 - P2;
       case(TK_MULT): return P1 * P2;
       case(TK_DIV):  return P1 / P2;
-      default: Assert(0, "hope this would not happen...\n");//return(calculate(p + 1, q - 1, success));//
+      default: Assert(0, "bad type: %d\n",type);//return(calculate(p + 1, q - 1, success));//
     }
   }
   return 0; //will not be execuated..
