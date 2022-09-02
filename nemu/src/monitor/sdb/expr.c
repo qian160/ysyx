@@ -252,6 +252,7 @@ word_t calculate(int l, int r){
   else if (check_parentheses (l,r))return calculate (l + 1, r - 1);
   else {
 		int op = find_prime_idx (l, r);
+    Log("the op is %s\n", tokens[op].str);
     if (l == op /*|| tokens[op].type == POINTOR || token [op].type == NEG*/)
 		{
 			word_t val = calculate (l + 1,r);
