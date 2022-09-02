@@ -61,21 +61,23 @@ static struct rule {
   /* TODO: Add more rules.
    * Pay attention to the precedence level of different rules.
    */
-  {"0[xX][0-9a-f]+",  HEXNUM},   //check before DECNUM, or the 0 prefix will be lost
-  {"[0-9]+",          DECNUM},
-  {"==",              EQ},       // equal
-  {"\\*",             MULT},     // mult and div should be treated before add/sub
-  {"/",               DIV},   
-  {"-",               SUB},      // sub  
-  {"\\+",             ADD},      // plus,'+' has special meaning thus need some \. \+ means '+'. However to recognize the first \ we need another \.
-  {" +",              NOTYPE},   // multiple spaces, not addition
-  {"\\s+",            NOTYPE},   // white spaces
-  {"\\(",             LEFT},
-  {"\\)",             RIGHT},
-  {"<<",              SL},
-  {">>",              SR},
-  {"$[a-zA-Z]{2}",    REG},
-  {"\\|",             OR},
+  {"0[xX][0-9a-f]+",  HEXNUM, 0},   //check before DECNUM, or the 0 prefix will be lost
+  {"[0-9]+",          DECNUM, 0},
+  {"==",              EQ,     3},       // equal
+  {"\\*",             MULT,   4},     // mult and div should be treated before add/sub
+  {"/",               DIV,    4},   
+  {"-",               SUB,    4},      // sub  
+  {"\\+",             ADD,    4},      // plus,'+' has special meaning thus need some \. \+ means '+'. However to recognize the first \ we need another \.
+  {" +",              NOTYPE, 0},   // multiple spaces, not addition
+  {"\\s+",            NOTYPE, 0},   // white spaces
+  {"\\(",             LEFT,   9},
+  {"\\)",             RIGHT,  9},
+  {"<<",              SL,     3},
+  {">>",              SR,     3},
+  {"$[a-zA-Z]{2}",    REG,    0},
+  {"\\|",             OR,     1},
+  {"&",               AND,    1},
+  {"\\^",             XOR,    2},
 
   //{"\\*",             POINTER},
 };
@@ -294,9 +296,6 @@ static bool make_token(char *e) {
   return true;
 }
 
-#define P1 calculate(sp1, eq1, success)
-#define P2 calculate(sp2, eq2, success)
-
 word_t calculate(int p, int q, bool * success){
   //find prime, if only 1 token is found, directly return. else recursively call calculate itself
   if(p > q || !success || p < 0 || q < 0){
@@ -348,6 +347,8 @@ word_t calculate(int p, int q, bool * success){
     }
     int sp1 = p + *removed1, sp2 = prime + 1 + *removed2;
     int eq1 = prime - 1 - *removed1, eq2 = q - *removed2;
+    word_t P1 = calculate(sp1, eq1, success);
+    word_t P2 = calculate(sp2, eq2, success);
     switch(type){
       case(ADD):  return P1 +  P2; 
       case(SUB):  return P1 -  P2;
@@ -355,6 +356,9 @@ word_t calculate(int p, int q, bool * success){
       case(DIV):  return P1 /  P2;
       case(SL):   return P1 << P2;
       case(SR):   return P1 >> P2;
+      case(XOR):  return P1 ^  P2;
+      case(OR):   return P1 |  P2;
+      case(AND):  return P1 &  P2;
       //well, we still need this... just consider expressions like a singal number such as: 1
       default: 
       {
