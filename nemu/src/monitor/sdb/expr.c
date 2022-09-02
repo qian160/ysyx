@@ -148,7 +148,6 @@ void tranverse(){
 bool check_parentheses(int p, int q, char * removed){   //scan the array and use a stack
   //if( p > q ) return false; //something went wrong...
   S.top = 0;    ///reset the stack
-  //if surrounded by a pair of parentheses, just throw it away
   /*
   Log("check from %d to %d... the original substr is\n", p, q);
   for(int i = p; i <= q; i++)
@@ -197,8 +196,9 @@ static int dominant_operator(int start, int end)
 {	
   int op = start, pri_min = 10;	
   Log("search from %d to %d\n",start, end);
-  for (int i = start; i <= end;i ++)	
+  for (int i = start; i <= end;i ++)
   {		
+    log("i = %d, priv_min = %d, token_priv = %d\n", i, pri_min, tokens[i].priv);
     if (tokens[i].type == HEXNUM || tokens[i].type == DECNUM || tokens[i].type == REG)
       continue;
     //number can't be operator
