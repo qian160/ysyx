@@ -184,10 +184,6 @@ int find_prime_idx(int p, int q)    //the prime opt should have low privilege
   for(int j = p; j <= q; j++)
     printf("%s  ", tokens[j].str);
   putchar('\n');
-  Log("the types are:\n");
-  for(int j = p; j <= q; j++)
-    printf("%d ", tokens[j].type);
-  putchar('\n');
   for(; p <= q; p++ ){
     int type = tokens[p].type;
     if(type == TK_ADD || type == TK_SUB){
