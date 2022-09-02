@@ -156,7 +156,6 @@ bool check_parentheses(int p, int q, char * removed){   //scan the array and use
 
     }
   }
-  Log("check result: %d", S.top == 0);
   return S.top == 0;
 }
 typedef struct {
@@ -290,7 +289,10 @@ word_t calculate(int p, int q, bool * success){
   q -= *removed;
   */
   int prime = find_prime_idx(p, q);
-  if(!check_parentheses(p, prime -1, removed1) || !check_parentheses(prime + 1, q, removed2)){
+  bool checkLeft  = check_parentheses(p, prime - 1, removed1);
+  bool checkRight = check_parentheses(prime + 1, q, removed2);
+  Log("left check: %d, right check: %d\n",checkLeft, checkRight);
+  if(!checkLeft || !checkRight){
     printf(ANSI_FMT("illegal expression\n",ANSI_FG_RED));
     //return 0;
   }
