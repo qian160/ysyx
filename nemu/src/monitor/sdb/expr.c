@@ -191,7 +191,8 @@ int find_prime_idx(int p, int q)    //the prime opt should have low privilege
   PS.top = 0;
   Log("from %d to %d", p, q);
   while(tokens[p].type == TK_LEFT && tokens[q].type == TK_RIGHT){
-    p++;q--;
+    p++;
+    q--;
   }
   for(; p <= q; p++ ){
     int type = tokens[p].type;
@@ -215,12 +216,14 @@ int find_prime_idx(int p, int q)    //the prime opt should have low privilege
       priv = PS.priv[--PS.top];
     }
     //default 
+    /*
     else if(type == TK_DECNUM || type == TK_HEXNUM){
       if(priv >= 810){
         priv = 810;
         index = p;
       }
     }
+    */
   }
   Log("the prime is %s\n", tokens[index].str);
   return index;
@@ -244,7 +247,7 @@ static bool make_token(char *e) {
         //    i, rules[i].regex, position, substr_len, substr_len, substr_start);
 
         //produce the token string and copy it to the array
-
+        //empty token could just be thrown away
         if(rules[i].token_type != TK_NOTYPE){
             char * token = (char *)malloc(substr_len + 1);
             for(int t = 0; t < substr_len; t++)
@@ -310,8 +313,8 @@ word_t calculate(int p, int q, bool * success){
   }
   else {
     char * removed1 = (char *)malloc(1);   //the number of pair of parentheses removed
-    *removed1 = 0;
     char * removed2 = (char *)malloc(1);
+    *removed1 = 0;
     *removed2 = 0;
     /*it's hard to decide which function to call first(find vs check)
       if we call find first, the left && right 2 substrs will be divided and this may affect the check
@@ -319,13 +322,15 @@ word_t calculate(int p, int q, bool * success){
     */
     int prime = find_prime_idx(p, q);
     type = tokens[prime].type;
+    //some preprocess must be done before the substr's check...
     bool checkLeft  = check_parentheses(p, prime - 1, removed1);
     bool checkRight = check_parentheses(prime + 1, q, removed2);
-    //Log("p = %d, q = %d, prime = %d, left check: %d, right check: %d\n",p, q, prime, checkLeft, checkRight);
+    Log("p = %d, q = %d, prime = %d, left check: %d, right check: %d, full check: %d\n",p, q, prime, checkLeft, checkRight, check_parentheses(p, q, removed1));
     if(!checkLeft || !checkRight){
-      if(!(type == TK_DECNUM || type == TK_HEXNUM)){
-        printf(ANSI_FMT("illegal expression\n",ANSI_FG_RED));
-        //return 0;
+      if(check_parentheses(p, q, removed1)){}   //maybe also acceptable?
+      else if(!(type == TK_DECNUM || type == TK_HEXNUM)){
+        printf(ANSI_FMT("illegal expression...maybe bugs also. type = %d\n",ANSI_FG_RED), type);
+        return 0;
       }
     }
     int sp1 = p + *removed1, sp2 = prime + 1 + *removed2;
@@ -337,7 +342,7 @@ word_t calculate(int p, int q, bool * success){
       case(TK_DIV):  return P1 /  P2;
       case(TK_SL):   return P1 << P2;
       case(TK_SR):   return P1 >> P2;
-      //well, we still need this... consider expressions like a singal number like 1
+      //well, we still need this... just consider expressions like a singal number such as: 1
       default: 
       {
         word_t result;
