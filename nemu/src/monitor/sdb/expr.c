@@ -141,7 +141,7 @@ bool check_parentheses(int p, int q, char * removed){   //scan the array and use
     (*removed)++;
   }
 
-  int t1 = sp, t2 = eq;
+  int t1 __attribute__((unused)) = sp, t2 __attribute__((unused)) = eq;
   /*
   Log("after chek, the substr is from %d to %d:\n", t1, t2);
   for(int i = t1; i <= t2; i++)
