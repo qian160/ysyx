@@ -186,7 +186,7 @@ int find_prime_idx(int p, int q)    //the prime opt should have low privilege
   PS.top = 0;
   for(; p <= q; p++ ){
     int type = tokens[p].type;
-    if(type == TK_ADD || type == TK_SUB){
+    if(type == TK_ADD || type == TK_SUB || type == TK_SL || type == TK_SR){
       if(priv >= 0){
         priv = 0;
         index = p;
