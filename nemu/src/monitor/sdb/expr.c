@@ -161,6 +161,10 @@ int check_parentheses(int p, int q){   //scan the array and use a stack
   bool continous2    = ((q > 1 )) && ((tokens[p].type == LEFT && tokens[p+1].type == LEFT) \
                                     || (tokens[q].type == RIGHT && tokens[q-1].type == RIGHT));
   int braCount = 0;
+  Log("check from % to %d, the substr is\n",p , q);
+  for(int i = p; i<= q; i++)
+    printf("%s  ",tokens[i].str);
+  putchar('\n');
   for(; p <= q; p++){
     char type = tokens[p].type;
     if(type == LEFT){
@@ -189,6 +193,10 @@ privStack PS;
 static int dominant_operator(int start, int end)
 {	
   int op = start, pri_min = 10;	
+  Log("find from %d to %d, the substr is:\n",start, end);
+  for(int i = start; i <= end; i++)
+    printf("%s  ",tokens[i].str);
+  putchar('\n');
   for (int i = start; i <= end;i ++)
   {		
     if (tokens[i].type == HEXNUM || tokens[i].type == DECNUM || tokens[i].type == REG)
