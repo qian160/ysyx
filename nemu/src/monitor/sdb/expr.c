@@ -330,7 +330,19 @@ word_t calculate(int p, int q, bool * success){
       case(TK_DIV):  Log("%ld / %ld = %ld", P1, P2, P1 / P2);return P1 /  P2;
       case(TK_SL):   Log("%ld << %ld = %ld", P1, P2, P1 << P2);return P1 << P2;
       case(TK_SR):   Log("%ld >> %ld = %ld", P1, P2, P1 >> P2);return P1 >> P2;
-      default: Assert(0, "bad type: %d\n",type);//return(calculate(p + 1, q - 1, success));//
+      //well, we have to add this...
+      default: {
+        word_t result;
+        if(type == TK_DECNUM){
+          sscanf(tokens[prime].str, "%ld", &result);
+        }
+        else if( type == TK_HEXNUM){
+          sscanf(tokens[prime].str, "%lx", &result);
+        }
+        return result;
+      }
+      
+      //Assert(0, "bad type: %d\n",type);//return(calculate(p + 1, q - 1, success));//
     }
   }
   return 0; //will not be execuated..
