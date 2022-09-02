@@ -127,11 +127,14 @@ bool check_parentheses(int p, int q, char * removed){   //scan the array and use
   S.top = 0;    ///reset the stack
   Log("check from %d to %d\n", p, q);
   //if surrounded by a pair of parentheses, just throw it away
-  if(tokens[p].type == TK_LEFT && tokens[q].type == TK_RIGHT){
-    tokens[p].type = TK_NOTYPE;
-    tokens[q].type = TK_NOTYPE;
-    strcpy(tokens[p].str, "removed");
-    strcpy(tokens[q].str, "removed");    
+  int sp = p, eq = q;   //startt of p && end of q
+  while(!(tokens[sp++].type == TK_LEFT && tokens[eq--].type == TK_RIGHT));
+  //if(tokens[p].type == TK_LEFT && tokens[q].type == TK_RIGHT){
+  if(sp <= eq){
+    tokens[sp].type = TK_NOTYPE;
+    tokens[eq].type = TK_NOTYPE;
+    strcpy(tokens[sp].str, "removed");
+    strcpy(tokens[eq].str, "removed");    
 
     /*
     for(int i = p; i <= q - 2; i++){
@@ -144,15 +147,15 @@ bool check_parentheses(int p, int q, char * removed){   //scan the array and use
     strcpy(tokens[nr_token + 1].str, "removed");
     */
   }
-  for(; p <= q; p++){
-    char type = tokens[p].type;
+  for(; sp <= eq; sp++){
+    char type = tokens[sp].type;
     if(type == TK_LEFT){
       push(LEFT);
-      Log("p = %d, a left found\n",p);
+      Log("p = %d, a left found\n",sp);
     }
     else if(type == TK_RIGHT){
       push(RIGHT);
-      Log("p = %d, a right found\n",p);
+      Log("p = %d, a right found\n",sp);
       if(S.top > 1 && S.parentheses[S.top -2] == LEFT)
         S.top -= 2;
 
