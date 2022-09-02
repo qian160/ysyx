@@ -142,8 +142,6 @@ void tranverse(){
     printf("%c\n", S.parentheses[i]);
   putchar('\n');
 }
-#define LEFT  '('
-#define RIGHT ')'
 //when only 1 token exists, the argument  prime - 1 will be bad...
 bool check_parentheses(int p, int q, char * removed){   //scan the array and use a stack
   //if( p > q ) return false; //something went wrong...
