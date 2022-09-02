@@ -113,6 +113,12 @@ bool pop(){
   S.top--;
   return true;
 }
+
+void tranverse(){
+  for(int i = 0; i < S.top; i++)
+    printf("%c\n", S.parentheses[i]);
+  putchar('\n');
+}
 #define LEFT  '('
 #define RIGHT ')'
 
@@ -120,14 +126,24 @@ bool check_parentheses(int p, int q, char * removed){   //scan the array and use
   if( p > q ) return false; //something went wrong...
   S.top = 0;    ///reset the stack
   //if surrounded by a pair of parentheses, just throw it away
-  if(tokens[p].type == TK_LEFT && tokens[q].type == TK_RIGHT){
-    
-    tokens[p].type = TK_NOTYPE;
-    tokens[q].type = TK_NOTYPE;
-    strcpy(tokens[p].str, "removed");
-    strcpy(tokens[q].str, "removed");    
+  int sp = p, eq = q;   //startt of p && end of q
+  while((tokens[sp].type == TK_LEFT && tokens[eq].type == TK_RIGHT)){
+    strcpy(tokens[sp].str, "removed");
+    strcpy(tokens[eq].str, "removed");    
+    tokens[sp++].type = TK_NOTYPE;
+    tokens[eq--].type = TK_NOTYPE;
+    (*removed)++;
+  };
+  sp--;eq++;
+  //if(tokens[p].type == TK_LEFT && tokens[q].type == TK_RIGHT){
+  /*
+  if(sp <= eq){
+    tokens[sp].type = TK_NOTYPE;
+    tokens[eq].type = TK_NOTYPE;
+    strcpy(tokens[sp].str, "removed");
+    strcpy(tokens[eq].str, "removed");    
 
-    /*
+    //
     for(int i = p; i <= q - 2; i++){
       tokens[i] = tokens[i+1];
     }
@@ -136,16 +152,21 @@ bool check_parentheses(int p, int q, char * removed){   //scan the array and use
     tokens[nr_token + 1].type = TK_NOTYPE;
     strcpy(tokens[nr_token].str, "removed");
     strcpy(tokens[nr_token + 1].str, "removed");
-    */
+    
   }
-  for(; p <= q; p++){
-    char type = tokens[p].type;
-    if(type == TK_LEFT)
+  */
+  for(; sp <= eq; sp++){
+    char type = tokens[sp].type;
+    if(type == TK_LEFT){
       push(LEFT);
+      Log("p = %d, a left found\n",sp);
+    }
     else if(type == TK_RIGHT){
       push(RIGHT);
+      Log("p = %d, a right found\n",sp);
       if(S.top > 1 && S.parentheses[S.top -2] == LEFT)
         S.top -= 2;
+
     }
   }
   return S.top == 0;
@@ -156,9 +177,14 @@ int find_prime_idx(int p, int q)    //the prime opt should have low privilege
   int priv = 114514;      //very high privilege, so any new income will be lower than it and replace it
   int oldpriv = 1919810;
   int index = p;
+  /*
+  Log("find from %d to %d...\nthe substr is:\n",p, q);
+  for(int j = p; j <= q; j++)
+    printf("%s  ", tokens[j].str);
+  putchar('\n');
+  */
   for(; p <= q; p++ ){
     int type = tokens[p].type;
-
     if(type == TK_ADD || type == TK_SUB){
       if(priv >= 0){
         priv = 0;
@@ -167,7 +193,7 @@ int find_prime_idx(int p, int q)    //the prime opt should have low privilege
     }
     else if(type == TK_DIV || type == TK_MULT){
       if(priv >= 1){
-        priv = 1;
+        priv  = 1;
         index = p;
       }
     }
@@ -178,18 +204,19 @@ int find_prime_idx(int p, int q)    //the prime opt should have low privilege
     else if(type == TK_RIGHT){
       priv = oldpriv;
     }
+    //default 
     else if(type == TK_DECNUM || type == TK_HEXNUM){
       if(priv >= 810){
         priv = 810;
         index = p;
       }
-
     }
   }
   return index;
 }
 
 //this function will add tokens to the array
+
 static bool make_token(char *e) {
   int position = 0;
   int i;
@@ -229,12 +256,15 @@ static bool make_token(char *e) {
     }
   }
   //debug
+  printf("the tokens are:\n");
   for(int i =0 ; i < nr_token; i++)
   {
     char * temp = tokens[i].str;
     int type = tokens[i].type;
     printf(ANSI_FMT("token[%2d] = %-8s\ttype = %d\n", ANSI_FG_YELLOW),i, temp, type);
   }
+  putchar('\n');
+  putchar('\n');
   //------
   return true;
 }
@@ -246,16 +276,24 @@ word_t calculate(int p, int q, bool * success){
   if(p > q || !success || p < 0 || q < 0){
     return 0;
   }
-  char * removed = (char *)malloc(1);
-  *removed = false;
+  /*
+  Log("calculate from %d to %d...\nthe substr is:\n",p, q);
+  for(int j = p; j <= q; j++)
+    printf("%s ", tokens[j].str);
+  putchar('\n');
+  Log("the types are:\n");
+  for(int j = p; j <= q; j++)
+    printf("%d ", tokens[j].type);
+  putchar('\n');
+  */
+  char * removed = (char *)malloc(1);   //the number of pair of parentheses removed
+  *removed = 0;
   if(!check_parentheses(p, q, removed)){
     printf(ANSI_FMT("illegal expression\n",ANSI_FG_RED));
     return 0;
   }
-  if(*removed){
-    p++;
-    q--;
-  }
+  p += *removed;
+  q -= *removed;
   int prime = find_prime_idx(p, q);
   int type  = tokens[prime].type;
   char * tk_val = tokens[p].str;
@@ -281,7 +319,7 @@ word_t calculate(int p, int q, bool * success){
       case(TK_SUB):  return P1 - P2;
       case(TK_MULT): return P1 * P2;
       case(TK_DIV):  return P1 / P2;
-      default: Assert(0, "hope this would not happen...\n");
+      default: Assert(0, "hope this would not happen...\n");//return(calculate(p + 1, q - 1, success));//
     }
   }
   return 0; //will not be execuated..
