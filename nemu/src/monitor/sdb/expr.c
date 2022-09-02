@@ -255,7 +255,7 @@ static bool make_token(char *e) {
       return false;
     }
   }
-  //debug
+#ifdef PRINT_TOKEN
   printf("the tokens are:\n");
   for(int i =0 ; i < nr_token; i++)
   {
@@ -265,6 +265,7 @@ static bool make_token(char *e) {
   }
   putchar('\n');
   putchar('\n');
+#endif
   //------
   return true;
 }
