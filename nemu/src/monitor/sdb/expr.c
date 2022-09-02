@@ -198,7 +198,7 @@ static int dominant_operator(int start, int end)
   Log("search from %d to %d\n",start, end);
   for (int i = start; i <= end;i ++)
   {		
-    Log("i = %d, priv_min = %d, token_priv = %d\n", i, pri_min, tokens[i].priv);
+    Log("before:i = %d, priv_min = %d, token_priv = %d\n", i, pri_min, tokens[i].priv);
     if (tokens[i].type == HEXNUM || tokens[i].type == DECNUM || tokens[i].type == REG)
       continue;
     //number can't be operator
@@ -215,6 +215,7 @@ static int dominant_operator(int start, int end)
       op = i;      
       pri_min = tokens[op].priv;
     }  
+    Log("after:i = %d, priv_min = %d, token_priv = %d\n", i, pri_min, tokens[i].priv);
   }	
   printf(ANSI_FMT("the prime is %s\n",ANSI_FG_YELLOW),tokens[op].str);
   return op;
