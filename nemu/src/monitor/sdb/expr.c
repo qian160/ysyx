@@ -64,8 +64,8 @@ static struct rule {
   {"0[xX][0-9a-f]+",  HEXNUM, 0},   //check before DECNUM, or the 0 prefix will be lost
   {"[0-9]+",          DECNUM, 0},
   {"==",              EQ,     3},       // equal
-  {"\\*",             MULT,   4},     // mult and div should be treated before add/sub
-  {"/",               DIV,    4},   
+  {"\\*",             MULT,   5},     // mult and div should be treated before add/sub
+  {"/",               DIV,    5},   
   {"-",               SUB,    4},      // sub  
   {"\\+",             ADD,    4},      // plus,'+' has special meaning thus need some \. \+ means '+'. However to recognize the first \ we need another \.
   {" +",              NOTYPE, 0},   // multiple spaces, not addition
@@ -106,6 +106,7 @@ void init_regex() {   //called by init_sdb()
 typedef struct token {
   int   type;
   char  str[32];
+  int   priv;
 }Token;
 
 static Token tokens[1000] __attribute__((used)) = {};   //for test, we enlarge the buffer size
@@ -265,9 +266,11 @@ static bool make_token(char *e) {
               token[t] = e[position+t];
             token[substr_len] = '\0';
 
-            strcpy(tokens[nr_token].str, token);
-            tokens[nr_token++].type = rules[i].token_type;
-            free(token);
+            //strcpy(tokens[nr_token].str, token);
+            strncpy(tokens[nr_token].e + position, substr_len);
+            tokens[nr_token].str[substr_len] = '\0';
+            tokens[nr_token].type = rules[i].token_type;
+            tokens[nr_token++].priv = rules[i].priv;
         }
 
         position += substr_len;
@@ -281,17 +284,18 @@ static bool make_token(char *e) {
     }
   }
 //how to define?
-#ifdef PRINT_TOKEN
+//#ifdef PRINT_TOKEN
   printf("the tokens are:\n");
   for(int i =0 ; i < nr_token; i++)
   {
     char * temp = tokens[i].str;
     int type = tokens[i].type;
-    printf(ANSI_FMT("token[%2d] = %-8s\ttype = %d\n", ANSI_FG_YELLOW),i, temp, type);
+    int priv = tokens[i].priv;
+    printf(ANSI_FMT("token[%2d] = %-8s\ttype = %d\tpriv = %d\n", ANSI_FG_YELLOW),i, temp, type, priv);
   }
   putchar('\n');
   putchar('\n');
-#endif
+//#endif
   //------
   return true;
 }
