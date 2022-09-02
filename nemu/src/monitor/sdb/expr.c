@@ -257,8 +257,10 @@ static bool make_token(char *e) {
   //------
   return true;
 }
+
 #define P1 calculate(p, prime - 1, success)
 #define P2 calculate(prime + 1, q, success)
+
 
 word_t calculate(int p, int q, bool * success){
   //find prime, if only 1 token is found, directly return. else recursively call calculate itself
@@ -305,7 +307,7 @@ word_t calculate(int p, int q, bool * success){
   return 0; //will not be execuated..
 }
 
-word_t expr(char *e, bool *success) {   //the main calculate function. first make the token
+word_t expr(char *e, bool *success) {
   if (!make_token(e)) {
     printf(ANSI_FMT("check for bad tokens!\n",ANSI_FG_RED));
     *success = false;
