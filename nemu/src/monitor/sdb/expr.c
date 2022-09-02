@@ -256,12 +256,15 @@ static bool make_token(char *e) {
     }
   }
   //debug
+  printf("the tokens are:\n");
   for(int i =0 ; i < nr_token; i++)
   {
     char * temp = tokens[i].str;
     int type = tokens[i].type;
     printf(ANSI_FMT("token[%2d] = %-8s\ttype = %d\n", ANSI_FG_YELLOW),i, temp, type);
   }
+  putchar('\n');
+  putchar('\n');
   //------
   return true;
 }
