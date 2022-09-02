@@ -7,14 +7,20 @@
 enum {
   DECNUM,
   HEXNUM,
-  EQ, 
+  EQUAL, 
+  //ARITH---
+  MULT,  
+  DIV,   
+  ADD ,  
+  SUB,   
+  SL,    
+  SR,
+  NOT,
+  AND,
+  OR,
+  XOR,
+  //ARITH---
   LEFT,
-  MULT,  //0100, 4
-  DIV,   //0101, 5
-  ADD ,  //0110, 6
-  SUB,   //0111, 7
-  SL,    //1000, 8
-  SR,    //1001, 9
   RIGHT,
   NOTYPE, 
   REG,
@@ -56,10 +62,10 @@ static struct rule {
    * Pay attention to the precedence level of different rules.
    */
   //priority rule:
-  //number = 0, + - * / = 4, some bitwise and logical op 1 - 3
+  //number = 0, + - * / = 4, some bitwise and logical op 1 - 3(lower than normal arith)
   {"0[xX][0-9a-f]+",  HEXNUM, 0},   //check before DECNUM, or the 0 prefix will be lost
   {"[0-9]+",          DECNUM, 0},
-  {"==",              EQ,     3},       // equal
+  {"==",              EQUAL,  3},       // equal
   {"\\*",             MULT,   5},     // mult and div should be treated before add/sub
   {"/",               DIV,    5},   
   {"-",               SUB,    4},      // sub  
@@ -71,6 +77,11 @@ static struct rule {
   {"<<",              SL,     4},
   {">>",              SR,     4},
   {"\\$[a-zA-Z]{2}",  REG,    0},
+  {"!",               NOT,    6},
+  {"&",               AND,    2},
+  {"\\|",             OR,     1},
+  {"\\^",             XOR,    2},
+
   //{"\\*",             POINTER},
 };
 
@@ -131,49 +142,22 @@ void tranverse(){
     printf("%c\n", S.parentheses[i]);
   putchar('\n');
 }
-#define LEFT  '('
-#define RIGHT ')'
+
 //when only 1 token exists, the argument  prime - 1 will be bad...
-bool check_parentheses(int p, int q, char * removed){   //scan the array and use a stack
-  //if( p > q ) return false; //something went wrong...
-  S.top = 0;    ///reset the stack
-  //if surrounded by a pair of parentheses, just throw it away
-  /*
-  Log("check from %d to %d... the original substr is\n", p, q);
-  for(int i = p; i <= q; i++)
-    printf("%s  ",tokens[i].str);
-  putchar('\n');
-  */
-  if(p > q || q < 0 || q < 0) return true;    //seems strange, but it works......
-  int sp = p, eq = q;   //start of p && end of q
-  while((tokens[sp].type == LEFT && tokens[eq].type == RIGHT)){ //logic short-circuting
-    strcpy(tokens[sp].str, "removed");
-    strcpy(tokens[eq].str, "removed");    
-    tokens[sp++].type = NOTYPE;
-    tokens[eq--].type = NOTYPE;
-    (*removed)++;
-  }
-
-  int t1 __attribute__((unused)) = sp, t2 __attribute__((unused)) = eq;
-  /*
-  Log("after chek, the substr is from %d to %d:\n", t1, t2);
-  for(int i = t1; i <= t2; i++)
-    printf("%s  ",tokens[i].str);
-  putchar('\n');
-  */
-  for(; sp <= eq; sp++){
-    char type = tokens[sp].type;
-    if(type == LEFT){
-      push(LEFT);
-    }
-    else if(type == RIGHT){
-      push(RIGHT);
-      if(S.top > 1 && S.parentheses[S.top -2] == LEFT)
-        S.top -= 2;
-
-    }
-  }
-  return S.top == 0;
+bool check_parentheses(int l, int r){   //scan the array and use a stack
+  int i;
+	if (tokens[l].type == LEFT && tokens[r].type == RIGHT)
+	{
+		int lc = 0, rc = 0;
+		for (i = l + 1; i < r; i ++)
+		{
+			if (tokens[i].type == LEFT )lc ++;
+			if (tokens[i].type == RIGHT)rc ++;
+			if (rc > lc)return false;	
+		}
+		if (lc == rc)return true;
+	}
+	return false;
 }
 
 int find_prime_idx(int p, int q){
@@ -256,76 +240,48 @@ static bool make_token(char *e) {
 #define P1 calculate(sp1, eq1, success)
 #define P2 calculate(sp2, eq2, success)
 
-word_t calculate(int p, int q, bool * success){
-  //find prime, if only 1 token is found, directly return. else recursively call calculate itself
-  if(p > q || !success || p < 0 || q < 0){
-    return 0;
-  }
-  int type  = tokens[p].type;
-  char * tk_val = tokens[p].str;
-  word_t result;
-  if(p == q /*|| type == DECNUM || type == HEXNUM*/){      //can directly return
-    if(type == DECNUM){
-      sscanf(tk_val, "%ld", &result);
-      return result;
-    }
-    else if(type == HEXNUM){
-      sscanf(tk_val, "%lx", &result);
-      return result;
-    }
-    else{   //the single token should be of numeric type, not others
-      Log("bad token: %s\n", tk_val);
-      *success = false;
-      return 0;
-    }
-  }
+word_t calculate(int l, int r){
+  if (l > r){Assert (l>r,"something happened!\n");return 0;}
+  if (l == r) {
+    word_t num = 0;
+    if (tokens[l].type == DECNUM)
+      sscanf(tokens[l].str,"%d",&num);
+    if (tokens[l].type == HEXNUM)
+      sscanf(tokens[l].str,"%x",&num);
+
+  else if (check_parentheses (l,r))return calculate (l + 1, r - 1);
   else {
-    char * removed1 = (char *)malloc(1);   //the number of pair of parentheses removed
-    char * removed2 = (char *)malloc(1);
-    *removed1 = 0;
-    *removed2 = 0;
-    /*it's hard to decide which function to call first(find vs check)
-      if we call find first, the left && right 2 substrs will be divided and this may affect the check
-      but if we call check first, since not all the left-most parentheses match with the right-most ones, it may not remove the tokens correctly
-    */
-    int prime = find_prime_idx(p, q);
-    type = tokens[prime].type;
-    //some preprocess must be done before the substr's check...
-    bool checkLeft  = check_parentheses(p, prime - 1, removed1);
-    bool checkRight = check_parentheses(prime + 1, q, removed2);
-    Log("p = %d, q = %d, prime = %d, left check: %d, right check: %d, full check: %d\n",p, q, prime, checkLeft, checkRight, check_parentheses(p, q, removed1));
-    if(!checkLeft || !checkRight){
-      if(check_parentheses(p, q, removed1)){}   //maybe also acceptable?
-      else if(!(type == DECNUM || type == HEXNUM)){
-        printf(ANSI_FMT("illegal expression...maybe bugs also. type = %d\n",ANSI_FG_RED), type);
-        return 0;
-      }
-    }
-    int sp1 = p + *removed1, sp2 = prime + 1 + *removed2;
-    int eq1 = prime - 1 - *removed1, eq2 = q - *removed2;
-    switch(type){
-      case(ADD):  return P1 +  P2; 
-      case(SUB):  return P1 -  P2;
-      case(MULT): return P1 *  P2;
-      case(DIV):  return P1 /  P2;
-      case(SL):   return P1 << P2;
-      case(SR):   return P1 >> P2;
-      //well, we still need this... just consider expressions like a singal number such as: 1
-      default: 
+		int op = find_prime_idx (l, r);
+    if (l == op /*|| tokens[op].type == POINTOR || token [op].type == NEG*/)
+		{
+			word_t val = calculate (l + 1,r);
+//			printf ("val = %d\n",val);
+			switch (tokens[l].type)
       {
-        word_t result;
-        if(type == DECNUM){
-          sscanf(tokens[prime].str, "%ld", &result);
-        }
-        else if(type == HEXNUM){
-          sscanf(tokens[prime].str, "%lx", &result);
-        }
-        return result;
-      }
-      //Assert(0, "bad type: hope this would not happen.......%d\n",type);
+				case NOT:return !val;
+				default :Assert (1,"default\n");
+			} 
+		}
+
+		word_t val1 = calculate(l,op - 1);
+		word_t val2 = calculate(op + 1,r);
+//		printf ("1 = %d,2 = %d\n",val1,val2);
+		switch (tokens[op].type)
+		{
+			case ADD:   return val1 + val2;
+			case SUB:   return val1 - val2;
+			case MULT:  return val1 * val2;
+			case DIV:   return val1 / val2;
+			case AND:   return val1 & val2;
+			case OR:    return val1 | val2;
+      case XOR:   return val1 ^ val2;
+			default:
+			break;
     }
   }
-  return 0; //will not be execuated..
+	assert (1);
+	return -123456;
+  }
 }
 
 word_t expr(char *e, bool *success) {
@@ -334,7 +290,7 @@ word_t expr(char *e, bool *success) {
     *success = false;
     return 0;
   }
-  word_t result = calculate(0, nr_token - 1, success);
+  word_t result = calculate(0, nr_token - 1);
   if(!success){
     printf(ANSI_FMT("invalid expression!\n",ANSI_FG_RED));
   }
