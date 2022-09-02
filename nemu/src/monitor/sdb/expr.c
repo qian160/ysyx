@@ -156,6 +156,9 @@ int find_prime_idx(int p, int q)    //the prime opt should have low privilege
   int priv = 114514;      //very high privilege, so any new income will be lower than it and replace it
   int oldpriv = 1919810;
   int index = p;
+  Log("find from %d to %d...the substr is:\n",p, q);
+  for(int j = p; j <= q; j++)
+    printf("%s\t", tokens[j].str);
   for(; p <= q; p++ ){
     int type = tokens[p].type;
 
@@ -167,7 +170,7 @@ int find_prime_idx(int p, int q)    //the prime opt should have low privilege
     }
     else if(type == TK_DIV || type == TK_MULT){
       if(priv >= 1){
-        priv = 1;
+        priv  = 1;
         index = p;
       }
     }
@@ -178,6 +181,7 @@ int find_prime_idx(int p, int q)    //the prime opt should have low privilege
     else if(type == TK_RIGHT){
       priv = oldpriv;
     }
+    //default 
     else if(type == TK_DECNUM || type == TK_HEXNUM){
       if(priv >= 810){
         priv = 810;
@@ -246,6 +250,9 @@ word_t calculate(int p, int q, bool * success){
   if(p > q || !success || p < 0 || q < 0){
     return 0;
   }
+  Log("calculate from %d to %d...the substr is:\n",p, q);
+  for(int j = p; j <= q; j++)
+    printf("%s\t", tokens[j].str);
   char * removed = (char *)malloc(1);
   *removed = false;
   if(!check_parentheses(p, q, removed)){
