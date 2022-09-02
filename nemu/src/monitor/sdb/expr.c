@@ -182,10 +182,6 @@ int check_parentheses(int p, int q){   //scan the array and use a stack
     removeSafe = S.top == 0;
   }
   S.top = 0;
-  Log("check from %d to %d, the substr is\n",p , q);
-  for(int i = p; i<= q; i++)
-    printf("%s  ",tokens[i].str);
-  putchar('\n');
   for(; p <= q; p++){
     char type = tokens[p].type;
     if(type == LEFT){
@@ -211,10 +207,6 @@ privStack PS;
 static int dominant_operator(int start, int end)
 {	
   int op = start, pri_min = 10;	
-  Log("find from %d to %d, the substr is:\n",start, end);
-  for(int i = start; i <= end; i++)
-    printf("%s  ",tokens[i].str);
-  putchar('\n');
   for (int i = start; i <= end;i ++)
   {		
     if (tokens[i].type == HEXNUM || tokens[i].type == DECNUM || tokens[i].type == REG)
@@ -234,7 +226,6 @@ static int dominant_operator(int start, int end)
       pri_min = tokens[op].priv;
     }  
   }	
-  printf(ANSI_FMT("the prime is %s, at index %d\n",ANSI_FG_YELLOW),tokens[op].str, op);
   return op;
 }
 //this function will add tokens to the array
