@@ -130,17 +130,18 @@ bool check_parentheses(int p, int q, char * removed){   //scan the array and use
   for(int i = p; i <= q; i++)
     printf("%s  ",tokens[i].str);
   putchar('\n');
-  int sp = p, eq = q;   //startt of p && end of q
-  while(tokens[sp++].type == TK_LEFT && tokens[eq--].type == TK_RIGHT){
-    strcpy(tokens[sp-1].str, "removed");
-    strcpy(tokens[eq+1].str, "removed");    
-    tokens[sp-1].type = TK_NOTYPE;
-    tokens[eq+1].type = TK_NOTYPE;
+  int sp = p, eq = q;   //start of p && end of q
+  while((tokens[sp].type == TK_LEFT && tokens[eq].type == TK_RIGHT)){ //logic short-circuting
+    strcpy(tokens[sp].str, "removed");
+    strcpy(tokens[eq].str, "removed");    
+    tokens[sp++].type = TK_NOTYPE;
+    tokens[eq--].type = TK_NOTYPE;
     (*removed)++;
   }
-  sp--;eq++;
+  Log("after check, p = %d, q = %d\n",sp, eq);
+
   int t1 = sp, t2 = eq;
-  Log("after chek, the substr is:\n");
+  Log("after chek, the substr is from %d to %d:\n", t1, t2);
   for(int i = t1; i <= t2; i++)
     printf("%s  ",tokens[i].str);
   putchar('\n');
@@ -158,11 +159,16 @@ bool check_parentheses(int p, int q, char * removed){   //scan the array and use
   }
   return S.top == 0;
 }
+typedef struct {
+  int priv[10];
+  int top;
+}privStack;   //for privilege recovery in prime find
+
+privStack PS;
 
 int find_prime_idx(int p, int q)    //the prime opt should have low privilege
 {
   int priv = 114514;      //very high privilege, so any new income will be lower than it and replace it
-  int oldpriv = 1919810;
   int index = p;
   /*
   Log("find from %d to %d...\nthe substr is:\n",p, q);
@@ -170,6 +176,7 @@ int find_prime_idx(int p, int q)    //the prime opt should have low privilege
     printf("%s  ", tokens[j].str);
   putchar('\n');
   */
+  PS.top = 0;
   for(; p <= q; p++ ){
     int type = tokens[p].type;
     if(type == TK_ADD || type == TK_SUB){
@@ -185,11 +192,11 @@ int find_prime_idx(int p, int q)    //the prime opt should have low privilege
       }
     }
     else if(type == TK_LEFT){
-      oldpriv = priv;
+      PS.priv[PS.top++] = priv;
       priv = -1;    //temorarily refuse any requests 
     }
     else if(type == TK_RIGHT){
-      priv = oldpriv;
+      priv = PS.priv[--PS.top];
     }
     //default 
     else if(type == TK_DECNUM || type == TK_HEXNUM){
@@ -257,8 +264,10 @@ static bool make_token(char *e) {
   //------
   return true;
 }
+
 #define P1 calculate(p, prime - 1, success)
 #define P2 calculate(prime + 1, q, success)
+
 
 word_t calculate(int p, int q, bool * success){
   //find prime, if only 1 token is found, directly return. else recursively call calculate itself
@@ -267,6 +276,7 @@ word_t calculate(int p, int q, bool * success){
   }
   char * removed = (char *)malloc(1);   //the number of pair of parentheses removed
   *removed = 0;
+  //a guess: find prime before check parentheses. Though this method will check parenthese twice...
   if(!check_parentheses(p, q, removed)){
     printf(ANSI_FMT("illegal expression\n",ANSI_FG_RED));
     return 0;
@@ -298,13 +308,13 @@ word_t calculate(int p, int q, bool * success){
       case(TK_SUB):  return P1 - P2;
       case(TK_MULT): return P1 * P2;
       case(TK_DIV):  return P1 / P2;
-      default: Assert(0, "hope this would not happen...\n");//return(calculate(p + 1, q - 1, success));//
+      default: Assert(0, "bad type: %d\n",type);//return(calculate(p + 1, q - 1, success));//
     }
   }
   return 0; //will not be execuated..
 }
 
-word_t expr(char *e, bool *success) {   //the main calculate function. first make the token
+word_t expr(char *e, bool *success) {
   if (!make_token(e)) {
     printf(ANSI_FMT("check for bad tokens!\n",ANSI_FG_RED));
     *success = false;
