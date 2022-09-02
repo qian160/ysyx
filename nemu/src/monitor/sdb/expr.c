@@ -131,13 +131,13 @@ bool check_parentheses(int p, int q, char * removed){   //scan the array and use
     printf("%s  ",tokens[i].str);
   putchar('\n');
   int sp = p, eq = q;   //startt of p && end of q
-  while((tokens[sp].type == TK_LEFT && tokens[eq].type == TK_RIGHT)){
-    strcpy(tokens[sp].str, "removed");
-    strcpy(tokens[eq].str, "removed");    
-    tokens[sp++].type = TK_NOTYPE;
-    tokens[eq--].type = TK_NOTYPE;
+  while(tokens[sp++].type == TK_LEFT && tokens[eq--].type == TK_RIGHT){
+    strcpy(tokens[sp-1].str, "removed");
+    strcpy(tokens[eq+1].str, "removed");    
+    tokens[sp-1].type = TK_NOTYPE;
+    tokens[eq+1].type = TK_NOTYPE;
     (*removed)++;
-  };
+  }
   sp--;eq++;
   int t1 = sp, t2 = eq;
   Log("after chek, the substr is:\n");
@@ -265,16 +265,6 @@ word_t calculate(int p, int q, bool * success){
   if(p > q || !success || p < 0 || q < 0){
     return 0;
   }
-  /*
-  Log("calculate from %d to %d...\nthe substr is:\n",p, q);
-  for(int j = p; j <= q; j++)
-    printf("%s ", tokens[j].str);
-  putchar('\n');
-  Log("the types are:\n");
-  for(int j = p; j <= q; j++)
-    printf("%d ", tokens[j].type);
-  putchar('\n');
-  */
   char * removed = (char *)malloc(1);   //the number of pair of parentheses removed
   *removed = 0;
   if(!check_parentheses(p, q, removed)){
