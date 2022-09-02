@@ -129,6 +129,7 @@ bool check_parentheses(int p, int q, char * removed){   //scan the array and use
   //if surrounded by a pair of parentheses, just throw it away
   int sp = p, eq = q;   //startt of p && end of q
   while(!(tokens[sp++].type == TK_LEFT && tokens[eq--].type == TK_RIGHT));
+  sp--;eq++;
   //if(tokens[p].type == TK_LEFT && tokens[q].type == TK_RIGHT){
   if(sp <= eq){
     tokens[sp].type = TK_NOTYPE;
