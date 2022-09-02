@@ -169,8 +169,6 @@ bool check_parentheses(int p, int q, char * removed){   //scan the array and use
         S.top -= 2;
 
     }
-    Log("the stack is:\n");
-    tranverse();
   }
   return S.top == 0;
 }
@@ -180,10 +178,12 @@ int find_prime_idx(int p, int q)    //the prime opt should have low privilege
   int priv = 114514;      //very high privilege, so any new income will be lower than it and replace it
   int oldpriv = 1919810;
   int index = p;
+  /*
   Log("find from %d to %d...\nthe substr is:\n",p, q);
   for(int j = p; j <= q; j++)
     printf("%s  ", tokens[j].str);
   putchar('\n');
+  */
   for(; p <= q; p++ ){
     int type = tokens[p].type;
     if(type == TK_ADD || type == TK_SUB){
@@ -211,7 +211,6 @@ int find_prime_idx(int p, int q)    //the prime opt should have low privilege
         priv = 810;
         index = p;
       }
-
     }
   }
   return index;
@@ -275,6 +274,7 @@ word_t calculate(int p, int q, bool * success){
   if(p > q || !success || p < 0 || q < 0){
     return 0;
   }
+  /*
   Log("calculate from %d to %d...\nthe substr is:\n",p, q);
   for(int j = p; j <= q; j++)
     printf("%s ", tokens[j].str);
@@ -283,7 +283,8 @@ word_t calculate(int p, int q, bool * success){
   for(int j = p; j <= q; j++)
     printf("%d ", tokens[j].type);
   putchar('\n');
-  char * removed = (char *)malloc(1);
+  */
+  char * removed = (char *)malloc(1);   //the number of pair of parentheses removed
   *removed = 0;
   if(!check_parentheses(p, q, removed)){
     printf(ANSI_FMT("illegal expression\n",ANSI_FG_RED));
@@ -316,8 +317,7 @@ word_t calculate(int p, int q, bool * success){
       case(TK_SUB):  return P1 - P2;
       case(TK_MULT): return P1 * P2;
       case(TK_DIV):  return P1 / P2;
-      //due to nested parentheses, we don't find a match in this loop. Try another tighter loop
-      default: return(calculate(p + 1, q - 1, success));//Assert(0, "hope this would not happen...\n");
+      default: Assert(0, "hope this would not happen...\n");//return(calculate(p + 1, q - 1, success));//
     }
   }
   return 0; //will not be execuated..
