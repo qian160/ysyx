@@ -287,7 +287,7 @@ word_t calculate(int p, int q, bool * success){
   word_t result;
   int type  = tokens[p].type;
   char * tk_val = tokens[p].str;
-  if(p == q || type == TK_DECNUM || type == TK_HEXNUM){      //can directly return
+  if(p == q ){      //can directly return
     if(type == TK_DECNUM){
       sscanf(tk_val, "%ld", &result);
       Log("decimal found: %ld\n",result);
