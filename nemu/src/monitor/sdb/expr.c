@@ -3,28 +3,22 @@
  * Type 'man regex' for more information about POSIX regex functions.
  */
 #include <regex.h>        
-#define is_arith(TK) (TK >= MULT && TK <= SR)
+#define is_arith(TK) (TK >= TK_MULT && TK <= TK_SR)
 enum {
-  DECNUM,
-  HEXNUM,
-  EQUAL, 
-  //ARITH---
-  MULT,  
-  DIV,   
-  ADD ,  
-  SUB,   
-  SL,    
-  SR,
-  NOT,
-  AND,
-  OR,
-  XOR,
-  //ARITH---
-  LEFT,
-  RIGHT,
-  NOTYPE, 
-  REG,
-  POINTER,
+  TK_DECNUM,
+  TK_HEXNUM,
+  TK_EQ, 
+  TK_LEFT,
+  TK_MULT,  //0100, 4
+  TK_DIV,   //0101, 5
+  TK_ADD ,  //0110, 6
+  TK_SUB,   //0111, 7
+  TK_SL,    //1000, 8
+  TK_SR,    //1001, 9
+  TK_RIGHT,
+  TK_NOTYPE, 
+  TK_REG,
+  TK_POINTER,
   /* TODO: Add more token types */
 
 };
@@ -56,33 +50,25 @@ enum {
 static struct rule {
   const char *regex;
   int token_type;
-  int priority;
 } rules[] = {
   /* TODO: Add more rules.
    * Pay attention to the precedence level of different rules.
    */
-  //priority rule:
-  //number = 0, + - * / = 4, some bitwise and logical op 1 - 3(lower than normal arith)
-  {"0[xX][0-9a-f]+",  HEXNUM, 0},   //check before DECNUM, or the 0 prefix will be lost
-  {"[0-9]+",          DECNUM, 0},
-  {"==",              EQUAL,  3},       // equal
-  {"\\*",             MULT,   5},     // mult and div should be treated before add/sub
-  {"/",               DIV,    5},   
-  {"-",               SUB,    4},      // sub  
-  {"\\+",             ADD,    4},      // plus,'+' has special meaning thus need some \. \+ means '+'. However to recognize the first \ we need another \.
-  {" +",              NOTYPE, 0},   // multiple spaces, not addition
-  {"\\s+",            NOTYPE, 0},   // white spaces
-  {"\\(",             LEFT,   7},
-  {"\\)",             RIGHT,  7},
-  {"<<",              SL,     4},
-  {">>",              SR,     4},
-  {"\\$[a-zA-Z]{2}",  REG,    0},
-  {"!",               NOT,    6},
-  {"&",               AND,    2},
-  {"\\|",             OR,     1},
-  {"\\^",             XOR,    2},
-
-  //{"\\*",             POINTER},
+  {"0[xX][0-9a-f]+",  TK_HEXNUM},   //check before DECNUM, or the 0 prefix will be lost
+  {"[0-9]+",          TK_DECNUM},
+  {"==",              TK_EQ},       // equal
+  {"\\*",             TK_MULT},     // mult and div should be treated before add/sub
+  {"/",               TK_DIV},   
+  {"-",               TK_SUB},      // sub  
+  {"\\+",             TK_ADD},      // plus,'+' has special meaning thus need some \. \+ means '+'. However to recognize the first \ we need another \.
+  {" +",              TK_NOTYPE},   // multiple spaces, not addition
+  {"\\s+",            TK_NOTYPE},   // white spaces
+  {"\\(",             TK_LEFT},
+  {"\\)",             TK_RIGHT},
+  {"<<",              TK_SL},
+  {">>",              TK_SR},
+  {"$[a-zA-Z]{2}",    TK_REG},
+  //{"\\*",             TK_POINTER},
 };
 
 #define NR_REGEX ARRLEN(rules)
@@ -109,7 +95,6 @@ void init_regex() {   //called by init_sdb()
 typedef struct token {
   int   type;
   char  str[32];
-  int   priority;
 }Token;
 
 static Token tokens[1000] __attribute__((used)) = {};   //for test, we enlarge the buffer size
@@ -142,47 +127,106 @@ void tranverse(){
     printf("%c\n", S.parentheses[i]);
   putchar('\n');
 }
-
+#define LEFT  '('
+#define RIGHT ')'
 //when only 1 token exists, the argument  prime - 1 will be bad...
-bool check_parentheses(int l, int r){   //scan the array and use a stack
-  int i;
-	if (tokens[l].type == LEFT && tokens[r].type == RIGHT)
-	{
-		int lc = 0, rc = 0;
-		for (i = l + 1; i < r; i ++)
-		{
-			if (tokens[i].type == LEFT )lc ++;
-			if (tokens[i].type == RIGHT)rc ++;
-			if (rc > lc)return false;	
-		}
-		if (lc == rc)return true;
-	}
-	return false;
-}
+bool check_parentheses(int p, int q, char * removed){   //scan the array and use a stack
+  //if( p > q ) return false; //something went wrong...
+  S.top = 0;    ///reset the stack
+  //if surrounded by a pair of parentheses, just throw it away
+  /*
+  Log("check from %d to %d... the original substr is\n", p, q);
+  for(int i = p; i <= q; i++)
+    printf("%s  ",tokens[i].str);
+  putchar('\n');
+  */
+  if(p > q || q < 0 || q < 0) return true;    //seems strange, but it works......
+  int sp = p, eq = q;   //start of p && end of q
+  while((tokens[sp].type == TK_LEFT && tokens[eq].type == TK_RIGHT)){ //logic short-circuting
+    strcpy(tokens[sp].str, "removed");
+    strcpy(tokens[eq].str, "removed");    
+    tokens[sp++].type = TK_NOTYPE;
+    tokens[eq--].type = TK_NOTYPE;
+    (*removed)++;
+  }
 
-int find_prime_idx(int p, int q){
-  int i,j;
-	int min_priority = 114514;
-	int oper = p;
-	for (i = p; i <= q;i ++)
-	{ //number should not be prime operator
-		if (tokens[i].type == DECNUM || tokens[i].type == HEXNUM || tokens[i].type == REG)
-			continue;
-		int cnt = 0;
-		bool key = true;
-		for (j = i - 1; j >= p ;j --)
-		{ 
-			if (tokens[j].type == '(' && !cnt){key = false;break;}
-			if (tokens[j].type == '(')cnt --;
-			if (tokens[j].type == ')')cnt ++; 
-		}
-		if (!key)continue;
-		if (tokens[i].priority <= min_priority){
-      min_priority = tokens[i].priority;
-      oper = i;
+  int t1 __attribute__((unused)) = sp, t2 __attribute__((unused)) = eq;
+  /*
+  Log("after chek, the substr is from %d to %d:\n", t1, t2);
+  for(int i = t1; i <= t2; i++)
+    printf("%s  ",tokens[i].str);
+  putchar('\n');
+  */
+  for(; sp <= eq; sp++){
+    char type = tokens[sp].type;
+    if(type == TK_LEFT){
+      push(LEFT);
+    }
+    else if(type == TK_RIGHT){
+      push(RIGHT);
+      if(S.top > 1 && S.parentheses[S.top -2] == LEFT)
+        S.top -= 2;
+
     }
   }
-	return oper;
+  return S.top == 0;
+}
+typedef struct {
+  int priv[10];
+  int top;
+}privStack;   //for privilege recovery in prime find. nested parentheses will need this
+
+privStack PS;
+
+int find_prime_idx(int p, int q)    //the prime opt should have low privilege
+{
+  int priv = 114514;      //very high privilege, so any new income will be lower than it and replace it
+  int index = p;
+  /*
+  Log("find from %d to %d...\nthe substr is:\n",p, q);
+  for(int j = p; j <= q; j++)
+    printf("%s  ", tokens[j].str);
+  putchar('\n');
+  */
+  PS.top = 0;
+  Log("from %d to %d", p, q);
+  while(tokens[p].type == TK_LEFT && tokens[q].type == TK_RIGHT){
+    p++;
+    q--;
+  }
+  for(; p <= q; p++ ){
+    int type = tokens[p].type;
+    if(type == TK_ADD || type == TK_SUB || type == TK_SL || type == TK_SR){
+      if(priv >= 0){
+        priv = 0;
+        index = p;
+      }
+    }
+    else if(type == TK_DIV || type == TK_MULT){
+      if(priv >= 1){
+        priv  = 1;
+        index = p;
+      }
+    }
+    else if(type == TK_LEFT){
+      PS.priv[PS.top++] = priv;
+      priv = -1;    //temorarily refuse any requests 
+    }
+    else if(type == TK_RIGHT){
+      priv = PS.priv[--PS.top];
+    }
+    //default 
+    /*
+    else if(type == TK_DECNUM || type == TK_HEXNUM){
+      if(priv >= 810){
+        priv = 810;
+        index = p;
+      }
+    }
+    */
+  }
+  Log("the prime is %s\n", tokens[index].str);
+  return index;
 }
 //this function will add tokens to the array
 
@@ -192,6 +236,7 @@ static bool make_token(char *e) {
   regmatch_t pmatch;
 
   nr_token = 0;
+
   while (e[position] != '\0') {
     /* Try all rules one by one. */
     for (i = 0; i < NR_REGEX; i ++) {                     
@@ -203,11 +248,15 @@ static bool make_token(char *e) {
 
         //produce the token string and copy it to the array
         //empty token could just be thrown away
-        if(rules[i].token_type != NOTYPE){
-            strncpy(tokens[nr_token].str,e + position, substr_len);
-            tokens[nr_token].str[substr_len] = '\0';
-            tokens[nr_token].type = rules[i].token_type;
-            tokens[nr_token++].priority = rules[i].priority;
+        if(rules[i].token_type != TK_NOTYPE){
+            char * token = (char *)malloc(substr_len + 1);
+            for(int t = 0; t < substr_len; t++)
+              token[t] = e[position+t];
+            token[substr_len] = '\0';
+
+            strcpy(tokens[nr_token].str, token);
+            tokens[nr_token++].type = rules[i].token_type;
+            free(token);
         }
 
         position += substr_len;
@@ -221,18 +270,17 @@ static bool make_token(char *e) {
     }
   }
 //how to define?
-//#ifdef PRINT_TOKEN
+#ifdef PRINT_TOKEN
   printf("the tokens are:\n");
   for(int i =0 ; i < nr_token; i++)
   {
     char * temp = tokens[i].str;
     int type = tokens[i].type;
-    int priv = tokens[i].priority;
-    printf(ANSI_FMT("token[%2d] = %-8s\ttype = %d\tpriv = %d\n", ANSI_FG_YELLOW),i, temp, type,priv);
+    printf(ANSI_FMT("token[%2d] = %-8s\ttype = %d\n", ANSI_FG_YELLOW),i, temp, type);
   }
   putchar('\n');
   putchar('\n');
-//#endif
+#endif
   //------
   return true;
 }
@@ -240,53 +288,76 @@ static bool make_token(char *e) {
 #define P1 calculate(sp1, eq1, success)
 #define P2 calculate(sp2, eq2, success)
 
-word_t calculate(int l, int r){
-  if (l > r){Assert (l>r,"something happened!\n");return 0;}
-  if (l == r) {
-    word_t num = 0;
-    if (tokens[l].type == DECNUM)
-    {
-      sscanf(tokens[l].str,"%ld",&num);
-      return num;
+word_t calculate(int p, int q, bool * success){
+  //find prime, if only 1 token is found, directly return. else recursively call calculate itself
+  if(p > q || !success || p < 0 || q < 0){
+    return 0;
+  }
+  int type  = tokens[p].type;
+  char * tk_val = tokens[p].str;
+  word_t result;
+  if(p == q /*|| type == TK_DECNUM || type == TK_HEXNUM*/){      //can directly return
+    if(type == TK_DECNUM){
+      sscanf(tk_val, "%ld", &result);
+      return result;
     }
-    if (tokens[l].type == HEXNUM)
-    {
-      sscanf(tokens[l].str,"%lx",&num);
-      return num;
+    else if(type == TK_HEXNUM){
+      sscanf(tk_val, "%lx", &result);
+      return result;
     }
-  else if (check_parentheses (l,r))return calculate (l + 1, r - 1);
+    else{   //the single token should be of numeric type, not others
+      Log("bad token: %s\n", tk_val);
+      *success = false;
+      return 0;
+    }
   }
   else {
-		int op = find_prime_idx (l, r);
-    Log("the op is %s\n", tokens[op].str);
-    if (l == op /*|| tokens[op].type == POINTOR || token [op].type == NEG*/)
-		{
-			word_t val = calculate (l + 1,r);
-//			printf ("val = %d\n",val);
-			switch (tokens[l].type)
+    char * removed1 = (char *)malloc(1);   //the number of pair of parentheses removed
+    char * removed2 = (char *)malloc(1);
+    *removed1 = 0;
+    *removed2 = 0;
+    /*it's hard to decide which function to call first(find vs check)
+      if we call find first, the left && right 2 substrs will be divided and this may affect the check
+      but if we call check first, since not all the left-most parentheses match with the right-most ones, it may not remove the tokens correctly
+    */
+    int prime = find_prime_idx(p, q);
+    type = tokens[prime].type;
+    //some preprocess must be done before the substr's check...
+    bool checkLeft  = check_parentheses(p, prime - 1, removed1);
+    bool checkRight = check_parentheses(prime + 1, q, removed2);
+    Log("p = %d, q = %d, prime = %d, left check: %d, right check: %d, full check: %d\n",p, q, prime, checkLeft, checkRight, check_parentheses(p, q, removed1));
+    if(!checkLeft || !checkRight){
+      if(check_parentheses(p, q, removed1)){}   //maybe also acceptable?
+      else if(!(type == TK_DECNUM || type == TK_HEXNUM)){
+        printf(ANSI_FMT("illegal expression...maybe bugs also. type = %d\n",ANSI_FG_RED), type);
+        return 0;
+      }
+    }
+    int sp1 = p + *removed1, sp2 = prime + 1 + *removed2;
+    int eq1 = prime - 1 - *removed1, eq2 = q - *removed2;
+    switch(type){
+      case(TK_ADD):  return P1 +  P2; 
+      case(TK_SUB):  return P1 -  P2;
+      case(TK_MULT): return P1 *  P2;
+      case(TK_DIV):  return P1 /  P2;
+      case(TK_SL):   return P1 << P2;
+      case(TK_SR):   return P1 >> P2;
+      //well, we still need this... just consider expressions like a singal number such as: 1
+      default: 
       {
-				case NOT:return !val;
-				default :Assert (1,"default\n");
-			} 
-		}
-
-		word_t val1 = calculate(l,op - 1);
-		word_t val2 = calculate(op + 1,r);
-//		printf ("1 = %d,2 = %d\n",val1,val2);
-		switch (tokens[op].type)
-		{
-			case ADD:   return val1 + val2;
-			case SUB:   return val1 - val2;
-			case MULT:  return val1 * val2;
-			case DIV:   return val1 / val2;
-			case AND:   return val1 & val2;
-			case OR:    return val1 | val2;
-      case XOR:   return val1 ^ val2;
-			default:
-			break;
+        word_t result;
+        if(type == TK_DECNUM){
+          sscanf(tokens[prime].str, "%ld", &result);
+        }
+        else if(type == TK_HEXNUM){
+          sscanf(tokens[prime].str, "%lx", &result);
+        }
+        return result;
+      }
+      //Assert(0, "bad type: hope this would not happen.......%d\n",type);
     }
   }
-	return -123456;
+  return 0; //will not be execuated..
 }
 
 word_t expr(char *e, bool *success) {
@@ -295,7 +366,7 @@ word_t expr(char *e, bool *success) {
     *success = false;
     return 0;
   }
-  word_t result = calculate(0, nr_token - 1);
+  word_t result = calculate(0, nr_token - 1, success);
   if(!success){
     printf(ANSI_FMT("invalid expression!\n",ANSI_FG_RED));
   }
