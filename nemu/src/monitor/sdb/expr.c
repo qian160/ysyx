@@ -17,6 +17,8 @@ enum {
   TK_SR,    //1001, 9
   TK_RIGHT,
   TK_NOTYPE, 
+  TK_REG,
+  TK_POINTER,
   /* TODO: Add more token types */
 
 };
@@ -65,6 +67,8 @@ static struct rule {
   {"\\)",             TK_RIGHT},
   {"<<",              TK_SL},
   {">>",              TK_SR},
+  {"$[a-zA-Z]{2}",    TK_REG},
+  //{"\\*",             TK_POINTER},
 };
 
 #define NR_REGEX ARRLEN(rules)
@@ -136,6 +140,7 @@ bool check_parentheses(int p, int q, char * removed){   //scan the array and use
     printf("%s  ",tokens[i].str);
   putchar('\n');
   */
+  if(p > q || q < 0 || q < 0) return true;    //seems strange, but it works......
   int sp = p, eq = q;   //start of p && end of q
   while((tokens[sp].type == TK_LEFT && tokens[eq].type == TK_RIGHT)){ //logic short-circuting
     strcpy(tokens[sp].str, "removed");
@@ -184,6 +189,7 @@ int find_prime_idx(int p, int q)    //the prime opt should have low privilege
   putchar('\n');
   */
   PS.top = 0;
+  Log("from %d to %d", p, q);
   for(; p <= q; p++ ){
     int type = tokens[p].type;
     if(type == TK_ADD || type == TK_SUB || type == TK_SL || type == TK_SR){
@@ -213,7 +219,7 @@ int find_prime_idx(int p, int q)    //the prime opt should have low privilege
       }
     }
   }
-  Log("from %d to %d, the prime is %s", p, q, tokens[index].str);
+  Log("the prime is %s\n", tokens[index].str);
   return index;
 }
 //this function will add tokens to the array
@@ -271,10 +277,7 @@ static bool make_token(char *e) {
   //------
   return true;
 }
-/*
-#define P1 calculate(p, prime - 1, success)
-#define P2 calculate(prime + 1, q, success)
-*/
+
 #define P1 calculate(sp1, eq1, success)
 #define P2 calculate(sp2, eq2, success)
 
@@ -302,7 +305,7 @@ word_t calculate(int p, int q, bool * success){
   int type  = tokens[prime].type;
   char * tk_val = tokens[p].str;
   word_t result;
-  if(p == q || type == TK_DECNUM || type == TK_HEXNUM){      //can directly return
+  if(p == q /*|| type == TK_DECNUM || type == TK_HEXNUM*/){      //can directly return
     if(type == TK_DECNUM){
       sscanf(tk_val, "%ld", &result);
       return result;
@@ -325,7 +328,7 @@ word_t calculate(int p, int q, bool * success){
       case(TK_DIV):  return P1 /  P2;
       case(TK_SL):   return P1 << P2;
       case(TK_SR):   return P1 >> P2;
-      default: Assert(0, "bad type: %d\n",type);//return(calculate(p + 1, q - 1, success));//
+      default: Assert(0, "bad type: hope this would not happen.......%d\n",type);
     }
   }
   return 0; //will not be execuated..
