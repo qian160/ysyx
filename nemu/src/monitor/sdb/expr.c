@@ -54,7 +54,7 @@ enum {
 */
 //match: the bra is good but not the first case.
 
-typedef enum {  BRA_SURRONDED, MATCH, DISMATCH } check_bra;
+enum {  BRA_SURROUNDED, MATCH, DISMATCH };
 
 static struct rule {
   const char *regex;
@@ -143,34 +143,12 @@ void tranverse(){
   putchar('\n');
 }
 //when only 1 token exists, the argument  prime - 1 will be bad...
-bool check_parentheses(int p, int q, char * removed){   //scan the array and use a stack
-  //if( p > q ) return false; //something went wrong...
+int check_parentheses(int p, int q){   //scan the array and use a stack
+  if( p > q ) return DISMATCH; //something went wrong...
   S.top = 0;    ///reset the stack
-  /*
-  Log("check from %d to %d... the original substr is\n", p, q);
-  for(int i = p; i <= q; i++)
-    printf("%s  ",tokens[i].str);
-  putchar('\n');
-  */
-  if(p > q || q < 0 || q < 0) return true;    //seems strange, but it works......
-  int sp = p, eq = q;   //start of p && end of q
-  while((tokens[sp].type == LEFT && tokens[eq].type == RIGHT)){ //logic short-circuting
-    strcpy(tokens[sp].str, "removed");
-    strcpy(tokens[eq].str, "removed");    
-    tokens[sp++].type = NOTYPE;
-    tokens[eq--].type = NOTYPE;
-    (*removed)++;
-  }
-
-  int t1 __attribute__((unused)) = sp, t2 __attribute__((unused)) = eq;
-  /*
-  Log("after chek, the substr is from %d to %d:\n", t1, t2);
-  for(int i = t1; i <= t2; i++)
-    printf("%s  ",tokens[i].str);
-  putchar('\n');
-  */
-  for(; sp <= eq; sp++){
-    char type = tokens[sp].type;
+  bool surround_flag = (tokens[p].type == LEFT && tokens[q].type == RIGHT);
+  for(; p <= q; p++){
+    char type = tokens[p].type;
     if(type == LEFT){
       push(LEFT);
     }
@@ -178,10 +156,11 @@ bool check_parentheses(int p, int q, char * removed){   //scan the array and use
       push(RIGHT);
       if(S.top > 1 && S.parentheses[S.top -2] == LEFT)
         S.top -= 2;
-
     }
   }
-  return S.top == 0;
+  if(S.top == 0 && surround_flag) return BRA_SURROUNDED;
+  else if(S.top == 0) return MATCH;
+  else return DISMATCH;
 }
 typedef struct {
   int priv[10];
@@ -203,12 +182,12 @@ static int dominant_operator(int start, int end)
       continue;
     //number can't be operator
     if(tokens[i].type == LEFT){
-      PS.priv[PS.top++] = pri_min;   //temporarily refuse any requests
+      PS.priv[PS.top++] = pri_min;    //temporarily refuse any requests
       pri_min = -1;
     }
     else if(tokens[i].type == RIGHT){
-      if(PS.top == 0) Assert(0, "bra error\n");
-      pri_min = PS.priv[--PS.top];
+      if(PS.top == 0) Assert(0, "bra match error\n");
+      pri_min = PS.priv[--PS.top];    //now we get out of the bra's range and can continue to accept tokens
     }
     else if (tokens[i].priv <= pri_min) 
     {      
@@ -244,7 +223,6 @@ static bool make_token(char *e) {
             tokens[nr_token].type = rules[i].token_type;
             tokens[nr_token++].priv = rules[i].priv;
         }
-
         position += substr_len;
         break;
       }
@@ -257,7 +235,7 @@ static bool make_token(char *e) {
   }
 //how to define?
 //#ifdef PRINT_TOKEN
-  printf("the tokens are:\n");
+  printf("here are the tokens:\n");
   for(int i =0 ; i < nr_token; i++)
   {
     char * temp = tokens[i].str;
@@ -272,15 +250,15 @@ static bool make_token(char *e) {
   return true;
 }
 
-word_t calculate(int p, int q, bool * success){
+word_t calculate(int p, int q){
   //find prime, if only 1 token is found, directly return. else recursively call calculate itself
-  if(p > q || !success || p < 0 || q < 0){
+  if(p > q || p < 0 || q < 0){
     return 0;
   }
   int type  = tokens[p].type;
   char * tk_val = tokens[p].str;
   word_t result;
-  if(p == q /*|| type == DECNUM || type == HEXNUM*/){      //can directly return
+  if(p == q /*|| type == DECNUM || type == HEXNUM*/){      //single token, can directly return. Hopefully this hould be a number
     if(type == DECNUM){
       sscanf(tk_val, "%ld", &result);
       return result;
@@ -291,40 +269,23 @@ word_t calculate(int p, int q, bool * success){
     }
     else{   //the single token should be of numeric type, not others
       Log("bad token: %s\n", tk_val);
-      *success = false;
       return 0;
     }
   }
+  int match_result = check_parentheses(p, q);
+  if(match_result == DISMATCH){
+    printf(ANSI_FMT("bra dismatch\n",ANSI_FG_RED));
+    return 0;
+  }
+  else if(match_result == BRA_SURROUNDED){
+    return calculate(p + 1, q - 1);
+    //cut the range and try again.
+  } //a good match which we can process with
   else {
-    char * removed1 = (char *)malloc(1);   //the number of pair of parentheses removed
-    char * removed2 = (char *)malloc(1);
-    *removed1 = 0;
-    *removed2 = 0;
-    /*it's hard to decide which function to call first(find vs check)
-      if we call find first, the left && right substrs will be then divided and this may affect the check 
-          (1 + 1) -> (1 , +,  1). Both the 2 substrs will fail the check
-      if we call check first however, since not all the left-most parentheses match with the right-most ones, it may not remove the tokens correctly
-          () + () -> ) + (
-      so far I have not solved this puzzle yet. I'm just tyring to avoid some of these bugs.
-      The good news is that as long as you don't write strange expressions, the result should be correct
-    */
     int prime = dominant_operator(p, q);
     type = tokens[prime].type;
-    //some preprocess must be done before the substr's check...
-    bool checkLeft  = check_parentheses(p, prime - 1, removed1);
-    bool checkRight = check_parentheses(prime + 1, q, removed2);
-    Log("p = %d, q = %d, prime = %d, left check: %d, right check: %d, full check: %d\n",p, q, prime, checkLeft, checkRight, check_parentheses(p, q, removed1));
-    if(!checkLeft || !checkRight){
-      if(check_parentheses(p, q, removed1)){}   //maybe also acceptable?
-      else if(!(type == DECNUM || type == HEXNUM)){
-        printf(ANSI_FMT("illegal expression...maybe bugs also. type = %d\n",ANSI_FG_RED), type);
-        return 0;
-      }
-    }
-    int sp1 = p + *removed1, sp2 = prime + 1 + *removed2;
-    int eq1 = prime - 1 - *removed1, eq2 = q - *removed2;
-    word_t P1 = calculate(sp1, eq1, success);
-    word_t P2 = calculate(sp2, eq2, success);
+    word_t P1 = calculate(p, prime - 1);
+    word_t P2 = calculate(prime + 1, q);
     switch(type){
       case(ADD):  return P1 +  P2; 
       case(SUB):  return P1 -  P2;
@@ -359,9 +320,5 @@ word_t expr(char *e, bool *success) {
     *success = false;
     return 0;
   }
-  word_t result = calculate(0, nr_token - 1, success);
-  if(!success){
-    printf(ANSI_FMT("invalid expression!\n",ANSI_FG_RED));
-  }
-  return result;
+  return calculate(0, nr_token - 1);
 }
