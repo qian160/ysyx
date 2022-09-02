@@ -54,7 +54,7 @@ enum {
 */
 //match: the bra is good but not the first case.
 
-static enum {  BRA_SURROUNDED, MATCH, DISMATCH };
+static enum {  BRA_SURROUNDED, MATCH, DISMATCH, };
 
 static struct rule {
   const char *regex;
@@ -158,8 +158,8 @@ int check_parentheses(int p, int q){   //scan the array and use a stack
   if( p > q ) return DISMATCH; //something went wrong...
   S.top = 0;    ///reset the stack
   bool surround_flag = (tokens[p].type == LEFT && tokens[q].type == RIGHT); //this must be true if you want to return a bra_surrounded
-  bool continous2    = (q > 1 ) && (tokens[p].type == LEFT && tokens[p+1].type == LEFT) \
-                                    || (tokens[q].type == RIGHT && tokens[q-1].type == RIGHT);
+  bool continous2    = ((q > 1 )) && ((tokens[p].type == LEFT && tokens[p+1].type == LEFT) \
+                                    || (tokens[q].type == RIGHT && tokens[q-1].type == RIGHT));
   int braCount = 0;
   for(; p <= q; p++){
     char type = tokens[p].type;
