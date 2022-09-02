@@ -292,7 +292,7 @@ word_t calculate(int p, int q, bool * success){
   int prime = find_prime_idx(p, q);
   if(!check_parentheses(p, prime -1, removed1) || !check_parentheses(prime + 1, q, removed2)){
     printf(ANSI_FMT("illegal expression\n",ANSI_FG_RED));
-    return 0;
+    //return 0;
   }
   int sp1 = p + *removed1, sp2 = prime + 1 + *removed2;
   int eq1 = prime - 1 - *removed1, eq2 = q - *removed2;
