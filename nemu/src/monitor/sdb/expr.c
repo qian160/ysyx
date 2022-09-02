@@ -159,6 +159,7 @@ int find_prime_idx(int p, int q)    //the prime opt should have low privilege
   Log("find from %d to %d...the substr is:\n",p, q);
   for(int j = p; j <= q; j++)
     printf("%s\t", tokens[j].str);
+  putchar('\n');
   for(; p <= q; p++ ){
     int type = tokens[p].type;
 
@@ -194,6 +195,7 @@ int find_prime_idx(int p, int q)    //the prime opt should have low privilege
 }
 
 //this function will add tokens to the array
+
 static bool make_token(char *e) {
   int position = 0;
   int i;
@@ -253,6 +255,7 @@ word_t calculate(int p, int q, bool * success){
   Log("calculate from %d to %d...the substr is:\n",p, q);
   for(int j = p; j <= q; j++)
     printf("%s\t", tokens[j].str);
+  putchar('\n');
   char * removed = (char *)malloc(1);
   *removed = false;
   if(!check_parentheses(p, q, removed)){
