@@ -177,12 +177,12 @@ int find_prime_idx(int p, int q)    //the prime opt should have low privilege
 {
   int priv = 114514;      //very high privilege, so any new income will be lower than it and replace it
   int index = p;
-  /*
+  
   Log("find from %d to %d...\nthe substr is:\n",p, q);
   for(int j = p; j <= q; j++)
     printf("%s  ", tokens[j].str);
   putchar('\n');
-  */
+  
   PS.top = 0;
   int pp = p, qq = q;
   for(; p <= q; p++ ){
