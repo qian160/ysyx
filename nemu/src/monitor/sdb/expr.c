@@ -291,7 +291,7 @@ word_t calculate(int p, int q, bool * success){
   int prime = find_prime_idx(p, q);
   bool checkLeft  = check_parentheses(p, prime - 1, removed1);
   bool checkRight = check_parentheses(prime + 1, q, removed2);
-  Log("left check: %d, right check: %d\n",checkLeft, checkRight);
+  Log("p = %d, q = %d, prime = %d, left check: %d, right check: %d\n",p, q, prime, checkLeft, checkRight);
   if(!checkLeft || !checkRight){
     printf(ANSI_FMT("illegal expression\n",ANSI_FG_RED));
     //return 0;
