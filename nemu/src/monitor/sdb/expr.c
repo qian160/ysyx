@@ -245,9 +245,9 @@ word_t calculate(int l, int r){
   if (l == r) {
     word_t num = 0;
     if (tokens[l].type == DECNUM)
-      sscanf(tokens[l].str,"%d",&num);
+      sscanf(tokens[l].str,"%ld",&num);
     if (tokens[l].type == HEXNUM)
-      sscanf(tokens[l].str,"%x",&num);
+      sscanf(tokens[l].str,"%lx",&num);
 
   else if (check_parentheses (l,r))return calculate (l + 1, r - 1);
   else {
@@ -282,6 +282,7 @@ word_t calculate(int l, int r){
 	assert (1);
 	return -123456;
   }
+  return 0;
 }
 
 word_t expr(char *e, bool *success) {
