@@ -128,16 +128,22 @@ bool check_parentheses(int p, int q, char * removed){   //scan the array and use
   Log("check from %d to %d\n", p, q);
   //if surrounded by a pair of parentheses, just throw it away
   int sp = p, eq = q;   //startt of p && end of q
-  while(!(tokens[sp++].type == TK_LEFT && tokens[eq--].type == TK_RIGHT));
+  while((tokens[sp].type == TK_LEFT && tokens[eq].type == TK_RIGHT)){
+    strcpy(tokens[sp].str, "removed");
+    strcpy(tokens[eq].str, "removed");    
+    tokens[sp++].type = TK_NOTYPE;
+    tokens[eq--].type = TK_NOTYPE;
+  };
   sp--;eq++;
   //if(tokens[p].type == TK_LEFT && tokens[q].type == TK_RIGHT){
+  /*
   if(sp <= eq){
     tokens[sp].type = TK_NOTYPE;
     tokens[eq].type = TK_NOTYPE;
     strcpy(tokens[sp].str, "removed");
     strcpy(tokens[eq].str, "removed");    
 
-    /*
+    //
     for(int i = p; i <= q - 2; i++){
       tokens[i] = tokens[i+1];
     }
@@ -146,8 +152,9 @@ bool check_parentheses(int p, int q, char * removed){   //scan the array and use
     tokens[nr_token + 1].type = TK_NOTYPE;
     strcpy(tokens[nr_token].str, "removed");
     strcpy(tokens[nr_token + 1].str, "removed");
-    */
+    
   }
+  */
   for(; sp <= eq; sp++){
     char type = tokens[sp].type;
     if(type == TK_LEFT){
@@ -182,7 +189,6 @@ int find_prime_idx(int p, int q)    //the prime opt should have low privilege
   putchar('\n');
   for(; p <= q; p++ ){
     int type = tokens[p].type;
-
     if(type == TK_ADD || type == TK_SUB){
       if(priv >= 0){
         priv = 0;
@@ -315,6 +321,7 @@ word_t calculate(int p, int q, bool * success){
       case(TK_SUB):  return P1 - P2;
       case(TK_MULT): return P1 * P2;
       case(TK_DIV):  return P1 / P2;
+      //due to nested parentheses, we don't find a match in this loop. Try another tighter loop
       default: return(calculate(p + 1, q - 1, success));//Assert(0, "hope this would not happen...\n");
     }
   }
