@@ -17,6 +17,7 @@ enum {
   TK_SR,    //1001, 9
   TK_RIGHT,
   TK_NOTYPE, 
+  TK_REG,
   /* TODO: Add more token types */
 
 };
@@ -65,6 +66,8 @@ static struct rule {
   {"\\)",             TK_RIGHT},
   {"<<",              TK_SL},
   {">>",              TK_SR},
+  {"$[a-zA-Z]{2}",    TK_REG},
+  {"\\*"}
 };
 
 #define NR_REGEX ARRLEN(rules)
@@ -184,6 +187,7 @@ int find_prime_idx(int p, int q)    //the prime opt should have low privilege
   putchar('\n');
   */
   PS.top = 0;
+  Log("from %d to %d\n", p, q);
   for(; p <= q; p++ ){
     int type = tokens[p].type;
     if(type == TK_ADD || type == TK_SUB || type == TK_SL || type == TK_SR){
@@ -213,7 +217,7 @@ int find_prime_idx(int p, int q)    //the prime opt should have low privilege
       }
     }
   }
-  Log("from %d to %d, the prime is %s", p, q, tokens[index].str);
+  Log("the prime is %s", tokens[index].str);
   return index;
 }
 //this function will add tokens to the array
