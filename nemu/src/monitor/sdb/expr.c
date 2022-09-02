@@ -327,6 +327,7 @@ word_t calculate(int p, int q, bool * success){
 
 word_t expr(char *e, bool *success) {   //the main calculate function. first make the token
   if (!make_token(e)) {
+    printf(ANSI_FMT("invalid expression!\n",ANSI_FG_RED));
     *success = false;
     return 0;
   }
