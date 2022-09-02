@@ -187,7 +187,7 @@ int find_prime_idx(int p, int q)    //the prime opt should have low privilege
   putchar('\n');
   */
   PS.top = 0;
-  Log("from %d to %d\n", p, q);
+  Log("from %d to %d", p, q);
   for(; p <= q; p++ ){
     int type = tokens[p].type;
     if(type == TK_ADD || type == TK_SUB || type == TK_SL || type == TK_SR){
@@ -217,7 +217,7 @@ int find_prime_idx(int p, int q)    //the prime opt should have low privilege
       }
     }
   }
-  Log("the prime is %s", tokens[index].str);
+  Log("the prime is %s\n", tokens[index].str);
   return index;
 }
 //this function will add tokens to the array
