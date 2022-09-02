@@ -324,7 +324,8 @@ word_t calculate(int p, int q, bool * success){
     bool checkRight = check_parentheses(prime + 1, q, removed2);
     //Log("p = %d, q = %d, prime = %d, left check: %d, right check: %d\n",p, q, prime, checkLeft, checkRight);
     if(!checkLeft || !checkRight){
-      if(!(type == TK_DECNUM || type == TK_HEXNUM) || !check_parentheses(p, q, removed1)){
+      if(check_parentheses(p, q, removed1)){}   //also acceptable?
+      else if(!(type == TK_DECNUM || type == TK_HEXNUM)){
         printf(ANSI_FMT("illegal expression...maybe bugs also\n",ANSI_FG_RED));
         return 0;
       }
