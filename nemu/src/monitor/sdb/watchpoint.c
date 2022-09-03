@@ -43,8 +43,9 @@ void free_wp(int number){
     if(temp == NULL)goto bad;
     if(temp -> NO == number){
       WP * LEFT = find_left(temp);
+      if(LEFT)  Log("LEFT number: %d, expr = %s\n", LEFT -> NO, LEFT -> expr);
       WP * RIGHT = temp -> next;
-
+      if(RIGHT) Log("RIGHT number %d, expr = %s\n", RIGHT -> NO, RIGHT -> expr);
       //global changes, no matter what position(say temp) to remove, this temp will always become the new head of free.
       temp -> next = free_;   //when free == NULL, this sets temp -> next to be null which means it is the only node. It's okay so don't worry
       free_ = temp;
