@@ -77,7 +77,7 @@ static struct rule {
   {"\\)",             RIGHT,  9},
   {"<<",              SL,     3},
   {">>",              SR,     3},
-  {"$[a-zA-Z]{2}",    REG,    0},
+  {"$[a-zA-Z0-9]+",   REG,    0},
   {"\\|",             OR,     1},
   {"&",               AND,    1},
   {"\\^",             XOR,    2},
@@ -129,18 +129,6 @@ bool push(char c){
   }
   S.parentheses[S.top++] = c;
   return true;
-}
-
-bool pop(){
-  if(S.top == 0) return false;
-  S.top--;
-  return true;
-}
-
-void tranverse(){
-  for(int i = 0; i < S.top; i++)
-    printf("%c\n", S.parentheses[i]);
-  putchar('\n');
 }
 
 /*  about surrounding:
@@ -201,7 +189,7 @@ int check_parentheses(int p, int q){   //scan the array and use a stack
 typedef struct {
   int priv[10];
   int top;
-}privStack;   //for privilege recovery in prime find. nested parentheses will need this
+}privStack;   //for privilege recovery in prime find. maybe nested parentheses will need this
 
 privStack PS;
 
@@ -265,7 +253,7 @@ static bool make_token(char *e) {
     }
   }
 //how to define?
-#ifdef PRINT_TOKEN
+//#ifdef PRINT_TOKEN
   printf("here are the tokens:\n");
   for(int i =0 ; i < nr_token; i++)
   {
@@ -276,7 +264,7 @@ static bool make_token(char *e) {
   }
   putchar('\n');
   putchar('\n');
-#endif
+//#endif
   //------
   return true;
 }
@@ -297,6 +285,13 @@ word_t calculate(int p, int q){
     else if(type == HEXNUM){
       sscanf(tk_val, "%lx", &result);
       return result;
+    }
+    else if(type == REG){
+      bool * success = (bool *)malloc(sizeof(bool));
+      *success = 0;
+      word_t val = isa_reg_str2val(tk_val, success);
+      if(*success) return val;
+      else LOg("bad reg name");
     }
     else{   //the single token should be of numeric type, not others
       Log("bad token: %s\n", tk_val);
