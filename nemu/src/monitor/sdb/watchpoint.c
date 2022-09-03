@@ -78,6 +78,7 @@ void wp_display(){
 }
 //debug
 void show_free(){
+  printf(ANSI_FMT("these are the free wp numbers:\n", ANSI_FG_GREEN));
   for(WP * p = free_; p != NULL; p = p -> next){
     printf(ANSI_FMT("%d\n", ANSI_FG_YELLOW), p -> NO);
   }
