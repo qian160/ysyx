@@ -38,7 +38,7 @@ static int cmd_c(char *args) {
     cpu_exec(-1);   //as many steps as possible
     return 0;
 }
-//small bug: don't contain the whole expr in a ()
+
 static int cmd_p(char *expression){
     bool * success = (bool *)malloc(sizeof(bool));
     *success = true;
@@ -131,6 +131,7 @@ static int cmd_r(){
         cpu.pc  = 0x80000000;
         for(int i = 0; i < 32; i++)
             gpr(i) = 0;
+        TODO()//reset watchpoint also
     }
     else
         printf("canceled\n");
