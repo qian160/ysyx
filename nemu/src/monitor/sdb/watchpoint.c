@@ -39,7 +39,6 @@ void free_wp(int number){
   WP * temp = head;
   //numbers also need to be copied
   while(temp != NULL){
-    Log("node number: %d, expr = %s\n", temp -> NO, temp -> expr);
     if(temp == NULL)goto bad;
     if(temp -> NO == number){
       WP * LEFT = find_left(temp);
@@ -56,6 +55,7 @@ void free_wp(int number){
       }
       else{                             //in between
         LEFT -> next = RIGHT;           //both left and right
+        assert(RIGHT);
       }
       printf(ANSI_FMT("wp %d deleted\n", ANSI_FG_YELLOW), number);
       return;
