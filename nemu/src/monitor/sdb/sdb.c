@@ -30,7 +30,7 @@ static char* rl_gets() {
 
   line_read = readline("(nemu) ");
   */
-  char * line_read = readline(ANSI_FMT("(nemu)",ANSI_FG_YELLOW));
+  char * line_read = readline(ANSI_FMT("(nemu)",ANSI_FG_CYAN));
   if (line_read && *line_read) {
     add_history(line_read);
   }
