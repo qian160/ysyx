@@ -27,10 +27,12 @@ static void trace_and_difftest(Decode *_this, vaddr_t dnpc) {
   //watch point
   for(WP * head = get_head(); head != NULL; head = head -> next){
     head -> newVal = expr(head -> expr, NULL);
-    if(head -> newVal ^ head -> oldVal){
+    word_t newVal = head -> newVal, oldVal = head -> oldVal;
+    Log("newVal = %ld, oldVal = %ld\n", newVal, oldVal);
+    if(newVal ^ oldVal){
       nemu_state.state = NEMU_STOP;
-      head -> oldVal = head -> newVal;
     }
+    head -> oldVal = newVal;
   }
 }
 
