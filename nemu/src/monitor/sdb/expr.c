@@ -24,7 +24,6 @@ enum {
   RIGHT   = ')',
   BIT_OR  = '|',
   XOR     = '^',
-  NOT     = '!',
   BIT_AND = '&',
   //op a, not a op b
   NEG     = '~',
