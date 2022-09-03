@@ -144,7 +144,6 @@ static int cmd_d(char * num){
     }
     int no;
     sscanf(num, "%d", &no);
-    Log("try to delete wp %d\n", no);
     free_wp(no);
     return 0;
 }

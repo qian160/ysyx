@@ -6,7 +6,7 @@
 #include <utils.h>
 #include "../../isa/riscv64/local-include/reg.h"
 
-static int is_batch_mode = false;
+static int is_batch_mode __attribute__((unused)) = false;
 #define NR_CMD ARRLEN(cmd_table)
 
 #include "cmd.h"  //put this under all the definations

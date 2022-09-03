@@ -297,7 +297,7 @@ static bool make_token(char *e) {
     }
   }
 //how to define?
-//#ifdef PRINT_TOKEN
+#ifdef PRINT_TOKEN
   printf("here are the tokens:\n");
   for(int i =0 ; i < nr_token; i++)
   {
@@ -308,7 +308,7 @@ static bool make_token(char *e) {
   }
   putchar('\n');
   putchar('\n');
-//#endif
+#endif
   //------
   return true;
 }
@@ -321,7 +321,7 @@ word_t calculate(int p, int q){
   int type  = tokens[p].type;
   char * tk_val = tokens[p].str;
   word_t result;
-  if(p == q /*|| type == DECNUM || type == HEXNUM*/){      //single token, can directly return. Hopefully this hould be a number
+  if(p == q){      //single token, can directly return. Hopefully this hould be a number
     if(type == DECNUM){
       sscanf(tk_val, "%ld", &result);
       return result;
@@ -351,8 +351,8 @@ word_t calculate(int p, int q){
   else if(match_result == BRA_SURROUNDED){
     return calculate(p + 1, q - 1);
     //cut the range and try again.
-  } //a good match which we can process with
-  else {
+  } 
+  else {        //a good match which we can process with
     int prime = dominant_operator(p, q);
     type = tokens[prime].type;
     //op a case
