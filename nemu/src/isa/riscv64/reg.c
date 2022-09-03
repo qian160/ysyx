@@ -17,7 +17,7 @@ void isa_reg_display() {
 word_t isa_reg_str2val(const char *s, bool *success) {
   printf(ANSI_FMT("the str is %s, with length %ld\n",ANSI_FG_YELLOW), s, strlen(s));
   for(int i = 0; i < 32; i++){
-    printf("reg[%d] = %s, with length %ld\n", regs[i], strlen(regs[i]));
+    printf("reg[%d] = %s, with length %ld\n", i, regs[i], strlen(regs[i]));
     if(strcmp(s, regs[i]) == 0){
       *success = 1;
       return gpr(1);
