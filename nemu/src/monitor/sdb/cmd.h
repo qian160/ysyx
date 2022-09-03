@@ -131,7 +131,7 @@ static int cmd_r(){
         cpu.pc  = 0x80000000;
         for(int i = 0; i < 32; i++)
             gpr(i) = 0;
-        TODO()//reset watchpoint also
+        TODO();//reset watchpoint also
     }
     else
         printf("canceled\n");
