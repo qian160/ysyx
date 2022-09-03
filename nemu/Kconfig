@@ -1,5 +1,18 @@
 mainmenu "NEMU Configuration Menu"
 
+menu "Watchpoints"
+config WP_ENABLE
+  bool "Enable Watchpoint"
+  default y 
+  help
+    Disable watchpoint will improve performance
+config PRINT_TOKEN
+  bool "Enable print"
+  default y
+  help
+    Print the tokens after they are generated in make_token
+endmenu
+
 choice
   prompt "Base ISA"
   default ISA_riscv32
