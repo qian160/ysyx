@@ -1,18 +1,3 @@
-/*
-#include <isa.h>
-#include <cpu/cpu.h>
-#include <readline/readline.h>
-#include <readline/history.h>
-#include "sdb.h"
-#include <utils.h>
-#include "../../isa/riscv64/local-include/reg.h"
-
-uint64_t pmem_read(paddr_t addr, int len);
-extern const char* regs[];
-static int is_batch_mode = false;
-#define NR_CMD ARRLEN(cmd_table)
-*///these definations can be used
-
 void examine_memory(int n, int64_t p){
   //if we directly derefference the pointer, we are in fact examing our real computer's address!!!
     printf(ANSI_FMT(" 0x%lx: ",ANSI_FG_MAGENTA), p);
@@ -85,8 +70,10 @@ static int cmd_info(char * args){
     }
     if(streq(arg, "r"))
         isa_reg_display();
-    else if(streq(arg, "w"))
-        TODO(); //WATCH POINT
+    else if(streq(arg, "w")){
+        wp_display();
+        show_free();
+    }
     else        //a specific reg
     {
         for (int i = 0; i <= 31; i ++)
@@ -139,23 +126,27 @@ static int cmd_r(){
     return 0;
 }
 */
-static int cmd_w(char *args){
-    if(args == NULL){
+static int cmd_w(char *expr){
+    if(expr == NULL){
         printf(ANSI_FMT("need an argument\n", ANSI_FG_RED));
         return 0;
     }
-    Log("todo...\n");
+    WP * head = new_wp(expr);
+    if(head == NULL)
+        printf(ANSI_FMT("can not add more wp\n",ANSI_FG_CYAN));
+    else
+        printf(ANSI_FMT("a new wp is added, number = %d\n", ANSI_FG_YELLOW), head ->NO);
     return 0;
 }
 
-static int cmd_d(char * expr){
-    if(expr == NULL){
+static int cmd_d(char * num){
+    if(num == NULL){
         printf(ANSI_FMT("need an argument\n",ANSI_FG_MAGENTA));
         return 0;
     }
     int no;
-    sscanf(expr, "%d", &no);
-    Log("todo......\n");
+    sscanf(num, "%d", &no);
+    free_wp(no);
     return 0;
 }
 static int cmd_help(char *args);  //if not defined here, cmd_table will find the 

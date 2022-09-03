@@ -1,17 +1,6 @@
 #include "sdb.h"
 
-#define NR_WP 32
-
-typedef struct watchpoint {
-  int NO;
-  struct watchpoint *next;
-  char *expr;
-  word_t oldVal;
-  word_t newVal;
-
-  /* TODO: Add more members if necessary */
-
-} WP;
+#define NR_WP 8//32
 
 static WP wp_pool[NR_WP] = {};
 static WP *head = NULL, *free_ = NULL;
@@ -22,9 +11,77 @@ void init_wp_pool() {
     wp_pool[i].next = (i == NR_WP - 1 ? NULL : &wp_pool[i + 1]);
   }
   //initially the watchpoints are chained together:w[0] -> w[1] -> w[2] ...w[31] -> NULL
-  head = NULL;
-  free_ = wp_pool;
+  head = NULL;        //no watchpoints in use
+  free_ = wp_pool;    //all free, just points to the start
 }
 
 /* TODO: Implement the functionality of watchpoint */
 
+WP* new_wp(char * expr){
+  if(free_ == NULL)
+    return NULL;
+  WP *temp = free_ ->next;
+  free_ -> next = head;
+  head  = free_;
+  free_ = temp;
+  head -> expr = expr;
+  return head;
+}
+
+WP * find_left(WP * node){
+  if(node == head) return NULL;
+  WP * temp = head;
+  for(; temp -> next != node; temp = temp -> next){}
+  return temp;
+}
+
+void free_wp(int number){
+  WP * temp = head;
+  //numbers also need to be copied
+  while(temp != NULL){
+    if(temp == NULL)goto bad;
+    if(temp -> NO == number){
+      WP * LEFT = find_left(temp);
+      WP * RIGHT = temp -> next;
+
+      //deal with temp's left and right
+      if(temp == head){                 //delete first one
+        temp -> next = free_;
+        free_ = temp;
+        head = RIGHT;                   //temp's right need to be updated
+      }
+      else if(temp -> next == NULL){    //delete last one
+        temp -> next = free_;
+        free_ = temp;
+        LEFT -> next = NULL;            //left
+      }
+      else{                             //in between
+          temp -> next = free_;
+        free_ = temp;
+        LEFT -> next = RIGHT;           //both left and right
+      }
+      printf(ANSI_FMT("wp %d deleted\n", ANSI_FG_YELLOW), number);
+      return;
+    }
+    temp = temp -> next;
+  }
+bad:
+  printf(ANSI_FMT("no such number: %d\n", ANSI_FG_YELLOW), number);
+  return;
+}
+
+void wp_display(){
+  WP * temp = head;
+  while(temp != NULL){
+    int next_no = temp -> next ? temp -> next -> NO: -1;
+    printf(ANSI_FMT("wp no: %2d, expr = %s, next_no = %d\n", ANSI_FG_GREEN),temp->NO, temp ->expr, next_no);
+    temp = temp -> next;
+  }
+}
+//debug
+void show_free(){
+  printf(ANSI_FMT("these are the free wp numbers:\n", ANSI_FG_GREEN));
+  for(WP * p = free_; p != NULL; p = p -> next){
+    printf(ANSI_FMT("%d\n", ANSI_FG_YELLOW), p -> NO);
+  }
+}

@@ -274,12 +274,12 @@ static bool make_token(char *e) {
             tokens[nr_token].priv = rules[i].priv;
             //check for pointer and minus
             //Log("\ntoken[%2d] found! type = %d, value = %s\n",nr_token, tokens[nr_token].type, tokens[nr_token].str);
-            if (tokens[nr_token].type == '*' && (i == 0 || (tokens[i - 1].type != DECNUM && tokens[i - 1].type != HEXNUM && tokens[i - 1].type != REG && tokens[i - 1].type !=')') )) {
+            if (tokens[nr_token].type == '*' && (nr_token == 0 || (tokens[nr_token - 1].type != DECNUM && tokens[nr_token - 1].type != HEXNUM && tokens[nr_token - 1].type != REG && tokens[nr_token - 1].type !=')') )) {
               tokens[nr_token].type = POINTER;
               tokens[nr_token].priv = 8;
               //Log("a pointer found\n");
             }
-            if (tokens[nr_token].type == '-' && (i == 0 || (tokens[i - 1].type != DECNUM && tokens[i - 1].type != HEXNUM && tokens[i - 1].type != REG && tokens[i - 1].type !=')') )) {
+            if (tokens[nr_token].type == '-' && (nr_token == 0 || (tokens[nr_token - 1].type != DECNUM && tokens[nr_token - 1].type != HEXNUM && tokens[nr_token - 1].type != REG && tokens[nr_token - 1].type !=')') )) {
               tokens[nr_token].type = MINUS;
               tokens[nr_token].priv = 8;
               //Log("a minus found\n");
@@ -321,7 +321,7 @@ word_t calculate(int p, int q){
   int type  = tokens[p].type;
   char * tk_val = tokens[p].str;
   word_t result;
-  if(p == q /*|| type == DECNUM || type == HEXNUM*/){      //single token, can directly return. Hopefully this hould be a number
+  if(p == q){      //single token, can directly return. Hopefully this hould be a number
     if(type == DECNUM){
       sscanf(tk_val, "%ld", &result);
       return result;
@@ -351,8 +351,8 @@ word_t calculate(int p, int q){
   else if(match_result == BRA_SURROUNDED){
     return calculate(p + 1, q - 1);
     //cut the range and try again.
-  } //a good match which we can process with
-  else {
+  } 
+  else {        //a good match which we can process with
     int prime = dominant_operator(p, q);
     type = tokens[prime].type;
     //op a case

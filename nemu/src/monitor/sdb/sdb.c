@@ -6,11 +6,9 @@
 #include <utils.h>
 #include "../../isa/riscv64/local-include/reg.h"
 
-word_t paddr_read(paddr_t addr, int len);
-extern const char* regs[];
-static int is_batch_mode = false;
+static int is_batch_mode __attribute__((unused)) = false;
 #define NR_CMD ARRLEN(cmd_table)
-word_t expr(char *e, bool *success);
+
 #include "cmd.h"  //put this under all the definations
 
 #define uint64_t  long long
@@ -30,7 +28,7 @@ static char* rl_gets() {
 
   line_read = readline("(nemu) ");
   */
-  char * line_read = readline(ANSI_FMT("(nemu)",ANSI_FG_GREEN));
+  char * line_read = readline(ANSI_FMT("(nemu)",ANSI_FG_PINK));
   if (line_read && *line_read) {
     add_history(line_read);
   }
