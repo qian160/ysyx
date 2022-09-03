@@ -132,7 +132,7 @@ static int cmd_w(char *expr){
     WP * head = new_wp(expr);
     if(head == NULL)
         printf(ANSI_FMT("wp pool is full\n",ANSI_FG_RED));
-    printf(ANSI_FMT("a new wp is added, number = %d", ANSI_FG_YELLOW), head ->NO);
+    printf(ANSI_FMT("a new wp is added, number = %d\n", ANSI_FG_YELLOW), head ->NO);
     return 0;
 }
 

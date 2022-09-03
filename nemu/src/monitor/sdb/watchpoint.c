@@ -36,7 +36,7 @@ void free_wp(int number){
 void wp_display(){
   WP * temp = head;
   while(temp != NULL){
-    printf(ANSI_FMT("wp no: %d, expr = %s", ANSI_FG_MAGENTA),temp->NO, temp ->expr);
+    printf(ANSI_FMT("wp no: %d, expr = %s\n", ANSI_FG_MAGENTA),temp->NO, temp ->expr);
     temp = temp -> next;
   }
 }
