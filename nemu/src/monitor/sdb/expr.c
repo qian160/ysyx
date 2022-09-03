@@ -71,24 +71,26 @@ static struct rule {
   // bit/logical < == < arith
   {"0[xX][0-9a-f]+",  HEXNUM,   0},   //check before DECNUM, or the 0 prefix will be lost
   {"[0-9]+",          DECNUM,   0},
+  {"\\$[a-zA-Z0-9]+", REG,      0},
   {"!=",              NOTEQAL,  3},
-  {"==",              EQUAL,    3},       // equal
-  {"\\*",             MULT,     5},     // mult and div should be treated before add/sub
+  {"==",              EQUAL,    3},   // equal
+  {"\\*",             MULT,     5},   // mult and div should be treated before add/sub
   {"/",               DIV,      5},   
-  {"-",               SUB,      4},      // sub  
-  {"\\+",             ADD,      4},      // plus,'+' has special meaning thus need some \. \+ means '+'. However to recognize the first \ we need another \.
+  {"-",               SUB,      4},
+  {"\\+",             ADD,      4},
   {" +",              NOTYPE,   0},   // multiple spaces, not addition
   {"\\s+",            NOTYPE,   0},   // white spaces
   {"\\(",             LEFT,     9},
   {"\\)",             RIGHT,    9},
   {"<<",              SL,       3},
   {">>",              SR,       3},
-  {"\\$[a-zA-Z0-9]+", REG,      0},
   {"\\|\\|",          COND_OR,  2},
   {"\\|",             BIT_OR,   2},
   {"&",               BIT_AND,  2},
   {"&&",              COND_AND, 2},
   {"\\^",             XOR,      2},
+  {"!",               NOT,      6},
+  {"~",               NEG,      6},
 
   //{"\\*",             POINTER},
 };
