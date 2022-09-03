@@ -1,13 +1,13 @@
 mainmenu "NEMU Configuration Menu"
 
 menu "Watchpoints"
-config WP_ENABLE
-  bool "Enable Watchpoint"
+config Watchpoints
+  bool "WP_ENABLE"
   default y 
   help
     Disable watchpoint will improve performance
-config PRINT_TOKEN
-  bool "Enable print"
+config Tokens
+  bool "PRINT_TOKEN"
   default y
   help
     Print the tokens after they are generated in make_token
