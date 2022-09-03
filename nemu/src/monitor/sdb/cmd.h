@@ -38,7 +38,7 @@ static int cmd_c(char *args) {
     cpu_exec(-1);   //as many steps as possible
     return 0;
 }
-//small bug: don't contain the whole expr in a ()
+
 static int cmd_p(char *expression){
     bool * success = (bool *)malloc(sizeof(bool));
     *success = true;
@@ -55,7 +55,7 @@ static int cmd_q(char *args) {
     return -1;
 }
 
-static int cmd_clear(){
+static inline int cmd_clear(){
     return system("clear");
 }
 
@@ -85,7 +85,9 @@ static int cmd_info(char * args){
     }
     if(streq(arg, "r"))
         isa_reg_display();
-    else
+    else if(streq(arg, "w"))
+        TODO(); //WATCH POINT
+    else        //a specific reg
     {
         for (int i = 0; i <= 31; i ++)
         {
@@ -101,17 +103,25 @@ static int cmd_info(char * args){
 
 static int cmd_x(char * args){  //usage: x num addr
     char * nump = strtok(args," ");
-    char * addrp = strtok(NULL," ");
-
-    int64_t  num = atoi(nump);
-    int64_t addr; 
+    char * Expr = strtok(NULL," ");
+    bool * success = (bool * )malloc(sizeof(bool));
+    word_t address = expr(Expr, success);
+    if(!success)
+    {
+        printf(ANSI_FMT("illegal expression\n",ANSI_FG_MAGENTA));
+        return 0;
+    }
+    uint64_t  num = atoi(nump);
+    /*
+    uint64_t addr; 
     sscanf(addrp,"%lx",&addr); 
+    */
     printf(ANSI_FMT("[little endian, the MSB is located at low adress]\n",ANSI_FG_PINK));
-    examine_memory(num, addr);
+    examine_memory(num, address);
     //here we dont do mem check. we pass the job to that em function
     return 0;
 }
-
+/*
 static int cmd_r(){
     printf("do you want to restart the program?(y/n) \n");
     char c = getchar();
@@ -121,28 +131,53 @@ static int cmd_r(){
         cpu.pc  = 0x80000000;
         for(int i = 0; i < 32; i++)
             gpr(i) = 0;
+        init_wp_pool();
+        init_mem();
     }
     else
         printf("canceled\n");
     return 0;
 }
+*/
+static int cmd_w(char *args){
+    if(args == NULL){
+        printf(ANSI_FMT("need an argument\n", ANSI_FG_RED));
+        return 0;
+    }
+    Log("todo...\n");
+    return 0;
+}
 
+static int cmd_d(char * expr){
+    if(expr == NULL){
+        printf(ANSI_FMT("need an argument\n",ANSI_FG_MAGENTA));
+        return 0;
+    }
+    int no;
+    sscanf(expr, "%d", &no);
+    Log("todo......\n");
+    return 0;
+}
 static int cmd_help(char *args);  //if not defined here, cmd_table will find the 
 
+//we put this table in an embarressing position, cmd_help needs this so it must be put before it. 
+//And the table contains lots of functions, so it also must be put after the functions to find their definations
 static struct {
     const char *name;
     const char *description;
     int (*handler) (char *);
-    } cmd_table [] = {
-    { "help", "Display informations about all supported commands", cmd_help },
-    { "c", "Continue the execution of the program", cmd_c },
-    { "q", "Exit NEMU", cmd_q },
-    { "si", "step single instrction", cmd_si},
-    { "info", "print the specific reg's value, r for all", cmd_info},
-    { "x", "examine the memory. Usage: x num addr", cmd_x},
-    { "r", "restart and run the program", cmd_r},
-    { "p", "print the expression's value", cmd_p},
-    { "clear", "clear up the screen", cmd_clear},
+} cmd_table [] = {
+    { "help",   "Display informations about all supported commands",    cmd_help },
+    { "c",      "Continue the execution of the program",                cmd_c },
+    { "q",      "Exit NEMU",                                            cmd_q },
+    { "si",     "Step single instrction",                               cmd_si},
+    { "info",   "Print the specific reg's value, r for all",            cmd_info},
+    { "x",      "Examine the memory. Usage: x num expr",                cmd_x},
+//    { "r",      "Restart and run the program",                          cmd_r},
+    { "p",      "Print the expression's value",                         cmd_p},
+    { "clear",  "clear up the screen",                                  cmd_clear},
+    { "w",      "Add watch point. Usage w expr",                        cmd_w},
+    { "d",      "Delete watch point",                                   cmd_d},
 
   /* TODO: Add more commands */
 };
