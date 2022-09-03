@@ -321,13 +321,16 @@ word_t calculate(int p, int q){
   else {
     int prime = dominant_operator(p, q);
     type = tokens[prime].type;
+    //op a case
     if(prime == p){
       word_t temp = calculate(p + 1, q);
       switch(type){
         case('!'):  return !temp;
         case('~'):  return ~temp;
+        case(POINTER):TODO();
       }
     }
+    //a op b case
     word_t P1 = calculate(p, prime - 1);
     word_t P2 = calculate(prime + 1, q);
     switch(type){
