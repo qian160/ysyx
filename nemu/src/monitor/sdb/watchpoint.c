@@ -1,6 +1,6 @@
 #include "sdb.h"
 
-#define NR_WP 32
+#define NR_WP 8//32
 
 static WP wp_pool[NR_WP] = {};
 static WP *head = NULL, *free_ = NULL;
@@ -55,7 +55,6 @@ void free_wp(int number){
       }
       else{                             //in between
         LEFT -> next = RIGHT;           //both left and right
-        assert(RIGHT);
       }
       printf(ANSI_FMT("wp %d deleted\n", ANSI_FG_YELLOW), number);
       return;
