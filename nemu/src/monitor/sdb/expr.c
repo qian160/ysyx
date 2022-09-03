@@ -15,10 +15,10 @@ enum {
   SR,
   COND_OR,
   REG,
-  POINTER,
+  POINTER,    //can't be distinguished directly. need also to check the previous token's type
   MULT    = '*',
   DIV     = '/',
-  ADD     = '+',      //bitwise op
+  ADD     = '+',
   SUB     = '-',
   LEFT    = '(',
   RIGHT   = ')',
@@ -26,6 +26,9 @@ enum {
   XOR     = '^',
   NOT     = '!',
   BIT_AND = '&',
+  //op a, not a op b
+  NEG     = '~',
+  NOT     = '!',
   /* TODO: Add more token types */
 
 };
@@ -317,6 +320,13 @@ word_t calculate(int p, int q){
   else {
     int prime = dominant_operator(p, q);
     type = tokens[prime].type;
+    if(prime == p){
+      word_t temp = calculate(p + 1, q);
+      switch(type){
+        case('!'):  return !temp;
+        case('~'):  return ~temp;
+      }
+    }
     word_t P1 = calculate(p, prime - 1);
     word_t P2 = calculate(prime + 1, q);
     switch(type){
@@ -327,8 +337,8 @@ word_t calculate(int p, int q){
       case('|'):  return P1 |  P2;
       case('&'):  return P1 &  P2;
       case('^'):  return P1 ^  P2;
-      case(SL ):      return P1 << P2;
-      case(SR ):      return P1 >> P2;
+      case(SL ):  return P1 << P2;
+      case(SR ):  return P1 >> P2;
       case(COND_AND): return P1 && P2;
       case(NOTEQAL):  return P1 != P2;
       case(EQUAL):    return P1 == P2;
