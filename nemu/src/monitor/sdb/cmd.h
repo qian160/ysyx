@@ -19,7 +19,7 @@ void examine_memory(int n, int64_t p){
     char cnt = 0;
     for (int i = 0 ; i < n ; i++)
     {
-        printf(ANSI_FMT("%02lx  ", ANSI_FG_YELLOW),pmem_read(p, 1));
+        printf(ANSI_FMT("%02lx  ", ANSI_FG_YELLOW),paddr_read(p, 1));
         p ++;
         cnt ++;
         if(cnt == (char)4)
