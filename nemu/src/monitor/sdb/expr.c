@@ -293,8 +293,8 @@ word_t calculate(int p, int q){
       word_t val = isa_reg_str2val(tk_val, success);
       Log("val = %ld\n", val);
       if(*success) return val;
-      else Log("bad reg name");
-      return -1234;
+      else printf(ANSI_FMT("bad reg name\n",ANSI_FG_RED));
+      return 1145141919;
     }
     else{   //the single token should be of numeric type, not others
       Log("bad token: %s\n", tk_val);
