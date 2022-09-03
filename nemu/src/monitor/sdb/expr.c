@@ -289,6 +289,7 @@ word_t calculate(int p, int q){
     else if(type == REG){
       bool * success = (bool *)malloc(sizeof(bool));
       *success = 0;
+      Log("the reg is %s\n", tk_val);
       word_t val = isa_reg_str2val(tk_val, success);
       if(*success) return val;
       else Log("bad reg name");
