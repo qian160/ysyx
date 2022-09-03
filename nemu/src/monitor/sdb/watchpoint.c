@@ -17,14 +17,21 @@ void init_wp_pool() {
 
 /* TODO: Implement the functionality of watchpoint */
 
-WP* new_wp(char * expr){
+WP* new_wp(char * Expr){
   if(free_ == NULL)
     return NULL;
-  WP *temp = free_ ->next;
+  WP *temp = free_ -> next;
   free_ -> next = head;
   head  = free_;
   free_ = temp;
-  head -> expr = expr;
+  head -> expr = Expr;
+  bool * success = (bool *)malloc(sizeof(bool));
+  *success = true;
+  head -> oldVal = expr(Expr, success);
+  if(!success){
+    printf("bad expression\n");
+    return NULL;
+  }
   return head;
 }
 
@@ -72,8 +79,9 @@ bad:
 
 void wp_display(){
   WP * temp = head;
+  printf(ANSI_FMT("Index\t\texpr\t\tvalue\n",ANSI_FG_YELLOW));
   while(temp != NULL){
-    printf(ANSI_FMT("wp[%2d]: expr = %s\n", ANSI_FG_GREEN),temp->NO, temp ->expr);
+    printf(ANSI_FMT("[%2d]\t\t%s\t\t%ld\n", ANSI_FG_GREEN),temp->NO, temp ->expr, temp -> oldVal);
     temp = temp -> next;
   }
 }
@@ -83,4 +91,12 @@ void show_free(){
   for(WP * p = free_; p != NULL; p = p -> next){
     printf(ANSI_FMT("%d\n", ANSI_FG_YELLOW), p -> NO);
   }
+}
+
+WP * get_free(){
+  return free_;
+}
+
+WP * get_head(){
+  return head;
 }

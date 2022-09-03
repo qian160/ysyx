@@ -133,7 +133,7 @@ static int cmd_w(char *expr){
     if(head == NULL)
         printf(ANSI_FMT("can not add more wp\n",ANSI_FG_CYAN));
     else
-        printf(ANSI_FMT("a new wp is added, number = %d\n", ANSI_FG_YELLOW), head ->NO);
+        printf(ANSI_FMT("new wp[%2d], value = %ld\n", ANSI_FG_YELLOW), head ->NO, head -> oldVal);
     return 0;
 }
 
@@ -143,8 +143,12 @@ static int cmd_d(char * num){
         return 0;
     }
     int no;
-    sscanf(num, "%d", &no);
-    free_wp(no);
+    while(1){
+        char *idx = strtok(NULL, " ");
+        if(idx == NULL) break;
+        sscanf(num, "%d", &no);
+        free_wp(no);
+    }
     return 0;
 }
 static int cmd_help(char *args);  //if not defined here, cmd_table will find the 
