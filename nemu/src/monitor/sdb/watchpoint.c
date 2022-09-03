@@ -73,7 +73,7 @@ bad:
 void wp_display(){
   WP * temp = head;
   while(temp != NULL){
-    printf(ANSI_FMT("wp no: %2d, expr = %sn", ANSI_FG_GREEN),temp->NO, temp ->expr);
+    printf(ANSI_FMT("wp[%2d]: expr = %s\n", ANSI_FG_GREEN),temp->NO, temp ->expr);
     temp = temp -> next;
   }
 }
