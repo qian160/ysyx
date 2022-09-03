@@ -360,7 +360,7 @@ word_t calculate(int p, int q){
         case('~'):  return ~temp;
         case(MINUS):  return -temp;
         case(POINTER):{
-          Log("a pointerat address %p\n",temp);
+          Log("a pointer at address %ld\n",temp);
           return 0;
         }
       }
