@@ -131,7 +131,8 @@ static int cmd_r(){
         cpu.pc  = 0x80000000;
         for(int i = 0; i < 32; i++)
             gpr(i) = 0;
-        TODO();//reset watchpoint also
+        init_wp_pool();
+        init_mem();
     }
     else
         printf("canceled\n");
@@ -175,7 +176,7 @@ static struct {
     { "r",      "Restart and run the program",                          cmd_r},
     { "p",      "Print the expression's value",                         cmd_p},
     { "clear",  "clear up the screen",                                  cmd_clear},
-    { "w",      "Add watch point",                                      cmd_w},
+    { "w",      "Add watch point. Usage w expr",                        cmd_w},
     { "d",      "Delete watch point",                                   cmd_d},
 
   /* TODO: Add more commands */
