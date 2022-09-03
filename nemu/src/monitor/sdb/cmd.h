@@ -138,7 +138,7 @@ static int cmd_w(char *args){
     return 0;
 }
 
-static int cmd_d(char * number){
+static int cmd_d(char * expr){
     int no;
     sscanf(number, "%d", &no);
     Log("todo......\n");
@@ -162,8 +162,8 @@ static struct {
     { "r",      "Restart and run the program",                          cmd_r},
     { "p",      "Print the expression's value",                         cmd_p},
     { "clear",  "clear up the screen",                                  cmd_clear},
-    { "watch",  "Add watch point",                                      cmd_w},
-    { "delete", "Delete watch point",                                   cmd_d},
+    { "w",      "Add watch point",                                      cmd_w},
+    { "d",      "Delete watch point",                                   cmd_d},
 
   /* TODO: Add more commands */
 };
