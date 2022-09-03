@@ -56,7 +56,7 @@ void free_wp(int number){
       else{                             //in between
         LEFT -> next = RIGHT;           //both left and right
         Log("right -> no = %d\n", RIGHT -> NO);
-        Log("left -> next -> no = %d\n", left -> next -> NO);
+        Log("left -> next -> no = %d\n", LEFT -> next -> NO);
       }
       printf(ANSI_FMT("wp %d deleted\n", ANSI_FG_YELLOW), number);
       return;
