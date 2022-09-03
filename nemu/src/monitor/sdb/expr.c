@@ -99,13 +99,13 @@ static struct rule {
   //lower privilege level compare
   {"!=",              NOTEQAL,  3},
   {"==",              EQUAL,    3},   // equal
+  //logical op, need to be checked before bitwise op
+  {"\\|\\|",          COND_OR,  1},
+  {"&&",              COND_AND, 1},
   //bitwise  op
   {"\\|",             BIT_OR,   2},
   {"&",               BIT_AND,  2},
   {"\\^",             BIT_XOR,  2},
-  //logical op
-  {"\\|\\|",          COND_OR,  1},
-  {"&&",              COND_AND, 1},
   //numbers and white space
   {"0[xX][0-9a-f]+",  HEXNUM,   0},   //check before DECNUM, or the 0 prefix will be lost
   {"[0-9]+",          DECNUM,   0},
@@ -378,7 +378,12 @@ word_t calculate(int p, int q){
       case('^'):  return P1 ^  P2;
       case(SL ):  return P1 << P2;
       case(SR ):  return P1 >> P2;
+      case('>'):  return P1 >  P2;
+      case('<'):  return P1 <  P2;
+      case(GET):  return P1 >= P2;
+      case(LET):  return P1 <= P2;
       case(COND_AND): return P1 && P2;
+      case(COND_OR):  return P1 || P2;
       case(NOTEQAL):  return P1 != P2;
       case(EQUAL):    return P1 == P2;
       default: Assert(0, "bad op type: %d\n", type);  //hope this will not happen...
