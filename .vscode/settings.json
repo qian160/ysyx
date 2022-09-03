@@ -3,6 +3,7 @@
         "common.h": "c",
         "reg.h": "c",
         "regex.h": "c",
-        "sdb.h": "c"
+        "sdb.h": "c",
+        "locale.h": "c"
     }
 }

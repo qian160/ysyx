@@ -92,3 +92,11 @@ void show_free(){
     printf(ANSI_FMT("%d\n", ANSI_FG_YELLOW), p -> NO);
   }
 }
+
+WP * get_free(){
+  return free;
+}
+
+WP * get_head(){
+  return head;
+}
