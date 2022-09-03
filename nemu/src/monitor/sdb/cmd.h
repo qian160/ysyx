@@ -121,7 +121,7 @@ static int cmd_x(char * args){  //usage: x num addr
     //here we dont do mem check. we pass the job to that em function
     return 0;
 }
-
+/*
 static int cmd_r(){
     printf("do you want to restart the program?(y/n) \n");
     char c = getchar();
@@ -138,7 +138,7 @@ static int cmd_r(){
         printf("canceled\n");
     return 0;
 }
-
+*/
 static int cmd_w(char *args){
     if(args == NULL){
         printf(ANSI_FMT("need an argument\n", ANSI_FG_RED));
@@ -173,7 +173,7 @@ static struct {
     { "si",     "Step single instrction",                               cmd_si},
     { "info",   "Print the specific reg's value, r for all",            cmd_info},
     { "x",      "Examine the memory. Usage: x num expr",                cmd_x},
-    { "r",      "Restart and run the program",                          cmd_r},
+//    { "r",      "Restart and run the program",                          cmd_r},
     { "p",      "Print the expression's value",                         cmd_p},
     { "clear",  "clear up the screen",                                  cmd_clear},
     { "w",      "Add watch point. Usage w expr",                        cmd_w},
