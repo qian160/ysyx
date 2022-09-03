@@ -20,6 +20,7 @@ word_t isa_reg_str2val(const char *s, bool *success) {
     printf("reg[%d] = %s, with length %ld\n", i, regs[i], strlen(regs[i]));
     if(strcmp(s, regs[i]) == 0){
       *success = 1;
+      printf("gpr[i] = %ld\n", gpr(i));
       return gpr(1);
     }
   }
