@@ -359,10 +359,7 @@ word_t calculate(int p, int q){
         case('!'):  return !temp;
         case('~'):  return ~temp;
         case(MINUS):  return -temp;
-        case(POINTER):{
-          Log("a pointer at address %ld\n",temp);
-          return 0;
-        }
+        case(POINTER):return pmem_read(temp, 8);
       }
     }
     //a op b case
@@ -381,10 +378,10 @@ word_t calculate(int p, int q){
       case(COND_AND): return P1 && P2;
       case(NOTEQAL):  return P1 != P2;
       case(EQUAL):    return P1 == P2;
-      default: Assert(0, "bad op type: %d\n", type);
+      default: Assert(0, "bad op type: %d\n", type);  //hope this will not happen...
     }
   }
-  return 0; //will not be execuated..
+  return 1145141919810; //will not be execuated..
 }
 
 word_t expr(char *e, bool *success) {
