@@ -140,7 +140,7 @@ static int cmd_w(char *args){
 
 static int cmd_d(char * expr){
     int no;
-    sscanf(number, "%d", &no);
+    sscanf(expr, "%d", &no);
     Log("todo......\n");
     return 0;
 }
