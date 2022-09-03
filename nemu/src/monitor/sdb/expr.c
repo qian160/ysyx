@@ -2,8 +2,9 @@
 /* We use the POSIX regex functions to process regular expressions.
  * Type 'man regex' for more information about POSIX regex functions.
  */
+
+word_t paddr_read(paddr_t addr, int len);
 #include <regex.h>        
-#define is_arith(TK) (TK >= MULT && TK <= AND)
 enum {
   NOTYPE, 
   DECNUM,
@@ -271,15 +272,17 @@ static bool make_token(char *e) {
             tokens[nr_token].str[substr_len] = '\0';
             tokens[nr_token].type = rules[i].token_type;
             tokens[nr_token].priv = rules[i].priv;
-
-            if (tokens[i].type == '*' && (i == 0 || (tokens[i - 1].type != DECNUM && tokens[i - 1].type != HEXNUM && tokens[i - 1].type != REG && tokens[i - 1].type !=')') )) {
-              tokens[i].type = POINTER;
-              tokens[i].priv = 8;
+            //check for pointer and minus
+            //Log("\ntoken[%2d] found! type = %d, value = %s\n",nr_token, tokens[nr_token].type, tokens[nr_token].str);
+            if (tokens[nr_token].type == '*' && (i == 0 || (tokens[i - 1].type != DECNUM && tokens[i - 1].type != HEXNUM && tokens[i - 1].type != REG && tokens[i - 1].type !=')') )) {
+              tokens[nr_token].type = POINTER;
+              tokens[nr_token].priv = 8;
+              //Log("a pointer found\n");
             }
-
-            if (tokens[i].type == '-' && (i == 0 || (tokens[i - 1].type != DECNUM && tokens[i - 1].type != HEXNUM && tokens[i - 1].type != REG && tokens[i - 1].type !=')') )) {
-              tokens[i].type = MINUS;
-              tokens[i].priv = 8;
+            if (tokens[nr_token].type == '-' && (i == 0 || (tokens[i - 1].type != DECNUM && tokens[i - 1].type != HEXNUM && tokens[i - 1].type != REG && tokens[i - 1].type !=')') )) {
+              tokens[nr_token].type = MINUS;
+              tokens[nr_token].priv = 8;
+              //Log("a minus found\n");
             }
             nr_token++;
         }
@@ -359,10 +362,7 @@ word_t calculate(int p, int q){
         case('!'):  return !temp;
         case('~'):  return ~temp;
         case(MINUS):  return -temp;
-        case(POINTER):{
-          Log("a pointer at address %ld\n",temp);
-          return 0;
-        }
+        case(POINTER):return paddr_read(temp, 8);
       }
     }
     //a op b case
@@ -381,7 +381,7 @@ word_t calculate(int p, int q){
       case(COND_AND): return P1 && P2;
       case(NOTEQAL):  return P1 != P2;
       case(EQUAL):    return P1 == P2;
-      default: Assert(0, "bad op type: %d\n", type);
+      default: Assert(0, "bad op type: %d\n", type);  //hope this will not happen...
     }
   }
   return 1145141919810; //will not be execuated..
