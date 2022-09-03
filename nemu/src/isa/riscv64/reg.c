@@ -19,7 +19,7 @@ word_t isa_reg_str2val(const char *s, bool *success) {
     if(strcmp(s, regs[i]) == 0){
       *success = 1;
       printf("gpr[i] = %ld\n", gpr(i));
-      return gpr(1);
+      return gpr(i);
     }
   }
   *success = 0;
