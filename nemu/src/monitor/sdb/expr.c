@@ -291,6 +291,7 @@ word_t calculate(int p, int q){
       *success = 0;
       Log("the reg is %s\n", tk_val);
       word_t val = isa_reg_str2val(tk_val, success);
+      Log("val = %ld\n", val);
       if(*success) return val;
       else Log("bad reg name");
       return -1234;
