@@ -3,7 +3,6 @@
  * Type 'man regex' for more information about POSIX regex functions.
  */
 #include <regex.h>        
-uint64_t pmem_read(paddr_t addr, int len);
 enum {
   NOTYPE, 
   DECNUM,
@@ -359,7 +358,7 @@ word_t calculate(int p, int q){
         case('!'):  return !temp;
         case('~'):  return ~temp;
         case(MINUS):  return -temp;
-        case(POINTER):return pmem_read(temp, 8);
+        case(POINTER):return paddr_read(temp, 8);
       }
     }
     //a op b case
