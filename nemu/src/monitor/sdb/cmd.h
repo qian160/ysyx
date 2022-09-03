@@ -138,7 +138,7 @@ static struct {
     { "x", "examine the memory. Usage: x num addr", cmd_x},
     { "r", "restart and run the program", cmd_r},
     { "p", "print the expression's value", cmd_p},
-    { "clear", "clear up the screen", int (*)(char *)system("clear")},
+    { "clear", "clear up the screen", (int (*)(char *))(system("clear"))},
 
   /* TODO: Add more commands */
 };
