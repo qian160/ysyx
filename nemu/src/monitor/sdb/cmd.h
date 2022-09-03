@@ -125,7 +125,7 @@ static int cmd_r(){
 }
 */
 static int cmd_w(char *expr){
-    if(args == NULL){
+    if(expr == NULL){
         printf(ANSI_FMT("need an argument\n", ANSI_FG_RED));
         return 0;
     }
