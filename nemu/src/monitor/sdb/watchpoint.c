@@ -94,7 +94,7 @@ void show_free(){
 }
 
 WP * get_free(){
-  return free;
+  return free_;
 }
 
 WP * get_head(){
