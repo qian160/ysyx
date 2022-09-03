@@ -2,6 +2,7 @@
 /* We use the POSIX regex functions to process regular expressions.
  * Type 'man regex' for more information about POSIX regex functions.
  */
+
 word_t paddr_read(paddr_t addr, int len);
 #include <regex.h>        
 enum {
@@ -359,7 +360,10 @@ word_t calculate(int p, int q){
         case('!'):  return !temp;
         case('~'):  return ~temp;
         case(MINUS):  return -temp;
-        case(POINTER):return paddr_read(temp, 8);
+        case(POINTER):{
+          Log("try to derefference address at %lx\n",temp);
+          return paddr_read(temp, 8);
+        }
       }
     }
     //a op b case
