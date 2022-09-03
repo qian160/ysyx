@@ -79,8 +79,9 @@ bad:
 
 void wp_display(){
   WP * temp = head;
+  printf(ANSI_FMT("Index\texpr\tvalue\n",ANSI_FG_YELLOW));
   while(temp != NULL){
-    printf(ANSI_FMT("wp[%2d]: expr = %s, old value = %ld\n", ANSI_FG_GREEN),temp->NO, temp ->expr, temp -> oldVal);
+    printf(ANSI_FMT("[%2d]\t%s\t%ld\n", ANSI_FG_GREEN),temp->NO, temp ->expr, temp -> oldVal);
     temp = temp -> next;
   }
 }
