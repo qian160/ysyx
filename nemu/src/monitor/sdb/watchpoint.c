@@ -43,7 +43,7 @@ void free_wp(int number){
     if(temp -> NO == number){
       WP * LEFT = find_left(temp);
       WP * RIGHT = temp -> next;
-
+      //although all 3 cases start with the same steps, we can't do it in advance or it will affect the following check on temp
       //deal with temp's left and right
       if(temp == head){                 //delete first one
         temp -> next = free_;
@@ -56,7 +56,7 @@ void free_wp(int number){
         LEFT -> next = NULL;            //left
       }
       else{                             //in between
-          temp -> next = free_;
+        temp -> next = free_;
         free_ = temp;
         LEFT -> next = RIGHT;           //both left and right
       }
@@ -73,8 +73,7 @@ bad:
 void wp_display(){
   WP * temp = head;
   while(temp != NULL){
-    int next_no = temp -> next ? temp -> next -> NO: -1;
-    printf(ANSI_FMT("wp no: %2d, expr = %s, next_no = %d\n", ANSI_FG_GREEN),temp->NO, temp ->expr, next_no);
+    printf(ANSI_FMT("wp[%2d]: expr = %s\n", ANSI_FG_GREEN),temp->NO, temp ->expr);
     temp = temp -> next;
   }
 }
