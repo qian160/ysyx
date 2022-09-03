@@ -50,9 +50,11 @@ void free_wp(int number){
       //deal with temp's left and right
       if(original_temp == head){                 //delete first one
         head = RIGHT;                   //temp's right need to be updated
+        Log("1");
       }
       else if(original_temp -> next == NULL){    //delete last one
         LEFT -> next = NULL;            //left
+        Log("2");
       }
       else{                             //in between
         LEFT -> next = RIGHT;           //both left and right
