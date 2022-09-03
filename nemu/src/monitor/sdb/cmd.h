@@ -55,10 +55,6 @@ static int cmd_q(char *args) {
     return -1;
 }
 
-static int cmd_clear(){
-    return system("clear");
-}
-
 static int cmd_si(char * args){
     char *arg = strtok(NULL," ");  
     int steps = 0;  
@@ -142,7 +138,7 @@ static struct {
     { "x", "examine the memory. Usage: x num addr", cmd_x},
     { "r", "restart and run the program", cmd_r},
     { "p", "print the expression's value", cmd_p},
-    { "clear", "clear up the screen", cmd_clear},
+    { "clear", "clear up the screen", int (*)(char *)system("clear")},
 
   /* TODO: Add more commands */
 };
