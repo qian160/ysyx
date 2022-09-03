@@ -130,7 +130,7 @@ static int cmd_r(){
 }
 
 static int cmd_w(char *args){
-    if(*args == NULL){
+    if(args == NULL){
         printf(ANSI_FMT("need an argument\n", ANSI_FG_RED);
         return 0;
     }
