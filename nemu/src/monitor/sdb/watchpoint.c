@@ -43,20 +43,19 @@ void free_wp(int number){
     if(temp -> NO == number){
       WP * LEFT = find_left(temp);
       WP * RIGHT = temp -> next;
+      WP * original_temp = temp;
       //global changes, no matter what position(say temp) to remove, this temp will always become the new head of free.
       temp -> next = free_;   //when free == NULL, this sets temp -> next to be null which means it is the only node. It's okay so don't worry
       free_ = temp;
       //deal with temp's left and right
-      if(temp == head){                 //delete first one
+      if(original_temp == head){                 //delete first one
         head = RIGHT;                   //temp's right need to be updated
       }
-      else if(temp -> next == NULL){    //delete last one
+      else if(original_temp -> next == NULL){    //delete last one
         LEFT -> next = NULL;            //left
       }
       else{                             //in between
         LEFT -> next = RIGHT;           //both left and right
-        Log("right -> no = %d\n", RIGHT -> NO);
-        Log("left -> next -> no = %d\n", LEFT -> next -> NO);
       }
       printf(ANSI_FMT("wp %d deleted\n", ANSI_FG_YELLOW), number);
       return;
