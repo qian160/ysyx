@@ -297,7 +297,7 @@ static bool make_token(char *e) {
     }
   }
 //how to define?
-//#ifdef PRINT_TOKEN
+#ifdef PRINT_TOKEN
   printf("here are the tokens:\n");
   for(int i =0 ; i < nr_token; i++)
   {
@@ -308,7 +308,7 @@ static bool make_token(char *e) {
   }
   putchar('\n');
   putchar('\n');
-//#endif
+#endif
   //------
   return true;
 }
@@ -362,10 +362,7 @@ word_t calculate(int p, int q){
         case('!'):  return !temp;
         case('~'):  return ~temp;
         case(MINUS):  return -temp;
-        case(POINTER):{
-          Log("try to derefference address at %lx\n",temp);
-          return paddr_read(temp, 8);
-        }
+        case(POINTER):return paddr_read(temp, 8);
       }
     }
     //a op b case
