@@ -129,8 +129,10 @@ static int cmd_w(char *expr){
         printf(ANSI_FMT("need an argument\n", ANSI_FG_RED));
         return 0;
     }
-    if(new_wp(expr) == false)
+    WP * head = new_wp(expr);
+    if(head == NULL)
         printf(ANSI_FMT("wp pool is full\n",ANSI_FG_RED));
+    printf(ANSI_FMT("a new wp is added, number = %d", ANSI_FG_YELLOW), )
     return 0;
 }
 
