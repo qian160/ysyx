@@ -37,12 +37,13 @@ WP * find_left(WP * node){
 
 void free_wp(int number){
   WP * temp = head;
+  //numbers also need to be copied
   while(temp != NULL && temp -> NO != number){
     temp = temp -> next;
     if(temp -> NO == number){
       WP * LEFT = find_left(temp);
       WP * RIGHT = temp -> next;
-
+      //global changes, no matter what position(say temp) to remove, this temp will always become the new head of free.
       temp -> next = free_;   //when free == NULL, this sets temp -> next to be null which means it is the only node. It's okay so don't worry
       free_ = temp;
       //deal with temp's left and right
