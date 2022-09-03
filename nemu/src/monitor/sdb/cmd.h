@@ -124,12 +124,13 @@ static int cmd_r(){
     return 0;
 }
 */
-static int cmd_w(char *args){
+static int cmd_w(char *expr){
     if(args == NULL){
         printf(ANSI_FMT("need an argument\n", ANSI_FG_RED));
         return 0;
     }
-    Log("todo...\n");
+    if(new_wp(expr) == false)
+        printf(ANSI_FMT("wp pool is full\n",ANSI_FG_RED));
     return 0;
 }
 
@@ -140,7 +141,7 @@ static int cmd_d(char * expr){
     }
     int no;
     sscanf(expr, "%d", &no);
-    Log("todo......\n");
+    free_wp(no);
     return 0;
 }
 static int cmd_help(char *args);  //if not defined here, cmd_table will find the 
