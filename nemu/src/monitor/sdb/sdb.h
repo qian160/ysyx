@@ -16,7 +16,6 @@ typedef struct watchpoint {
 word_t expr(char *e, bool *success);
 word_t paddr_read(paddr_t addr, int len);
 extern const char* regs[];
-static int is_batch_mode = false;
 void wp_display();
 WP * new_wp(char * expr);
 void free_wp(int num);
