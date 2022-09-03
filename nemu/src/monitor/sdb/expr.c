@@ -77,7 +77,7 @@ static struct rule {
   {"\\)",             RIGHT,  9},
   {"<<",              SL,     3},
   {">>",              SR,     3},
-  {"$[a-zA-Z]{2}",    REG,    0},
+  {"\\$[a-zA-Z0-9]+", REG,    0},
   {"\\|",             OR,     1},
   {"&",               AND,    1},
   {"\\^",             XOR,    2},
@@ -108,15 +108,15 @@ void init_regex() {   //called by init_sdb()
 
 typedef struct token {
   int   type;
-  char  str[32];
+  char  str[32];    //name
   int   priv;
 }Token;
 
-static Token tokens[1000] __attribute__((used)) = {};   //for test, we enlarge the buffer size
+static Token tokens[2000] __attribute__((used)) = {};   //for test, we enlarge the buffer size
 static int nr_token __attribute__((used))  = 0;
 
 typedef struct{
-  char parentheses[200];   //20 is very enough
+  char parentheses[2000];   //20 is very enough
   int  top;
 }easyStack;    //for parentheses check. No boundary check
 
@@ -131,18 +131,6 @@ bool push(char c){
   return true;
 }
 
-bool pop(){
-  if(S.top == 0) return false;
-  S.top--;
-  return true;
-}
-
-void tranverse(){
-  for(int i = 0; i < S.top; i++)
-    printf("%c\n", S.parentheses[i]);
-  putchar('\n');
-}
-
 /*  about surrounding:
   1.(1 + 2)       okay  2.(1 + 2) + (3 + 4) not okay!
   3.(3 * (2 + 1)) okay  4.((1 + 2) * 3)     okay
@@ -155,7 +143,8 @@ void tranverse(){
   b.left = '(' && right = ')' && have more than 1 continous bras one one side
 
   as for the 6th case....
-  how about ignoring all the cases and just try if we can throw? 
+  since hard to decide, let's come to the rude way.
+  how about forgetting about all the cases and just have a try to see if we can throw? 
   1.left = .... right = ...
   2.have a try if we can throw. if it turns out to be can && cond 1 is true, then throw
 
@@ -182,10 +171,6 @@ int check_parentheses(int p, int q){   //scan the array and use a stack
     removeSafe = S.top == 0;
   }
   S.top = 0;
-  Log("check from %d to %d, the substr is\n",p , q);
-  for(int i = p; i<= q; i++)
-    printf("%s  ",tokens[i].str);
-  putchar('\n');
   for(; p <= q; p++){
     char type = tokens[p].type;
     if(type == LEFT){
@@ -204,17 +189,13 @@ int check_parentheses(int p, int q){   //scan the array and use a stack
 typedef struct {
   int priv[10];
   int top;
-}privStack;   //for privilege recovery in prime find. nested parentheses will need this
+}privStack;   //for privilege recovery in prime find. maybe nested parentheses will need this
 
 privStack PS;
 
 static int dominant_operator(int start, int end)
 {	
   int op = start, pri_min = 10;	
-  Log("find from %d to %d, the substr is:\n",start, end);
-  for(int i = start; i <= end; i++)
-    printf("%s  ",tokens[i].str);
-  putchar('\n');
   for (int i = start; i <= end;i ++)
   {		
     if (tokens[i].type == HEXNUM || tokens[i].type == DECNUM || tokens[i].type == REG)
@@ -234,7 +215,6 @@ static int dominant_operator(int start, int end)
       pri_min = tokens[op].priv;
     }  
   }	
-  printf(ANSI_FMT("the prime is %s, at index %d\n",ANSI_FG_YELLOW),tokens[op].str, op);
   return op;
 }
 //this function will add tokens to the array
@@ -273,7 +253,7 @@ static bool make_token(char *e) {
     }
   }
 //how to define?
-//#ifdef PRINT_TOKEN
+#ifdef PRINT_TOKEN
   printf("here are the tokens:\n");
   for(int i =0 ; i < nr_token; i++)
   {
@@ -284,7 +264,7 @@ static bool make_token(char *e) {
   }
   putchar('\n');
   putchar('\n');
-//#endif
+#endif
   //------
   return true;
 }
@@ -305,6 +285,14 @@ word_t calculate(int p, int q){
     else if(type == HEXNUM){
       sscanf(tk_val, "%lx", &result);
       return result;
+    }
+    else if(type == REG){
+      bool * success = (bool *)malloc(sizeof(bool));
+      *success = 0;
+      word_t val = isa_reg_str2val(tk_val, success);
+      if(*success) return val;
+      else printf(ANSI_FMT("bad reg name\n",ANSI_FG_RED));
+      return 1145141919;
     }
     else{   //the single token should be of numeric type, not others
       Log("bad token: %s\n", tk_val);
