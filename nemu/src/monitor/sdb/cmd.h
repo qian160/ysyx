@@ -167,5 +167,13 @@ static int cmd_help(char *args) {
         }
     printf("Unknown command '%s'\n", arg);
     }
+    printf("%ld\n", padd_read(0x80000000,1));
+    printf("%ld\n", padd_read(0x80000000,2));
+    printf("%ld\n", padd_read(0x80000000,3));
+    printf("%ld\n", padd_read(0x80000000,4));
+    printf("%ld\n", padd_read(0x80000000,5));
+    printf("%ld\n", padd_read(0x80000000,6));
+    printf("%ld\n", padd_read(0x80000000,7));
+    printf("%ld\n", padd_read(0x80000000,8));
     return 0;
 }
