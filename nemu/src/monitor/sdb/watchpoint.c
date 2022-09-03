@@ -28,8 +28,38 @@ WP* new_wp(char * expr){
   return head;
 }
 
-void free_wp(int number){
+WP * find_left(WP * node){
+  if(node == head) return NULL;
+  WP * temp = head;
+  for(; temp -> next != node; temp = temp -> next){}
+  return temp;
+}
 
+void free_wp(int number){
+  WP * temp = head;
+  while(temp != NULL && temp -> NO != number){
+    temp = temp -> next;
+    if(temp -> NO == number){
+      WP * LEFT = find_left(temp);
+      WP * RIGHT = temp -> next;
+
+      temp -> next = free_;   //when free == NULL, this sets temp -> next to be null which means it is the only node. It's okay so don't worry
+      free_ = temp;
+      //deal with temp's left and right
+      if(temp == head){                 //delete first one
+        head = RIGHT;                   //temp's right need to be updated
+      }
+      else if(temp -> next == NULL){    //delete last one
+        LEFT -> next = NULL;            //left
+      }
+      else{                             //in between
+        LEFT -> next = RIGHT;           //both left and right
+      }
+      printf(ANSI_FMT("wp %d deleted\n", ANSI_FG_YELLOW), number);
+      return;
+    }
+  }
+  printf(ANSI_FMT("no such number\n", ANSI_FG_YELLOW));
   return;
 }
 
