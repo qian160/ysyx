@@ -41,6 +41,7 @@ void free_wp(int number){
   while(temp != NULL && temp -> NO != number){
     Log("node number: %d, expr = %s\n", temp -> NO, temp -> expr);
     temp = temp -> next;
+    if(temp == NULL)goto bad:
     if(temp -> NO == number){
       WP * LEFT = find_left(temp);
       WP * RIGHT = temp -> next;
@@ -62,6 +63,7 @@ void free_wp(int number){
       return;
     }
   }
+bad:
   printf(ANSI_FMT("no such number: %d\n", ANSI_FG_YELLOW), number);
   return;
 }
