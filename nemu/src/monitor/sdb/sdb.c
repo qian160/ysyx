@@ -6,14 +6,8 @@
 #include <utils.h>
 #include "../../isa/riscv64/local-include/reg.h"
 
-word_t paddr_read(paddr_t addr, int len);
-extern const char* regs[];
-static int is_batch_mode = false;
+
 #define NR_CMD ARRLEN(cmd_table)
-word_t expr(char *e, bool *success);
-void wp_display();
-WP * new_wp(char * expr);
-void free_wp(int num);
 
 #include "cmd.h"  //put this under all the definations
 
