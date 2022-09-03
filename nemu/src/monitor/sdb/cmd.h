@@ -85,7 +85,9 @@ static int cmd_info(char * args){
     }
     if(streq(arg, "r"))
         isa_reg_display();
-    else
+    else if(streq(arg, "w"))
+        TODO(); //WATCH POINT
+    else        //a specific reg
     {
         for (int i = 0; i <= 31; i ++)
         {
@@ -127,6 +129,19 @@ static int cmd_r(){
     return 0;
 }
 
+static int cmd_w(char *args){
+    if(*args == NULL){
+        printf(ANSI_FMT("need an argument\n", ANSI_FG_RED);
+        return 0;
+    }
+    Log("todo...\n");
+    return 0;
+}
+
+static int cmd_d(int number){
+    Log("todo......\n");
+    return 0;
+}
 static int cmd_help(char *args);  //if not defined here, cmd_table will find the 
 
 //we put this table in an embarressing position, cmd_help needs this so it must be put before it. 
@@ -136,15 +151,17 @@ static struct {
     const char *description;
     int (*handler) (char *);
 } cmd_table [] = {
-    { "help", "Display informations about all supported commands", cmd_help },
-    { "c", "Continue the execution of the program", cmd_c },
-    { "q", "Exit NEMU", cmd_q },
-    { "si", "step single instrction", cmd_si},
-    { "info", "print the specific reg's value, r for all", cmd_info},
-    { "x", "examine the memory. Usage: x num addr", cmd_x},
-    { "r", "restart and run the program", cmd_r},
-    { "p", "print the expression's value", cmd_p},
-    { "clear", "clear up the screen", cmd_clear},
+    { "help",   "Display informations about all supported commands",    cmd_help },
+    { "c",      "Continue the execution of the program",                cmd_c },
+    { "q",      "Exit NEMU",                                            cmd_q },
+    { "si",     "Step single instrction",                               cmd_si},
+    { "info",   "Print the specific reg's value, r for all",            cmd_info},
+    { "x",      "Examine the memory. Usage: x num expr",                cmd_x},
+    { "r",      "Restart and run the program",                          cmd_r},
+    { "p",      "Print the expression's value",                         cmd_p},
+    { "clear",  "clear up the screen",                                  cmd_clear},
+    { "watch",  "Add watch point",                                      cmd_w},
+    { "delete", "Delete watch point",                                   cmd_d},
 
   /* TODO: Add more commands */
 };
