@@ -381,22 +381,7 @@ word_t calculate(int p, int q){
       case(COND_AND): return P1 && P2;
       case(NOTEQAL):  return P1 != P2;
       case(EQUAL):    return P1 == P2;
-      //well, we still need this... just consider expressions like a singal number such as: 1
-      default: Assert(0, "bad token\n");
-      /*
-      {
-        word_t result;
-        if(type == DECNUM){
-          sscanf(tokens[prime].str, "%ld", &result);
-        }
-        else if(type == HEXNUM){
-          sscanf(tokens[prime].str, "%lx", &result);
-        }
-        return result;
-      }
-      */
-      //Assert(0, "bad type: hope this would not happen.......%d\n",type);
-    }
+      default: Assert(0, "bad op type: %d\n", type);
   }
   return 0; //will not be execuated..
 }
