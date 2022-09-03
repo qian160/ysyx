@@ -70,10 +70,8 @@ static int cmd_info(char * args){
     }
     if(streq(arg, "r"))
         isa_reg_display();
-    else if(streq(arg, "w")){
+    else if(streq(arg, "w"))
         wp_display();
-        show_free();
-    }
     else        //a specific reg
     {
         for (int i = 0; i <= 31; i ++)
