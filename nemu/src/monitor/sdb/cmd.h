@@ -167,9 +167,5 @@ static int cmd_help(char *args) {
         }
     printf("Unknown command '%s'\n", arg);
     }
-    printf("%lx\n", paddr_read(0x80000000,1));
-    printf("%lx\n", paddr_read(0x80000000,2));
-    printf("%lx\n", paddr_read(0x80000000,4));
-    printf("%lx\n", paddr_read(0x80000000,8));
     return 0;
 }
