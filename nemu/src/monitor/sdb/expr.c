@@ -15,6 +15,7 @@ enum {
   SR,
   COND_OR,
   REG,
+  MINUS,
   POINTER,        //can't be distinguished directly. need also to check the previous token's type
   LET,            //<=
   GET,            //>=
@@ -76,7 +77,7 @@ static struct rule {
   //bra
   {"\\(",             LEFT,     9},
   {"\\)",             RIGHT,    9},
-  //left side op
+  //left side op, remember to modify pointer and minus, here we can't check it out
   {"!",               NOT,      8},
   {"~",               NEG,      8},
   //mult, div, mod
@@ -269,7 +270,18 @@ static bool make_token(char *e) {
             strncpy(tokens[nr_token].str, e + position, substr_len);
             tokens[nr_token].str[substr_len] = '\0';
             tokens[nr_token].type = rules[i].token_type;
-            tokens[nr_token++].priv = rules[i].priv;
+            tokens[nr_token].priv = rules[i].priv;
+
+            if (tokens[i].type == '*' && (i == 0 || (tokens[i - 1].type != DECNUM && tokens[i - 1].type != HEXNUM && tokens[i - 1].type != REG && tokens[i - 1].type !=')') )) {
+              tokens[i].type = POINTER;
+              tokens[i].priv = 8;
+            }
+
+            if (tokens[i].type == '-' && (i == 0 || (tokens[i - 1].type != DECNUM && tokens[i - 1].type != HEXNUM && tokens[i - 1].type != REG && tokens[i - 1].type !=')') )) {
+              tokens[i].type = MINUS;
+              tokens[i].priv = 8;
+            }
+            nr_token++;
         }
         position += substr_len;
         break;
@@ -346,7 +358,11 @@ word_t calculate(int p, int q){
       switch(type){
         case('!'):  return !temp;
         case('~'):  return ~temp;
-        case(POINTER):TODO();
+        case(MINUS):  return -temp;
+        case(POINTER):{
+          Log("a pointerat address %p\n",temp);
+          return 0;
+        }
       }
     }
     //a op b case
