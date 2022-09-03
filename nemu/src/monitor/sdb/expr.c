@@ -15,7 +15,13 @@ enum {
   SR,
   COND_OR,
   REG,
-  POINTER,    //can't be distinguished directly. need also to check the previous token's type
+  POINTER,        //can't be distinguished directly. need also to check the previous token's type
+  LET,            //<=
+  GET,            //>=
+  //ADDRESS = '&',
+  LT      = '<',  //LESS THAN
+  GT      = '>',  //GREATER THAN
+  MOD     = '%',  
   MULT    = '*',
   DIV     = '/',
   ADD     = '+',
@@ -23,7 +29,7 @@ enum {
   LEFT    = '(',
   RIGHT   = ')',
   BIT_OR  = '|',
-  XOR     = '^',
+  BIT_XOR = '^',
   BIT_AND = '&',
   //op a, not a op b
   NEG     = '~',
@@ -67,30 +73,43 @@ static struct rule {
   /* TODO: Add more rules.
    * Pay attention to the precedence level of different rules.
    */
-  //some bitwise and logical ops seems not to have a role, just do it from left to right
-  // bit/logical < == < arith
+  //bra
+  {"\\(",             LEFT,     9},
+  {"\\)",             RIGHT,    9},
+  //left side op
+  {"!",               NOT,      8},
+  {"~",               NEG,      8},
+  //mult, div, mod
+  {"\\*",             MULT,     7},   // mult and div should be treated before add/sub
+  {"/",               DIV,      7},   
+  {"%",               MOD,      7},
+  //add, sub
+  {"-",               SUB,      6},
+  {"\\+",             ADD,      6},
+  //shift
+  {"<<",              SL,       5},
+  {">>",              SR,       5},
+  //compare
+  {">=",              GET,      4},
+  {"<=",              LET,      4},
+  {"<",               LT,       4},
+  {">",               GT,       4},
+  //lower privilege level compare
+  {"!=",              NOTEQAL,  3},
+  {"==",              EQUAL,    3},   // equal
+  //bitwise  op
+  {"\\|",             BIT_OR,   2},
+  {"&",               BIT_AND,  2},
+  {"\\^",             BIT_XOR,  2},
+  //logical op
+  {"\\|\\|",          COND_OR,  1},
+  {"&&",              COND_AND, 1},
+  //numbers and white space
   {"0[xX][0-9a-f]+",  HEXNUM,   0},   //check before DECNUM, or the 0 prefix will be lost
   {"[0-9]+",          DECNUM,   0},
   {"\\$[a-zA-Z0-9]+", REG,      0},
-  {"!=",              NOTEQAL,  3},
-  {"==",              EQUAL,    3},   // equal
-  {"\\*",             MULT,     5},   // mult and div should be treated before add/sub
-  {"/",               DIV,      5},   
-  {"-",               SUB,      4},
-  {"\\+",             ADD,      4},
   {" +",              NOTYPE,   0},   // multiple spaces, not addition
   {"\\s+",            NOTYPE,   0},   // white spaces
-  {"\\(",             LEFT,     9},
-  {"\\)",             RIGHT,    9},
-  {"<<",              SL,       3},
-  {">>",              SR,       3},
-  {"\\|\\|",          COND_OR,  2},
-  {"\\|",             BIT_OR,   2},
-  {"&",               BIT_AND,  2},
-  {"&&",              COND_AND, 2},
-  {"\\^",             XOR,      2},
-  {"!",               NOT,      6},
-  {"~",               NEG,      6},
 
   //{"\\*",             POINTER},
 };
