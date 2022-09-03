@@ -382,7 +382,8 @@ word_t calculate(int p, int q){
       case(NOTEQAL):  return P1 != P2;
       case(EQUAL):    return P1 == P2;
       //well, we still need this... just consider expressions like a singal number such as: 1
-      default: 
+      default: Assert(0, "bad token\n");
+      /*
       {
         word_t result;
         if(type == DECNUM){
@@ -393,6 +394,7 @@ word_t calculate(int p, int q){
         }
         return result;
       }
+      */
       //Assert(0, "bad type: hope this would not happen.......%d\n",type);
     }
   }
