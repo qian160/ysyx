@@ -138,7 +138,9 @@ static int cmd_w(char *args){
     return 0;
 }
 
-static int cmd_d(int number){
+static int cmd_d(char * number){
+    int no;
+    sscanf(number, "%d", &no);
     Log("todo......\n");
     return 0;
 }
