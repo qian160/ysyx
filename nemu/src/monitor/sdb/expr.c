@@ -291,7 +291,7 @@ word_t calculate(int p, int q){
       *success = 0;
       word_t val = isa_reg_str2val(tk_val, success);
       if(*success) return val;
-      else LOg("bad reg name");
+      else Log("bad reg name");
     }
     else{   //the single token should be of numeric type, not others
       Log("bad token: %s\n", tk_val);
