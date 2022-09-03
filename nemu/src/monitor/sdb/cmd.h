@@ -55,7 +55,7 @@ static int cmd_q(char *args) {
     return -1;
 }
 
-static int cmd_clear(){
+static inline int cmd_clear(){
     return system("clear");
 }
 
@@ -129,11 +129,13 @@ static int cmd_r(){
 
 static int cmd_help(char *args);  //if not defined here, cmd_table will find the 
 
+//we put this table in an embarressing position, cmd_help needs this so it must be put before it. 
+//And the table contains lots of functions, so it also must be put after the functions to find their definations
 static struct {
     const char *name;
     const char *description;
     int (*handler) (char *);
-    } cmd_table [] = {
+} cmd_table [] = {
     { "help", "Display informations about all supported commands", cmd_help },
     { "c", "Continue the execution of the program", cmd_c },
     { "q", "Exit NEMU", cmd_q },
