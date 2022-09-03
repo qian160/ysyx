@@ -136,8 +136,8 @@ static int cmd_w(char *expr){
     return 0;
 }
 
-static int cmd_d(char * num){
-    if(expr == NULL){
+static cmd_d(char * num){
+    if(num == NULL){
         printf(ANSI_FMT("need an argument\n",ANSI_FG_MAGENTA));
         return 0;
     }
