@@ -5,26 +5,27 @@
 #include <regex.h>        
 #define is_arith(TK) (TK >= MULT && TK <= AND)
 enum {
+  NOTYPE, 
   DECNUM,
   HEXNUM,
-  EQ, 
-  //+ - * / & | (!)
-  MULT,  //0100, 4
-  DIV,   //0101, 5
-  ADD ,  //0110, 6
-  SUB,   //0111, 7
-  SL,    //1000, 8
-  SR,    //1001, 9
-  OR,
-  XOR,
-  NOT,
-  AND,
-  //
-  LEFT,
-  RIGHT,
-  NOTYPE, 
+  EQUAL,
+  NOTEQAL,
+  COND_AND, //condition op
+  SL,
+  SR,
+  COND_OR,
   REG,
   POINTER,
+  MULT    = '*',
+  DIV     = '/',
+  ADD     = '+',      //bitwise op
+  SUB     = '-',
+  LEFT    = '(',
+  RIGHT   = ')',
+  BIT_OR  = '|',
+  XOR     = '^',
+  NOT     = '!',
+  BIT_AND = '&',
   /* TODO: Add more token types */
 
 };
@@ -64,23 +65,28 @@ static struct rule {
   /* TODO: Add more rules.
    * Pay attention to the precedence level of different rules.
    */
-  {"0[xX][0-9a-f]+",  HEXNUM, 0},   //check before DECNUM, or the 0 prefix will be lost
-  {"[0-9]+",          DECNUM, 0},
-  {"==",              EQ,     3},       // equal
-  {"\\*",             MULT,   5},     // mult and div should be treated before add/sub
-  {"/",               DIV,    5},   
-  {"-",               SUB,    4},      // sub  
-  {"\\+",             ADD,    4},      // plus,'+' has special meaning thus need some \. \+ means '+'. However to recognize the first \ we need another \.
-  {" +",              NOTYPE, 0},   // multiple spaces, not addition
-  {"\\s+",            NOTYPE, 0},   // white spaces
-  {"\\(",             LEFT,   9},
-  {"\\)",             RIGHT,  9},
-  {"<<",              SL,     3},
-  {">>",              SR,     3},
-  {"\\$[a-zA-Z0-9]+", REG,    0},
-  {"\\|",             OR,     1},
-  {"&",               AND,    1},
-  {"\\^",             XOR,    2},
+  //some bitwise and logical ops seems not to have a role, just do it from left to right
+  // bit/logical < == < arith
+  {"0[xX][0-9a-f]+",  HEXNUM,   0},   //check before DECNUM, or the 0 prefix will be lost
+  {"[0-9]+",          DECNUM,   0},
+  {"!=",              NOTEQAL,  3},
+  {"==",              EQUAL,    3},       // equal
+  {"\\*",             MULT,     5},     // mult and div should be treated before add/sub
+  {"/",               DIV,      5},   
+  {"-",               SUB,      4},      // sub  
+  {"\\+",             ADD,      4},      // plus,'+' has special meaning thus need some \. \+ means '+'. However to recognize the first \ we need another \.
+  {" +",              NOTYPE,   0},   // multiple spaces, not addition
+  {"\\s+",            NOTYPE,   0},   // white spaces
+  {"\\(",             LEFT,     9},
+  {"\\)",             RIGHT,    9},
+  {"<<",              SL,       3},
+  {">>",              SR,       3},
+  {"\\$[a-zA-Z0-9]+", REG,      0},
+  {"\\|\\|",          COND_OR,  2},
+  {"\\|",             BIT_OR,   2},
+  {"&",               BIT_AND,  2},
+  {"&&",              COND_AND, 2},
+  {"\\^",             XOR,      2},
 
   //{"\\*",             POINTER},
 };
@@ -253,7 +259,7 @@ static bool make_token(char *e) {
     }
   }
 //how to define?
-//#ifdef PRINT_TOKEN
+#ifdef PRINT_TOKEN
   printf("here are the tokens:\n");
   for(int i =0 ; i < nr_token; i++)
   {
@@ -264,7 +270,7 @@ static bool make_token(char *e) {
   }
   putchar('\n');
   putchar('\n');
-//#endif
+#endif
   //------
   return true;
 }
@@ -314,15 +320,18 @@ word_t calculate(int p, int q){
     word_t P1 = calculate(p, prime - 1);
     word_t P2 = calculate(prime + 1, q);
     switch(type){
-      case(ADD):  return P1 +  P2; 
-      case(SUB):  return P1 -  P2;
-      case(MULT): return P1 *  P2;
-      case(DIV):  return P1 /  P2;
-      case(SL):   return P1 << P2;
-      case(SR):   return P1 >> P2;
-      case(XOR):  return P1 ^  P2;
-      case(OR):   return P1 |  P2;
-      case(AND):  return P1 &  P2;
+      case('+'):  return P1 +  P2; 
+      case('-'):  return P1 -  P2;
+      case('*'):  return P1 *  P2;
+      case('/'):  return P1 /  P2;
+      case('|'):  return P1 |  P2;
+      case('&'):  return P1 &  P2;
+      case('^'):  return P1 ^  P2;
+      case(SL ):      return P1 << P2;
+      case(SR ):      return P1 >> P2;
+      case(COND_AND): return P1 && P2;
+      case(NOTEQAL):  return P1 != P2;
+      case(EQUAL):    return P1 == P2;
       //well, we still need this... just consider expressions like a singal number such as: 1
       default: 
       {
