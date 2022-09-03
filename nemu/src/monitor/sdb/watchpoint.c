@@ -22,7 +22,7 @@ WP* new_wp(char * expr){
     return NULL;
   WP *temp = free_ ->next;
   free_ -> next = head;
-  head = free_;
+  head  = free_;
   free_ = temp;
   head -> expr = expr;
   return head;
@@ -43,6 +43,7 @@ void free_wp(int number){
     if(temp -> NO == number){
       WP * LEFT = find_left(temp);
       WP * RIGHT = temp -> next;
+
       //global changes, no matter what position(say temp) to remove, this temp will always become the new head of free.
       temp -> next = free_;   //when free == NULL, this sets temp -> next to be null which means it is the only node. It's okay so don't worry
       free_ = temp;
@@ -60,7 +61,7 @@ void free_wp(int number){
       return;
     }
   }
-  printf(ANSI_FMT("no such number\n", ANSI_FG_YELLOW));
+  printf(ANSI_FMT("no such number: %d\n", ANSI_FG_YELLOW), number);
   return;
 }
 
