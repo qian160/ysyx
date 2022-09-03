@@ -12,7 +12,7 @@ static int is_batch_mode = false;
 #define NR_CMD ARRLEN(cmd_table)
 word_t expr(char *e, bool *success);
 void wp_display();
-bool new_wp(char * expr);
+WP * new_wp(char * expr);
 void free_wp(int num);
 
 #include "cmd.h"  //put this under all the definations
