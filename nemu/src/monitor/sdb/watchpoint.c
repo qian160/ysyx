@@ -17,14 +17,21 @@ void init_wp_pool() {
 
 /* TODO: Implement the functionality of watchpoint */
 
-WP* new_wp(char * expr){
+WP* new_wp(char * Expr){
   if(free_ == NULL)
     return NULL;
-  WP *temp = free_ ->next;
+  WP *temp = free_ -> next;
   free_ -> next = head;
   head  = free_;
   free_ = temp;
-  head -> expr = expr;
+  head -> expr = Expr;
+  bool * success = (bool *)malloc(sizeof(bool));
+  *success = true;
+  head -> oldVal = expr(Expr, success);
+  if(!success){
+    printf("bad expression\n");
+    return NULL;
+  }
   return head;
 }
 
@@ -73,7 +80,7 @@ bad:
 void wp_display(){
   WP * temp = head;
   while(temp != NULL){
-    printf(ANSI_FMT("wp[%2d]: expr = %s\n", ANSI_FG_GREEN),temp->NO, temp ->expr);
+    printf(ANSI_FMT("wp[%2d]: expr = %s, old value = %ld\n", ANSI_FG_GREEN),temp->NO, temp ->expr, temp -> oldVal);
     temp = temp -> next;
   }
 }

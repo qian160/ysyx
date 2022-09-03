@@ -4,10 +4,11 @@
 #include <common.h>
 
 typedef struct watchpoint {
-    int NO;
-    char *expr;
+    int    NO;
+    char * expr;
     word_t oldVal;
     word_t newVal;
+    bool   enable;
     struct watchpoint *next;
     /* TODO: Add more members if necessary */
 } WP;
