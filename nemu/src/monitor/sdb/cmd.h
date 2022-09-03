@@ -143,8 +143,12 @@ static int cmd_d(char * num){
         return 0;
     }
     int no;
-    sscanf(num, "%d", &no);
-    free_wp(no);
+    while(1){
+        char *idx = strtok(NULL, " ");
+        if(idx == NULL) break;
+        sscanf(num, "%d", &no);
+        free_wp(no);
+    }
     return 0;
 }
 static int cmd_help(char *args);  //if not defined here, cmd_table will find the 
