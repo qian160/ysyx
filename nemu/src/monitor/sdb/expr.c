@@ -276,11 +276,13 @@ static bool make_token(char *e) {
             if (tokens[i].type == '*' && (i == 0 || (tokens[i - 1].type != DECNUM && tokens[i - 1].type != HEXNUM && tokens[i - 1].type != REG && tokens[i - 1].type !=')') )) {
               tokens[i].type = POINTER;
               tokens[i].priv = 8;
+              Log("a pointer found\n");
             }
 
             if (tokens[i].type == '-' && (i == 0 || (tokens[i - 1].type != DECNUM && tokens[i - 1].type != HEXNUM && tokens[i - 1].type != REG && tokens[i - 1].type !=')') )) {
               tokens[i].type = MINUS;
               tokens[i].priv = 8;
+              Log("a minus found\n");
             }
             nr_token++;
         }
