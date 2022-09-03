@@ -24,8 +24,13 @@ static void trace_and_difftest(Decode *_this, vaddr_t dnpc) {
 #endif
   if (g_print_step) { IFDEF(CONFIG_ITRACE, puts(_this->logbuf)); }
   IFDEF(CONFIG_DIFFTEST, difftest_step(_this->pc, dnpc));
+  //watch point
   for(WP * head = get_head(); head != NULL; head = head -> next){
-    Log("todo...\n");
+    head -> newVal = expr(head -> expr, NULL);
+    if(head -> newVal ^ head -> oldVal){
+      nemu_state.state = NEMU_STOP;
+      head -> oldVal = head -> newVal;
+    }
   }
 }
 
