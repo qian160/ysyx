@@ -1,18 +1,3 @@
-/*
-#include <isa.h>
-#include <cpu/cpu.h>
-#include <readline/readline.h>
-#include <readline/history.h>
-#include "sdb.h"
-#include <utils.h>
-#include "../../isa/riscv64/local-include/reg.h"
-
-uint64_t pmem_read(paddr_t addr, int len);
-extern const char* regs[];
-static int is_batch_mode = false;
-#define NR_CMD ARRLEN(cmd_table)
-*///these definations can be used
-
 void examine_memory(int n, int64_t p){
   //if we directly derefference the pointer, we are in fact examing our real computer's address!!!
     printf(ANSI_FMT(" 0x%lx: ",ANSI_FG_MAGENTA), p);
@@ -86,7 +71,7 @@ static int cmd_info(char * args){
     if(streq(arg, "r"))
         isa_reg_display();
     else if(streq(arg, "w"))
-        TODO(); //WATCH POINT
+        wp_display();
     else        //a specific reg
     {
         for (int i = 0; i <= 31; i ++)
