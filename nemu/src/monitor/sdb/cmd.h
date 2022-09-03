@@ -103,13 +103,21 @@ static int cmd_info(char * args){
 
 static int cmd_x(char * args){  //usage: x num addr
     char * nump = strtok(args," ");
-    char * addrp = strtok(NULL," ");
-
-    int64_t  num = atoi(nump);
-    int64_t addr; 
+    char * Expr = strtok(NULL," ");
+    bool * success = (bool * )malloc(sizeof(bool));
+    word_t address = expr(Expr, success);
+    if(!success)
+    {
+        printf(ANSI_FMT("illegal expression\n",ANSI_FG_MAGENTA));
+        return 0;
+    }
+    uint64_t  num = atoi(nump);
+    /*
+    uint64_t addr; 
     sscanf(addrp,"%lx",&addr); 
+    */
     printf(ANSI_FMT("[little endian, the MSB is located at low adress]\n",ANSI_FG_PINK));
-    examine_memory(num, addr);
+    examine_memory(num, address);
     //here we dont do mem check. we pass the job to that em function
     return 0;
 }
@@ -139,6 +147,10 @@ static int cmd_w(char *args){
 }
 
 static int cmd_d(char * expr){
+    if(expr == NULL){
+        printf(ANSI_FMT("need an argument\n",ANSI_FG_MAGENTA));
+        return 0;
+    }
     int no;
     sscanf(expr, "%d", &no);
     Log("todo......\n");
