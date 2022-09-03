@@ -38,7 +38,7 @@ WP * find_left(WP * node){
 void free_wp(int number){
   WP * temp = head;
   //numbers also need to be copied
-  while(temp != NULL && temp -> NO != number){
+  while(temp != NULL){
     Log("node number: %d, expr = %s\n", temp -> NO, temp -> expr);
     temp = temp -> next;
     if(temp == NULL)goto bad;
