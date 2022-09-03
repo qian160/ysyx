@@ -2,6 +2,7 @@
 /* We use the POSIX regex functions to process regular expressions.
  * Type 'man regex' for more information about POSIX regex functions.
  */
+word_t paddr_read(paddr_t addr, int len);
 #include <regex.h>        
 enum {
   NOTYPE, 
