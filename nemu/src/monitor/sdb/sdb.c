@@ -10,7 +10,6 @@ word_t paddr_read(paddr_t addr, int len);
 extern const char* regs[];
 static int is_batch_mode = false;
 #define NR_CMD ARRLEN(cmd_table)
-extern struct watchpoint WP;
 word_t expr(char *e, bool *success);
 void wp_display();
 bool new_wp(char * expr);
