@@ -272,7 +272,7 @@ static bool make_token(char *e) {
             tokens[nr_token].str[substr_len] = '\0';
             tokens[nr_token].type = rules[i].token_type;
             tokens[nr_token].priv = rules[i].priv;
-            Log("token[%2d] found! type = %d, value = %s\n",nr_token, type, tokens[nr_token].str);
+            Log("token[%2d] found! type = %d, value = %s\n",nr_token, tokens[nr_token].type, tokens[nr_token].str);
             if (tokens[i].type == '*' && (i == 0 || (tokens[i - 1].type != DECNUM && tokens[i - 1].type != HEXNUM && tokens[i - 1].type != REG && tokens[i - 1].type !=')') )) {
               tokens[i].type = POINTER;
               tokens[i].priv = 8;
