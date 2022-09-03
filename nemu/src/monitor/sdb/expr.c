@@ -382,6 +382,7 @@ word_t calculate(int p, int q){
       case(NOTEQAL):  return P1 != P2;
       case(EQUAL):    return P1 == P2;
       default: Assert(0, "bad op type: %d\n", type);
+    }
   }
   return 0; //will not be execuated..
 }
