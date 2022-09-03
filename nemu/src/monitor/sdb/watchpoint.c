@@ -70,7 +70,8 @@ bad:
 void wp_display(){
   WP * temp = head;
   while(temp != NULL){
-    printf(ANSI_FMT("wp no: %2d, expr = %s, next_no = %d\n", ANSI_FG_GREEN),temp->NO, temp ->expr, temp -> next -> NO);
+    int next_no = temp -> next ? temp -> next -> NO: -1;
+    printf(ANSI_FMT("wp no: %2d, expr = %s, next_no = %d\n", ANSI_FG_GREEN),temp->NO, temp ->expr, next_no);
     temp = temp -> next;
   }
 }
