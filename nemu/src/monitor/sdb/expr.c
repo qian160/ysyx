@@ -378,6 +378,10 @@ word_t calculate(int p, int q){
       case('^'):  return P1 ^  P2;
       case(SL ):  return P1 << P2;
       case(SR ):  return P1 >> P2;
+      case('>'):  return P1 >  P2;
+      case('<'):  return P1 <  P2;
+      case(GET):  return P1 >= P2;
+      case(LET):  return P1 <= P2;
       case(COND_AND): return P1 && P2;
       case(NOTEQAL):  return P1 != P2;
       case(EQUAL):    return P1 == P2;
