@@ -230,7 +230,7 @@ static int cmd_help(char *args) {
     if (arg == NULL) {
     /* no argument given */
         for (i = 0; i < NR_CMD; i ++) 
-            printf(ANSI_FMT("%2s: %8s , %-s\n", ANSI_FG_GREEN), cmd_table[i].short_name, cmd_table[i].full_name, cmd_table[i].description);
+            printf(ANSI_FMT("%2s: %-8s \t %-s\n", ANSI_FG_GREEN), cmd_table[i].short_name, cmd_table[i].full_name, cmd_table[i].description);
     }
     else {
         for (i = 0; i < NR_CMD; i ++) {
