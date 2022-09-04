@@ -161,7 +161,7 @@ static int cmd_d(char * e){
     //default, treat the cmd as type: d number address
     word_t address;
     int N  = atoi(n);
-    Log("N = %d, flag = %d\n", N, Expr == NULL);
+    Log("N = %d, expr = %s, flag = %d\n", N, Expr, Expr == NULL);
     bool * success = (bool *)malloc(sizeof(bool));
     *success = true;
     //case d next n, need to change these variables' values
@@ -171,7 +171,7 @@ static int cmd_d(char * e){
         address = expr(Expr, success);
 
     if(!*success){
-        printf(ANSI_FMT("illegal expression", ANSI_FG_YELLOW));
+        printf(ANSI_FMT("illegal expression\n", ANSI_FG_YELLOW));
         return 0;
     }
 
