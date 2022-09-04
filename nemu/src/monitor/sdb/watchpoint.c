@@ -58,16 +58,19 @@ void free_wp(int number){
         //temp -> next = free_;
         //free_ = temp;
         head = RIGHT;                   //temp's right need to be updated
+        Log("case 1\n");
       }
       else if(temp -> next == NULL){    //delete last one
         //temp -> next = free_;
         //free_ = temp;
         LEFT -> next = NULL;            //left
+        Log("case 2\n");
       }
       else{                             //in between
         //temp -> next = free_;
         //free_ = temp;
         LEFT -> next = RIGHT;           //both left and right
+        Log("case 3\n");
       }
       printf(ANSI_FMT("wp %d deleted\n", ANSI_FG_YELLOW), number);
       return;
