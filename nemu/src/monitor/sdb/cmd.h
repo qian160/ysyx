@@ -89,7 +89,7 @@ static int cmd_info(char * args){
 static int cmd_x(char * args){  //usage: x num addr
     puts(args);
     char * nump = strtok(NULL," ");
-    char * Expr = nump + sizeof(nump) + 1;
+    char * Expr = nump + sizeof(nump);
     bool * success = (bool * )malloc(sizeof(bool));
     *success = true;
     word_t address = expr(Expr, success);
@@ -152,7 +152,7 @@ static int cmd_w(char *args){
 
 static int cmd_d(char * e){
     char * n = strtok(NULL, " ");
-    char * Expr = n + strlen(n) + 1;
+    char * Expr = n + sizeof(n);
     if(n == NULL || Expr == NULL)
     {
         printf(ANSI_FMT("too few argument\n", ANSI_FG_YELLOW));
