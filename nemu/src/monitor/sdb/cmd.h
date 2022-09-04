@@ -150,7 +150,7 @@ static int cmd_d(char * e){
     //d n, or d n address
     char * n = strtok(NULL, " ");
     char * Expr = n + strlen(n) + 1;        //sizeof(n) = 8, pointer type. use strlen
-    if(n == NULL || Expr == NULL)
+    if(n == NULL)
     {
         printf(ANSI_FMT("too few argument\n", ANSI_FG_YELLOW));
         return 0;
