@@ -149,7 +149,7 @@ static int cmd_w(char *args){
 
 static int cmd_d(char * e){
     char * n = strtok(NULL, " ");
-    char * Expr = n + strlen(n) + 1;
+    char * Expr = n + strlen(n);
     Log("\n%s\n%s\n", n, Expr);
     if(n == NULL || Expr == NULL)
     {
