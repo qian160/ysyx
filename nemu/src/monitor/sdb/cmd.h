@@ -1,9 +1,9 @@
 void examine_memory(int n, word_t p){
   //if we directly derefference the pointer, we are in fact examing our real computer's address!!!
-    printf(ANSI_FMT(" 0x%lx: ",ANSI_FG_MAGENTA), p);
     char cnt = 0;
     for (int i = 0 ; i < n ; i++)
     {
+        printf(ANSI_FMT(" 0x%lx: ",ANSI_FG_MAGENTA), p);
         printf(ANSI_FMT("%02lx  ", ANSI_FG_YELLOW),paddr_read(p, 1));
         p ++;
         cnt ++;
@@ -11,7 +11,6 @@ void examine_memory(int n, word_t p){
         {
             cnt = 0;
             printf("\n");
-            printf(ANSI_FMT(" 0x%lx: ",ANSI_FG_MAGENTA), p);
         }
     }
     printf("\n");
