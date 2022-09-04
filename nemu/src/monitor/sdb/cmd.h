@@ -40,10 +40,6 @@ static int cmd_q(char *args) {
     return -1;
 }
 
-static inline int cmd_clear(){
-    return system("clear");
-}
-
 static int cmd_si(char * args){
     char *arg = strtok(NULL," ");  
     int steps = 0;  
@@ -204,39 +200,23 @@ static int cmd_help(char *args);  //if not defined here, cmd_table will find the
 
 //we put this table in an embarressing position, cmd_help needs this so it must be put before it. 
 //And the table contains lots of functions, so it also must be put after the functions to find their definations
-
-const char *descriptions[] = {
-    "Display informations about commands. Can take an argument",
-    "Continue the execution of the program",
-    "Exit NEMU",
-    "Step and execuate n instrctions",
-    "Print the specific information. See help info",
-    "Examine the memory",
-    "Print the expression's value",
-    "Clear up the screen"
-    "Add or delete watchpoint",
-    "disasmble n insts starting at address (expr)",
-    "temporarily transfer control to a shell",
-};
-
-static const struct {
+static struct {
     const char *short_name;
-    const char *name;
+    const char *full_name;
     const char *description;
     int (*handler) (char *);
     const char * Usage;
 } cmd_table [] = {
-    { "h",      "help",     descriptions[0],    cmd_help,   "help (cmd), show cmd's description and usage. If default show all but without usage"},
-    { "c",      "continue", descriptions[1],    cmd_c,      "no argument"},
-    { "q",      "quit"      descriptions[2],    cmd_q,      "no argument"},
-    { "s",      "step",     descriptions[3],    cmd_si,     "si (num), default -1"},
-    { "i",      "info",     descriptions[4],    cmd_info,   "info {r/w/reg_name}"},
-    { "x",      "examine",  descriptions[5],    cmd_x,      "x num expr"},
-    { "p",      "print",    descriptions[6],    cmd_p,      "p expr"},
-    { "c",      "clear",    descriptions[7],    cmd_clear,  "no argument"},
-    { "w",      "watch",    descriptions[8],    cmd_w,      "w a expr, w d num0, num1, ...(no address alignment check)"},
-    { "d",      "disasm",   descriptions[9],    cmd_d,      "d n expr"},
-    { "sh",     "shell",    descriptions[10],   cmd_shell,  "no argument"},
+    {"h",    "help",       "Display informations about commands. Can take an argument",    cmd_help,   "help (cmd), show cmd's description and usage. If default show all but without usage"},
+    {"c",    "continue",   "Continue the execution of the program",                        cmd_c,      "no argument"},
+    {"q",    "quit",       "Exit NEMU",                                                    cmd_q,      "no argument"},
+    {"s",    "step",       "Step and execuate n instrction",                               cmd_si,     "si (num), default -1"},
+    {"i",    "info",       "Print the specific information. See help info",                cmd_info,   "info {r/w/reg_name}"},
+    {"x",    "examine",    "Examine the memory",                                           cmd_x,      "x num expr"},
+    {"p",    "print",      "Print the expression's value",                                 cmd_p,      "p expr"},
+    {"w",    "watch",      "Add or delete watchpoint.",                                    cmd_w,      "w a expr, w d num0, num1, ..."},
+    {"d",    "disasm",     "disasmble n insts starting at address (expr)",                 cmd_d,      "d n expr"},
+    {"sh",   "shell",      "temporarily transfer control to a shell",                      cmd_shell,  "no argument"},
 
 
   /* TODO: Add more commands */
@@ -250,13 +230,12 @@ static int cmd_help(char *args) {
     if (arg == NULL) {
     /* no argument given */
         for (i = 0; i < NR_CMD; i ++) 
-            printf(ANSI_FMT("%8s - %-s\n", ANSI_FG_GREEN), cmd_table[i].name, cmd_table[i].description);
-        printf(ANSI_FMT("\n\tfor usage, see help cmd_name\n", ANSI_FG_YELLOW));
+            printf(ANSI_FMT("%2s: %8s , %-s\n", ANSI_FG_GREEN), cmd_table[i].short_name, cmd_table[i].full_name, cmd_table[i].description);
     }
     else {
         for (i = 0; i < NR_CMD; i ++) {
             //find the cmd
-            if (streq(arg, cmd_table[i].name)) {
+            if (streq(arg, cmd_table[i].short_name) || streq(arg, cmd_table[i].full_name)) {
                 printf(ANSI_FMT("\t%s\n", ANSI_FG_GREEN), cmd_table[i].Usage);
                 return 0;
             }
