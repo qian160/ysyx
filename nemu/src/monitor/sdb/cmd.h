@@ -204,23 +204,37 @@ static int cmd_help(char *args);  //if not defined here, cmd_table will find the
 
 //we put this table in an embarressing position, cmd_help needs this so it must be put before it. 
 //And the table contains lots of functions, so it also must be put after the functions to find their definations
+const char *descriptions[] = {
+    "Display informations about commands. Can take an argument",
+    "Continue the execution of the program",
+    "Exit NEMU",
+    "Step single instrction",
+    "Print the specific information. See help info",
+    "Examine the memory",
+    "Print the expression's value",
+    "Clear up the screen"
+    "Add or delete watchpoint",
+    "disasmble n insts starting at address (expr)",
+    "temporarily transfer control to a shell",
+}
 static struct {
+    const char *short_name;
     const char *name;
     const char *description;
     int (*handler) (char *);
     const char * Usage;
 } cmd_table [] = {
-    { "help",   "Display informations about commands. Can take an argument",    cmd_help,   "help (cmd), show cmd's description and usage. If default show all but without usage"},
-    { "c",      "Continue the execution of the program",                        cmd_c,      "no argument"},
-    { "q",      "Exit NEMU",                                                    cmd_q,      "no argument"},
-    { "si",     "Step single instrction",                                       cmd_si,     "si (num), default -1"},
-    { "info",   "Print the specific information. See help info",                cmd_info,   "info {r/w/reg_name}"},
-    { "x",      "Examine the memory",                                           cmd_x,      "x num expr"},
-    { "p",      "Print the expression's value",                                 cmd_p,      "p expr"},
-    { "clear",  "Clear up the screen",                                          cmd_clear,  "no argument"},
-    { "w",      "Add or delete watchpoint.",                                    cmd_w,      "w a expr, w d num0, num1, ...(no address alignment check)"},
-    { "d",      "disasmble n insts starting at address (expr)",                 cmd_d,      "d n expr"},
-    { "sh",     "temporarily transfer control to a shell",                      cmd_shell,  "no argument"},
+    { "h",      "help",     descriptions[0],    cmd_help,   "help (cmd), show cmd's description and usage. If default show all but without usage"},
+    { "c",      "continue", descriptions[1],    cmd_c,      "no argument"},
+    { "q",      "quit"      descriptions[2],    cmd_q,      "no argument"},
+    { "si",     "step",     descriptions[3],    cmd_si,     "si (num), default -1"},
+    { "i",      "info",     descriptions[4],    cmd_info,   "info {r/w/reg_name}"},
+    { "x",      "examine",  descriptions[5],    cmd_x,      "x num expr"},
+    { "p",      "print",    descriptions[6],    cmd_p,      "p expr"},
+    { "c",      "clear",    descriptions[7],    cmd_clear,  "no argument"},
+    { "w",      "watch",    descriptions[8],    cmd_w,      "w a expr, w d num0, num1, ...(no address alignment check)"},
+    { "d",      "disasm",   descriptions[9],    cmd_d,      "d n expr"},
+    { "sh",     "shell",    descriptions[10],   cmd_shell,  "no argument"},
 
 
   /* TODO: Add more commands */
@@ -235,6 +249,7 @@ static int cmd_help(char *args) {
     /* no argument given */
         for (i = 0; i < NR_CMD; i ++) 
             printf(ANSI_FMT("%8s - %-s\n", ANSI_FG_GREEN), cmd_table[i].name, cmd_table[i].description);
+        printf(ANSI_FMT("\n\tfor usage, see help cmd_name\n", ANSI_FG_YELLOW));
     }
     else {
         for (i = 0; i < NR_CMD; i ++) {
