@@ -216,7 +216,8 @@ const char *descriptions[] = {
     "Add or delete watchpoint",
     "disasmble n insts starting at address (expr)",
     "temporarily transfer control to a shell",
-}
+};
+
 static struct {
     const char *short_name;
     const char *name;
