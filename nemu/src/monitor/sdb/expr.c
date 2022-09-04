@@ -313,9 +313,9 @@ static bool make_token(char *e) {
   return true;
 }
 
-word_t calculate(int p, int q){
+word_t calculate(int p, int q, bool * success){
   //find prime, if only 1 token is found, directly return. else recursively call calculate itself
-  if(p > q || p < 0 || q < 0){
+  if(p > q || p < 0 || q < 0 || !(*success)){
     return 0;
   }
   int type  = tokens[p].type;
@@ -331,25 +331,26 @@ word_t calculate(int p, int q){
       return result;
     }
     else if(type == REG){
-      bool * success = (bool *)malloc(sizeof(bool));
-      *success = 0;
       word_t val = isa_reg_str2val(tk_val, success);
       if(*success) return val;
       else printf(ANSI_FMT("bad reg name\n",ANSI_FG_RED));
+      *success = false;
       return 1145141919;
     }
     else{   //the single token should be of numeric type, not others
       Log("bad token: %s\n", tk_val);
+      *success = false;
       return 0;
     }
   }
   int match_result = check_parentheses(p, q);
   if(match_result == DISMATCH){
     printf(ANSI_FMT("bra dismatch\n",ANSI_FG_RED));
+    *success = false;
     return 0;
   }
   else if(match_result == BRA_SURROUNDED){
-    return calculate(p + 1, q - 1);
+    return calculate(p + 1, q - 1, success);
     //cut the range and try again.
   } 
   else {        //a good match which we can process with
@@ -357,7 +358,7 @@ word_t calculate(int p, int q){
     type = tokens[prime].type;
     //op a case
     if(prime == p){
-      word_t temp = calculate(p + 1, q);
+      word_t temp = calculate(p + 1, q, success);
       switch(type){
         case('!'):  return !temp;
         case('~'):  return ~temp;
@@ -366,8 +367,8 @@ word_t calculate(int p, int q){
       }
     }
     //a op b case
-    word_t P1 = calculate(p, prime - 1);
-    word_t P2 = calculate(prime + 1, q);
+    word_t P1 = calculate(p, prime - 1, success);
+    word_t P2 = calculate(prime + 1, q, success);
     switch(type){
       case('+'):  return P1 +  P2; 
       case('-'):  return P1 -  P2;
@@ -389,7 +390,7 @@ word_t calculate(int p, int q){
       default: Assert(0, "bad op type: %d\n", type);  //hope this will not happen...
     }
   }
-  return 1145141919810; //will not be execuated..
+  return 1145141919810;
 }
 
 word_t expr(char *e, bool *success) {
@@ -398,5 +399,5 @@ word_t expr(char *e, bool *success) {
     *success = false;
     return 0;
   }
-  return calculate(0, nr_token - 1);
+  return calculate(0, nr_token - 1, success);
 }

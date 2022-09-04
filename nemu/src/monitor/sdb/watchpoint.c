@@ -20,18 +20,17 @@ void init_wp_pool() {
 WP* new_wp(char * Expr){
   if(free_ == NULL)
     return NULL;
+  bool * success = (bool *)malloc(sizeof(bool));
+  *success = true;
+  word_t initVal = expr(Expr, success);
+  if(!*success) return NULL;
+  //okay, the expr is legal. We can allocate space for it. Otherwiwe we won't
   WP *temp = free_ -> next;
   free_ -> next = head;
   head  = free_;
   free_ = temp;
   head -> expr = Expr;
-  bool * success = (bool *)malloc(sizeof(bool));
-  *success = true;
-  head -> oldVal = expr(Expr, success);
-  if(!success){
-    printf("bad expression\n");
-    return NULL;
-  }
+  head -> oldVal = initVal;
   return head;
 }
 

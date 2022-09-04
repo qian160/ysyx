@@ -137,9 +137,9 @@ static int cmd_w(char *args){
         }
         WP * head = new_wp(expr);
         if(head == NULL)
-            printf(ANSI_FMT("can not add more wp\n",ANSI_FG_CYAN));
+            printf(ANSI_FMT("can not add this wp, maybe full(8), maybe the expr is illegal\n",ANSI_FG_CYAN));
         else
-            printf(ANSI_FMT("new wp[%2d], value = %ld\n", ANSI_FG_YELLOW), head ->NO, head -> oldVal);
+            printf(ANSI_FMT("new wp[%2d], value = %ld\n", ANSI_FG_YELLOW), head -> NO, head -> oldVal);
     }
     else{
         printf("bad usage\n");
