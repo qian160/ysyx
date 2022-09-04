@@ -26,7 +26,7 @@ static void trace_and_difftest(Decode *_this, vaddr_t dnpc) {
   //there is where the disasm information is printed----------
   if (g_print_step) { IFDEF(CONFIG_ITRACE, puts(_this->logbuf)); }
   IFDEF(CONFIG_DIFFTEST, difftest_step(_this->pc, dnpc));
-  //watch point
+
 #ifdef CONFIG_WP_ENABLE
   for(WP * head = get_head(); head != NULL; head = head -> next){
     bool * success = (bool *)malloc(sizeof(bool));
@@ -44,9 +44,9 @@ static void trace_and_difftest(Decode *_this, vaddr_t dnpc) {
 
 static void exec_once(Decode *s, vaddr_t pc) {
   s->pc = pc;
-  s->snpc = pc; //+4?
+  s->snpc = pc;     //+4 will be performed in inst_fetch
   isa_exec_once(s);
-  cpu.pc = s->dnpc; //dnpc is updated in inst fetch, currently pc + 4
+  cpu.pc = s->dnpc; //dnpc is updated in decode_exec, currently dnpc = snpc(pc + 4)
 #ifdef CONFIG_ITRACE
   char *p = s->logbuf;
   //add address to logbuf
