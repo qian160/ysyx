@@ -149,15 +149,14 @@ static int cmd_w(char *args){
 static int cmd_d(char * e){
     //d n, or d n address
     char * n = strtok(NULL, " ");
-    char * Expr = NULL;
+    char * Expr = NUn + strlen(n) + 1;
+    char * arg2 = strtok(NULL, " ");
     if(n == NULL)
     {
         printf(ANSI_FMT("too few argument\n", ANSI_FG_YELLOW));
         return 0;
     }
-    else{
-        Expr = n + strlen(n) + 1;
-    }
+
     //default, treat the cmd as type: d number address
     word_t address;
     int N  = atoi(n);
@@ -165,7 +164,7 @@ static int cmd_d(char * e){
     bool * success = (bool *)malloc(sizeof(bool));
     *success = true;
     //case d next n, need to change these variables' values
-    if(Expr == NULL)
+    if(arg2== NULL)
         address = cpu.pc;
     else
         address = expr(Expr, success);
