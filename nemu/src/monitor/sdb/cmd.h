@@ -65,7 +65,7 @@ static int cmd_info(char * args){
     if( arg == NULL) 
     {
         //printf("\33[40;33mneed an argument!\33[0m\n");
-        printf(ANSI_FMT("need an argument!\n", ANSI_FG_PINK));
+        printf(ANSI_FMT("too few argument!\n", ANSI_FG_PINK));
         return 0;
     }
     if(streq(arg, "r"))
@@ -148,21 +148,26 @@ static int cmd_w(char *args){
 }
 
 static int cmd_d(char * e){
-    if(e == NULL)
+    char * n = strtok(NULL, " ");
+    char * Expr = strtok(NULL, " ");
+    if(n == NULL || Expr == NULL)
     {
-        printf(ANSI_FMT("need an argument\n", ANSI_FG_YELLOW));
+        printf(ANSI_FMT("too few argument\n", ANSI_FG_YELLOW));
         return 0;
     }
+    int N = atoi(n);
     bool * success = (bool *)malloc(sizeof(bool));
     *success = true;
-    word_t n __attribute__((unused))= expr(e, success);
+
+    word_t address __attribute__((unused))= expr(Expr, success);
     if(!*success){
         printf(ANSI_FMT("illegal expression", ANSI_FG_YELLOW));
         return 0;
     }
     char buf[128];
     char * p = buf;
-    vaddr_t pc = cpu.pc;
+    vaddr_t pc = address;//cpu.pc;
+
     uint32_t inst = vaddr_ifetch(pc, 4);
 
     //address
@@ -206,7 +211,7 @@ static struct {
     { "p",      "Print the expression's value",                                 cmd_p,      "p expr"},
     { "clear",  "Clear up the screen",                                          cmd_clear,  "no argument"},
     { "w",      "Add or delete watchpoint.",                                    cmd_w,      "w a expr, w d num0, num1, ..."},
-    { "d",      "disasmble the following (expr) insts",                         cmd_d,      "d expr"},
+    { "d",      "disasmble n insts starting at address (expr)",                 cmd_d,      "d n expr"},
     { "sh",     "temporarily transfer control to a shell",                      cmd_shell,  "no argument"},
 
 
