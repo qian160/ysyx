@@ -83,7 +83,7 @@ void wp_display(){
   WP * temp = head;
   printf(ANSI_FMT("Index\t\texpr\t\tvalue\n",ANSI_FG_YELLOW));
   while(temp != NULL){
-    printf(ANSI_FMT("[%2d]\t\t%s\t\t%lx\n", ANSI_FG_GREEN),temp->NO, temp ->expr, temp -> oldVal);
+    printf(ANSI_FMT("[%2d]\t\t%s\t\t%0xlx\n", ANSI_FG_GREEN),temp->NO, temp ->expr, temp -> oldVal);
     temp = temp -> next;
   }
 }
