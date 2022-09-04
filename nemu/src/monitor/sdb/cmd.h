@@ -114,16 +114,17 @@ static int cmd_w(char *args){
     }
     char * cmd = strtok(NULL, " "); //a / d
     if(streq(cmd, "d")){
-        if(expr == NULL){
+        char *idx = strtok(NULL, " ");
+        if(idx == NULL){
             printf(ANSI_FMT("too few arguments\n",ANSI_FG_MAGENTA));
             return 0;
         }
         int no;
         while(1){
-            char *idx = strtok(NULL, " ");
             if(idx == NULL) break;
             sscanf(expr, "%d", &no);
             free_wp(no);
+            idx = strtok(NULL, " ");
         }
     }
     else if(streq(cmd, "a")){
