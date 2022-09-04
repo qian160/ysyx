@@ -112,7 +112,8 @@ static int cmd_w(char *args){
         printf(ANSI_FMT("need 2 arguments. Usage: w a expr, w d number\n", ANSI_FG_YELLOW));
         return 0;
     }
-    char * cmd = strtok(NULL, " "); //a / d
+    char * cmd = strtok(NULL, " "); //a or d
+    //delete
     if(streq(cmd, "d")){
         char *idx = strtok(NULL, " ");
         if(idx == NULL){
@@ -127,6 +128,7 @@ static int cmd_w(char *args){
             idx = strtok(NULL, " ");
         }
     }
+    //add
     else if(streq(cmd, "a")){
         char * expr = strtok(NULL, " ");
         if(expr == NULL ){
