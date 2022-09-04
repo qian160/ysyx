@@ -121,10 +121,10 @@ static int cmd_w(char *args){
         }
         int no;
         while(1){
-            char *idx = strtok(NULL, " ");
             if(idx == NULL) break;
             sscanf(expr, "%d", &no);
             free_wp(no);
+            char *idx = strtok(NULL, " ");
         }
     }
     else if(streq(cmd, "a")){
