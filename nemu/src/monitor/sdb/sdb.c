@@ -69,7 +69,7 @@ void sdb_mainloop() {   //get command
 
     int i;
     for (i = 0; i < NR_CMD; i ++) {
-      if (strcmp(cmd, cmd_table[i].name) == 0) {
+      if (strcmp(cmd, cmd_table[i].short_name) == 0 || streq(cmd, cmd_table[i].full_name)) {
         if (cmd_table[i].handler(args) < 0) { return; } //error when running
         break;
       }
