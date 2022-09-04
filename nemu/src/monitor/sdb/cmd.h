@@ -122,7 +122,7 @@ static int cmd_w(char *args){
         int no;
         while(1){
             if(idx == NULL) break;
-            sscanf(expr, "%d", &no);
+            sscanf(idx, "%d", &no);
             free_wp(no);
             idx = strtok(NULL, " ");
         }
