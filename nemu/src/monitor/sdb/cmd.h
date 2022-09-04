@@ -165,7 +165,7 @@ static int cmd_d(char * e){
     char * p = buf;
     p += snprintf(p, sizeof(buf), FMT_WORD ":", cpu.pc);
     puts(buf);
-    vaddr_t pc = cpu.pc;
+    //vaddr_t pc = cpu.pc;
     //disassemble(p, buf + sizeof(buf) - p, pc, (uint8_t *)&s->isa.inst.val, 4);
     return 0;
 }
