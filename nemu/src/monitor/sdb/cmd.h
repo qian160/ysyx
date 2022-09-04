@@ -164,6 +164,7 @@ static int cmd_d(char * e){
     char * p = buf;
     vaddr_t pc = cpu.pc;
     uint32_t inst = vaddr_ifetch(pc, 4);
+
     //address
     p += snprintf(p, sizeof(buf), FMT_WORD ":", cpu.pc);
     //value
@@ -171,6 +172,10 @@ static int cmd_d(char * e){
     for (int i = 3; i >= 0; i --) {
         p += snprintf(p, 4, " %02x", inst_byte[i]);
     }
+    //add some spaces between value and name to make it look more beautiful
+    int space_len = 1;
+    memset(p, ' ', space_len);
+    p += space_len;
     //name
     disassemble(p, buf + sizeof(buf) - p, pc, (uint8_t *)&inst, 4);
     //full inst is ready
