@@ -155,7 +155,7 @@ static int cmd_d(char * e){
         printf(ANSI_FMT("too few argument\n", ANSI_FG_YELLOW));
         return 0;
     }
-    int N = atoi(n);
+    int N __unused__ = atoi(n);
     bool * success = (bool *)malloc(sizeof(bool));
     *success = true;
 

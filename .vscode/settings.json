@@ -4,6 +4,7 @@
         "reg.h": "c",
         "regex.h": "c",
         "sdb.h": "c",
-        "locale.h": "c"
+        "locale.h": "c",
+        "macro.h": "c"
     }
 }
