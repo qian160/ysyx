@@ -23,9 +23,8 @@ static void trace_and_difftest(Decode *_this, vaddr_t dnpc) {
 #ifdef CONFIG_ITRACE_COND
   if (ITRACE_COND) { log_write("%s\n", _this->logbuf); }
 #endif
-  Log("???\n");
+  //there is where the disasm information is printed----------
   if (g_print_step) { IFDEF(CONFIG_ITRACE, puts(_this->logbuf)); }
-  Log("???\n");
   IFDEF(CONFIG_DIFFTEST, difftest_step(_this->pc, dnpc));
   //watch point
 #ifdef CONFIG_WP_ENABLE
@@ -65,8 +64,10 @@ static void exec_once(Decode *s, vaddr_t pc) {
   space_len = space_len * 3 + 1;
   memset(p, ' ', space_len);
   p += space_len;
+  puts(s -> logbuf);
   disassemble(p, s->logbuf + sizeof(s->logbuf) - p,
       MUXDEF(CONFIG_ISA_x86, s->snpc, s->pc), (uint8_t *)&s->isa.inst.val, ilen);
+  puts(s->logbuf);
 #endif
 }
 
