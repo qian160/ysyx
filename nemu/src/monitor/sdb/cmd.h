@@ -7,7 +7,7 @@ void examine_memory(int n, word_t p){
         printf(ANSI_FMT("%02lx  ", ANSI_FG_YELLOW),paddr_read(p, 1));
         p ++;
         cnt ++;
-        if(cnt == (char)4)
+        if(cnt == (char)4 && i != n-1)
         {
             cnt = 0;
             printf("\n");
@@ -96,10 +96,6 @@ static int cmd_x(char * args){  //usage: x num addr
         return 0;
     }
     uint64_t  num = atoi(nump);
-    /*
-    uint64_t addr; 
-    sscanf(addrp,"%lx",&addr); 
-    */
     printf(ANSI_FMT("[little endian, the MSB is located at low adress]\n",ANSI_FG_PINK));
     examine_memory(num, address);
     //here we dont do mem check. we pass the job to that em function
@@ -138,7 +134,7 @@ static int cmd_w(char *args){
         if(head == NULL)
             printf(ANSI_FMT("can not add this wp, maybe full(8), maybe the expr is illegal\n",ANSI_FG_CYAN));
         else
-            printf(ANSI_FMT("new wp[%2d], value = %lx\n", ANSI_FG_YELLOW), head -> NO, head -> oldVal);
+            printf(ANSI_FMT("new wp[%2d], value = 0x%lx\n", ANSI_FG_YELLOW), head -> NO, head -> oldVal);
     }
     else{
         printf("bad usage\n");
