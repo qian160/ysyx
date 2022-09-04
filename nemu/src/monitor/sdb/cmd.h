@@ -113,7 +113,6 @@ static int cmd_w(char *args){
         return 0;
     }
     char * cmd = strtok(NULL, " "); //a / d
-    char * expr = strtok(NULL, " ");
     if(streq(cmd, "d")){
         if(expr == NULL){
             printf(ANSI_FMT("too few arguments\n",ANSI_FG_MAGENTA));
@@ -121,13 +120,14 @@ static int cmd_w(char *args){
         }
         int no;
         while(1){
+            char *idx = strtok(NULL, " ");
             if(idx == NULL) break;
             sscanf(expr, "%d", &no);
             free_wp(no);
-            char *idx = strtok(NULL, " ");
         }
     }
     else if(streq(cmd, "a")){
+        char * expr = strtok(NULL, " ");
         if(expr == NULL ){
             printf(ANSI_FMT("too few arguments\n",ANSI_FG_MAGENTA));
             return 0;
