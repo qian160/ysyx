@@ -139,7 +139,7 @@ static int cmd_w(char *args){
         if(head == NULL)
             printf(ANSI_FMT("can not add more wp\n",ANSI_FG_CYAN));
         else
-            printf(ANSI_FMT("new wp[%2d], value = %ld\n", ANSI_FG_YELLOW), head ->NO, head -> oldVal);
+            printf(ANSI_FMT("new wp[%2d], value = %ld\n", ANSI_FG_YELLOW), head -> NO, head -> oldVal);
     }
     else{
         printf("bad usage\n");
