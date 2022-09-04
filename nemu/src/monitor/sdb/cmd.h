@@ -113,7 +113,7 @@ static int cmd_w(char *args){
         return 0;
     }
     char * cmd = strtok(NULL, " "); //a / d
-    char * expr = strtok(args);
+    char * expr = strtok(NULL " ");
     if(streq(cmd, "d")){
         if(expr == NULL){
             printf(ANSI_FMT("too few arguments\n",ANSI_FG_MAGENTA));
