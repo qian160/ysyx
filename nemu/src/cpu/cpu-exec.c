@@ -17,23 +17,27 @@ static uint64_t g_timer = 0; // unit: us
 static bool g_print_step = false;
 
 void device_update();
+void disassemble(char *str, int size, uint64_t pc, uint8_t *code, int nbyte);
 
 static void trace_and_difftest(Decode *_this, vaddr_t dnpc) {
 #ifdef CONFIG_ITRACE_COND
   if (ITRACE_COND) { log_write("%s\n", _this->logbuf); }
 #endif
+  //there is where the disasm information is printed----------
   if (g_print_step) { IFDEF(CONFIG_ITRACE, puts(_this->logbuf)); }
   IFDEF(CONFIG_DIFFTEST, difftest_step(_this->pc, dnpc));
   //watch point
+#ifdef CONFIG_WP_ENABLE
   for(WP * head = get_head(); head != NULL; head = head -> next){
     head -> newVal = expr(head -> expr, NULL);
     word_t newVal = head -> newVal, oldVal = head -> oldVal;
     if(newVal ^ oldVal){
       nemu_state.state = NEMU_STOP;
-      Log("\nstop at PC: 0x%lx, wp[%d] triggered\n", _this -> pc, head -> NO);
+      Log("\nstop at PC: 0x%lx, wp[%d] triggered\noldVal = %lx, newVal = %lx\n", _this -> pc, head -> NO, oldVal, newVal);
     }
     head -> oldVal = newVal;
   }
+#endif
 }
 
 static void exec_once(Decode *s, vaddr_t pc) {
@@ -43,9 +47,8 @@ static void exec_once(Decode *s, vaddr_t pc) {
   cpu.pc = s->dnpc; //dnpc is updated in inst fetch, currently pc + 4
 #ifdef CONFIG_ITRACE
   char *p = s->logbuf;
-
+  //add address to logbuf
   p += snprintf(p, sizeof(s->logbuf), FMT_WORD ":", s->pc);
-
   int ilen = s->snpc - s->pc;
   int i;
   uint8_t *inst = (uint8_t *)&s->isa.inst.val;
@@ -60,8 +63,7 @@ static void exec_once(Decode *s, vaddr_t pc) {
   space_len = space_len * 3 + 1;
   memset(p, ' ', space_len);
   p += space_len;
-
-  void disassemble(char *str, int size, uint64_t pc, uint8_t *code, int nbyte);
+  //add inst value and name to logbuf
   disassemble(p, s->logbuf + sizeof(s->logbuf) - p,
       MUXDEF(CONFIG_ISA_x86, s->snpc, s->pc), (uint8_t *)&s->isa.inst.val, ilen);
 #endif

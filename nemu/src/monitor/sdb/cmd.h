@@ -106,51 +106,48 @@ static int cmd_x(char * args){  //usage: x num addr
     //here we dont do mem check. we pass the job to that em function
     return 0;
 }
-/*
-static int cmd_r(){
-    printf("do you want to restart the program?(y/n) \n");
-    char c = getchar();
-    if(c == '\n') c = getchar();
-    if(c == 'y')
-    {
-        cpu.pc  = 0x80000000;
-        for(int i = 0; i < 32; i++)
-            gpr(i) = 0;
-        init_wp_pool();
-        init_mem();
-    }
-    else
-        printf("canceled\n");
-    return 0;
-}
-*/
-static int cmd_w(char *expr){
-    if(expr == NULL){
-        printf(ANSI_FMT("need an argument\n", ANSI_FG_RED));
+
+static int cmd_w(char *args){
+    if(args == NULL){
+        printf(ANSI_FMT("need 2 arguments. Usage: w a expr, w d number\n", ANSI_FG_YELLOW));
         return 0;
     }
-    WP * head = new_wp(expr);
-    if(head == NULL)
-        printf(ANSI_FMT("can not add more wp\n",ANSI_FG_CYAN));
-    else
-        printf(ANSI_FMT("new wp[%2d], value = %ld\n", ANSI_FG_YELLOW), head ->NO, head -> oldVal);
+    char * cmd = strtok(NULL, " "); //a or d
+    //delete
+    if(streq(cmd, "d")){
+        char *idx = strtok(NULL, " ");
+        if(idx == NULL){
+            printf(ANSI_FMT("too few arguments\n",ANSI_FG_MAGENTA));
+            return 0;
+        }
+        int no;
+        while(1){
+            if(idx == NULL) break;
+            sscanf(idx, "%d", &no);
+            free_wp(no);
+            idx = strtok(NULL, " ");
+        }
+    }
+    //add
+    else if(streq(cmd, "a")){
+        char * expr = strtok(NULL, " ");
+        if(expr == NULL ){
+            printf(ANSI_FMT("too few arguments\n",ANSI_FG_MAGENTA));
+            return 0;
+        }
+        WP * head = new_wp(expr);
+        if(head == NULL)
+            printf(ANSI_FMT("can not add more wp\n",ANSI_FG_CYAN));
+        else
+            printf(ANSI_FMT("new wp[%2d], value = %ld\n", ANSI_FG_YELLOW), head ->NO, head -> oldVal);
+    }
+    else{
+        printf("bad usage\n");
+    }
     return 0;
+
 }
 
-static int cmd_d(char * num){
-    if(num == NULL){
-        printf(ANSI_FMT("need an argument\n",ANSI_FG_MAGENTA));
-        return 0;
-    }
-    int no;
-    while(1){
-        char *idx = strtok(NULL, " ");
-        if(idx == NULL) break;
-        sscanf(num, "%d", &no);
-        free_wp(no);
-    }
-    return 0;
-}
 static int cmd_help(char *args);  //if not defined here, cmd_table will find the 
 
 //we put this table in an embarressing position, cmd_help needs this so it must be put before it. 
@@ -159,18 +156,17 @@ static struct {
     const char *name;
     const char *description;
     int (*handler) (char *);
+    const char * Usage;
 } cmd_table [] = {
-    { "help",   "Display informations about all supported commands",    cmd_help },
-    { "c",      "Continue the execution of the program",                cmd_c },
-    { "q",      "Exit NEMU",                                            cmd_q },
-    { "si",     "Step single instrction",                               cmd_si},
-    { "info",   "Print the specific reg's value, r for all",            cmd_info},
-    { "x",      "Examine the memory. Usage: x num expr",                cmd_x},
-//    { "r",      "Restart and run the program",                          cmd_r},
-    { "p",      "Print the expression's value",                         cmd_p},
-    { "clear",  "clear up the screen",                                  cmd_clear},
-    { "w",      "Add watch point. Usage w expr",                        cmd_w},
-    { "d",      "Delete watch point",                                   cmd_d},
+    { "help",   "Display informations about commands. Can take an argument",    cmd_help,   "help (cmd), show cmd's description and usage. If default show all but without usage"},
+    { "c",      "Continue the execution of the program",                        cmd_c,      "no argument"},
+    { "q",      "Exit NEMU",                                                    cmd_q,      "no argument"},
+    { "si",     "Step single instrction",                                       cmd_si,     "si (num), default -1"},
+    { "info",   "Print the specific information. See help info",                cmd_info,   "info {r/w/reg_name}"},
+    { "x",      "Examine the memory",                                           cmd_x,      "x num expr"},
+    { "p",      "Print the expression's value",                                 cmd_p,      "p expr"},
+    { "clear",  "Clear up the screen",                                          cmd_clear,  "no argument"},
+    { "w",      "Add or delete watchpoint.",                                    cmd_w,      "w a expr, w d num0, num1, ..."},
 
   /* TODO: Add more commands */
 };
@@ -187,9 +183,9 @@ static int cmd_help(char *args) {
     }
     else {
         for (i = 0; i < NR_CMD; i ++) {
-//            if (strcmp(arg, cmd_table[i].name) == 0) {
+            //find the cmd
             if (streq(arg, cmd_table[i].name)) {
-                printf(ANSI_FMT("%8s - %-s\n", ANSI_FG_GREEN), cmd_table[i].name, cmd_table[i].description);
+                printf(ANSI_FMT("\t%s\n", ANSI_FG_GREEN), cmd_table[i].Usage);
                 return 0;
             }
         }
