@@ -145,7 +145,21 @@ static int cmd_w(char *args){
         printf("bad usage\n");
     }
     return 0;
+}
 
+static int cmd_d(char * e){
+    if(e == NULL)
+    {
+        printf(ANSI_FMT("need an argument\n", ANSI_FG_YELLOW));
+        return 0;
+    }
+    bool * success;
+    *success = true;
+    word_t n = expr(e, success);
+    if(!*success){
+        printf(ANSI_FMT("illegal expression", ANSI_FG_YELLOW));
+        return 0;
+    }
 }
 
 static int cmd_help(char *args);  //if not defined here, cmd_table will find the 
@@ -167,6 +181,7 @@ static struct {
     { "p",      "Print the expression's value",                                 cmd_p,      "p expr"},
     { "clear",  "Clear up the screen",                                          cmd_clear,  "no argument"},
     { "w",      "Add or delete watchpoint.",                                    cmd_w,      "w a expr, w d num0, num1, ..."},
+    { "d",      "disasmble the following (expr) insts",                         cmd_d,      "d expr"},
 
   /* TODO: Add more commands */
 };
