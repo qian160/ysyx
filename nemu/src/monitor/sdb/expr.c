@@ -16,6 +16,7 @@ enum {
   SR,
   COND_OR,
   REG,
+  PC,
   MINUS,
   POINTER,        //can't be distinguished directly. need also to check the previous token's type
   LET,            //<=
@@ -109,6 +110,7 @@ static struct rule {
   //numbers and white space
   {"0[xX][0-9a-f]+",  HEXNUM,   0},   //check before DECNUM, or the 0 prefix will be lost
   {"[0-9]+",          DECNUM,   0},
+  {"\\$[pP][cC]",     PC,       0},
   {"\\$[a-zA-Z0-9]+", REG,      0},
   {" +",              NOTYPE,   0},   // multiple spaces, not addition
   {"\\s+",            NOTYPE,   0},   // white spaces
@@ -336,6 +338,9 @@ word_t calculate(int p, int q, bool * success){
       else printf(ANSI_FMT("bad reg name\n",ANSI_FG_RED));
       *success = false;
       return 1145141919;
+    }
+    else if(type == PC){
+      return cpu.pc;
     }
     else{   //the single token should be of numeric type, not others
       Log("bad token: %s\n", tk_val);
