@@ -153,7 +153,7 @@ static int cmd_d(char * e){
         printf(ANSI_FMT("need an argument\n", ANSI_FG_YELLOW));
         return 0;
     }
-    bool * success;
+    bool * success = (bool *)malloc(sizeof(bool));
     *success = true;
     word_t n = expr(e, success);
     if(!*success){
