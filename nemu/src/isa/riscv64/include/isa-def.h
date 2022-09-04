@@ -10,7 +10,7 @@ typedef struct {
 
 // decode
 typedef struct {
-  union {
+  union { //only 1 information, so use union now. May need to be improved in the future
     uint32_t val;
   } inst;
 } riscv64_ISADecodeInfo;

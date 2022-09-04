@@ -163,10 +163,11 @@ static int cmd_d(char * e){
     //Decode s __attribute__((unused));
     char buf[128];
     char * p = buf;
+    uint32_t inst = vaddr_ifetch(pc, 4);
     p += snprintf(p, sizeof(buf), FMT_WORD ":", cpu.pc);
+    vaddr_t pc = cpu.pc;
+    disassemble(p, buf + sizeof(buf) - p, pc, (uint8_t *)&inst, 4);
     puts(buf);
-    //vaddr_t pc = cpu.pc;
-    //disassemble(p, buf + sizeof(buf) - p, pc, (uint8_t *)&s->isa.inst.val, 4);
     return 0;
 }
 
