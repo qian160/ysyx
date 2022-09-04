@@ -223,7 +223,7 @@ static struct {
     {"x",    "examine",    "Examine the memory",                                           cmd_x,      "x num expr"},
     {"p",    "print",      "Print the expression's value",                                 cmd_p,      "p expr"},
     {"w",    "watch",      "Add or delete watchpoint.",                                    cmd_w,      "w a expr, w d num0, num1, ..."},
-    {"d",    "disasm",     "disasmble n insts starting at address(expr), default $pc",     cmd_d,      "d n address(expr), if the 2nd arg is not given then use $pc"},
+    {"d",    "disasm",     "disasmble the next n inst. Or starting at other address ",     cmd_d,      "d n (expr). the second arg is optional"},
     {"sh",   "shell",      "temporarily transfer control to a shell",                      cmd_shell,  "no argument"},
 
 
