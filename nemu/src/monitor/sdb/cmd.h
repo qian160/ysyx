@@ -204,38 +204,37 @@ static int cmd_help(char *args);  //if not defined here, cmd_table will find the
 
 //we put this table in an embarressing position, cmd_help needs this so it must be put before it. 
 //And the table contains lots of functions, so it also must be put after the functions to find their definations
-const char *descriptions[] = {
-    "Display informations about commands. Can take an argument",
-    "Continue the execution of the program",
-    "Exit NEMU",
-    "Step and execuate n instrctions",
-    "Print the specific information. See help info",
-    "Examine the memory",
-    "Print the expression's value",
-    "Clear up the screen"
-    "Add or delete watchpoint",
-    "disasmble n insts starting at address (expr)",
-    "temporarily transfer control to a shell",
-};
 
-const struct {
+#define _H_     "Display informations about commands. Can take an argument"
+#define _CO_    "Continue the execution of the program"
+#define _Q_     "Exit NEMU"
+#define _S_     "Step and execuate n instrctions"
+#define _I_     "Print the specific information. See help info"
+#define _X_     "Examine the memory"
+#define _P_     "Print the expression's value"
+#define _CL_    "Clear up the screen"
+#define _W_     "Add or delete watchpoint"
+#define _D_     "disasmble n insts starting at address (expr)"
+#define _SH_    "temporarily transfer control to a shell"
+
+static const struct {
     const char *short_name;
     const char *name;
     const char *description;
     int (*handler) (char *);
     const char * Usage;
 } cmd_table [] = {
-    { "h",      "help",     descriptions[0],    cmd_help,   "help (cmd), show cmd's description and usage. If default show all but without usage"},
-    { "c",      "continue", descriptions[1],    cmd_c,      "no argument"},
-    { "q",      "quit"      descriptions[2],    cmd_q,      "no argument"},
-    { "s",      "step",     descriptions[3],    cmd_si,     "si (num), default -1"},
-    { "i",      "info",     descriptions[4],    cmd_info,   "info {r/w/reg_name}"},
-    { "x",      "examine",  descriptions[5],    cmd_x,      "x num expr"},
-    { "p",      "print",    descriptions[6],    cmd_p,      "p expr"},
-    { "c",      "clear",    descriptions[7],    cmd_clear,  "no argument"},
-    { "w",      "watch",    descriptions[8],    cmd_w,      "w a expr, w d num0, num1, ...(no address alignment check)"},
-    { "d",      "disasm",   descriptions[9],    cmd_d,      "d n expr"},
-    { "sh",     "shell",    descriptions[10],   cmd_shell,  "no argument"},
+    { "h",      "help",     _H_,    cmd_help,   "help (cmd), show cmd's description and usage. If default show all but without usage"},
+    { "c",      "continue", _CO_,   cmd_c,      "no argument"},
+    { "q",      "quit"      _Q_,    cmd_q,      "no argument"},
+    { "s",      "step",     _S_,    cmd_si,     "si (num), default -1"},
+    { "i",      "info",     _I_,    cmd_info,   "info {r/w/reg_name}"},
+    { "x",      "examine",  _X_,    cmd_x,      "x num expr"},
+    { "p",      "print",    _P_,    cmd_p,      "p expr"},
+    { "c",      "clear",    _C_,    cmd_clear,  "no argument"},
+    { "w",      "watch",    _W_,    cmd_w,      "w a expr, w d num0, num1, ...(no address alignment check)"},
+    { "d",      "disasm",   _D_,    cmd_d,      "d n expr"},
+    { "sh",     "shell",    _SH_,   cmd_shell,  "no argument"},
 
 
   /* TODO: Add more commands */
