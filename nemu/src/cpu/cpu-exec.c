@@ -29,8 +29,6 @@ static void trace_and_difftest(Decode *_this, vaddr_t dnpc) {
   //watch point
 #ifdef CONFIG_WP_ENABLE
   for(WP * head = get_head(); head != NULL; head = head -> next){
-    Log("...\n");
-    Log("\nnode[%d], expr = %s, oldVal = %lx, newVal = %lx\n", head -> NO, head -> expr, head -> oldVal, head -> newVal);
     bool * success = (bool *)malloc(sizeof(bool));
     *success = true;
     head -> newVal = expr(head -> expr, success);
