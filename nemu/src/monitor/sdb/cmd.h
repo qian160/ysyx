@@ -150,14 +150,12 @@ static int cmd_w(char *args){
 static int cmd_d(char * e){
     char * n = strtok(NULL, " ");
     char * Expr = n + strlen(n) + 1;
-    Log("\n%s\n%s\n", n, Expr);
     if(n == NULL || Expr == NULL)
     {
         printf(ANSI_FMT("too few argument\n", ANSI_FG_YELLOW));
         return 0;
     }
     int N __unused__ = atoi(n);
-    Log("\nN = %d\n", N);
     bool * success = (bool *)malloc(sizeof(bool));
     *success = true;
 
@@ -166,27 +164,32 @@ static int cmd_d(char * e){
         printf(ANSI_FMT("illegal expression", ANSI_FG_YELLOW));
         return 0;
     }
+
     char buf[128];
     char * p = buf;
     vaddr_t pc = address;//cpu.pc;
 
-    uint32_t inst = vaddr_ifetch(pc, 4);
-
-    //address
-    p += snprintf(p, sizeof(buf), FMT_WORD ":", cpu.pc);
-    //value
-    uint8_t *inst_byte = (uint8_t *)&inst;
-    for (int i = 3; i >= 0; i --) {
-        p += snprintf(p, 4, " %02x", inst_byte[i]);
+    while(N--){
+        uint32_t inst = vaddr_ifetch(pc, 4);
+        p = buf;
+        //address
+        p += snprintf(p, sizeof(buf), FMT_WORD ":", cpu.pc);
+        //value
+        uint8_t *inst_byte = (uint8_t *)&inst;
+        for (int i = 3; i >= 0; i --) {
+            p += snprintf(p, 4, " %02x", inst_byte[i]);
+        }
+        //add some spaces between value and name to make it look more beautiful
+        int space_len = 1;
+        memset(p, ' ', space_len);
+        p += space_len;
+        //name
+        disassemble(p, buf + sizeof(buf) - p, pc, (uint8_t *)&inst, 4);
+        //full inst is ready
+        puts(buf);
+        pc += 4;        
     }
-    //add some spaces between value and name to make it look more beautiful
-    int space_len = 1;
-    memset(p, ' ', space_len);
-    p += space_len;
-    //name
-    disassemble(p, buf + sizeof(buf) - p, pc, (uint8_t *)&inst, 4);
-    //full inst is ready
-    puts(buf);
+
     return 0;
 }
 
