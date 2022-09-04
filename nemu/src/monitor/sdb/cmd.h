@@ -161,7 +161,7 @@ static int cmd_d(char * e){
     //default, treat the cmd as type: d number address
     word_t address;
     int N  = atoi(n);
-    Log("N = %d\n", N);
+    Log("N = %d, flag = %d\n", N, Expr == NULL);
     bool * success = (bool *)malloc(sizeof(bool));
     *success = true;
     //case d next n, need to change these variables' values
