@@ -186,7 +186,7 @@ static int cmd_help(char *args) {
         for (i = 0; i < NR_CMD; i ++) {
             //find the cmd
             if (streq(arg, cmd_table[i].name)) {
-                printf(ANSI_FMT("%s\n", ANSI_FG_GREEN), cmd_table[i].Usage);
+                printf(ANSI_FMT("\t%s\n", ANSI_FG_GREEN), cmd_table[i].Usage);
                 return 0;
             }
         }
