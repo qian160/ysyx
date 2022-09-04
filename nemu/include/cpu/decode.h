@@ -80,7 +80,7 @@ finish:
     goto *(__instpat_end); \
   } \
 } while (0)
-
+//& gets the address of a variable, and && gets the address of a label. a '*' is needed to access the lable address
 #define INSTPAT_START(name) { const void ** __instpat_end = &&concat(__instpat_end_, name);
 #define INSTPAT_END(name)   concat(__instpat_end_, name): ; }
 
