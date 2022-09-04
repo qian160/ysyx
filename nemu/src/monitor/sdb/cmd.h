@@ -164,6 +164,7 @@ static int cmd_d(char * e){
     char buf[128];
     char * p = buf;
     p += snprintf(p, sizeof(buf), FMT_WORD ":", cpu.pc);
+    puts(buf);
     return 0;
 }
 
