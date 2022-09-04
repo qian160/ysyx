@@ -173,7 +173,7 @@ static int cmd_d(char * e){
         uint32_t inst = vaddr_ifetch(pc, 4);
         p = buf;
         //address
-        p += snprintf(p, sizeof(buf), FMT_WORD ":", cpu.pc);
+        p += snprintf(p, sizeof(buf), FMT_WORD ":", pc);
         //value
         uint8_t *inst_byte = (uint8_t *)&inst;
         for (int i = 3; i >= 0; i --) {
