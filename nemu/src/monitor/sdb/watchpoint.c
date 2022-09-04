@@ -52,19 +52,21 @@ void free_wp(int number){
       WP * RIGHT = temp -> next;
       //although all 3 cases start with the same steps, we can't do it in advance or it will affect the following check on temp
       //deal with temp's left and right
+      temp -> next = free_;
+      free_ = temp;
       if(temp == head){                 //delete first one
-        temp -> next = free_;
-        free_ = temp;
+        //temp -> next = free_;
+        //free_ = temp;
         head = RIGHT;                   //temp's right need to be updated
       }
       else if(temp -> next == NULL){    //delete last one
-        temp -> next = free_;
-        free_ = temp;
+        //temp -> next = free_;
+        //free_ = temp;
         LEFT -> next = NULL;            //left
       }
       else{                             //in between
-        temp -> next = free_;
-        free_ = temp;
+        //temp -> next = free_;
+        //free_ = temp;
         LEFT -> next = RIGHT;           //both left and right
       }
       printf(ANSI_FMT("wp %d deleted\n", ANSI_FG_YELLOW), number);
