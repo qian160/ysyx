@@ -91,6 +91,7 @@ static int cmd_x(char * args){  //usage: x num addr
     char * nump = strtok(NULL," ");
     char * Expr = strtok(NULL," ");
     bool * success = (bool * )malloc(sizeof(bool));
+    *success = true;
     word_t address = expr(Expr, success);
     Log("\n%s = %lx", Expr, address);
     if(!success)
