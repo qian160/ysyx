@@ -160,7 +160,10 @@ static int cmd_d(char * e){
         printf(ANSI_FMT("illegal expression", ANSI_FG_YELLOW));
         return 0;
     }
-    Decode s __attribute__((unused));
+    //Decode s __attribute__((unused));
+    char buf[128];
+    char * p = buf;
+    p += snprintf(p, sizeof(buf), FMT_WORD ":", cpu.pc);
     return 0;
 }
 
