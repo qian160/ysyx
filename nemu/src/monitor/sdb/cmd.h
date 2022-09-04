@@ -231,7 +231,7 @@ static int cmd_help(char *args) {
     /* no argument given */
         for (i = 0; i < NR_CMD; i ++) 
             printf(ANSI_FMT("%2s: %-8s \t -%-s\n", ANSI_FG_GREEN), cmd_table[i].short_name, cmd_table[i].full_name, cmd_table[i].description);
-        printf(ANSI_FMT("\nFor usage, see help cmd_name\n", ANSI_FG_YELLOW));
+        printf(ANSI_FMT("\nFor usage, see help cmd_name\n\n", ANSI_FG_CYAN));
     }
     else {
         for (i = 0; i < NR_CMD; i ++) {
