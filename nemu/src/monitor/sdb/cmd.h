@@ -156,14 +156,16 @@ static int cmd_d(char * e){
         return 0;
     }
     //default, treat the cmd as type: d number address
+    word_t address;
     int N  = atoi(n);
     bool * success = (bool *)malloc(sizeof(bool));
     *success = true;
-    word_t address __attribute__((unused))= expr(Expr, success);
     //case d next n, need to change these variables' values
-    if(Expr == NULL){      //next
+    if(Expr == NULL)
         address = cpu.pc;
-    }
+    else
+        address = expr(Expr, success);
+
     if(!*success){
         printf(ANSI_FMT("illegal expression", ANSI_FG_YELLOW));
         return 0;
