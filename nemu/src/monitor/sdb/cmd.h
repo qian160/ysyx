@@ -147,6 +147,7 @@ static int cmd_w(char *args){
 }
 
 static int cmd_d(char * e){
+    Log("d\n");
     //d n, or d n address
     char * n = strtok(NULL, " ");
     char * Expr = n + strlen(n) + 1;        //sizeof(n) = 8, pointer type. use strlen
