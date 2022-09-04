@@ -158,15 +158,15 @@ static struct {
     int (*handler) (char *);
     const char * Usage;
 } cmd_table [] = {
-    { "help",   "Display informations about commands. Can take an argument",    cmd_help,   "help (cmd), show cmd's description and usage. If default show all but without usage\n"},
-    { "c",      "Continue the execution of the program",                        cmd_c,      "no argument\n"},
-    { "q",      "Exit NEMU",                                                    cmd_q,      "no argument\n"},
-    { "si",     "Step single instrction",                                       cmd_si,     "si (num), default -1\n"},
-    { "info",   "Print the specific information. See help info",                cmd_info,   "info {r/w/reg_name}\n"},
-    { "x",      "Examine the memory",                                           cmd_x,      "x num expr\n"},
-    { "p",      "Print the expression's value",                                 cmd_p,      "p expr\n"},
-    { "clear",  "clear up the screen",                                          cmd_clear,  "no argument\n"},
-    { "w",      "Add or delete watchpoint.",                                    cmd_w,      "w a expr, w d wp_number\n"},
+    { "help",   "Display informations about commands. Can take an argument",    cmd_help,   "help (cmd), show cmd's description and usage. If default show all but without usage"},
+    { "c",      "Continue the execution of the program",                        cmd_c,      "no argument"},
+    { "q",      "Exit NEMU",                                                    cmd_q,      "no argument"},
+    { "si",     "Step single instrction",                                       cmd_si,     "si (num), default -1"},
+    { "info",   "Print the specific information. See help info",                cmd_info,   "info {r/w/reg_name}"},
+    { "x",      "Examine the memory",                                           cmd_x,      "x num expr"},
+    { "p",      "Print the expression's value",                                 cmd_p,      "p expr"},
+    { "clear",  "clear up the screen",                                          cmd_clear,  "no argument"},
+    { "w",      "Add or delete watchpoint.",                                    cmd_w,      "w a expr, w d num0, num1, ..."},
 //    { "d",      "Delete watch point",                                           cmd_d},
 
   /* TODO: Add more commands */
