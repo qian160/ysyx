@@ -218,7 +218,7 @@ static struct {
     { "x",      "Examine the memory",                                           cmd_x,      "x num expr"},
     { "p",      "Print the expression's value",                                 cmd_p,      "p expr"},
     { "clear",  "Clear up the screen",                                          cmd_clear,  "no argument"},
-    { "w",      "Add or delete watchpoint.",                                    cmd_w,      "w a expr, w d num0, num1, ..."},
+    { "w",      "Add or delete watchpoint.",                                    cmd_w,      "w a expr, w d num0, num1, ...(no address alignment check)"},
     { "d",      "disasmble n insts starting at address (expr)",                 cmd_d,      "d n expr"},
     { "sh",     "temporarily transfer control to a shell",                      cmd_shell,  "no argument"},
 
