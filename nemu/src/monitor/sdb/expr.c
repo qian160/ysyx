@@ -339,6 +339,7 @@ word_t calculate(int p, int q, bool * success){
     }
     else{   //the single token should be of numeric type, not others
       Log("bad token: %s\n", tk_val);
+      *success = false;
       return 0;
     }
   }
