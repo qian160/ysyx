@@ -147,26 +147,28 @@ static int cmd_w(char *args){
 }
 
 static int cmd_d(char * e){
-    //d next n, or d number address
+    //d n, or d n address
     char * n = strtok(NULL, " ");
-    char * Expr = n + strlen(n) + 1;        //sizeof(n) = 8, pointer type. use strlen
-    if(n == NULL || Expr == NULL)
+    char * Expr = n + strlen(n) + 1;
+    char * arg2 = strtok(NULL, " ");
+    if(n == NULL)
     {
-        printf(ANSI_FMT("too few argument\n", ANSI_FG_YELLOW));
+        printf(ANSI_FMT("too few arguments\n", ANSI_FG_YELLOW));
         return 0;
     }
-    //default, treat the cmd as type: d number address
+
+    word_t address;
     int N  = atoi(n);
     bool * success = (bool *)malloc(sizeof(bool));
     *success = true;
-    word_t address __attribute__((unused))= expr(Expr, success);
     //case d next n, need to change these variables' values
-    if(streq(n, "n") || streq(n, "next")){      //next
+    if(arg2 == NULL)
         address = cpu.pc;
-        N = atoi(Expr);
-    }
+    else
+        address = expr(Expr, success);
+
     if(!*success){
-        printf(ANSI_FMT("illegal expression", ANSI_FG_YELLOW));
+        printf(ANSI_FMT("illegal expression\n", ANSI_FG_YELLOW));
         return 0;
     }
 
@@ -221,7 +223,7 @@ static struct {
     {"x",    "examine",    "Examine the memory",                                           cmd_x,      "x num expr"},
     {"p",    "print",      "Print the expression's value",                                 cmd_p,      "p expr"},
     {"w",    "watch",      "Add or delete watchpoint.",                                    cmd_w,      "w a expr, w d num0, num1, ..."},
-    {"d",    "disasm",     "disasmble n insts starting at (expr), or the next n insts",    cmd_d,      "d number address(expr),     d next number. \n\tuse n for short is allowed in the second case"},
+    {"d",    "disasm",     "disasmble n insts starting at address(expr), default $pc",     cmd_d,      "d n address(expr), if the 2nd arg is not given then use $pc"},
     {"sh",   "shell",      "temporarily transfer control to a shell",                      cmd_shell,  "no argument"},
 
 
