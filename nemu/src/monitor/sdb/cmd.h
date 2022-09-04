@@ -160,6 +160,7 @@ static int cmd_d(char * e){
         printf(ANSI_FMT("illegal expression", ANSI_FG_YELLOW));
         return 0;
     }
+    return 0;
 }
 
 static int cmd_help(char *args);  //if not defined here, cmd_table will find the 
