@@ -165,9 +165,8 @@ static struct {
     { "info",   "Print the specific information. See help info",                cmd_info,   "info {r/w/reg_name}"},
     { "x",      "Examine the memory",                                           cmd_x,      "x num expr"},
     { "p",      "Print the expression's value",                                 cmd_p,      "p expr"},
-    { "clear",  "clear up the screen",                                          cmd_clear,  "no argument"},
+    { "clear",  "Clear up the screen",                                          cmd_clear,  "no argument"},
     { "w",      "Add or delete watchpoint.",                                    cmd_w,      "w a expr, w d num0, num1, ..."},
-//    { "d",      "Delete watch point",                                           cmd_d},
 
   /* TODO: Add more commands */
 };
