@@ -26,18 +26,16 @@ static void trace_and_difftest(Decode *_this, vaddr_t dnpc) {
   //there is where the disasm information is printed----------
   if (g_print_step) { IFDEF(CONFIG_ITRACE, puts(_this->logbuf)); }
   IFDEF(CONFIG_DIFFTEST, difftest_step(_this->pc, dnpc));
-  //watch point
+
 #ifdef CONFIG_WP_ENABLE
   for(WP * head = get_head(); head != NULL; head = head -> next){
-    Log("...\n");
-    Log("\nnode[%d], expr = %s, oldVal = %lx, newVal = %lx\n", head -> NO, head -> expr, head -> oldVal, head -> newVal);
     bool * success = (bool *)malloc(sizeof(bool));
     *success = true;
     head -> newVal = expr(head -> expr, success);
     word_t newVal = head -> newVal, oldVal = head -> oldVal;
     if(newVal ^ oldVal){
       nemu_state.state = NEMU_STOP;
-      Log("\nstop at PC: 0x%lx, wp[%d] triggered\noldVal = %lx, newVal = %lx\n", _this -> pc, head -> NO, oldVal, newVal);
+      Log_Color(CYAN,"\nstop at PC: 0x%lx, wp[%d] triggered\noldVal = %lx\nnewVal = %lx\n", _this -> pc, head -> NO, oldVal, newVal);
     }
     head -> oldVal = newVal;
   }
@@ -46,9 +44,9 @@ static void trace_and_difftest(Decode *_this, vaddr_t dnpc) {
 
 static void exec_once(Decode *s, vaddr_t pc) {
   s->pc = pc;
-  s->snpc = pc; //+4?
+  s->snpc = pc;     //+4 will be performed in inst_fetch
   isa_exec_once(s);
-  cpu.pc = s->dnpc; //dnpc is updated in inst fetch, currently pc + 4
+  cpu.pc = s->dnpc; //dnpc is updated in decode_exec, currently dnpc = snpc(pc + 4)
 #ifdef CONFIG_ITRACE
   char *p = s->logbuf;
   //add address to logbuf

@@ -9,6 +9,10 @@
     _Log(ANSI_FMT("[%s:%d %s] " format, ANSI_FG_BLUE) "\n", \
         __FILE__, __LINE__, __func__, ## __VA_ARGS__)
 
+#define Log_Color(color, format, ...) \
+    _Log(ANSI_FMT("[%s:%d %s] " format, ANSI_FG_##color) "\n", \
+        __FILE__, __LINE__, __func__, ## __VA_ARGS__)
+
 #define Assert(cond, format, ...) \
   do { \
     if (!(cond)) { \
