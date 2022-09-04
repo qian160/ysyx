@@ -153,18 +153,16 @@ static int cmd_d(char * e){
     char * arg2 = strtok(NULL, " ");
     if(n == NULL)
     {
-        printf(ANSI_FMT("too few argument\n", ANSI_FG_YELLOW));
+        printf(ANSI_FMT("too few arguments\n", ANSI_FG_YELLOW));
         return 0;
     }
 
-    //default, treat the cmd as type: d number address
     word_t address;
     int N  = atoi(n);
-    Log("N = %d, expr = %s, flag = %d\n", N, Expr, Expr == NULL);
     bool * success = (bool *)malloc(sizeof(bool));
     *success = true;
     //case d next n, need to change these variables' values
-    if(arg2== NULL)
+    if(arg2 == NULL)
         address = cpu.pc;
     else
         address = expr(Expr, success);
@@ -225,7 +223,7 @@ static struct {
     {"x",    "examine",    "Examine the memory",                                           cmd_x,      "x num expr"},
     {"p",    "print",      "Print the expression's value",                                 cmd_p,      "p expr"},
     {"w",    "watch",      "Add or delete watchpoint.",                                    cmd_w,      "w a expr, w d num0, num1, ..."},
-    {"d",    "disasm",     "disasmble n insts starting at (expr), or the next n insts",    cmd_d,      "d n address(expr),     d n. \n\tn is the number of insts to print, if expr is default then use $PC "},
+    {"d",    "disasm",     "disasmble n insts starting at (expr), or the next n insts",    cmd_d,      "d n address(expr), if the 2nd arg is not given then use $pc"},
     {"sh",   "shell",      "temporarily transfer control to a shell",                      cmd_shell,  "no argument"},
 
 
