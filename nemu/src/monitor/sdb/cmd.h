@@ -149,7 +149,7 @@ static int cmd_w(char *args){
 static int cmd_d(char * e){
     //d n, or d n address
     char * n = strtok(NULL, " ");
-    char * Expr = NUn + strlen(n) + 1;
+    char * Expr = n + strlen(n) + 1;
     char * arg2 = strtok(NULL, " ");
     if(n == NULL)
     {
