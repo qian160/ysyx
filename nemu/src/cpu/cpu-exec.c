@@ -47,9 +47,9 @@ static void exec_once(Decode *s, vaddr_t pc) {
   cpu.pc = s->dnpc; //dnpc is updated in inst fetch, currently pc + 4
 #ifdef CONFIG_ITRACE
   char *p = s->logbuf;
-
+  puts(s->logbuf);
   p += snprintf(p, sizeof(s->logbuf), FMT_WORD ":", s->pc);
-
+  puts(s->logbuf);
   int ilen = s->snpc - s->pc;
   int i;
   uint8_t *inst = (uint8_t *)&s->isa.inst.val;
@@ -64,10 +64,9 @@ static void exec_once(Decode *s, vaddr_t pc) {
   space_len = space_len * 3 + 1;
   memset(p, ' ', space_len);
   p += space_len;
-  puts(s -> logbuf);
+  //add inst name to logbuf
   disassemble(p, s->logbuf + sizeof(s->logbuf) - p,
       MUXDEF(CONFIG_ISA_x86, s->snpc, s->pc), (uint8_t *)&s->isa.inst.val, ilen);
-  puts(s->logbuf);
 #endif
 }
 
