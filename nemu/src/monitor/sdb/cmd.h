@@ -150,6 +150,7 @@ static int cmd_w(char *args){
 static int cmd_d(char * e){
     char * n = strtok(NULL, " ");
     char * Expr = n + strlen(n) + 1;
+    Log("\n%s\n%s\n", n, Expr);
     if(n == NULL || Expr == NULL)
     {
         printf(ANSI_FMT("too few argument\n", ANSI_FG_YELLOW));
