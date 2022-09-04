@@ -155,7 +155,7 @@ static int cmd_d(char * e){
     }
     bool * success = (bool *)malloc(sizeof(bool));
     *success = true;
-    word_t n = expr(e, success);
+    word_t n __attribute__((unused))= expr(e, success);
     if(!*success){
         printf(ANSI_FMT("illegal expression", ANSI_FG_YELLOW));
         return 0;
