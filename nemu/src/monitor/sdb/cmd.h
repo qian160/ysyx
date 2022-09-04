@@ -148,8 +148,8 @@ static int cmd_help(char *args);  //if not defined here, cmd_table will find the
 static struct {
     const char *name;
     const char *description;
-    const char * Usage;
     int (*handler) (char *);
+    const char * Usage;
 } cmd_table [] = {
     { "help",   "Display informations about commands. Can take an argument",    cmd_help,   "help (cmd), show cmd's description and usage. If default show all but without usage\n"},
     { "c",      "Continue the execution of the program",                        cmd_c,      "no argument\n"},
