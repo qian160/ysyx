@@ -21,11 +21,11 @@ void disassemble(char *str, int size, uint64_t pc, uint8_t *code, int nbyte);
 
 static void trace_and_difftest(Decode *_this, vaddr_t dnpc) {
 #ifdef CONFIG_ITRACE_COND
-  Log("???\n");
   if (ITRACE_COND) { log_write("%s\n", _this->logbuf); }
-  Log("???\n");
 #endif
+  Log("???\n");
   if (g_print_step) { IFDEF(CONFIG_ITRACE, puts(_this->logbuf)); }
+  Log("???\n");
   IFDEF(CONFIG_DIFFTEST, difftest_step(_this->pc, dnpc));
   //watch point
 #ifdef CONFIG_WP_ENABLE
