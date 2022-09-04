@@ -160,11 +160,14 @@ static int cmd_d(char * e){
         printf(ANSI_FMT("illegal expression", ANSI_FG_YELLOW));
         return 0;
     }
-    //Decode s __attribute__((unused));
     char buf[128];
     char * p = buf;
     vaddr_t pc = cpu.pc;
     uint32_t inst = vaddr_ifetch(pc, 4);
+    uint8_t *inst_byte = (uint8_t *)&inst;
+    for (i = 3; i >= 0; i --) {
+        p += snprintf(p, 4, " %02x", inst_byte[i]);
+    }
     p += snprintf(p, sizeof(buf), FMT_WORD ":", cpu.pc);
     disassemble(p, buf + sizeof(buf) - p, pc, (uint8_t *)&inst, 4);
     puts(buf);
