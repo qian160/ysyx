@@ -51,9 +51,11 @@ static void exec_once(Decode *s, vaddr_t pc) {
   int ilen = s->snpc - s->pc;
   int i;
   uint8_t *inst = (uint8_t *)&s->isa.inst.val;
+  Log("???\n");
   for (i = ilen - 1; i >= 0; i --) {
     p += snprintf(p, 4, " %02x", inst[i]);
   }
+  Log("???\n");
   //printf("\033[40;30m   %s    \033[0m\n",s->logbuf);
 
   int ilen_max = MUXDEF(CONFIG_ISA_x86, 8, 4);
