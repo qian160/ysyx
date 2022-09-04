@@ -218,7 +218,7 @@ const char *descriptions[] = {
     "temporarily transfer control to a shell",
 };
 
-static struct {
+const struct {
     const char *short_name;
     const char *name;
     const char *description;
