@@ -170,7 +170,7 @@ static int cmd_d(char * e){
     return 0;
 }
 
-static int cmd_zsh(char * args){
+static int cmd_shell(char * args){
     return system("zsh");
 }
 
@@ -194,7 +194,7 @@ static struct {
     { "clear",  "Clear up the screen",                                          cmd_clear,  "no argument"},
     { "w",      "Add or delete watchpoint.",                                    cmd_w,      "w a expr, w d num0, num1, ..."},
     { "d",      "disasmble the following (expr) insts",                         cmd_d,      "d expr"},
-    { "zsh",    "open a zsh to use",                                            cmd_zsh,    "no argument"},
+    { "sh",     "temporarily transfer control to a shell",                      cmd_shell,  "no argument"},
 
 
   /* TODO: Add more commands */
