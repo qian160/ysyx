@@ -147,14 +147,16 @@ static int cmd_w(char *args){
 }
 
 static int cmd_d(char * e){
-    Log("d\n");
     //d n, or d n address
     char * n = strtok(NULL, " ");
-    char * Expr = n + strlen(n) + 1;        //sizeof(n) = 8, pointer type. use strlen
+    char * Expr = NULL;
     if(n == NULL)
     {
         printf(ANSI_FMT("too few argument\n", ANSI_FG_YELLOW));
         return 0;
+    }
+    else{
+        Expr = n + strlen(n) + 1;
     }
     //default, treat the cmd as type: d number address
     word_t address;
