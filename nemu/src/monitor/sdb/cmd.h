@@ -89,7 +89,7 @@ static int cmd_info(char * args){
 static int cmd_x(char * args){  //usage: x num addr
     puts(args);
     char * nump = strtok(NULL," ");
-    char * Expr = strtok(NULL," ");
+    char * Expr = nump + sizeof(nump) + 1;
     bool * success = (bool * )malloc(sizeof(bool));
     *success = true;
     word_t address = expr(Expr, success);
