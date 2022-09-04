@@ -204,7 +204,7 @@ static int cmd_help(char *args);  //if not defined here, cmd_table will find the
 
 //we put this table in an embarressing position, cmd_help needs this so it must be put before it. 
 //And the table contains lots of functions, so it also must be put after the functions to find their definations
-const char *descriptions[] = {
+char *descriptions[] = {
     "Display informations about commands. Can take an argument",
     "Continue the execution of the program",
     "Exit NEMU",
