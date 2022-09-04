@@ -1,4 +1,4 @@
-void examine_memory(int n, int64_t p){
+void examine_memory(int n, word_t p){
   //if we directly derefference the pointer, we are in fact examing our real computer's address!!!
     printf(ANSI_FMT(" 0x%lx: ",ANSI_FG_MAGENTA), p);
     char cnt = 0;
@@ -65,7 +65,7 @@ static int cmd_info(char * args){
     if( arg == NULL) 
     {
         //printf("\33[40;33mneed an argument!\33[0m\n");
-        printf(ANSI_FMT("need an argument!\n", ANSI_FG_PINK));
+        printf(ANSI_FMT("too few argument!\n", ANSI_FG_PINK));
         return 0;
     }
     if(streq(arg, "r"))
@@ -87,10 +87,13 @@ static int cmd_info(char * args){
 }
 
 static int cmd_x(char * args){  //usage: x num addr
-    char * nump = strtok(args," ");
-    char * Expr = strtok(NULL," ");
+    puts(args);
+    char * nump = strtok(NULL," ");
+    char * Expr = nump + strlen(nump) + 1;
     bool * success = (bool * )malloc(sizeof(bool));
+    *success = true;
     word_t address = expr(Expr, success);
+    Log("\n%s = %lx", Expr, address);
     if(!success)
     {
         printf(ANSI_FMT("illegal expression\n",ANSI_FG_MAGENTA));
@@ -139,13 +142,62 @@ static int cmd_w(char *args){
         if(head == NULL)
             printf(ANSI_FMT("can not add this wp, maybe full(8), maybe the expr is illegal\n",ANSI_FG_CYAN));
         else
-            printf(ANSI_FMT("new wp[%2d], value = %ld\n", ANSI_FG_YELLOW), head -> NO, head -> oldVal);
+            printf(ANSI_FMT("new wp[%2d], value = %lx\n", ANSI_FG_YELLOW), head -> NO, head -> oldVal);
     }
     else{
         printf("bad usage\n");
     }
     return 0;
+}
 
+static int cmd_d(char * e){
+    char * n = strtok(NULL, " ");
+    char * Expr = n + strlen(n) + 1;        //sizeof(n) = 8, pointer type. use strlen
+    if(n == NULL || Expr == NULL)
+    {
+        printf(ANSI_FMT("too few argument\n", ANSI_FG_YELLOW));
+        return 0;
+    }
+    int N __unused__ = atoi(n);
+    bool * success = (bool *)malloc(sizeof(bool));
+    *success = true;
+
+    word_t address __attribute__((unused))= expr(Expr, success);
+    if(!*success){
+        printf(ANSI_FMT("illegal expression", ANSI_FG_YELLOW));
+        return 0;
+    }
+
+    char buf[128];
+    char * p = buf;
+    vaddr_t pc = address;//cpu.pc;
+
+    while(N--){
+        uint32_t inst = vaddr_ifetch(pc, 4);
+        p = buf;
+        //address
+        p += snprintf(p, sizeof(buf), FMT_WORD ":", pc);
+        //value
+        uint8_t *inst_byte = (uint8_t *)&inst;
+        for (int i = 3; i >= 0; i --) {
+            p += snprintf(p, 4, " %02x", inst_byte[i]);
+        }
+        //add some spaces between value and name to make it look more beautiful
+        int space_len = 1;
+        memset(p, ' ', space_len);
+        p += space_len;
+        //name
+        disassemble(p, buf + sizeof(buf) - p, pc, (uint8_t *)&inst, 4);
+        //full inst is ready
+        puts(buf);
+        pc += 4;        
+    }
+
+    return 0;
+}
+
+static int cmd_shell(char * args){
+    return system("zsh");
 }
 
 static int cmd_help(char *args);  //if not defined here, cmd_table will find the 
@@ -167,6 +219,9 @@ static struct {
     { "p",      "Print the expression's value",                                 cmd_p,      "p expr"},
     { "clear",  "Clear up the screen",                                          cmd_clear,  "no argument"},
     { "w",      "Add or delete watchpoint.",                                    cmd_w,      "w a expr, w d num0, num1, ..."},
+    { "d",      "disasmble n insts starting at address (expr)",                 cmd_d,      "d n expr"},
+    { "sh",     "temporarily transfer control to a shell",                      cmd_shell,  "no argument"},
+
 
   /* TODO: Add more commands */
 };

@@ -29,7 +29,11 @@ static void trace_and_difftest(Decode *_this, vaddr_t dnpc) {
   //watch point
 #ifdef CONFIG_WP_ENABLE
   for(WP * head = get_head(); head != NULL; head = head -> next){
-    head -> newVal = expr(head -> expr, NULL);
+    Log("...\n");
+    Log("\nnode[%d], expr = %s, oldVal = %lx, newVal = %lx\n", head -> NO, head -> expr, head -> oldVal, head -> newVal);
+    bool * success = (bool *)malloc(sizeof(bool));
+    *success = true;
+    head -> newVal = expr(head -> expr, success);
     word_t newVal = head -> newVal, oldVal = head -> oldVal;
     if(newVal ^ oldVal){
       nemu_state.state = NEMU_STOP;
@@ -63,7 +67,7 @@ static void exec_once(Decode *s, vaddr_t pc) {
   space_len = space_len * 3 + 1;
   memset(p, ' ', space_len);
   p += space_len;
-  //add inst value and name to logbuf
+  //add inst name to logbuf
   disassemble(p, s->logbuf + sizeof(s->logbuf) - p,
       MUXDEF(CONFIG_ISA_x86, s->snpc, s->pc), (uint8_t *)&s->isa.inst.val, ilen);
 #endif

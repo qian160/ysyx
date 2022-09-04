@@ -107,6 +107,8 @@
             printf("%s\n, "message);                   \
     } while (0)
 
+#define __unused__ __attribute__((unused))
+
 /*generally, a macro's value is different from its name(from the view of string)
   for things like #define foo bar, the argument of TRACE_STRINGIFY will be substituted by bar.
   and for those macros not defined, the argument won't have the chance to be subsituted. So 2 string would be the same
