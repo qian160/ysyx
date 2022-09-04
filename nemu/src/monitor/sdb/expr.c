@@ -297,7 +297,7 @@ static bool make_token(char *e) {
     }
   }
 //how to define?
-#ifdef PRINT_TOKEN
+#ifdef CONFIG_PRINT_TOKEN
   printf("here are the tokens:\n");
   for(int i =0 ; i < nr_token; i++)
   {

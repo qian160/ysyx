@@ -1,6 +1,6 @@
 mainmenu "NEMU Configuration Menu"
 
-menu "Watchpoints"
+menu "My config"
 config WP_ENABLE
   bool "Enable watchpoints"
   default y 
