@@ -156,6 +156,7 @@ static int cmd_d(char * e){
         return 0;
     }
     int N __unused__ = atoi(n);
+    Log("\nN = %d\n", N);
     bool * success = (bool *)malloc(sizeof(bool));
     *success = true;
 
