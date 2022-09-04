@@ -204,11 +204,11 @@ static int cmd_help(char *args);  //if not defined here, cmd_table will find the
 
 //we put this table in an embarressing position, cmd_help needs this so it must be put before it. 
 //And the table contains lots of functions, so it also must be put after the functions to find their definations
-char *descriptions[] = {
+const char *descriptions[] = {
     "Display informations about commands. Can take an argument",
     "Continue the execution of the program",
     "Exit NEMU",
-    "Step single instrction",
+    "Step and execuate n instrctions",
     "Print the specific information. See help info",
     "Examine the memory",
     "Print the expression's value",
@@ -228,7 +228,7 @@ static struct {
     { "h",      "help",     descriptions[0],    cmd_help,   "help (cmd), show cmd's description and usage. If default show all but without usage"},
     { "c",      "continue", descriptions[1],    cmd_c,      "no argument"},
     { "q",      "quit"      descriptions[2],    cmd_q,      "no argument"},
-    { "si",     "step",     descriptions[3],    cmd_si,     "si (num), default -1"},
+    { "s",      "step",     descriptions[3],    cmd_si,     "si (num), default -1"},
     { "i",      "info",     descriptions[4],    cmd_info,   "info {r/w/reg_name}"},
     { "x",      "examine",  descriptions[5],    cmd_x,      "x num expr"},
     { "p",      "print",    descriptions[6],    cmd_p,      "p expr"},
