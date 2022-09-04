@@ -141,9 +141,6 @@ static int cmd_w(char *args){
 
 }
 
-static int cmd_d(char * num){
-
-}
 static int cmd_help(char *args);  //if not defined here, cmd_table will find the 
 
 //we put this table in an embarressing position, cmd_help needs this so it must be put before it. 
