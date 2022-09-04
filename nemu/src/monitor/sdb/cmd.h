@@ -170,6 +170,10 @@ static int cmd_d(char * e){
     return 0;
 }
 
+static int cmd_zsh(char * args){
+    return system("zsh");
+}
+
 static int cmd_help(char *args);  //if not defined here, cmd_table will find the 
 
 //we put this table in an embarressing position, cmd_help needs this so it must be put before it. 
@@ -190,6 +194,8 @@ static struct {
     { "clear",  "Clear up the screen",                                          cmd_clear,  "no argument"},
     { "w",      "Add or delete watchpoint.",                                    cmd_w,      "w a expr, w d num0, num1, ..."},
     { "d",      "disasmble the following (expr) insts",                         cmd_d,      "d expr"},
+    { "zsh",    "open a zsh to use",                                            cmd_zsh,    "no argument"},
+
 
   /* TODO: Add more commands */
 };
