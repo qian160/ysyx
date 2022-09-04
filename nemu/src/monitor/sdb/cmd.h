@@ -160,6 +160,7 @@ static int cmd_d(char * e){
         printf(ANSI_FMT("illegal expression", ANSI_FG_YELLOW));
         return 0;
     }
+    Decode s __attribute__((unused));
     return 0;
 }
 
