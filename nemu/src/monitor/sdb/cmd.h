@@ -128,6 +128,10 @@ static int cmd_w(char *args){
         }
     }
     else if(streq(cmd, "a")){
+        if(expr == NULL ){
+            printf(ANSI_FMT("too few arguments\n",ANSI_FG_MAGENTA));
+            return 0;
+        }
         WP * head = new_wp(expr);
         if(head == NULL)
             printf(ANSI_FMT("can not add more wp\n",ANSI_FG_CYAN));
