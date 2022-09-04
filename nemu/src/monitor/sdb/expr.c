@@ -315,7 +315,7 @@ static bool make_token(char *e) {
 
 word_t calculate(int p, int q, bool * success){
   //find prime, if only 1 token is found, directly return. else recursively call calculate itself
-  if(p > q || p < 0 || q < 0 | !(*success)){
+  if(p > q || p < 0 || q < 0 | (!(*success))){
     return 0;
   }
   int type  = tokens[p].type;
