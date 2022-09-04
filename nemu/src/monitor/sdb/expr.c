@@ -231,14 +231,15 @@ static int dominant_operator(int start, int end)
   int op = start, pri_min = 10;	
   for (int i = start; i <= end;i ++)
   {		
-    if (tokens[i].type == HEXNUM || tokens[i].type == DECNUM || tokens[i].type == REG)
+    int type = tokens[i].type; 
+    if (type == HEXNUM || type == DECNUM || type == REG || type == PC)
       continue;
     //number can't be operator
-    if(tokens[i].type == LEFT){
+    if(type == LEFT){
       PS.priv[PS.top++] = pri_min;    //temporarily refuse any requests
       pri_min = -1;
     }
-    else if(tokens[i].type == RIGHT){
+    else if(type == RIGHT){
       if(PS.top == 0) Assert(0, "bra match error\n");
       pri_min = PS.priv[--PS.top];    //now we get out of the bra's range and can continue to accept tokens
     }
