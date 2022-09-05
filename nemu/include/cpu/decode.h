@@ -17,6 +17,7 @@ static inline void pattern_decode(const char *str, int len,
     uint64_t *key, uint64_t *mask, uint64_t *shift) {
   uint64_t __key = 0, __mask = 0, __shift = 0;
 #define macro(i) \
+  Log_Color(YELLOW, "\ni = %d\n", i);
   if ((i) >= len) goto finish; \
   else { \
     char c = str[i]; \
@@ -27,7 +28,11 @@ static inline void pattern_decode(const char *str, int len,
       __mask = (__mask << 1) | (c == '?' ? 0 : 1); \
       __shift = (c == '?' ? __shift + 1 : 0); \
     } \
-  }
+  }/*
+      key:    all the high bits
+      mask:   all the non-? bits
+      shift:  nember of ?
+  */
 //the number after macro name is also the step length. for example,  macro16's lenth is 16 and 0, 16, 32, 48 will be execuated(all <= 64)
 #define macro2(i)  macro(i);   macro((i) + 1)
 #define macro4(i)  macro2(i);  macro2((i) + 2)
