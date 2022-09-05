@@ -11,7 +11,7 @@ const char *regs[] = {    //names.. add $ prefix to make regex match easier
 void isa_reg_display() {
 
 	for (int i = 0; i < 31; i += 2) 
-    printf(ANSI_FMT("%s:\t0x%-16lx\t%s:\t0x%-16ld\n", ANSI_FG_YELLOW), regs[i], gpr(i),regs[i+1], gpr(i+1));
+    printf(ANSI_FMT("%s:\t0x%-8lx\t%s:\t0x%-8lx\n", ANSI_FG_YELLOW), regs[i], gpr(i),regs[i+1], gpr(i+1));
 }
 
 word_t isa_reg_str2val(const char *s, bool *success) {
