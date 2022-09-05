@@ -46,9 +46,6 @@ void sdb_mainloop() {   //get command
     return;
   }
   for (char *str; (str = rl_gets()) != NULL; ) {
-#ifdef CONFIG_AUTO_DISASM_NEXT
-  cmd_d(CONFIG_AUTO_DISASM_NEXT);
-#endif
     char *str_end = str + strlen(str);
     for(int i = 0 ; i< strlen(str) ; i++)
       if(isalnum(str[i])) str[i] |= 0x20;    //convert to a b c ...z .大小写都能用
@@ -79,6 +76,9 @@ void sdb_mainloop() {   //get command
     }
 
     if (i == NR_CMD) { printf("Unknown command '%s'\n", cmd); }
+#ifdef CONFIG_AUTO_DISASM_NEXT
+  cmd_d(CONFIG_AUTO_DISASM_NEXT);
+#endif
   }
 }
 
