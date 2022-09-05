@@ -17,7 +17,7 @@ static inline void pattern_decode(const char *str, int len,
     uint64_t *key, uint64_t *mask, uint64_t *shift) {
 
   uint64_t __key = 0, __mask = 0, __shift = 0;
-  for(int i = 0; i < len, i++){
+  for(int i = 0; i < len; i++){
     char c = str[i];
     if(c != ' '){
       Assert(c == '0' || c == '1' || c == '?', "invalid character %c in pattern string", c);
