@@ -49,7 +49,6 @@ void sdb_mainloop() {   //get command
     char *str_end = str + strlen(str);
     for(int i = 0 ; i< strlen(str) ; i++)
       if(isalnum(str[i])) str[i] |= 0x20;    //convert to a b c ...z .大小写都能用
-      Log("%s\n", str);
       /* extract the first token as the command */
     char *cmd = strtok(str, " ");
     if (cmd == NULL) { continue; }

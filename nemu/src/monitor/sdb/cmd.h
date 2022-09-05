@@ -58,13 +58,13 @@ static int cmd_s(char * args){
 
 static int cmd_info(char * args){
     char * arg = strtok(NULL, " ");  //r, w, reg name
-    char * reg = strtok(NULL, " ");
+    char * reg_name = strtok(NULL, " ");
     if( arg == NULL) 
     {
         printf(ANSI_FMT("too few argument!\n", ANSI_FG_PINK));
         return 0;
     }
-    if(streq(arg, "r") && !reg)
+    if(streq(arg, "r") && !reg_name)
         isa_reg_display();
     else if(streq(arg, "w"))
         wp_display();
@@ -73,8 +73,7 @@ static int cmd_info(char * args){
         for (int i = 0; i <= 31; i ++)
         {
             const char * reg = regs[i];
-            Log("\nreg = %s, arg = %s\n", reg, arg);
-            if(streq(arg, reg)){
+            if(streq(reg_name, reg)){
                 printf(ANSI_FMT("%s\t\t0x%-16lx\t%-16ld\n", ANSI_FG_PINK), reg, gpr(i), gpr(i));
                 return 0;
         }
