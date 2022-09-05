@@ -23,12 +23,12 @@ static inline void pattern_decode(const char *str, int len,
     if (c != ' ') { \
       Assert(c == '0' || c == '1' || c == '?', \
           "invalid character '%c' in pattern string", c); \
-      __key  = (__key  << 1) | (c == '1' ? 1 : 0); \
-      __mask = (__mask << 1) | (c == '?' ? 0 : 1); \
-      __shift = (c == '?' ? __shift + 1 : 0); \
+      __key  = (__key  << 1) | (c == '1' ? 1 : 0); \    //all the high bits
+      __mask = (__mask << 1) | (c == '?' ? 0 : 1); \    //all the ? bits
+      __shift = (c == '?' ? __shift + 1 : 0); \         //number of ?
     } \
   }
-
+//the number after macro name is also the step length. for example,  macro16's lenth is 16 and 0, 16, 32, 48 will be execuated(all <= 64)
 #define macro2(i)  macro(i);   macro((i) + 1)
 #define macro4(i)  macro2(i);  macro2((i) + 2)
 #define macro8(i)  macro4(i);  macro4((i) + 4)
@@ -36,6 +36,18 @@ static inline void pattern_decode(const char *str, int len,
 #define macro32(i) macro16(i); macro16((i) + 16)
 #define macro64(i) macro32(i); macro32((i) + 32)
   macro64(0);
+  Log("\nkey = %x, mask = %s, shift = %s\n", __key, __mask, __shift);
+  /*
+=  macro32(0); macro32(32);
+=  macro16(0); macro16(16); macro16(32); macro16(48);
+=  macro8(0);  macro8(8);   macro8(16); macro8(24);macro8(32); macro8(40);macro8(48); macro8(56);
+=  macro4(0);  macro4(4);...macro4(60);
+=  macro2(0);  macro2(2);...macro2(62);
+=  macro(0);   macro(1);....macro(63);  //start checking at the lowest bit
+  */
+
+
+
   panic("pattern too long");
 #undef macro
 finish:

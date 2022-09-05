@@ -3,6 +3,9 @@
 
 int main()
 {
+	int num;
+	scanf("%b", &num);
+	printf("%d\n", num);
 	static const int array[] = {&&foo - &&foo, &&bar - &&foo, &&hack - &&foo};
 	goto * (&&foo + array[2]);
 	printf("[%s %d %s]\n", __FILE__, __LINE__, __func__);
