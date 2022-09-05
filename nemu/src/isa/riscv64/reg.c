@@ -10,10 +10,10 @@ const char *regs[] = {    //names.. add $ prefix to make regex match easier
 
 void isa_reg_display() {
   putchar('\n');
-  puts(ANSI_FMT("--------------------------------------\n", ANSI_FG_CYAN));
+  puts(ANSI_FMT("------------------------------------------------", ANSI_FG_YELLOW));
 	for (int i = 0; i < 31; i += 2) 
-    printf(ANSI_FMT("| %s:\t0x%-8lx\t|\t%s:\t0x%-8lx |\n", ANSI_FG_YELLOW), regs[i], gpr(i),regs[i+1], gpr(i+1));
-  puts(ANSI_FMT("--------------------------------------\n", ANSI_FG_CYAN));
+    printf(ANSI_FMT("| %s:\t0x%-8lx    |    %s:\t0x%-8lx |\n", ANSI_FG_YELLOW), regs[i], gpr(i),regs[i+1], gpr(i+1));
+  puts(ANSI_FMT("-----------------------------------------------\n", ANSI_FG_YELLOW));
   putchar('\n');
 }
 
