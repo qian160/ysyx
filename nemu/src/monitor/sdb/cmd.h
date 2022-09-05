@@ -40,7 +40,7 @@ static int cmd_q(char *args) {
     return -1;
 }
 
-static int cmd_si(char * args){
+static int cmd_s(char * args){
     char *arg = strtok(NULL," ");  
     int steps = 0;  
     if(arg == NULL){  
@@ -214,7 +214,7 @@ static struct {
     {"h",    "help",       "Display informations about commands. Can take an argument",    cmd_help,   "help (cmd), show cmd's description and usage. If default show all but without usage"},
     {"c",    "continue",   "Continue the execution of the program",                        cmd_c,      "no argument"},
     {"q",    "quit",       "Exit NEMU",                                                    cmd_q,      "no argument"},
-    {"s",    "step",       "Step and execuate n instrction",                               cmd_si,     "si (num), default -1"},
+    {"s",    "step",       "Step and execuate n instrction",                               cmd_s,      "s (num), default -1"},
     {"i",    "info",       "Print the specific information. See help info",                cmd_info,   "info {r/w/reg_name}"},
     {"x",    "examine",    "Examine the memory",                                           cmd_x,      "x num expr"},
     {"p",    "print",      "Print the expression's value",                                 cmd_p,      "p expr"},

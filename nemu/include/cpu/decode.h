@@ -23,7 +23,10 @@ static inline void pattern_decode(const char *str, int len,
       Assert(0, "invalid character '%c' in pattern string", c);
     }
     if(c != ' '){
-        __key   = (__key << 1)  | (c == '1');   //extract all the high bits
+      //for a specific instruction, some of its bits must be 0, and some 1. these bits are the instruction's symbols.
+      //so to tell an instruction we just need to check these symbols.
+      //key is used to match 1, and mask observes 0(if the inst has some 1s that shouldn't have, then the these 1s will be reflected in inst & mask, then key match will fail)
+        __key   = (__key << 1)  | (c == '1');   //extract all the high bits, like (???? 10111 ??) -> (0000 10111 00), those 0s and 1s in the key are the must-have bits, which can uniquely tell an instruction 
         __mask  = (__mask << 1) | (c != '?');   //extract all the valid bits,(0/1, not ?)
         __shift = (c == '?' ? __shift + 1: 0);  //the number of continuous ? from right to left
         //printf("\ni = %d, c = %c key = %lx, mask = %lx, shift = %lx\n", i, c, __key, __mask, __shift);
@@ -44,7 +47,6 @@ static inline void pattern_decode(const char *str, int len,
 __attribute__((always_inline))
 static inline void pattern_decode_hex(const char *str, int len,
     uint64_t *key, uint64_t *mask, uint64_t *shift) {
-      Log("\n\nhex\n\n");
   uint64_t __key = 0, __mask = 0, __shift = 0;
   for(int i = 0; i < len; i++){
     char c = str[i];
@@ -52,8 +54,8 @@ static inline void pattern_decode_hex(const char *str, int len,
         Assert((c >= '0' && c <= '9') || (c >= 'a' && c <= 'f') || c == '?', \
           "invalid character '%c' in pattern string", c);
         __key   = (__key  << 4) | (c == '?' ? 0 : (c >= '0' && c <= '9') ? c - '0' : c - 'a' + 10);   //extract all the high bits
-        __mask  = (__mask << 4) | (c == '?' ? 0 : 0xf);   //extract all the valid bits,(0/1, not ?)
-        __shift = (c == '?' ? __shift + 4: 0);  //the number of continuous ? from right to left
+        __mask  = (__mask << 4) | (c == '?' ? 0 : 0xf);
+        __shift = (c == '?' ? __shift + 4: 0);  
     }
   }
   *key = __key >> __shift;
