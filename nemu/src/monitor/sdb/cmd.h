@@ -142,13 +142,20 @@ static int cmd_w(char *args){
     return 0;
 }
 
-static int cmd_d(char * e, bool auto_disasm){
+static int cmd_d(char * e){
     //d n, or d n address
-    Log("\ne = %s\n", e);
-    char * n = strtok(NULL, " ");
-    Log("\nn = %s\n", n);
+    //can't use strtok in auto disasm mode
+    char * n, * arg2;
+    if(e == NULL || *(e + 1) == NULL){
+        n = e;
+        arg2 = NULL;
+    }
+    else{
+        n = strtok(NULL, " ");
+        arg2 = strtok(NULL, " ");
+    }
+
     char * Expr = n + strlen(n) + 1;
-    char * arg2 = strtok(NULL, " ");
     if(n == NULL)
     {
         printf(ANSI_FMT("too few arguments\n", ANSI_FG_YELLOW));
