@@ -36,7 +36,7 @@ static inline void pattern_decode(const char *str, int len,
 #define macro32(i) macro16(i); macro16((i) + 16)
 #define macro64(i) macro32(i); macro32((i) + 32)
   macro64(0);
-  Log("\nkey = %x, mask = %x, shift = %x\n", __key, __mask, __shift);
+  Log("\nkey = %lx, mask = %lx, shift = %lx\n", __key, __mask, __shift);
   /*
 =  macro32(0); macro32(32);
 =  macro16(0); macro16(16); macro16(32); macro16(48);
