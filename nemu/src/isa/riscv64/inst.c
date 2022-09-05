@@ -39,7 +39,7 @@ static void decode_operand(Decode *s, word_t *dest, word_t *src1, word_t *src2, 
   switch (type) {
     case TYPE_I: {
       if(s -> is_JALR){
-        src1I(pc_Plus4); src2I(R(rs1) + immI(inst));
+        src1I(pc_Plus4); src2I(JALR_TARGET);
       }
       else{
         src1R(rs1);     src2I(immI(inst)); break;
