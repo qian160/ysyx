@@ -5,6 +5,7 @@
         "regex.h": "c",
         "sdb.h": "c",
         "locale.h": "c",
-        "macro.h": "c"
+        "macro.h": "c",
+        "autoconf.h": "c"
     }
 }
