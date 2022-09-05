@@ -42,6 +42,7 @@ static int decode_exec(Decode *s) {
 
 #define INSTPAT_INST(s) ((s)->isa.inst.val)
 //a match is found, react to it according to the args
+//call decode_oprand first to offer the operands, then put the VA_ARGS after, which will do the jobs mentioned in INSTPAT
 #define INSTPAT_MATCH(s, name, type, ... /* body */ ) { \
   decode_operand(s, &dest, &src1, &src2, concat(TYPE_, type)); \
   __VA_ARGS__ ; \
