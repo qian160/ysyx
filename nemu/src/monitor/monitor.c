@@ -28,12 +28,11 @@ static char *log_file = NULL;
 static char *diff_so_file = NULL;
 static char *img_file = NULL;
 static int difftest_port = 1234;
-extern const uint32_t img [];
 
 static long load_img() {
   if (img_file == NULL) {
     Log("No image is given. Use the default build-in image.");
-    return sizeof(img); // built-in image size ,4096
+    return 4096 << 1; // built-in image size
   }
 
   FILE *fp = fopen(img_file, "rb");
