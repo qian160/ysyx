@@ -36,7 +36,6 @@ static inline void pattern_decode(const char *str, int len,
 #define macro32(i) macro16(i); macro16((i) + 16)
 #define macro64(i) macro32(i); macro32((i) + 32)
   macro64(0);
-  Log("\nkey = %lx, mask = %lx, shift = %lx\n", __key, __mask, __shift);
   /*
 =  macro32(0); macro32(32);
 =  macro16(0); macro16(16); macro16(32); macro16(48);
@@ -51,9 +50,11 @@ static inline void pattern_decode(const char *str, int len,
   panic("pattern too long");
 #undef macro
 finish:
+  Log("\n__key = %lx, __mask = %lx, __shift = %lx\n", __key, __mask, __shift);
   *key = __key >> __shift;
   *mask = __mask >> __shift;
   *shift = __shift;
+  Log("\nkey = %lx, mask = %lx, shift = %lx\n", *key, *mask, *shift);
 }
 
 __attribute__((always_inline))
