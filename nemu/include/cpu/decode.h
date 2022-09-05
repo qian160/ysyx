@@ -20,8 +20,8 @@ static inline void pattern_decode(const char *str, int len,
   for(int i = 0; i < len; i++){
     char c = str[i];
     if(c != ' '){
-        __key   = (__key << 1)  | (c == '1'? 1 : 0);
-        __mask  = (__mask << 1) | (c == '?'? 0 : 1);
+        __key   = (__key << 1)  | (c == '1');
+        __mask  = (__mask << 1) | (c != '?');
         __shift = (c == '?' ? __shift + 1: 0);
         printf("\ni = %d, c = %c key = %lx, mask = %lx, shift = %lx\n", i, c, __key, __mask, __shift);
     }
