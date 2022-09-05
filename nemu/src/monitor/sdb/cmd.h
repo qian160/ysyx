@@ -57,14 +57,14 @@ static int cmd_s(char * args){
 }  
 
 static int cmd_info(char * args){
-    char * arg = strtok(NULL," ");  //r, w, reg name
-    //char * reg = strtok()
+    char * arg = strtok(NULL, " ");  //r, w, reg name
+    char * reg = strtok(NULL, " ");
     if( arg == NULL) 
     {
         printf(ANSI_FMT("too few argument!\n", ANSI_FG_PINK));
         return 0;
     }
-    if(streq(arg, "r"))
+    if(streq(arg, "r") && !reg)
         isa_reg_display();
     else if(streq(arg, "w"))
         wp_display();
