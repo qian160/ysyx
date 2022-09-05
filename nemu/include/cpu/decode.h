@@ -19,20 +19,24 @@ static inline void pattern_decode(const char *str, int len,
   uint64_t __key = 0, __mask = 0, __shift = 0;
   for(int i = 0; i < len; i++){
     char c = str[i];
+    if(c != '1' && c != '0' && c != ' ' && c != '?'){
+      Assert(0, "invalid character '%c' in pattern string", c);
+    }
     if(c != ' '){
         __key   = (__key << 1)  | (c == '1');   //extract all the high bits
         __mask  = (__mask << 1) | (c != '?');   //extract all the valid bits,(0/1, not ?)
         __shift = (c == '?' ? __shift + 1: 0);  //the number of continuous ? from right to left
-        printf("\ni = %d, c = %c key = %lx, mask = %lx, shift = %lx\n", i, c, __key, __mask, __shift);
+        //printf("\ni = %d, c = %c key = %lx, mask = %lx, shift = %lx\n", i, c, __key, __mask, __shift);
     }
   }
   //as an example, when str = "10?", key = 0b100, maks = 0x110, shift = 1
-  //shift and throw away the right bits because we don't care(the '?' indicates that). Just to avoid their influence.
-  //while the left '?' bits will both be ignored in mask and key, they won't make any influence too
+  //shift and throw away the right bits because we don't care(the '?' indicates that. Their value should not influence the check)
+  //while the left '?' bits will both be ignored in mask and key(set to 0), they won't make any influence too
+  //the output key and mask also need to be shifted to fit in the shifted inst
   *key = __key >> __shift;
   *mask = __mask >> __shift;
   *shift = __shift;
-  printf("\n\n\nstr = %s\nkey = %lx, mask = %lx, shift = %lx\n", str, *key, *mask, *shift);
+  //printf("\n\n\nstr = %s\nkey = %lx, mask = %lx, shift = %lx\n", str, *key, *mask, *shift);
 
 }
 
@@ -40,22 +44,18 @@ static inline void pattern_decode(const char *str, int len,
 __attribute__((always_inline))
 static inline void pattern_decode_hex(const char *str, int len,
     uint64_t *key, uint64_t *mask, uint64_t *shift) {
+      Log("\n\nhex\n\n");
   uint64_t __key = 0, __mask = 0, __shift = 0;
-#define macro(i) \
-  if ((i) >= len) goto finish; \
-  else { \
-    char c = str[i]; \
-    if (c != ' ') { \
-      Assert((c >= '0' && c <= '9') || (c >= 'a' && c <= 'f') || c == '?', \
-          "invalid character '%c' in pattern string", c); \
-      __key  = (__key  << 4) | (c == '?' ? 0 : (c >= '0' && c <= '9') ? c - '0' : c - 'a' + 10); \
-      __mask = (__mask << 4) | (c == '?' ? 0 : 0xf); \
-      __shift = (c == '?' ? __shift + 4 : 0); \
-    } \
+  for(int i = 0; i < len; i++){
+    char c = str[i];
+    if(c != ' '){
+        Assert((c >= '0' && c <= '9') || (c >= 'a' && c <= 'f') || c == '?', \
+          "invalid character '%c' in pattern string", c);
+        __key   = (__key  << 4) | (c == '?' ? 0 : (c >= '0' && c <= '9') ? c - '0' : c - 'a' + 10);   //extract all the high bits
+        __mask  = (__mask << 4) | (c == '?' ? 0 : 0xf);   //extract all the valid bits,(0/1, not ?)
+        __shift = (c == '?' ? __shift + 4: 0);  //the number of continuous ? from right to left
+    }
   }
-  panic("pattern too long");
-#undef macro
-finish: __unused__
   *key = __key >> __shift;
   *mask = __mask >> __shift;
   *shift = __shift;
