@@ -73,6 +73,7 @@ static int cmd_info(char * args){
         for (int i = 0; i <= 31; i ++)
         {
             const char * reg = regs[i];
+            log("\nreg = %s, arg = %s\n", reg, arg);
             if(streq(arg, reg)){
                 printf(ANSI_FMT("%s\t\t0x%-16lx\t%-16ld\n", ANSI_FG_PINK), reg, gpr(i), gpr(i));
                 return 0;
