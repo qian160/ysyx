@@ -45,8 +45,10 @@ static int decode_exec(Decode *s) {
   decode_operand(s, &dest, &src1, &src2, concat(TYPE_, type)); \
   __VA_ARGS__ ; \
 }
-
-  INSTPAT_START();
+  //check one by one  
+  //note that when we say inst(0), we are counting from the right side(LSB), but str(0) below starts at left side
+  INSTPAT_START();                       //inst name is just for comment, not used
+  INSTPAT("10?", test, U, R(dest) = src1 + src2);
   INSTPAT("??????? ????? ????? ??? ????? 00101 11", auipc  , U, R(dest) = src1 + s->pc);
   INSTPAT("??????? ????? ????? 011 ????? 00000 11", ld     , I, R(dest) = Mr(src1 + src2, 8));
   INSTPAT("??????? ????? ????? 011 ????? 01000 11", sd     , S, Mw(src1 + dest, 8, src2));
@@ -54,6 +56,7 @@ static int decode_exec(Decode *s) {
   INSTPAT("0000000 00001 00000 000 00000 11100 11", ebreak , N, NEMUTRAP(s->pc, R(10))); // R(10) is $a0
   INSTPAT("??????? ????? ????? ??? ????? ????? ??", inv    , N, INV(s->pc));    //invalid
   INSTPAT_END();
+
 
   R(0) = 0; // reset $zero to 0
   return 0;

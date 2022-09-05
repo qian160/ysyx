@@ -15,34 +15,27 @@ typedef struct Decode {
 __attribute__((always_inline))
 static inline void pattern_decode(const char *str, int len,
     uint64_t *key, uint64_t *mask, uint64_t *shift) {
-  uint64_t __key = 0, __mask = 0, __shift = 0;
-#define macro(i) \
-  if ((i) >= len) goto finish; \
-  else { \
-    char c = str[i]; \
-    if (c != ' ') { \
-      Assert(c == '0' || c == '1' || c == '?', \
-          "invalid character '%c' in pattern string", c); \
-      __key  = (__key  << 1) | (c == '1' ? 1 : 0); \
-      __mask = (__mask << 1) | (c == '?' ? 0 : 1); \
-      __shift = (c == '?' ? __shift + 1 : 0); \
-    } \
-  }
 
-#define macro2(i)  macro(i);   macro((i) + 1)
-#define macro4(i)  macro2(i);  macro2((i) + 2)
-#define macro8(i)  macro4(i);  macro4((i) + 4)
-#define macro16(i) macro8(i);  macro8((i) + 8)
-#define macro32(i) macro16(i); macro16((i) + 16)
-#define macro64(i) macro32(i); macro32((i) + 32)
-  macro64(0);
-  panic("pattern too long");
-#undef macro
-finish:
+  uint64_t __key = 0, __mask = 0, __shift = 0;
+  for(int i = 0; i < len; i++){
+    char c = str[i];
+    if(c != ' '){
+        __key   = (__key << 1)  | (c == '1');   //extract all the high bits
+        __mask  = (__mask << 1) | (c != '?');   //extract all the valid bits,(0/1, not ?)
+        __shift = (c == '?' ? __shift + 1: 0);  //the number of continuous ? from right to left
+        printf("\ni = %d, c = %c key = %lx, mask = %lx, shift = %lx\n", i, c, __key, __mask, __shift);
+    }
+  }
+  //as an example, when str = "10?", key = 0b100, maks = 0x110, shift = 1
+  //shift and throw away the right bits because we don't care(the '?' indicates that). Just to avoid their influence.
+  //while the left '?' bits will both be ignored in mask and key, they won't make any influence too
   *key = __key >> __shift;
   *mask = __mask >> __shift;
   *shift = __shift;
+  printf("\n\n\nstr = %s\nkey = %lx, mask = %lx, shift = %lx\n", str, *key, *mask, *shift);
+
 }
+
 
 __attribute__((always_inline))
 static inline void pattern_decode_hex(const char *str, int len,
@@ -60,11 +53,9 @@ static inline void pattern_decode_hex(const char *str, int len,
       __shift = (c == '?' ? __shift + 4 : 0); \
     } \
   }
-
-  macro16(0);
   panic("pattern too long");
 #undef macro
-finish:
+finish: __unused__
   *key = __key >> __shift;
   *mask = __mask >> __shift;
   *shift = __shift;
@@ -80,7 +71,7 @@ finish:
     goto *(__instpat_end); \
   } \
 } while (0)
-
+//& gets the address of a variable, and && gets the address of a label. a '*' is needed to access the lable address
 #define INSTPAT_START(name) { const void ** __instpat_end = &&concat(__instpat_end_, name);
 #define INSTPAT_END(name)   concat(__instpat_end_, name): ; }
 
