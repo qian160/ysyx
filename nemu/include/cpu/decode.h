@@ -17,20 +17,56 @@ static inline void pattern_decode(const char *str, int len,
     uint64_t *key, uint64_t *mask, uint64_t *shift) {
 
   uint64_t __key = 0, __mask = 0, __shift = 0;
-  for(int i = len - 1; i >= 0; i--){
-    char c = str[i];
-    if(c != ' '){
-      Assert(c == '0' || c == '1' || c == '?', "invalid character %c in pattern string", c);
-    }
-    __key   = (__key << 1)  | (c == '1'? 1 : 0);
-    __mask  = (__mask << 1) | (c == '?'? 0 : 1);
-    __shift = (c == '?' ? __shift + 1: 0);
-  }
+
+#define macro(i) \
+  Log_Color(YELLOW, "\ni = %d, c = %c\n", i, str[i]); \
+  if ((i) >= len) goto finish; \
+  else { \
+    char c = str[i]; \
+    if (c != ' ') { \
+      Assert(c == '0' || c == '1' || c == '?', \
+          "invalid character '%c' in pattern string", c); \
+      __key  = (__key  << 1) | (c == '1' ? 1 : 0); \
+      __mask = (__mask << 1) | (c == '?' ? 0 : 1); \
+      __shift = (c == '?' ? __shift + 1 : 0); \
+    } \
+  }/*
+      key:    all the high bits, in another way, the value of key = the "value" of str
+      mask:   all the non-? bits, 0 will also be counted
+      shift:  number of contineous ? from right(LSB) to left(MSB)
+      for example, if str = "10?", then key = 0b100, maks = 0b110, shift = 1
+  */
+//the number after macro name is also the step length. for example,  macro16's lenth is 16 and 0, 16, 32, 48 will be execuated(all <= 64)
+
+#define macro2(i)  macro(i);   macro((i) + 1)
+#define macro4(i)  macro2(i);  macro2((i) + 2)
+#define macro8(i)  macro4(i);  macro4((i) + 4)
+#define macro16(i) macro8(i);  macro8((i) + 8)
+#define macro32(i) macro16(i); macro16((i) + 16)
+#define macro64(i) macro32(i); macro32((i) + 32)
+  macro64(0);
+  /*
+=  macro32(0); macro32(32);
+=  macro16(0); macro16(16); macro16(32); macro16(48);
+=  macro8(0);  macro8(8);   macro8(16); macro8(24);macro8(32); macro8(40);macro8(48); macro8(56);
+=  macro4(0);  macro4(4);...macro4(60);
+=  macro2(0);  macro2(2);...macro2(62);
+=  macro(0);   macro(1);....macro(63);  //start checking at the lowest bit
+  */
+
+
+
+  panic("pattern too long");
+#undef macro
+
+finish:
+  Log("\n__key = %lx, __mask = %lx, __shift = %lx\n", __key, __mask, __shift);
   *key = __key >> __shift;
   *mask = __mask >> __shift;
   *shift = __shift;
-  Log("\nstr = %s\nkey = %lx, mask = %lx, shift = %lx\n", str, *key, *mask, *shift);
+  Log("\nkey = %lx, mask = %lx, shift = %lx\n", *key, *mask, *shift);
 }
+
 
 __attribute__((always_inline))
 static inline void pattern_decode_hex(const char *str, int len,
