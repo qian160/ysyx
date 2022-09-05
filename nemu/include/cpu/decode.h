@@ -49,10 +49,10 @@ static inline void pattern_decode_hex(const char *str, int len,
     } \
   }
 
-  macro16(0);
+  //macro16(0);
   panic("pattern too long");
 #undef macro
-finish:
+finish: __unused__
   *key = __key >> __shift;
   *mask = __mask >> __shift;
   *shift = __shift;
