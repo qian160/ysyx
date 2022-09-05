@@ -33,14 +33,15 @@ static void decode_operand(Decode *s, word_t *dest, word_t *src1, word_t *src2, 
   word_t imm_J = immJ(inst);
   word_t imm_I = immI(inst);
   word_t imm_U = immU(inst);
-  word_t imm_S __unused__ = immS(inst);
+  word_t imm_S = immS(inst);
   word_t JAL_TARGET = s -> pc + imm_J;
-  Log("\nJ: %lx\nI: %lx\nU: %lx\nS: %lx\n", imm_J, imm_I, imm_U, imm_S);
+  word_t JALR_TARGET = R(rs1); + imm_I;
+  //Log("\nJ: %lx\nI: %lx\nU: %lx\nS: %lx\n", imm_J, imm_I, imm_U, imm_S);
   destR(rd);
   switch (type) {
     case TYPE_I: src1R(rs1);     src2I(imm_I); break;
     case TYPE_U: src1I(imm_U); break;
-    case TYPE_S: destI(immS(inst)); src1R(rs1); src2R(rs2); break;
+    case TYPE_S: destI(imm_S); src1R(rs1); src2R(rs2); break;
     case TYPE_J: src1I(s -> pc + 4);  src2I(JAL_TARGET);break;
   }
 }
@@ -51,7 +52,7 @@ static int decode_exec(Decode *s) {
 
 #define INSTPAT_INST(s) ((s)->isa.inst.val)
 //a match is found, react to it according to the args
-//call decode_oprand first to offer the operands, then put the VA_ARGS after, which will do the jobs mentioned in INSTPAT
+//first prepare for operands, then do the things listed in INSTPAT
 #define INSTPAT_MATCH(s, name, type, ... /* body */ ) { \
   decode_operand(s, &dest, &src1, &src2, concat(TYPE_, type)); \
   __VA_ARGS__ ; \
@@ -59,14 +60,16 @@ static int decode_exec(Decode *s) {
   //check one by one  
   //note that when we say inst(0), we are counting from the right side(LSB), but str(0) below starts at left side
   //each pattern has its unique mask, key and shift
-  INSTPAT_START();                       //inst name is just for comment, not used
-  INSTPAT("??????? ????? ????? ??? ????? 0010111",  auipc   , U, R(dest) = src1 + s->pc);
-  INSTPAT("??????? ????? ????? 011 ????? 0000011",  ld      , I, R(dest) = Mr(src1 + src2, 8));
-  INSTPAT("??????? ????? ????? 000 ????? 0010011",  addi    , I, R(dest) = src1 + src2);
-  INSTPAT("??????? ????? ????? 011 ????? 0100011",  sd      , S, Mw(src1 + dest, 8, src2));
-  INSTPAT("??????? ????? ????? ??? ????? 1101111",  jal     , J, R(dest) = src1, s->dnpc = src2);
-  INSTPAT("0000000 00001 00000 000 00000 11100 11", ebreak  , N, NEMUTRAP(s->pc, R(10))); // R(10) is $a0
-  INSTPAT("??????? ????? ????? ??? ????? ????? ??", invalid , N, INV(s->pc));
+  INSTPAT_START();
+  //        funct7  rs2   rs1 funct3 rd   opcode
+  INSTPAT("??????? ????? ????? ??? ????? 0010111", auipc   , U, R(dest) = src1 + s->pc);
+  INSTPAT("??????? ????? ????? 011 ????? 0000011", ld      , I, R(dest) = Mr(src1 + src2, 8));
+  INSTPAT("??????? ????? ????? 000 ????? 0010011", addi    , I, R(dest) = src1 + src2);
+  INSTPAT("??????? ????? ????? 011 ????? 0100011", sd      , S, Mw(src1 + dest, 8, src2));
+  INSTPAT("??????? ????? ????? ??? ????? 1101111", jal     , J, R(dest) = src1, s->dnpc = src2);
+  INSTPAT("??????? ????? ????? 000 ????? 1100111", jalr,     I, R(dest) = src1, s->dnpc = src2);
+  INSTPAT("0000000 00001 00000 000 00000 1110011", ebreak  , N, NEMUTRAP(s->pc, R(10))); // R(10) is $a0
+  INSTPAT("??????? ????? ????? ??? ????? ???????", invalid , N, INV(s->pc));
   INSTPAT_END();
 
 
@@ -75,6 +78,10 @@ static int decode_exec(Decode *s) {
 }
 
 int isa_exec_once(Decode *s) {
-  s->isa.inst.val = inst_fetch(&s->snpc, 4);  //4 bytes per inst
+  uint32_t inst = inst_fetch(&s -> snpc, 4);  //snpc will be updated in fetch ( +4 )
+  s->isa.inst.val = inst;
+
+  s -> is_JALR = BITS(inst, 6, 0) == 0b1100111; 
+  Log("is jalr: %d\n", s -> is_JALR);
   return decode_exec(s);
 }
