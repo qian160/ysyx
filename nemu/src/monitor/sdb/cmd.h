@@ -144,9 +144,9 @@ static int cmd_w(char *args){
 
 static int cmd_d(char * e){
     //d n, or d n address
-    //can't use strtok in auto disasm mode
+    //can't use strtok in auto disasm mode. Because strtok will start from the previous position(When the arg is NULL)
     char * n, * arg2;
-    if(e == NULL || *(e + 1) == '\0'){
+    if(e == NULL || *(e + 1) == '\0'){      //e == NULL is a guard
         n = e;
         arg2 = NULL;
     }
