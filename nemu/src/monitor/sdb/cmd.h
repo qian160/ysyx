@@ -144,6 +144,7 @@ static int cmd_w(char *args){
 
 static int cmd_d(char * e){
     //d n, or d n address
+    Log("\ne = %s\n", e);
     char * n = strtok(NULL, " ");
     Log("\nn = %s\n", n);
     char * Expr = n + strlen(n) + 1;
