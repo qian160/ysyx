@@ -47,6 +47,7 @@ static int decode_exec(Decode *s) {
 }
   //check one by one  
   //note that when we say inst(0), we are counting from the right side(LSB), but str(0) below starts at left side
+  //each pattern has its unique mask, key and shift
   INSTPAT_START();                       //inst name is just for comment, not used
   INSTPAT("10?", test, U, R(dest) = src1 + src2);
   INSTPAT("??????? ????? ????? ??? ????? 00101 11", auipc  , U, R(dest) = src1 + s->pc);
