@@ -26,7 +26,7 @@ static inline void pattern_decode(const char *str, int len,
         __key   = (__key << 1)  | (c == '1');   //extract all the high bits
         __mask  = (__mask << 1) | (c != '?');   //extract all the valid bits,(0/1, not ?)
         __shift = (c == '?' ? __shift + 1: 0);  //the number of continuous ? from right to left
-        printf("\ni = %d, c = %c key = %lx, mask = %lx, shift = %lx\n", i, c, __key, __mask, __shift);
+        //printf("\ni = %d, c = %c key = %lx, mask = %lx, shift = %lx\n", i, c, __key, __mask, __shift);
     }
   }
   //as an example, when str = "10?", key = 0b100, maks = 0x110, shift = 1
@@ -36,7 +36,7 @@ static inline void pattern_decode(const char *str, int len,
   *key = __key >> __shift;
   *mask = __mask >> __shift;
   *shift = __shift;
-  printf("\n\n\nstr = %s\nkey = %lx, mask = %lx, shift = %lx\n", str, *key, *mask, *shift);
+  //printf("\n\n\nstr = %s\nkey = %lx, mask = %lx, shift = %lx\n", str, *key, *mask, *shift);
 
 }
 
