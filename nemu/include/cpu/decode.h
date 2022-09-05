@@ -19,7 +19,6 @@ static inline void pattern_decode(const char *str, int len,
   uint64_t __key = 0, __mask = 0, __shift = 0;
 
 #define macro(i) \
-  Log_Color(YELLOW, "\ni = %d, c = %c\n", i, str[i]); \
   if ((i) >= len) goto finish; \
   else { \
     char c = str[i]; \
