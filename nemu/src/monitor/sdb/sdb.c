@@ -80,8 +80,9 @@ void sdb_mainloop() {   //get command
   if(cmd[0] != 'q' && cmd[0] != 'd')
   {
     int n = atoi(CONFIG_AUTO_DISASM_NEXT);
-    printf(ANSI_FMT("\nnext %d instruction(s) is:\n\n", ANSI_FG_YELLOW), n);
+    printf(ANSI_FMT("next %d instruction(s) is:\n", ANSI_FG_YELLOW), n);
     cmd_d(CONFIG_AUTO_DISASM_NEXT);
+    putchar('\n');
   }
 #endif
   }
