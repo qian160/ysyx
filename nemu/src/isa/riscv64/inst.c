@@ -45,7 +45,7 @@ static int decode_exec(Decode *s) {
   decode_operand(s, &dest, &src1, &src2, concat(TYPE_, type)); \
   __VA_ARGS__ ; \
 }
-  //check one by one
+  //check one by one  
   //note that when we say inst(0), we are counting from the right side(LSB), but str(0) below starts at left side
   INSTPAT_START();                       //inst name is just for comment, not used
   INSTPAT("??????? ????? ????? ??? ????? 00101 11", auipc  , U, R(dest) = src1 + s->pc);

@@ -10,7 +10,7 @@ static inline void pattern_decode(const char *str, int len,
     	__key   = (__key << 1)  | (c == '1'? 1 : 0);
     	__mask  = (__mask << 1) | (c == '?'? 0 : 1);
     	__shift = (c == '?' ? __shift + 1: 0);
-    	printf("\nc = %c\nkey = %lx, mask = %lx, shift = %lx\n", c, __key, __mask, __shift);
+    	printf("\ni = %d, c = %c key = %lx, mask = %lx, shift = %lx\n", i, c, __key, __mask, __shift);
     }
   }
   *key = __key >> __shift;

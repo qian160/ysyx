@@ -60,11 +60,10 @@ static inline void pattern_decode(const char *str, int len,
 #undef macro
 
 finish:
-  Log("\n__key = %lx, __mask = %lx, __shift = %lx\n", __key, __mask, __shift);
+  Log("%s\n__key = %lx, __mask = %lx, __shift = %lx\n", str, __key, __mask, __shift);
   *key = __key >> __shift;
   *mask = __mask >> __shift;
   *shift = __shift;
-  Log("\nkey = %lx, mask = %lx, shift = %lx\n", *key, *mask, *shift);
 }
 
 
