@@ -16,7 +16,7 @@ config AUTO_DISASM_NEXT
   string "Automatically disasm next instruction"
   default "1"
   help
-    Make life easier
+    Not greater than 9. And this not work for q and d cmd
 endmenu
 
 choice
