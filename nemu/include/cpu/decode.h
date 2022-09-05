@@ -23,9 +23,9 @@ static inline void pattern_decode(const char *str, int len,
     if (c != ' ') { \
       Assert(c == '0' || c == '1' || c == '?', \
           "invalid character '%c' in pattern string", c); \
-      __key  = (__key  << 1) | (c == '1' ? 1 : 0); \    //all the high bits
-      __mask = (__mask << 1) | (c == '?' ? 0 : 1); \    //all the ? bits
-      __shift = (c == '?' ? __shift + 1 : 0); \         //number of ?
+      __key  = (__key  << 1) | (c == '1' ? 1 : 0); \
+      __mask = (__mask << 1) | (c == '?' ? 0 : 1); \
+      __shift = (c == '?' ? __shift + 1 : 0); \
     } \
   }
 //the number after macro name is also the step length. for example,  macro16's lenth is 16 and 0, 16, 32, 48 will be execuated(all <= 64)
