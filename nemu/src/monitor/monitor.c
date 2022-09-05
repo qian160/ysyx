@@ -32,7 +32,7 @@ static int difftest_port = 1234;
 static long load_img() {
   if (img_file == NULL) {
     Log("No image is given. Use the default build-in image.");
-    return 4096 << 1; // built-in image size
+    return 8192; // built-in image size
   }
 
   FILE *fp = fopen(img_file, "rb");
