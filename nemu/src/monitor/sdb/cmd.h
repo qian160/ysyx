@@ -142,7 +142,7 @@ static int cmd_w(char *args){
     return 0;
 }
 
-static int cmd_d(char * e){
+static int cmd_d(char * e, bool auto_disasm){
     //d n, or d n address
     Log("\ne = %s\n", e);
     char * n = strtok(NULL, " ");
