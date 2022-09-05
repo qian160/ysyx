@@ -3,6 +3,7 @@
 
 // this is not consistent with uint8_t
 // but it is ok since we do not access the array directly
+//a memcpy will overcover this if a img file is used
 static const uint32_t img [] = {
   0x00000297,  // auipc t0,0
   0x0002b823,  // sd  zero,16(t0)
