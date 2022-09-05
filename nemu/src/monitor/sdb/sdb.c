@@ -47,8 +47,7 @@ void sdb_mainloop() {   //get command
   }
   for (char *str; (str = rl_gets()) != NULL; ) {
 #ifdef CONFIG_AUTO_DISASM_NEXT
-  printf("pc = %lx\n", cpu.pc);
-  cmd_d(CONFIG_AUTO_DISASM_NEXT);
+  cmd_d("1");
 #endif
     char *str_end = str + strlen(str);
     for(int i = 0 ; i< strlen(str) ; i++)
