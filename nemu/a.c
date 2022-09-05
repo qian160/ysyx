@@ -22,7 +22,7 @@ static inline void pattern_decode(const char *str, int len,
 int main()
 {
 	uint64_t key, mask, shift;
-	pattern_decode("??????? ????? ????? 011 ????? 00000 11", 38, &key,&mask, &shift);
+	pattern_decode("10?", 3, &key,&mask, &shift);
 	static const int array[] = {&&foo - &&foo, &&bar - &&foo, &&hack - &&foo};
 	goto * (&&foo + array[2]);
 	printf("[%s %d %s]\n", __FILE__, __LINE__, __func__);
