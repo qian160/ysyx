@@ -29,7 +29,7 @@ static inline void pattern_decode(const char *str, int len,
   *key = __key >> __shift;
   *mask = __mask >> __shift;
   *shift = __shift;
-  Log("\nkey = %x, mask = %lx, shift = %lc\n", *key, *mask, *shift);
+  Log("\nkey = %lx, mask = %lx, shift = %lx\n", *key, *mask, *shift);
 }
 
 __attribute__((always_inline))
