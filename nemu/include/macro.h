@@ -76,6 +76,14 @@
 
 #define BITMASK(bits) ((1ull << (bits)) - 1)
 #define BITS(x, hi, lo) (((x) >> (lo)) & BITMASK((hi) - (lo) + 1)) // similar to x[hi:lo] in verilog
+/*
+        ___________________________________________________
+inst:  |        | 111...1(BITMASK) | removed after shift   |
+                hi                 lo 
+                length = hi - lo + 1
+those bits in the BITMASK's range will join the & computation. And since the bitmask is full of 1, the result will be the same as the values originally located in the range
+
+*/
 #define SEXT(x, len) ({ struct { int64_t n : len; } __x = { .n = x }; (uint64_t)__x.n; })
 
 #define ROUNDUP(a, sz)   ((((uintptr_t)a) + (sz) - 1) & ~((sz) - 1))
