@@ -84,6 +84,7 @@ inst:  |        | 111...1(BITMASK) | removed after shift   |
 those bits in the BITMASK's range will join the & computation. And since the bitmask is full of 1, the result will be the same as the values originally located in the range
 
 */
+//len is the original length. Create a struct and with a 'bitfield'. then return its member
 #define SEXT(x, len) ({ struct { int64_t n : len; } __x = { .n = x }; (uint64_t)__x.n; })
 
 #define ROUNDUP(a, sz)   ((((uintptr_t)a) + (sz) - 1) & ~((sz) - 1))
