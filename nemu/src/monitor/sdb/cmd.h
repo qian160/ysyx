@@ -153,6 +153,7 @@ static int cmd_d(char * e){
     else{
         n = strtok(NULL, " ");
         arg2 = strtok(NULL, " ");
+    }
 
     char * Expr = n + strlen(n) + 1;
     if(n == NULL)
