@@ -34,7 +34,7 @@ static void decode_operand(Decode *s, word_t *dest, word_t *src1, word_t *src2, 
   word_t imm_J = immJ(inst);
   word_t imm_I = immI(inst);
   word_t imm_U = immU(inst);
-  word_t imm_S = immS(inst);
+  word_t imm_S __unused__ = immS(inst);
   destR(rd);
   switch (type) {
     case TYPE_I: src1R(rs1);     src2I(imm_I); break;
