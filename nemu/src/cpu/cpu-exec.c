@@ -35,7 +35,7 @@ static void trace_and_difftest(Decode *_this, vaddr_t dnpc) {
     word_t newVal = head -> newVal, oldVal = head -> oldVal;
     if(newVal ^ oldVal){
       nemu_state.state = NEMU_STOP;
-      Log_Color(CYAN,"\nstop at PC: 0x%lx, wp[%d] triggered\noldVal = %lx\nnewVal = %lx\n", _this -> pc, head -> NO, oldVal, newVal);
+      Log_Color(CYAN,"\nstop at PC: 0x%lx, wp[%d]: %s triggered\noldVal = %lx\nnewVal = %lx\n", _this -> pc, head -> NO, head -> expr, oldVal, newVal);
     }
     head -> oldVal = newVal;
   }

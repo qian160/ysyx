@@ -85,8 +85,7 @@ static int decode_exec(Decode *s) {
 int isa_exec_once(Decode *s) {
   uint32_t inst = inst_fetch(&s -> snpc, 4);  //snpc will be updated in fetch ( +4 )
   s->isa.inst.val = inst;
-
+  //set some decode flags here
   s -> is_JALR = BITS(inst, 6, 0) == 0b1100111; 
-  Log("is jalr: %d\n", s -> is_JALR);
   return decode_exec(s);
 }
