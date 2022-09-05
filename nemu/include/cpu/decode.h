@@ -29,9 +29,10 @@ static inline void pattern_decode(const char *str, int len,
       __shift = (c == '?' ? __shift + 1 : 0); \
     } \
   }/*
-      key:    all the high bits
-      mask:   all the non-? bits
-      shift:  nember of contineous ? from  
+      key:    all the high bits, in another way, the value of key = the "value" of str
+      mask:   all the non-? bits, 0 will also be counted
+      shift:  number of contineous ? from right(LSB) to left(MSB)
+      for example, if str = "10?", then key = 0b
   */
 //the number after macro name is also the step length. for example,  macro16's lenth is 16 and 0, 16, 32, 48 will be execuated(all <= 64)
 #define macro2(i)  macro(i);   macro((i) + 1)
