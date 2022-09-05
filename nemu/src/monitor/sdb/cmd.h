@@ -31,7 +31,7 @@ static int cmd_p(char *expression){
     if(!success)
         printf(ANSI_FMT("illegal expr\n",ANSI_FG_RED));
     else
-        printf(ANSI_FMT("%ld\t\t0x%lx\n",ANSI_FG_YELLOW),result, result);
+        printf(ANSI_FMT("0x%lx\t%ld\n",ANSI_FG_YELLOW),result, result);
     return 0;
 }
 
@@ -57,14 +57,14 @@ static int cmd_s(char * args){
 }  
 
 static int cmd_info(char * args){
-    char * arg = strtok(args," ");
+    char * arg = strtok(NULL, " ");  //r, w, reg name
+    char * reg_name = strtok(NULL, " ");
     if( arg == NULL) 
     {
-        //printf("\33[40;33mneed an argument!\33[0m\n");
         printf(ANSI_FMT("too few argument!\n", ANSI_FG_PINK));
         return 0;
     }
-    if(streq(arg, "r"))
+    if(streq(arg, "r") && !reg_name)
         isa_reg_display();
     else if(streq(arg, "w"))
         wp_display();
@@ -73,7 +73,7 @@ static int cmd_info(char * args){
         for (int i = 0; i <= 31; i ++)
         {
             const char * reg = regs[i];
-            if(streq(arg, reg)){
+            if(streq(reg_name, reg)){
                 printf(ANSI_FMT("%s\t\t0x%-16lx\t%-16ld\n", ANSI_FG_PINK), reg, gpr(i), gpr(i));
                 return 0;
         }

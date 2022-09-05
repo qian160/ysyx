@@ -3,8 +3,11 @@
 
 // this is not consistent with uint8_t
 // but it is ok since we do not access the array directly
+//a memcpy will overcover this if a img file is used
 static const uint32_t img [] = {
   0x00000297,  // auipc t0,0
+  0x07200293,  // li t0, 114
+  0x20200313,  // li t1, 514
   0x0002b823,  // sd  zero,16(t0)
   0x0102b503,  // ld  a0,16(t0)
   0x00100073,  // ebreak (used as nemu_trap)
