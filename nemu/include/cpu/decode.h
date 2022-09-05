@@ -20,6 +20,7 @@ static inline void pattern_decode(const char *str, int len,
   for(int i = 0; i < len; i++){
     char c = str[i];
     if(c != '1' || c != '0' || c != ' ' || c != '?'){
+      Log("\nc = %c", c);
       Assert(0, "invalid character '%c' in pattern string", c);
     }
     if(c != ' '){
