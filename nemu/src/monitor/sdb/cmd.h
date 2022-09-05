@@ -146,7 +146,7 @@ static int cmd_d(char * e){
     //d n, or d n address
     //can't use strtok in auto disasm mode
     char * n, * arg2;
-    if(e == NULL || *(e + 1) == NULL){
+    if(e == NULL || *(e + 1) == '\0'){
         n = e;
         arg2 = NULL;
     }
