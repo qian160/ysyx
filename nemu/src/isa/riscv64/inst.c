@@ -30,18 +30,18 @@ static void decode_operand(Decode *s, word_t *dest, word_t *src1, word_t *src2, 
   int rd  = BITS(inst, 11, 7);
   int rs1 = BITS(inst, 19, 15);
   int rs2 = BITS(inst, 24, 20);
-  word_t JAL_TARGET = s -> pc + 4;
   word_t imm_J = immJ(inst);
   word_t imm_I = immI(inst);
   word_t imm_U = immU(inst);
   word_t imm_S __unused__ = immS(inst);
+  word_t JAL_TARGET = s -> pc + imm_J;
   Log("\nJ: %lx\nI: %lx\nU: %lx\nS: %lx\n", imm_J, imm_I, imm_U, imm_S);
   destR(rd);
   switch (type) {
     case TYPE_I: src1R(rs1);     src2I(imm_I); break;
     case TYPE_U: src1I(imm_U); break;
     case TYPE_S: destI(immS(inst)); src1R(rs1); src2R(rs2); break;
-    case TYPE_J: src1I(JAL_TARGET);  src2I(imm_J);break;
+    case TYPE_J: src1I(s -> pc + 4);  src2I(JAL_TARGET);break;
   }
 }
 
