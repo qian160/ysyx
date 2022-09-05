@@ -41,6 +41,7 @@ static int decode_exec(Decode *s) {
   s->dnpc = s->snpc;
 
 #define INSTPAT_INST(s) ((s)->isa.inst.val)
+//a match is found, react to it according to the args
 #define INSTPAT_MATCH(s, name, type, ... /* body */ ) { \
   decode_operand(s, &dest, &src1, &src2, concat(TYPE_, type)); \
   __VA_ARGS__ ; \
