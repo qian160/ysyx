@@ -19,8 +19,7 @@ static inline void pattern_decode(const char *str, int len,
   uint64_t __key = 0, __mask = 0, __shift = 0;
   for(int i = 0; i < len; i++){
     char c = str[i];
-    if(c != '1' || c != '0' || c != ' ' || c != '?'){
-      Log("\nc = %c", c);
+    if(c != '1' && c != '0' && c != ' ' && c != '?'){
       Assert(0, "invalid character '%c' in pattern string", c);
     }
     if(c != ' '){
