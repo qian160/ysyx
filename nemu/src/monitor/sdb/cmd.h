@@ -57,10 +57,10 @@ static int cmd_s(char * args){
 }  
 
 static int cmd_info(char * args){
-    char * arg = strtok(args," ");
+    char * arg = strtok(NULL," ");  //r, w, reg name
+    //char * reg = strtok()
     if( arg == NULL) 
     {
-        //printf("\33[40;33mneed an argument!\33[0m\n");
         printf(ANSI_FMT("too few argument!\n", ANSI_FG_PINK));
         return 0;
     }
