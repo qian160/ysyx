@@ -31,7 +31,7 @@ static int cmd_p(char *expression){
     if(!success)
         printf(ANSI_FMT("illegal expr\n",ANSI_FG_RED));
     else
-        printf(ANSI_FMT("%ld\t\t0x%lx\n",ANSI_FG_YELLOW),result, result);
+        printf(ANSI_FMT("0x%lx\t%ld\n",ANSI_FG_YELLOW),result, result);
     return 0;
 }
 
