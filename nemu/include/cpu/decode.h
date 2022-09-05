@@ -80,7 +80,7 @@ finish:
   *shift = __shift;
   Log("\nkey = %lx, mask = %lx, shift = %lx\n", *key, *mask, *shift);
   */
-}
+
 
 __attribute__((always_inline))
 static inline void pattern_decode_hex(const char *str, int len,
@@ -98,8 +98,8 @@ static inline void pattern_decode_hex(const char *str, int len,
       __shift = (c == '?' ? __shift + 4 : 0); \
     } \
   }
-
-  macro16(0);
+  Log("emmmmm\n\n");
+  //macro16(0);
   panic("pattern too long");
 #undef macro
 finish: __unused__
