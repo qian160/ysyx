@@ -76,6 +76,14 @@ void sdb_mainloop() {   //get command
     }
 
     if (i == NR_CMD) { printf("Unknown command '%s'\n", cmd); }
+#ifdef CONFIG_AUTO_DISASM_NEXT
+  if(cmd[0] != 'q' && cmd[0] != 'd')
+  {
+    int n = atoi(CONFIG_AUTO_DISASM_NEXT);
+    printf(ANSI_FMT("here are the following %d instructions:\n", ANSI_FG_YELLOW), n);
+    cmd_d(CONFIG_AUTO_DISASM_NEXT);
+  }
+#endif
   }
 }
 

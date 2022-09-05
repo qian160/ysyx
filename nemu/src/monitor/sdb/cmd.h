@@ -144,9 +144,18 @@ static int cmd_w(char *args){
 
 static int cmd_d(char * e){
     //d n, or d n address
-    char * n = strtok(NULL, " ");
+    //can't use strtok in auto disasm mode. Because strtok will start from the previous position(When the arg is NULL)
+    char * n, * arg2;
+    if(e == NULL || *(e + 1) == '\0'){      //e == NULL is a guard
+        n = e;
+        arg2 = NULL;
+    }
+    else{
+        n = strtok(NULL, " ");
+        arg2 = strtok(NULL, " ");
+    }
+
     char * Expr = n + strlen(n) + 1;
-    char * arg2 = strtok(NULL, " ");
     if(n == NULL)
     {
         printf(ANSI_FMT("too few arguments\n", ANSI_FG_YELLOW));
