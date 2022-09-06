@@ -93,7 +93,7 @@ static int decode_exec(Decode *D) {
   IFDEF(CONFIG_SHOW_DECODE_INFORMATION,  \
   printf(ANSI_FMT("type:[ %c ], \noperand1 = 0x%-16lx, operand2 = 0x%-16lx\n", ANSI_FG_YELLOW),tp[TYPE_##type], src1, src2);\
   switch(TYPE_##type){  \
-    case(TYPE_I):case(TYPE_R):\
+    case(TYPE_I):case(TYPE_R):case(TYPE_U):\
       printf(ANSI_FMT("the result is 0x%lx\n", ANSI_FG_PINK), R(dest)); break;\
     case(TYPE_B):case(TYPE_J):\
       if( src1 == 0){  \
