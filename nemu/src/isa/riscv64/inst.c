@@ -93,7 +93,7 @@ static int decode_exec(Decode *D) {
   decode_operand(D, &dest, &src1, &src2, concat(TYPE_, type)); \
   __VA_ARGS__ ; \
   IFDEF(CONFIG_SHOW_DECODE_INFORMATION,  \
-  printf("1\n")); \
+  if(TYPE_##type == TYPE_I || TYPE_##type == TYPE_R) printf(ANSI_FMT("the result is 0x%lx\n", ANSI_FG_PINK), R(dest));) \
 }
   //check one by one
   //note that when we say inst(0), we are counting from the right side(LSB), but str(0) below starts at left side
