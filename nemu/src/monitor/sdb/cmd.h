@@ -150,7 +150,7 @@ static int cmd_w(char *args){
 static int cmd_d(char * e){
     Log("\ne = %s\n", e);
     //d n, or d n address
-    char * n = strtok(e, " ");          //start from e
+    char * n = strtok(e, " ");          //start from e. strtok will set a '\0' at the end, seems need improving
     char * have_expr = strtok(NULL, " ");
     char * Expr = " $pc";       //default
     if(!n){
@@ -167,7 +167,7 @@ static int cmd_d(char * e){
         printf(ANSI_FMT("illegal expression\n", ANSI_FG_YELLOW));
         return 0;
     }
-    Log("\ne = %s\nn = %s\nexpr = %s\n", e, n, Expr);
+    Log("\ne = %s\nn = %s\nhave = %s\nexpr = %s\n", e, n, have_expr, Expr);
     char buf[128];
     char * p = buf;
     vaddr_t pc = address;//cpu.pc;
