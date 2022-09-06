@@ -85,6 +85,11 @@ static int cmd_info(char * args){
 static int cmd_x(char * args){  //usage: x num addr
     puts(args);
     char * nump = strtok(NULL," ");
+    char * has_expr = strtok(NULL, " ");
+    if(!has_expr){
+        printf(ANSI_FMT("too few arguments\n", ANSI_FG_YELLOW));
+        return 0;
+    }
     char * Expr = nump + strlen(nump) + 1;
     bool * success = (bool * )malloc(sizeof(bool));
     *success = true;
