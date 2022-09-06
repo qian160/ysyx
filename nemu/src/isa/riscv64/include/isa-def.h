@@ -12,11 +12,10 @@ typedef struct {
 typedef struct {  ///????????
   char funct3 : 3;
   uint32_t inst;
-  
-  union {         //to save some memory. At any time only one of the field will be used, so it's okay to use union
-    char is_jalr : 1;
-    char is_lui  : 1;
-  } control;
+
+  bool is_JALR : 1;
+  bool is_lui  : 1;
+
 } riscv64_ISADecodeInfo;
 
 #define isa_mmu_check(vaddr, len, type) (MMU_DIRECT)
