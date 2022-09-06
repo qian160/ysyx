@@ -17,4 +17,13 @@ typedef struct {
 
 #define isa_mmu_check(vaddr, len, type) (MMU_DIRECT)
 
+#define jalr_opcode  0b1100111
+
+#define beq_funct3   0b000
+#define bne_funct3   0b001
+#define blt_funct3   0b100
+#define bge_funct3   0b101
+#define bltu_funct3  0b110
+#define bgeu_funct3  0b111
+
 #endif
