@@ -84,7 +84,7 @@ void sdb_mainloop() {   //get command
     printf(ANSI_FMT("\nnext %d instruction(s) is:\n", ANSI_FG_YELLOW), n);
     char * s __unused__ = CONFIG_AUTO_DISASM_NEXT;
     char *buf = (char *) malloc(30);
-    memset(buf, ' ', sizeof(buf));
+    memset(buf, ' ', 30);
     char * arg = strcat(strcat(strcat(buf, " "), CONFIG_AUTO_DISASM_NEXT), " $pc");
     cmd_d(arg);
     putchar('\n');
