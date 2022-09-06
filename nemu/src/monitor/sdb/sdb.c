@@ -85,6 +85,7 @@ void sdb_mainloop() {   //get command
     char * s __unused__ = CONFIG_AUTO_DISASM_NEXT;
     char *buf = (char *) malloc(30);
     char * arg = strcat(strcat(strcat(buf, " "), CONFIG_AUTO_DISASM_NEXT), " $pc");
+    Log("\nthe arg is %s\n", arg);
     cmd_d(arg);
     putchar('\n');
     free(buf);
