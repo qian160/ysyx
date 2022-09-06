@@ -157,7 +157,7 @@ static int cmd_d(char * e){
     }
 
     char * Expr = n + strlen(n) + 1;
-    Log("\nexpr = %s\n", Expr);
+    Log("\nn = %s\nexpr = %s\n", n, Expr);
     if(n == NULL)
     {
         printf(ANSI_FMT("too few arguments\n", ANSI_FG_YELLOW));
