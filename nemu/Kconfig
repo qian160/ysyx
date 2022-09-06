@@ -11,12 +11,22 @@ config PRINT_TOKEN
   bool "Enable print tokens"
   default y
   help
-    Print the tokens after they are generated in make_token
+    Print the tokens after you type some expressions. This is used in early debug time
 config AUTO_DISASM_NEXT
   string "Automatically disasm next instruction"
   default "1"
   help
-    Not greater than 9. And this not work for q and d cmd
+    *Not greater than 9, or this will fail. And for q and d cmd this won't be triggered too
+config SHOW_DECODE_INFORMATION
+  bool "show decode information after decoding"
+  default y
+  help
+    For debug use
+config SHOW_EXECUATED
+  bool "Show the instruction after it was execuated"
+  default y
+  help
+    This is sometimes annoying
 endmenu
 
 choice

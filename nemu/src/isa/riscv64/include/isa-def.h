@@ -9,10 +9,13 @@ typedef struct {
 } riscv64_CPU_state;
 
 // decode
-typedef struct {
-  union { //only 1 information, so use union now. May need to be improved in the future
-    uint32_t val;
-  } inst;
+typedef struct {  ///????????
+  char funct3 : 3;
+  uint32_t inst;
+
+  bool is_JALR : 1;
+  bool is_lui  : 1;
+
 } riscv64_ISADecodeInfo;
 
 #define isa_mmu_check(vaddr, len, type) (MMU_DIRECT)

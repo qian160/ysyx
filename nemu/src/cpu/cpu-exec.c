@@ -24,7 +24,9 @@ static void trace_and_difftest(Decode *_this, vaddr_t dnpc) {
   if (ITRACE_COND) { log_write("%s\n", _this->logbuf); }
 #endif
   //there is where the disasm information is printed----------
+#ifdef CONFIG_SHOW_EXECUATED
   if (g_print_step) { IFDEF(CONFIG_ITRACE, puts(_this->logbuf)); }
+#endif
   IFDEF(CONFIG_DIFFTEST, difftest_step(_this->pc, dnpc));
 
 #ifdef CONFIG_WP_ENABLE
@@ -42,18 +44,18 @@ static void trace_and_difftest(Decode *_this, vaddr_t dnpc) {
 #endif
 }
 
-static void exec_once(Decode *s, vaddr_t pc) {
-  s->pc = pc;
-  s->snpc = pc;     //+4 will be performed in inst_fetch
-  isa_exec_once(s);
-  cpu.pc = s->dnpc; //dnpc is updated in decode_exec, currently dnpc = snpc(pc + 4)
+static void exec_once(Decode *D, vaddr_t pc) {
+  D->pc = pc;
+  D->snpc = pc;     //+4 will be performed in inst_fetch
+  isa_exec_once(D);
+  cpu.pc = D->dnpc; //dnpc is updated in decode_exec, currently dnpc = snpc(pc + 4)
 #ifdef CONFIG_ITRACE
-  char *p = s->logbuf;
+  char *p = D->logbuf;
   //add address to logbuf
-  p += snprintf(p, sizeof(s->logbuf), FMT_WORD ":", s->pc);
-  int ilen = s->snpc - s->pc;
+  p += snprintf(p, sizeof(D->logbuf), FMT_WORD ":", D->pc);
+  int ilen = D->snpc - D->pc;
   int i;
-  uint8_t *inst = (uint8_t *)&s->isa.inst.val;
+  uint8_t *inst = (uint8_t *)&D->decInfo.inst;
   for (i = ilen - 1; i >= 0; i --) {
     p += snprintf(p, 4, " %02x", inst[i]);
   }
@@ -66,18 +68,18 @@ static void exec_once(Decode *s, vaddr_t pc) {
   memset(p, ' ', space_len);
   p += space_len;
   //add inst name to logbuf
-  disassemble(p, s->logbuf + sizeof(s->logbuf) - p,
-      MUXDEF(CONFIG_ISA_x86, s->snpc, s->pc), (uint8_t *)&s->isa.inst.val, ilen);
+  disassemble(p, D->logbuf + sizeof(D->logbuf) - p,
+      MUXDEF(CONFIG_ISA_x86, D->snpc, D->pc), (uint8_t *)&D->decInfo.inst, ilen);
 #endif
 }
 
 static void execute(uint64_t n) {
-  Decode s;   //pc, dnpc, snpc, isa, logbuf
+  Decode D;   //pc, dnpc, snpc, isa, logbuf
   //execuate n steps
   for (;n > 0; n --) {
-    exec_once(&s, cpu.pc);
+    exec_once(&D, cpu.pc);
     g_nr_guest_inst ++;
-    trace_and_difftest(&s, cpu.pc);
+    trace_and_difftest(&D, cpu.pc);
     if (nemu_state.state != NEMU_RUNNING) break;
     IFDEF(CONFIG_DEVICE, device_update());
   }

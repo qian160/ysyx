@@ -28,15 +28,15 @@ static word_t immJ(uint32_t i) { return SEXT((BITS(i, 31, 31) << 20) | (BITS(i, 
 static word_t immB(uint32_t i) { return SEXT(BITS(i, 31, 31) << 12 | BITS(i, 7, 7) << 11 | BITS(i, 30, 25) << 5 | BITS(i, 11, 8) << 1, 21);}
 //src1 and src2 are the source operands which will join the future calculation. Use pointer to communicate with outside
 //question: how to make good use of dest, src1, src2
-static void decode_operand(Decode *s, word_t *dest, word_t *src1, word_t *src2, int type) {
+static void decode_operand(Decode * D, word_t *dest, word_t *src1, word_t *src2, int type) {
   //default op is add, xxx = src1 + src2. So just adjust src1 and src2
-  uint32_t inst = s->isa.inst.val;
+  uint32_t inst = D->decInfo.inst;
   int rd  = BITS(inst, 11, 7);
   int rs1 = BITS(inst, 19, 15);
   int rs2 = BITS(inst, 24, 20);
   word_t rs1Val = R(rs1);
   word_t rs2Val = R(rs2);
-  word_t pc = s -> pc;
+  word_t pc = D -> pc;
   word_t pc_Plus4 = pc + 4;
   word_t JAL_TARGET     = immJ(inst) + pc;
   word_t JALR_TARGET    = immI(inst) + rs1Val;
@@ -49,15 +49,19 @@ static void decode_operand(Decode *s, word_t *dest, word_t *src1, word_t *src2, 
     case TYPE_S: src1I(storeAddr);    src2R(rs2);       break;
     case TYPE_J: src1I(pc_Plus4);     src2I(JAL_TARGET);break;
     case TYPE_I: {
-      if(s -> is_JALR){ //jalr is I type, which is special
+      if(D -> decInfo.is_JALR){ //jalr is I type, which is special
           src1I(pc_Plus4);    src2I(JALR_TARGET); break;
       }
       else{
-          src1R(rs1);         src2I(immI(inst));  break;
+          src1R(rs1);         src2I(immI(inst));  
+#ifdef CONFIG_SHOW_DECODE_INFORMATION
+    printf(ANSI_FMT("type = [ I ]\noperand1 = 0x%-16lx, operand2 = 0x%-16lx\n", ANSI_FG_YELLOW), rs1Val, immI(inst));
+#endif
+          break;
       } 
     }
     case TYPE_U: {
-      if(s -> is_lui){
+      if(D -> decInfo.is_lui){
         src1I(immU(inst) << 12);    break;
       }
       else{           //auipc rd, imm -> rd = pc + imm
@@ -66,7 +70,7 @@ static void decode_operand(Decode *s, word_t *dest, word_t *src1, word_t *src2, 
     }
     case TYPE_B: {
       src2I(BRANCH_TARGET);
-        switch (s -> funct3){  //use src1 as a flag, src2 = branch_target
+        switch (D -> decInfo.funct3){  //use src1 as a flag, src2 = branch_target
         case beq_funct3:  src1I(rs1Val == rs2Val);  break;
         case bne_funct3:  src1I(rs1Val ^  rs2Val);  break;
         case blt_funct3:  src1I((sword_t)rs1Val <  (sword_t)rs2Val);  break;
@@ -78,17 +82,24 @@ static void decode_operand(Decode *s, word_t *dest, word_t *src1, word_t *src2, 
   }
 }
 
-static int decode_exec(Decode *s) {
+static int decode_exec(Decode *D) {
   word_t dest = 0, src1 = 0, src2 = 0;
-  s->dnpc = s->snpc;    //default
+  D->dnpc = D->snpc;    //default
 
-#define INSTPAT_INST(s) ((s)->isa.inst.val)
+#define INSTPAT_INST(D) ((D)->decInfo.inst)
 //a match is found, react to it according to the args
 //first prepare for operands, then do the things listed in INSTPAT
-#define INSTPAT_MATCH(s, name, type, ... /* body */ ) { \
-  decode_operand(s, &dest, &src1, &src2, concat(TYPE_, type)); \
+#define INSTPAT_MATCH(D, name, type, ... /* body */ ) { \
+  decode_operand(D, &dest, &src1, &src2, concat(TYPE_, type)); \
   __VA_ARGS__ ; \
-}
+  IFDEF(CONFIG_SHOW_DECODE_INFORMATION,  \
+  if(TYPE_##type == TYPE_I || TYPE_##type == TYPE_R)  \
+    printf(ANSI_FMT("the result is 0x%lx\n", ANSI_FG_PINK), R(dest)); \
+  else if(TYPE_##type == TYPE_I || TYPE_##type == TYPE_R){  \
+    if( src1 == 0)  \
+      printf(ANSI_FMT("branch/jump not taken\n",  ANSI_FG_YELLOW)); \
+    else printf(ANSI_FMT("branch/jump is taken, new PC at 0x%lx", ANSI_FG_YELLOW), src2);}\
+)}
   //check one by one
   //note that when we say inst(0), we are counting from the right side(LSB), but str(0) below starts at left side
   //each pattern has its unique mask, key and shift
@@ -133,34 +144,35 @@ static int decode_exec(Decode *s) {
   INSTPAT("??????? ????? ????? 100 ????? 0000011", lbu,      I, R(dest) = Mr(src1 + src2, 1));
   INSTPAT("??????? ????? ????? 101 ????? 0000011", lhu,      I, R(dest) = Mr(src1 + src2, 2));
   //branches
-  INSTPAT("??????? ????? ????? 000 ????? 1100011", beq,      B, s -> dnpc = src1? src2 : s -> dnpc);    //use src1 as a flag
-  INSTPAT("??????? ????? ????? 001 ????? 1100011", bne,      B, s -> dnpc = src1? src2 : s -> dnpc);
-  INSTPAT("??????? ????? ????? 100 ????? 1100011", blt,      B, s -> dnpc = src1? src2 : s -> dnpc);
-  INSTPAT("??????? ????? ????? 101 ????? 1100011", bge,      B, s -> dnpc = src1? src2 : s -> dnpc);
-  INSTPAT("??????? ????? ????? 110 ????? 1100011", bltu,     B, s -> dnpc = src1? src2 : s -> dnpc);
-  INSTPAT("??????? ????? ????? 111 ????? 1100011", bgtu,     B, s -> dnpc = src1? src2 : s -> dnpc);
+  INSTPAT("??????? ????? ????? 000 ????? 1100011", beq,      B, D -> dnpc = src1? src2 : D -> dnpc);    //use src1 as a flag
+  INSTPAT("??????? ????? ????? 001 ????? 1100011", bne,      B, D -> dnpc = src1? src2 : D -> dnpc);
+  INSTPAT("??????? ????? ????? 100 ????? 1100011", blt,      B, D -> dnpc = src1? src2 : D -> dnpc);
+  INSTPAT("??????? ????? ????? 101 ????? 1100011", bge,      B, D -> dnpc = src1? src2 : D -> dnpc);
+  INSTPAT("??????? ????? ????? 110 ????? 1100011", bltu,     B, D -> dnpc = src1? src2 : D -> dnpc);
+  INSTPAT("??????? ????? ????? 111 ????? 1100011", bgtu,     B, D -> dnpc = src1? src2 : D -> dnpc);
   //
   INSTPAT("??????? ????? ????? ??? ????? 0010111", auipc,    U, R(dest) = src1 + src2);
   INSTPAT("??????? ????? ????? 011 ????? 0100011", sd,       S, Mw(src1, 8, src2));    //addr, len, data
   //JAL
-  INSTPAT("??????? ????? ????? ??? ????? 1101111", jal,      J, R(dest) = src1, s->dnpc = src2);
-  INSTPAT("??????? ????? ????? 000 ????? 1100111", jalr,     I, R(dest) = src1, s->dnpc = src2);
-  INSTPAT("0000000 00001 00000 000 00000 1110011", ebreak  , N, NEMUTRAP(s->pc, R(10))); // R(10) is $a0
-  INSTPAT("??????? ????? ????? ??? ????? ???????", invalid , N, INV(s->pc));
+  INSTPAT("??????? ????? ????? ??? ????? 1101111", jal,      J, R(dest) = src1, D->dnpc = src2);
+  INSTPAT("??????? ????? ????? 000 ????? 1100111", jalr,     I, R(dest) = src1, D->dnpc = src2);
+  INSTPAT("0000000 00001 00000 000 00000 1110011", ebreak  , N, NEMUTRAP(D->pc, R(10))); // R(10) is $a0
+  INSTPAT("??????? ????? ????? ??? ????? ???????", invalid , N, INV(D->pc));
+  //M extension
+  TODO();
   INSTPAT_END();
-
 
   R(0) = 0; // reset $zero to 0
   return 0;
 }
 
-int isa_exec_once(Decode *s) {
-  uint32_t inst = inst_fetch(&s -> snpc, 4);  //snpc will be updated in fetch ( +4 )
-  s->isa.inst.val = inst;
+int isa_exec_once(Decode *D) {
+  uint32_t inst = inst_fetch(&D -> snpc, 4);  //snpc will be updated in fetch ( +4 )
+  D->decInfo.inst = inst;
   //set some decode flags here
-  s -> is_JALR = BITS(inst, 6, 0) == 0b1100111; 
-  s -> is_lui  = BITS(inst, 5, 5);    //just a possibility
-  s -> funct3  = funct3(inst);
+  D -> decInfo.is_JALR = BITS(inst, 6, 0) == 0b1100111; 
+  D -> decInfo.is_lui  = BITS(inst, 5, 5);    //just a possibility
+  D -> decInfo.funct3  = funct3(inst);
 
-  return decode_exec(s);
+  return decode_exec(D);
 }

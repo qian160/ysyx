@@ -7,11 +7,9 @@ typedef struct Decode {
   vaddr_t pc;
   vaddr_t snpc; // static(also default) next pc, that is pc + 4. It is performed automically in inst_fetch
   vaddr_t dnpc; // dynamic next pc. Currently no branch is implemented, so just set dnpc = snpc(which is increased in inst_fetch by 4). A mux is needed in the future. set in decode_exec
-  ISADecodeInfo isa;  //struct riscv64_ISADecodeInfo, the only member is inst(union).val
+  ISADecodeInfo decInfo;  //struct riscv64_ISADecodeInfo, the only member is inst(union).val. Use union could save memory and improve performance.
+  //TODU: improve struct isa and decode. 
   IFDEF(CONFIG_ITRACE, char logbuf[128]); //decode information
-  bool is_JALR : 1;
-  bool is_lui  : 1;
-  char funct3  : 3;
   //char opcode : 7;
 } Decode;
 
@@ -72,8 +70,8 @@ static inline void pattern_decode_hex(const char *str, int len,
 #define INSTPAT(pattern, ...) do { \
   uint64_t key, mask, shift; \
   pattern_decode(pattern, STRLEN(pattern), &key, &mask, &shift); \
-  if (((INSTPAT_INST(s) >> shift) & mask) == key) { \
-    INSTPAT_MATCH(s, ##__VA_ARGS__); \
+  if (((INSTPAT_INST(D) >> shift) & mask) == key) { \
+    INSTPAT_MATCH(D, ##__VA_ARGS__); \
     goto *(__instpat_end); \
   } \
 } while (0)
