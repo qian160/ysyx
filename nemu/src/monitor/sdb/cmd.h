@@ -166,7 +166,7 @@ static int cmd_d(char * e){
         printf(ANSI_FMT("illegal expression\n", ANSI_FG_YELLOW));
         return 0;
     }
-
+    Log("\ne = %s\nn = %s\nexpr = %s\n", e, n, Expr);
     char buf[128];
     char * p = buf;
     vaddr_t pc = address;//cpu.pc;
