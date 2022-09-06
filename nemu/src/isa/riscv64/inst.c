@@ -91,7 +91,7 @@ static int decode_exec(Decode *D) {
   decode_operand(D, &dest, &src1, &src2, concat(TYPE_, type)); \
   __VA_ARGS__ ; \
   IFDEF(CONFIG_SHOW_DECODE_INFORMATION,  \
-  printf(ANSI_FMT("%type:[ %c ], \noperand1 = 0x%-16lx, operand2 = 0x%-16lx\n", ANSI_FG_YELLOW),tp[TYPE_##type], src1, src2);\
+  printf(ANSI_FMT("type:[ %c ], \noperand1 = 0x%-16lx, operand2 = 0x%-16lx\n", ANSI_FG_YELLOW),tp[TYPE_##type], src1, src2);\
   switch(TYPE_##type){  \
     case(TYPE_I):case(TYPE_R):\
       printf(ANSI_FMT("the result is 0x%lx\n", ANSI_FG_PINK), R(dest)); break;\
