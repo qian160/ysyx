@@ -30,7 +30,7 @@ static word_t immB(uint32_t i) { return SEXT(BITS(i, 31, 31) << 12 | BITS(i, 7, 
 //question: how to make good use of dest, src1, src2
 static void decode_operand(Decode *s, word_t *dest, word_t *src1, word_t *src2, int type) {
   //default op is add, xxx = src1 + src2. So just adjust src1 and src2
-  uint32_t inst = s->isa.inst.val;
+  uint32_t inst = s->isa.inst;
   int rd  = BITS(inst, 11, 7);
   int rs1 = BITS(inst, 19, 15);
   int rs2 = BITS(inst, 24, 20);
@@ -82,7 +82,7 @@ static int decode_exec(Decode *s) {
   word_t dest = 0, src1 = 0, src2 = 0;
   s->dnpc = s->snpc;    //default
 
-#define INSTPAT_INST(s) ((s)->isa.inst.val)
+#define INSTPAT_INST(s) ((s)->isa.inst)
 //a match is found, react to it according to the args
 //first prepare for operands, then do the things listed in INSTPAT
 #define INSTPAT_MATCH(s, name, type, ... /* body */ ) { \
@@ -149,14 +149,13 @@ static int decode_exec(Decode *s) {
   INSTPAT("??????? ????? ????? ??? ????? ???????", invalid , N, INV(s->pc));
   INSTPAT_END();
 
-
   R(0) = 0; // reset $zero to 0
   return 0;
 }
 
 int isa_exec_once(Decode *s) {
   uint32_t inst = inst_fetch(&s -> snpc, 4);  //snpc will be updated in fetch ( +4 )
-  s->isa.inst.val = inst;
+  s->isa.inst = inst;
   //set some decode flags here
   s -> is_JALR = BITS(inst, 6, 0) == 0b1100111; 
   s -> is_lui  = BITS(inst, 5, 5);    //just a possibility
