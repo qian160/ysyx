@@ -100,7 +100,6 @@ static int decode_exec(Decode *D) {
   switch(TYPE_##type){  \
     case(TYPE_I):case(TYPE_R):case(TYPE_U):\
     if(D -> decInfo.is_load){\
-      printf("width = %d\n", D->decInfo.L_width);\
       printf(ANSI_FMT("load a value 0x%lx from address: 0x%lx", ANSI_FG_YELLOW), Mr(src1 + src2, D -> decInfo.L_width), src1 + src2); \
     }  \
     else  {\
@@ -116,10 +115,10 @@ static int decode_exec(Decode *D) {
       }\
       break;\
     case(TYPE_S):\
-      printf(ANSI_FMT("store a value 0x%lx to address 0x%lx\n", ANSI_FG_YELLOW), src1, src2);\
+      printf(ANSI_FMT("store a value 0x%lx to address 0x%lx\n", ANSI_FG_YELLOW), src2 | BITMASK(D->decInfo.S_width << 3), src1);\
     default:  printf("%d\n", TYPE_##type);break;}\
 )}
-
+//width is needed in store
 
 /*
 
@@ -237,5 +236,6 @@ int isa_exec_once(Decode *D) {
   D -> decInfo.funct3   = fct3;
   D -> decInfo.is_load  = opcode(inst) == load_opcode;
   D -> decInfo.L_width  = 1 << (fct3 & 0b11);
+  D -> decInfo.S_width  = 1 << fct3;
   return decode_exec(D);
 }
