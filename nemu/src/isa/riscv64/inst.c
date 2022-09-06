@@ -80,7 +80,8 @@ static void decode_operand(Decode * D, word_t *dest, word_t *src1, word_t *src2,
     }
   }
 }
-
+#define L_width(fct3) (1 << (fct3 & 0b11))
+#define S_width(fct3) (1 << fct3)
 static int decode_exec(Decode *D) {
   word_t dest = 0, src1 = 0, src2 = 0;
   D->dnpc = D->snpc;    //default
@@ -97,11 +98,11 @@ static int decode_exec(Decode *D) {
   char buf[30];\
   disassemble(buf, sizeof(buf), D -> pc, (uint8_t *)(&D -> inst), 4);\
   printf(ANSI_FMT("type-%c:  %s\nold PC = 0x%lx  \noperand1 = 0x%-16lx, operand2 = 0x%-16lx \n", ANSI_FG_GREEN),tp[TYPE_##type], buf, D -> pc, src1, src2);\
+  char fct3 = D -> decInfo.funct3;\
   switch(TYPE_##type){  \
     case(TYPE_I):case(TYPE_R):case(TYPE_U):\
     if(D -> decInfo.is_load){\
-      printf("width = %d\n", D->decInfo.L_width);\
-      printf(ANSI_FMT("load a value 0x%lx from address: 0x%lx\n", ANSI_FG_YELLOW), Mr(src1 + src2, D -> decInfo.L_width), src1 + src2); \
+      printf(ANSI_FMT("load a value 0x%lx from address: 0x%lx\n", ANSI_FG_YELLOW), Mr(src1 + src2, L_width(fct3)), src1 + src2); \
     }  \
     else  {\
       printf(ANSI_FMT("set %s to be 0x%lx\n", ANSI_FG_GREEN), reg_name(dest, 64), R(dest)); \
@@ -116,10 +117,10 @@ static int decode_exec(Decode *D) {
       }\
       break;\
     case(TYPE_S):{\
-      printf(ANSI_FMT("store a value 0x%llx to address 0x%lx\n", ANSI_FG_YELLOW), src2 | BITMASK(D->decInfo.S_width << 3), src1);\
+      printf(ANSI_FMT("store a value 0x%llx to address 0x%lx\n", ANSI_FG_YELLOW), src2 | BITMASK(S_width(fct3) << 3), src1);\
       break;\
     }\
-    default:  printf("%d\n", TYPE_##type);break;}\
+    default:  printf("%type d\n", TYPE_##type);break;}\
 )}
 //width is needed in store
 
@@ -237,7 +238,6 @@ int isa_exec_once(Decode *D) {
   D -> decInfo.is_lui   = BITS(inst, 5, 5);    //just a possibility
   D -> decInfo.funct3   = fct3;
   D -> decInfo.is_load  = opcode(inst) == load_opcode;
-  D -> decInfo.L_width  = 1 << (fct3 & 0b11);
-  D -> decInfo.S_width  = 1 << fct3;
+
   return decode_exec(D);
 }
