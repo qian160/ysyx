@@ -78,13 +78,16 @@ void sdb_mainloop() {   //get command
 
     if (i == NR_CMD) { printf("Unknown command '%s'\n", cmd); }
 #ifdef CONFIG_AUTO_DISASM_NEXT
+#define getArg(x) " "##x##" $pc"
   if(cmd[0] != 'q' && cmd[0] != 'd')
   {
     int n = atoi(CONFIG_AUTO_DISASM_NEXT);
     printf(ANSI_FMT("\nnext %d instruction(s) is:\n", ANSI_FG_YELLOW), n);
-    cmd_d(CONFIG_AUTO_DISASM_NEXT);
+    char * s = CONFIG_AUTO_DISASM_NEXT;
+    cmd_d(getArg(CONFIG_AUTO_DISASM_NEXT));
     putchar('\n');
   }
+#undef getArg
 #endif
   }
 }

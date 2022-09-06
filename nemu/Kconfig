@@ -14,9 +14,9 @@ config PRINT_TOKEN
     Print the tokens after you type some expressions. This is used in early debug time
 config AUTO_DISASM_NEXT
   string "Automatically disasm next instruction"
-  default "1"
+  default " 1 $pc"
   help
-    *Not greater than 9, or this will fail. And for q and d cmd this won't be triggered too
+    must have space...
 config SHOW_DECODE_INFORMATION
   bool "show decode information after decoding"
   default y
