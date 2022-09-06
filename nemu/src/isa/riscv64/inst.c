@@ -100,7 +100,7 @@ static int decode_exec(Decode *D) {
   switch(TYPE_##type){  \
     case(TYPE_I):case(TYPE_R):case(TYPE_U):\
     if(D -> decInfo.is_load){\
-      printf(ANSI_FMT("load a value 0x%lx from address: 0x%lx", ANSI_FG_YELLOW), Mr(src1 + src2, 8), src1 + src2); \
+      printf(ANSI_FMT("load a value 0x%lx from address: 0x%lx", ANSI_FG_YELLOW), Mr(src1 + src2, D -> decInfo.L_width), src1 + src2); \
     }  \
     else  {\
       printf(ANSI_FMT("set %s to be 0x%lx\n", ANSI_FG_GREEN), reg_name(dest, 64), R(dest)); \
@@ -235,6 +235,6 @@ int isa_exec_once(Decode *D) {
   D -> decInfo.is_lui   = BITS(inst, 5, 5);    //just a possibility
   D -> decInfo.funct3   = fct3;
   D -> decInfo.is_load  = opcode(inst) == load_opcode;
-  D -> decInfo.L_width  = fct3 == 0 ? 1 : fct3 == 1 ? 2 : fct3 == 2 ? 4 : fct3 == 3 ? 8 : fct3 == 4 ? 1 ? fct3 == 5 ? 2 : 4 : 0;
+  D -> decInfo.L_width  = 1 << (fct3 & 0b11);
   return decode_exec(D);
 }
