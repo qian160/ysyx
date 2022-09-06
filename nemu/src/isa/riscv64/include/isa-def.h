@@ -11,8 +11,6 @@ typedef struct {
 // decode
 typedef struct {  ///????????
   char funct3 : 3;
-  uint32_t inst;
-
   bool is_JALR : 1;
   bool is_lui  : 1;
 

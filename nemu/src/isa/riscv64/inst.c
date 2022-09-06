@@ -6,11 +6,12 @@
 #define R(i) gpr(i)
 #define Mr vaddr_read   //memory read
 #define Mw vaddr_write  //memory write
-
 enum {
   TYPE_I, TYPE_U, TYPE_S, TYPE_J, TYPE_R, TYPE_B, TYPE_SYS,
   TYPE_N, // none
 };
+
+static const char tp[] = "IUSJRB";    //use type as index
 
 #define src1R(n) do { *src1 = R(n); } while (0)
 #define src2R(n) do { *src2 = R(n); } while (0)
@@ -30,7 +31,7 @@ static word_t immB(uint32_t i) { return SEXT(BITS(i, 31, 31) << 12 | BITS(i, 7, 
 //question: how to make good use of dest, src1, src2
 static void decode_operand(Decode * D, word_t *dest, word_t *src1, word_t *src2, int type) {
   //default op is add, xxx = src1 + src2. So just adjust src1 and src2
-  uint32_t inst = D->decInfo.inst;
+  uint32_t inst = D->inst;
   int rd  = BITS(inst, 11, 7);
   int rs1 = BITS(inst, 19, 15);
   int rs2 = BITS(inst, 24, 20);
@@ -53,11 +54,7 @@ static void decode_operand(Decode * D, word_t *dest, word_t *src1, word_t *src2,
           src1I(pc_Plus4);    src2I(JALR_TARGET); break;
       }
       else{
-          src1R(rs1);         src2I(immI(inst));  
-#ifdef CONFIG_SHOW_DECODE_INFORMATION
-    printf(ANSI_FMT("type = [ I ]\noperand1 = 0x%-16lx, operand2 = 0x%-16lx\n", ANSI_FG_YELLOW), rs1Val, immI(inst));
-#endif
-          break;
+          src1R(rs1);         src2I(immI(inst));  break;
       } 
     }
     case TYPE_U: {
@@ -86,20 +83,48 @@ static int decode_exec(Decode *D) {
   word_t dest = 0, src1 = 0, src2 = 0;
   D->dnpc = D->snpc;    //default
 
-#define INSTPAT_INST(D) ((D)->decInfo.inst)
-//a match is found, react to it according to the args
-//first prepare for operands, then do the things listed in INSTPAT
+#define INSTPAT_INST(D) ((D)->inst)
+//a match is found, do what it supposed to do.
+//first prepare for operands, then do the things listed in __VA_ARGS__
+
 #define INSTPAT_MATCH(D, name, type, ... /* body */ ) { \
   decode_operand(D, &dest, &src1, &src2, concat(TYPE_, type)); \
   __VA_ARGS__ ; \
   IFDEF(CONFIG_SHOW_DECODE_INFORMATION,  \
+  puts(ANSI_FMT("\nInformation about the just execuated instruction:", ANSI_FG_GREEN));\
+  char buf[30];\
+  disassemble(buf, sizeof(buf), D -> pc, (uint8_t *)(&D -> inst), 4);\
+  printf(ANSI_FMT("type-%c: \t%s  \noperand1 = 0x%-16lx, operand2 = 0x%-16lx \n", ANSI_FG_GREEN),tp[TYPE_##type], buf, src1, src2);\
+  switch(TYPE_##type){  \
+    case(TYPE_I):case(TYPE_R):case(TYPE_U):\
+      printf(ANSI_FMT("this set %s to be 0x%lx\n", ANSI_FG_GREEN), reg_name(dest, 64), R(dest)); break;\
+    case(TYPE_B):case(TYPE_J):\
+      if( src1 == 0){  \
+        printf(ANSI_FMT("branch/jump not taken\n",  ANSI_FG_YELLOW)); break;}\
+      else {printf(ANSI_FMT("branch/jump is taken, new PC at 0x%lx", ANSI_FG_YELLOW), src2); break;}\
+    default:  printf("%d\n", TYPE_##type);break;}\
+)}
+
+
+/*
+
+#define INSTPAT_MATCH(D, name, type, ...  body  ) { \
+  decode_operand(D, &dest, &src1, &src2, concat(TYPE_, type)); \
+  __VA_ARGS__ ; \
+  IFDEF(CONFIG_SHOW_DECODE_INFORMATION,  \
+  switch(TYPE_##type)  \
   if(TYPE_##type == TYPE_I || TYPE_##type == TYPE_R)  \
     printf(ANSI_FMT("the result is 0x%lx\n", ANSI_FG_PINK), R(dest)); \
-  else if(TYPE_##type == TYPE_I || TYPE_##type == TYPE_R){  \
+  else if(TYPE_##type == TYPE_J || TYPE_##type == TYPE_B){  \
     if( src1 == 0)  \
       printf(ANSI_FMT("branch/jump not taken\n",  ANSI_FG_YELLOW)); \
     else printf(ANSI_FMT("branch/jump is taken, new PC at 0x%lx", ANSI_FG_YELLOW), src2);}\
 )}
+
+
+
+
+*/
   //check one by one
   //note that when we say inst(0), we are counting from the right side(LSB), but str(0) below starts at left side
   //each pattern has its unique mask, key and shift
@@ -159,7 +184,10 @@ static int decode_exec(Decode *D) {
   INSTPAT("0000000 00001 00000 000 00000 1110011", ebreak  , N, NEMUTRAP(D->pc, R(10))); // R(10) is $a0
   INSTPAT("??????? ????? ????? ??? ????? ???????", invalid , N, INV(D->pc));
   //M extension
-  TODO();
+  //TODO();
+
+
+
   INSTPAT_END();
 
   R(0) = 0; // reset $zero to 0
@@ -168,7 +196,7 @@ static int decode_exec(Decode *D) {
 
 int isa_exec_once(Decode *D) {
   uint32_t inst = inst_fetch(&D -> snpc, 4);  //snpc will be updated in fetch ( +4 )
-  D->decInfo.inst = inst;
+  D->inst = inst;
   //set some decode flags here
   D -> decInfo.is_JALR = BITS(inst, 6, 0) == 0b1100111; 
   D -> decInfo.is_lui  = BITS(inst, 5, 5);    //just a possibility
