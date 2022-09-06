@@ -277,12 +277,12 @@ static bool make_token(char *e) {
             tokens[nr_token].priv = rules[i].priv;
             //check for pointer and minus
             //Log("\ntoken[%2d] found! type = %d, value = %s\n",nr_token, tokens[nr_token].type, tokens[nr_token].str);
-            if (tokens[nr_token].type == '*' && (nr_token == 0 || (tokens[nr_token - 1].type != DECNUM && tokens[nr_token - 1].type != HEXNUM && tokens[nr_token - 1].type != REG && tokens[nr_token - 1].type !=')') )) {
+            if (tokens[nr_token].type == '*' && (nr_token == 0 || (tokens[nr_token - 1].type != DECNUM && tokens[nr_token - 1].type != HEXNUM && tokens[nr_token - 1].type != REG && tokens[nr_token - 1].type !=')' && tokens[nr_token - 1].type != PC) )) {
               tokens[nr_token].type = POINTER;
               tokens[nr_token].priv = 8;
               //Log("a pointer found\n");
             }
-            if (tokens[nr_token].type == '-' && (nr_token == 0 || (tokens[nr_token - 1].type != DECNUM && tokens[nr_token - 1].type != HEXNUM && tokens[nr_token - 1].type != REG && tokens[nr_token - 1].type !=')') )) {
+            if (tokens[nr_token].type == '-' && (nr_token == 0 || (tokens[nr_token - 1].type != DECNUM && tokens[nr_token - 1].type != HEXNUM && tokens[nr_token - 1].type != REG && tokens[nr_token - 1].type !=')' && tokens[nr_token - 1].type != PC)  )) {
               tokens[nr_token].type = MINUS;
               tokens[nr_token].priv = 8;
               //Log("a minus found\n");
