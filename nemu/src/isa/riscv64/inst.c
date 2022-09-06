@@ -100,12 +100,20 @@ static int decode_exec(Decode *D) {
   switch(TYPE_##type){  \
     case(TYPE_I):case(TYPE_R):case(TYPE_U):\
     if(D -> decInfo.is_load){\
-      printf(ANSI_FMT("load a value 0x%lx from address: 0x%lx", ANSI_FG_YELLOW), Mr(src1 + src2, 8), src1 + src2); break;}  \
-    else  {printf(ANSI_FMT("set %s to be 0x%lx\n", ANSI_FG_GREEN), reg_name(dest, 64), R(dest)); break;}\
+      printf(ANSI_FMT("load a value 0x%lx from address: 0x%lx", ANSI_FG_YELLOW), Mr(src1 + src2, 8), src1 + src2); \
+    }  \
+    else  {\
+      printf(ANSI_FMT("set %s to be 0x%lx\n", ANSI_FG_GREEN), reg_name(dest, 64), R(dest)); \
+    }\
+    break;\
     case(TYPE_B):case(TYPE_J):\
       if( src1 == 0){  \
-        printf(ANSI_FMT("branch/jump not taken\n",  ANSI_FG_YELLOW)); break;}\
-      else {printf(ANSI_FMT("branch/jump is taken, new PC at 0x%lx", ANSI_FG_YELLOW), src2); break;}\
+        printf(ANSI_FMT("branch/jump not taken\n",  ANSI_FG_YELLOW)); \
+      }\
+      else {\
+        printf(ANSI_FMT("branch/jump is taken, new PC at 0x%lx", ANSI_FG_YELLOW), src2); \
+      }\
+      break;\
     default:  printf("%d\n", TYPE_##type);break;}\
 )}
 
