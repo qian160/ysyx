@@ -52,11 +52,7 @@ static void decode_operand(Decode * D, word_t *dest, word_t *src1, word_t *src2,
           src1I(pc_Plus4);    src2I(JALR_TARGET); break;
       }
       else{
-          src1R(rs1);         src2I(immI(inst));  
-#ifdef CONFIG_SHOW_DECODE_INFORMATION
-    printf(ANSI_FMT("type = [ I ]\noperand1 = 0x%-16lx, operand2 = 0x%-16lx\n", ANSI_FG_YELLOW), rs1Val, immI(inst));
-#endif
-          break;
+          src1R(rs1);         src2I(immI(inst));  break;
       } 
     }
     case TYPE_U: {
@@ -93,6 +89,7 @@ static int decode_exec(Decode *D) {
   decode_operand(D, &dest, &src1, &src2, concat(TYPE_, type)); \
   __VA_ARGS__ ; \
   IFDEF(CONFIG_SHOW_DECODE_INFORMATION,  \
+  printf(ANSI_FMT("%s, \noperand1 = 0x%-16lx, operand2 = 0x%-16lx\n", ANSI_FG_YELLOW),TYPE_##type, src1, src2);\
   switch(TYPE_##type){  \
     case(TYPE_I):case(TYPE_R):\
       printf(ANSI_FMT("the result is 0x%lx\n", ANSI_FG_PINK), R(dest)); break;\
