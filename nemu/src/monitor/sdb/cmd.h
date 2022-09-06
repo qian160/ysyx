@@ -143,7 +143,6 @@ static int cmd_w(char *args){
 }
 
 static int cmd_d(char * e){
-    Log("\ninitial: e = %s\n", e);
     //d n, or d n address
     //can't use strtok in auto disasm mode. Because strtok will start from the previous position(When the arg is NULL)
     char * n, * arg2;
