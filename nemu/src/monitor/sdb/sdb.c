@@ -89,7 +89,6 @@ void sdb_mainloop() {   //get command
     Log("\narg = %s\n", arg);
     cmd_d(CONFIG_AUTO_DISASM_NEXT);
     putchar('\n');
-    buf = &buf[0];
   }
 #endif
   }
