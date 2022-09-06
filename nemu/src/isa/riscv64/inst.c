@@ -55,7 +55,7 @@ static void decode_operand(Decode * D, word_t *dest, word_t *src1, word_t *src2,
       else{
           src1R(rs1);         src2I(immI(inst));  
 #ifdef CONFIG_SHOW_DECODE_INFORMATION
-    printf(ANSI_FMT("type = [I]\noperand1 = 0x%-16lx, operand2 = 0x%-16lx\n", ANSI_FG_CYAN), rs1Val, immI(inst));
+    printf(ANSI_FMT("type = [ I ]\noperand1 = 0x%-16lx, operand2 = 0x%-16lx\n", ANSI_FG_YELLOW), rs1Val, immI(inst));
 #endif
           break;
       } 
@@ -92,6 +92,9 @@ static int decode_exec(Decode *D) {
 #define INSTPAT_MATCH(D, name, type, ... /* body */ ) { \
   decode_operand(D, &dest, &src1, &src2, concat(TYPE_, type)); \
   __VA_ARGS__ ; \
+  IFDEF(CONFIG_SHOW_DECODE_INFORMATION,  \
+  printf("1\n"),  \
+  printf("2\n")); \
 }
   //check one by one
   //note that when we say inst(0), we are counting from the right side(LSB), but str(0) below starts at left side
@@ -151,6 +154,7 @@ static int decode_exec(Decode *D) {
   INSTPAT("??????? ????? ????? 000 ????? 1100111", jalr,     I, R(dest) = src1, D->dnpc = src2);
   INSTPAT("0000000 00001 00000 000 00000 1110011", ebreak  , N, NEMUTRAP(D->pc, R(10))); // R(10) is $a0
   INSTPAT("??????? ????? ????? ??? ????? ???????", invalid , N, INV(D->pc));
+  
   INSTPAT_END();
 
   R(0) = 0; // reset $zero to 0
