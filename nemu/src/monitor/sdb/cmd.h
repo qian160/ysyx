@@ -148,11 +148,20 @@ static int cmd_w(char *args){
 }
 
 static int cmd_d(char * e){
-    //strtok will put a NULL at the end of a match, which may affect the future judge.
-    //so copy the original e
+    //strtok will put a NULL at the end of the substring when a match happens
+    //which may cut the value of Expr. So I copy the original string e first. It's not a good idea but at least it works
+    /*
+        **** ************ ********* e
+
+        ****'\0'**********'\0'*********** e
+        n       have_expr
+                n + strlen(n) + 1, which will meet the '\0' earlier and the right side of e is lost
+
+        ************************* temp
+    
+    */
     char * temp  = (char * )malloc(40);
     strcpy(temp, e);
-    Log("\ne = %s\n", e);
     char * n = strtok(e, " ");
 
     char * have_expr = strtok(NULL, " ");
@@ -162,7 +171,6 @@ static int cmd_d(char * e){
         return 0;
     }
     if(have_expr)
-        //Expr = n + strlen(n) + 1;
         Expr = temp + (int64_t)n - (int64_t)e + strlen(n) + 1;
     int N  = atoi(n);
     bool * success = (bool *)malloc(sizeof(bool));
@@ -172,7 +180,6 @@ static int cmd_d(char * e){
         printf(ANSI_FMT("illegal expression\n", ANSI_FG_YELLOW));
         return 0;
     }
-    Log("\ne = %s\nn = %s\nhave = %s\nexpr = %s\n", e, n, have_expr, Expr);
     char buf[128];
     char * p = buf;
     vaddr_t pc = address;//cpu.pc;
