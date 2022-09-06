@@ -39,7 +39,7 @@ static void decode_operand(Decode *s, word_t *dest, word_t *src1, word_t *src2, 
   word_t pc = s -> pc;
   word_t pc_Plus4 = pc + 4;
   word_t JAL_TARGET     = pc + (sword_t)immJ(inst);
-  word_t JALR_TARGET    = rs1Val + immI(inst);
+  word_t JALR_TARGET    = rs1Val + (sword_t)immI(inst);
   word_t BRANCH_TARGET  = pc + (sword_t)immB(inst);
   word_t storeAddr      = rs1Val + (sword_t)immS(inst);
   //Log("\nJ: %lx\nI: %lx\nU: %lx\nS: %lx\n", imm_J, imm_I, imm_U, imm_S);
@@ -91,6 +91,7 @@ static int decode_exec(Decode *s) {
   //arith                                                       //if use R, then access the regfile is needed
   INSTPAT("0000000 ????? ????? 000 ????? 0110011", add,      R, R(dest) = src1 + src2);
   INSTPAT("??????? ????? ????? 000 ????? 0110011", addi,     I, R(dest) = src1 + src2);
+  Log_Color(RED, "\naddi failed\n");
   INSTPAT("0100000 ????? ????? 000 ????? 0110011", sub,      R, R(dest) = src1 - src2);
   INSTPAT("0000000 ????? ????? 100 ????? 0110011", xor,      R, R(dest) = src1 ^ src2);
   INSTPAT("??????? ????? ????? 100 ????? 0010011", xori,     I, R(dest) = src1 ^ src2);
