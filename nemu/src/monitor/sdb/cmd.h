@@ -86,7 +86,7 @@ static int cmd_x(char * args){  //usage: x num addr
     puts(args);
     char * nump = strtok(NULL," ");
     char * has_expr = strtok(NULL, " ");
-    if(!has_expr){
+    if(!has_expr || !nump){
         printf(ANSI_FMT("too few arguments\n", ANSI_FG_YELLOW));
         return 0;
     }
@@ -150,10 +150,12 @@ static int cmd_w(char *args){
 static int cmd_d(char * e){
     //d n, or d n address
     //can't use strtok in auto disasm mode. Because strtok will start from the previous position(When the arg is NULL)
-    char * n, * arg2;
+    
+    /*char * n, * arg2;
     Log("\ne = %s\n",e);
     //auto disasm
     //if(e == NULL || streq(e, "riscv64-pc-linux-gnu")){
+    
     if(e == NULL || *(e + 1) == '\0'){      //e == NULL is a guard
         n = e;
         arg2 = NULL;
@@ -169,17 +171,20 @@ static int cmd_d(char * e){
         printf(ANSI_FMT("too few arguments\n", ANSI_FG_YELLOW));
         return 0;
     }
-
-    word_t address;
+    */
+    char * n = strtok(NULL, " ");
+    char * have_expr = strtok(NULL, " ");
+    char * Expr = " $pc";       //default
+    if(!n){
+        printf(ANSI_FMT("too few argument\n", ANSI_FG_YELLOW));
+        return 0;
+    }
+    if(have_expr)
+        Expr = n + strlen(n) + 1;
     int N  = atoi(n);
     bool * success = (bool *)malloc(sizeof(bool));
     *success = true;
-    //case d next n, need to change these variables' values
-    if(arg2 == NULL)
-        address = cpu.pc;
-    else
-        address = expr(Expr, success);
-
+    word_t address = expr(Expr, success);
     if(!*success){
         printf(ANSI_FMT("illegal expression\n", ANSI_FG_YELLOW));
         return 0;
