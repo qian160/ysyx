@@ -87,19 +87,42 @@ static int decode_exec(Decode *D) {
   D->dnpc = D->snpc;    //default
 
 #define INSTPAT_INST(D) ((D)->decInfo.inst)
-//a match is found, react to it according to the args
-//first prepare for operands, then do the things listed in INSTPAT
+//a match is found, do what it supposed to do.
+//first prepare for operands, then do the things listed in __VA_ARGS__
+
 #define INSTPAT_MATCH(D, name, type, ... /* body */ ) { \
   decode_operand(D, &dest, &src1, &src2, concat(TYPE_, type)); \
   __VA_ARGS__ ; \
   IFDEF(CONFIG_SHOW_DECODE_INFORMATION,  \
+  switch(TYPE_##type)  \
+    case(TYPE_I):case(TYPE_R)\
+      printf(ANSI_FMT("the result is 0x%lx\n", ANSI_FG_PINK), R(dest)); break;\
+    case(TYPE_B):case(TYPE_J):\
+      if( src1 == 0)  \
+        printf(ANSI_FMT("branch/jump not taken\n",  ANSI_FG_YELLOW)); \
+      else printf(ANSI_FMT("branch/jump is taken, new PC at 0x%lx", ANSI_FG_YELLOW), src2);\
+)}
+
+
+/*
+
+#define INSTPAT_MATCH(D, name, type, ... /* body  ) { \
+  decode_operand(D, &dest, &src1, &src2, concat(TYPE_, type)); \
+  __VA_ARGS__ ; \
+  IFDEF(CONFIG_SHOW_DECODE_INFORMATION,  \
+  switch(TYPE_##type)  \
   if(TYPE_##type == TYPE_I || TYPE_##type == TYPE_R)  \
     printf(ANSI_FMT("the result is 0x%lx\n", ANSI_FG_PINK), R(dest)); \
-  else if(TYPE_##type == TYPE_I || TYPE_##type == TYPE_R){  \
+  else if(TYPE_##type == TYPE_J || TYPE_##type == TYPE_B){  \
     if( src1 == 0)  \
       printf(ANSI_FMT("branch/jump not taken\n",  ANSI_FG_YELLOW)); \
     else printf(ANSI_FMT("branch/jump is taken, new PC at 0x%lx", ANSI_FG_YELLOW), src2);}\
 )}
+
+
+
+
+*/
   //check one by one
   //note that when we say inst(0), we are counting from the right side(LSB), but str(0) below starts at left side
   //each pattern has its unique mask, key and shift
