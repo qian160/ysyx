@@ -172,6 +172,7 @@ static int cmd_d(char * e){
         return 0;
     }
     */
+    Log("\ne = %s\n", e);
     char * n = strtok(NULL, " ");
     Log("\nn = %s", n);
     char * have_expr = strtok(NULL, " ");
