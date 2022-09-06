@@ -94,14 +94,14 @@ static int decode_exec(Decode *D) {
   decode_operand(D, &dest, &src1, &src2, concat(TYPE_, type)); \
   __VA_ARGS__ ; \
   IFDEF(CONFIG_SHOW_DECODE_INFORMATION,  \
-  switch(TYPE_##type)  \
-    case(TYPE_I):case(TYPE_R)\
+  switch(TYPE_##type){  \
+    case(TYPE_I):case(TYPE_R):\
       printf(ANSI_FMT("the result is 0x%lx\n", ANSI_FG_PINK), R(dest)); break;\
     case(TYPE_B):case(TYPE_J):\
       if( src1 == 0)  \
         printf(ANSI_FMT("branch/jump not taken\n",  ANSI_FG_YELLOW)); break;\
       else printf(ANSI_FMT("branch/jump is taken, new PC at 0x%lx", ANSI_FG_YELLOW), src2); break;\
-    default:  printf("test\n");\
+    default:  printf("test\n");break;}\
 )}
 
 
@@ -184,6 +184,9 @@ static int decode_exec(Decode *D) {
   INSTPAT("??????? ????? ????? ??? ????? ???????", invalid , N, INV(D->pc));
   //M extension
   TODO();
+
+
+
   INSTPAT_END();
 
   R(0) = 0; // reset $zero to 0
