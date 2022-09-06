@@ -93,8 +93,7 @@ static int decode_exec(Decode *D) {
   decode_operand(D, &dest, &src1, &src2, concat(TYPE_, type)); \
   __VA_ARGS__ ; \
   IFDEF(CONFIG_SHOW_DECODE_INFORMATION,  \
-  printf("1\n"),  \
-  printf("2\n")); \
+  printf("1\n")); \
 }
   //check one by one
   //note that when we say inst(0), we are counting from the right side(LSB), but str(0) below starts at left side
