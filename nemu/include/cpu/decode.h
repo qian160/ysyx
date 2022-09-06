@@ -10,6 +10,7 @@ typedef struct Decode {
   ISADecodeInfo isa;  //struct riscv64_ISADecodeInfo, the only member is inst(union).val
   IFDEF(CONFIG_ITRACE, char logbuf[128]); //decode information
   bool is_JALR;
+  char branch_type;
 } Decode;
 
 // --- pattern matching mechanism ---

@@ -19,11 +19,13 @@ enum {
 #define src2I(i) do { *src2 = i; } while (0)
 #define destI(i) do { *dest = i; } while (0)
 
+#define funct3(inst) (BITS(inst, 14, 12))
+
 static word_t immI(uint32_t i) { return SEXT(BITS(i, 31, 20), 12); }
 static word_t immU(uint32_t i) { return SEXT(BITS(i, 31, 12), 20) << 12; }
 static word_t immS(uint32_t i) { return (SEXT(BITS(i, 31, 25), 7) << 5) | BITS(i, 11, 7); }
-static word_t immJ(uint32_t i) { return SEXT((BITS(i, 31, 31) << 20) | (BITS(i, 19, 12) << 12) | (BITS(i, 20, 20) << 11) | (BITS(i, 30, 21) << 1 ), 20); }
-
+static word_t immJ(uint32_t i) { return SEXT((BITS(i, 31, 31) << 20) | (BITS(i, 19, 12) << 12) | (BITS(i, 20, 20) << 11) | (BITS(i, 30, 21) << 1 ), 21); }
+static word_t immB(uint32_t i) { return SEXT(BITS(i, 31, 31) << 12 | BITS(i, 7, 7) << 11 | BITS(i, 30, 25) << 5 | BITS(i, 11, 8) << 1, 21);}
 //src1 and src2 are the source operands which will join the future calculation. Use pointer to communicate with outside
 //question: how to make good use of dest, src1, src2
 static void decode_operand(Decode *s, word_t *dest, word_t *src1, word_t *src2, int type) {
@@ -32,10 +34,14 @@ static void decode_operand(Decode *s, word_t *dest, word_t *src1, word_t *src2, 
   int rd  = BITS(inst, 11, 7);
   int rs1 = BITS(inst, 19, 15);
   int rs2 = BITS(inst, 24, 20);
+  word_t rs1Val = R(rs1);
+  word_t rs2Val = R(rs2);
   word_t pc = s -> pc;
   word_t pc_Plus4 = pc + 4;
-  word_t JAL_TARGET = pc + immJ(inst);
-  word_t JALR_TARGET = R(rs1) + immI(inst);
+  word_t JAL_TARGET     = pc + (sword_t)immJ(inst);
+  word_t JALR_TARGET    = rs1Val + (sword_t)immI(inst);
+  word_t BRANCH_TARGET  = pc + (sword_t)immB(inst);
+  word_t storeAddr      = rs1Val + (sword_t)immS(inst);
   //Log("\nJ: %lx\nI: %lx\nU: %lx\nS: %lx\n", imm_J, imm_I, imm_U, imm_S);
   destR(rd);
   switch (type) {
@@ -48,10 +54,21 @@ static void decode_operand(Decode *s, word_t *dest, word_t *src1, word_t *src2, 
       } 
       break;
     }
-    case TYPE_R: src1R(rs1);                  src2R(rs2); break;
-    case TYPE_U: src1I(immU(inst));           src2I(pc); break;
-    case TYPE_S: src1I(R(rs1) + immS(inst));  src2R(rs2); break;
-    case TYPE_J: src1I(pc_Plus4);             src2I(JAL_TARGET);break;
+    case TYPE_R: src1R(rs1);          src2R(rs2); break;
+    case TYPE_U: src1I(immU(inst));   src2I(pc); break;
+    case TYPE_S: src1I(storeAddr);    src2R(rs2); break;
+    case TYPE_J: src1I(pc_Plus4);     src2I(JAL_TARGET);break;
+    case TYPE_B: {
+      src2I(BRANCH_TARGET);
+        switch (s -> branch_type){  //use src1 as a flag, src2 = branch_target
+        case beq_funct3:  src1I(rs1Val == rs2Val);  break;
+        case bne_funct3:  src1I(rs1Val ^  rs2Val);  break;
+        case blt_funct3:  src1I((sword_t)rs1Val <  (sword_t)rs2Val);  break;
+        case bge_funct3:  src1I((sword_t)rs1Val >= (sword_t)rs2Val);  break;
+        case bltu_funct3: src1I(rs1Val <  rs2Val);  break;
+        case bgeu_funct3: src1I(rs1Val >= rs2Val);  break;
+        }
+    }
   }
 }
 
@@ -83,6 +100,26 @@ static int decode_exec(Decode *s) {
   INSTPAT("??????? ????? ????? 111 ????? 0010011", andi,     I, R(dest) = src1 & src2);
   //compare
   INSTPAT("0000000 ????? ????? 010 ????? 0110011", slt,      R, R(dest) = (sword_t)src1 < (sword_t)src2 ? 1 : 0);
+  INSTPAT("??????? ????? ????? 010 ????? 0010011", slti,     I, R(dest) = (sword_t)src1 < (sword_t)src2 ? 1 : 0);
+  INSTPAT("0000000 ????? ????? 010 ????? 0110011", sltu,     R, R(dest) = src1 < src2 ? 1 : 0);
+  INSTPAT("0000000 ????? ????? 010 ????? 0110011", sltiu,    I, R(dest) = src1 < src2 ? 1 : 0);
+  //shifts
+  INSTPAT("0000000 ????? ????? 001 ????? 0110011", sll,      R, R(dest) = src1 << BITS(src2, 5, 0));
+  INSTPAT("0000000 ????? ????? 001 ????? 0010011", slli,     I, R(dest) = src1 << BITS(src2, 5, 0));
+  INSTPAT("0000000 ????? ????? 101 ????? 0110011", srl,      R, R(dest) = src1 >> BITS(src2, 5, 0));
+  INSTPAT("0000000 ????? ????? 101 ????? 0010011", srli,     I, R(dest) = src1 >> BITS(src2, 5, 0));
+  INSTPAT("0100000 ????? ????? 101 ????? 0110011", sra,      R, R(dest) = (sword_t)src1 >> (sword_t)BITS(src2, 5, 0));
+  INSTPAT("0100000 ????? ????? 101 ????? 0010011", srai,     I, R(dest) = (sword_t)src1 >> (sword_t)BITS(src2, 5, 0));
+  //loads: todo
+
+  //branches
+  INSTPAT("??????? ????? ????? 000 ????? 1100011", beq,      B, s -> dnpc = src1? src2 : s -> dnpc);    //use src1 as a flag
+  INSTPAT("??????? ????? ????? 001 ????? 1100011", bne,      B, s -> dnpc = src1? src2 : s -> dnpc);
+  INSTPAT("??????? ????? ????? 100 ????? 1100011", blt,      B, s -> dnpc = src1? src2 : s -> dnpc);
+  INSTPAT("??????? ????? ????? 101 ????? 1100011", bge,      B, s -> dnpc = src1? src2 : s -> dnpc);
+  INSTPAT("??????? ????? ????? 110 ????? 1100011", bltu,     B, s -> dnpc = src1? src2 : s -> dnpc);
+  INSTPAT("??????? ????? ????? 111 ????? 1100011", bgtu,     B, s -> dnpc = src1? src2 : s -> dnpc);
+  //
   INSTPAT("??????? ????? ????? ??? ????? 0110111", lui,      U, R(dest) = src1 + src2);
   INSTPAT("??????? ????? ????? ??? ????? 0010111", auipc,    U, R(dest) = src1 + src2);
   INSTPAT("??????? ????? ????? 011 ????? 0000011", ld,       I, R(dest) = Mr(src1 + src2, 8));
@@ -103,5 +140,7 @@ int isa_exec_once(Decode *s) {
   s->isa.inst.val = inst;
   //set some decode flags here
   s -> is_JALR = BITS(inst, 6, 0) == 0b1100111; 
+  s -> branch_type  = funct3(inst);
+
   return decode_exec(s);
 }

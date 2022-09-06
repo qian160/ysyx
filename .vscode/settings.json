@@ -6,6 +6,7 @@
         "sdb.h": "c",
         "locale.h": "c",
         "macro.h": "c",
-        "autoconf.h": "c"
+        "autoconf.h": "c",
+        "isa-def.h": "c"
     }
 }
