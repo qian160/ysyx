@@ -69,7 +69,8 @@ void sdb_mainloop() {   //get command
 
     int i;
     for (i = 0; i < NR_CMD; i ++) {
-      if (strcmp(cmd, cmd_table[i].short_name) == 0 || streq(cmd, cmd_table[i].full_name)) {
+      if (streq(cmd, cmd_table[i].short_name) || streq(cmd, cmd_table[i].full_name)) {
+        //Log("\nargs = %s\n", args);
         if (cmd_table[i].handler(args) < 0) { return; } //error when running
         break;
       }
@@ -81,8 +82,12 @@ void sdb_mainloop() {   //get command
   {
     int n = atoi(CONFIG_AUTO_DISASM_NEXT);
     printf(ANSI_FMT("\nnext %d instruction(s) is:\n", ANSI_FG_YELLOW), n);
-    cmd_d(CONFIG_AUTO_DISASM_NEXT);
+    char * s __unused__ = CONFIG_AUTO_DISASM_NEXT;
+    char *buf = (char *) malloc(30);
+    char * arg = strcat(strcat(strcat(buf, " "), CONFIG_AUTO_DISASM_NEXT), " $pc");
+    cmd_d(arg);
     putchar('\n');
+    free(buf);
   }
 #endif
   }

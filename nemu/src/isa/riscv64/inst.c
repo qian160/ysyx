@@ -106,7 +106,7 @@ static int decode_exec(Decode *D) {
   /*
     some frequently used psedo inst:
       li rd, imm:  -> addi rd, x0, 0  load immediate
-      j offset:    -> jal x0, offset (write to x0 will make no influence)
+      j offset:    -> jal x0, offset (write to x0 will make no influence). j 0 may be useful
       jal offset:  -> jalr ra, offset. Use default ra register
   */
   INSTPAT_START();
