@@ -14,8 +14,8 @@ typedef struct {  ///????????
   bool is_JALR : 1;
   bool is_lui  : 1;
   bool is_load : 1;
-  char L_width : 4; //1,2,4,8
-  char S_width : 4;
+  unsigned char L_width : 4; //1,2,4,8
+  unsigned char S_width : 4;
 } riscv64_ISADecodeInfo;
 
 #define isa_mmu_check(vaddr, len, type) (MMU_DIRECT)
