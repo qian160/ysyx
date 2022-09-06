@@ -8,6 +8,8 @@
         "macro.h": "c",
         "autoconf.h": "c",
         "isa-def.h": "c",
-        "cpu.h": "c"
+        "cpu.h": "c",
+        "decode.h": "c",
+        "isa.h": "c"
     }
 }

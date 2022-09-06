@@ -31,7 +31,7 @@ static word_t immB(uint32_t i) { return SEXT(BITS(i, 31, 31) << 12 | BITS(i, 7, 
 //question: how to make good use of dest, src1, src2
 static void decode_operand(Decode * D, word_t *dest, word_t *src1, word_t *src2, int type) {
   //default op is add, xxx = src1 + src2. So just adjust src1 and src2
-  uint32_t inst = D->decInfo.inst;
+  uint32_t inst = D->inst;
   int rd  = BITS(inst, 11, 7);
   int rs1 = BITS(inst, 19, 15);
   int rs2 = BITS(inst, 24, 20);
@@ -83,7 +83,7 @@ static int decode_exec(Decode *D) {
   word_t dest = 0, src1 = 0, src2 = 0;
   D->dnpc = D->snpc;    //default
 
-#define INSTPAT_INST(D) ((D)->decInfo.inst)
+#define INSTPAT_INST(D) ((D)->inst)
 //a match is found, do what it supposed to do.
 //first prepare for operands, then do the things listed in __VA_ARGS__
 
@@ -92,6 +92,7 @@ static int decode_exec(Decode *D) {
   __VA_ARGS__ ; \
   IFDEF(CONFIG_SHOW_DECODE_INFORMATION,  \
   puts(ANSI_FMT("\nInformation about the just execuated instruction:", ANSI_FG_YELLOW));\
+  char buf[30]; \
   printf(ANSI_FMT("type: %c  \noperand1 = 0x%-16lx, operand2 = 0x%-16lx \n", ANSI_FG_YELLOW),tp[TYPE_##type], src1, src2);\
   switch(TYPE_##type){  \
     case(TYPE_I):case(TYPE_R):case(TYPE_U):\
@@ -182,7 +183,7 @@ static int decode_exec(Decode *D) {
   INSTPAT("0000000 00001 00000 000 00000 1110011", ebreak  , N, NEMUTRAP(D->pc, R(10))); // R(10) is $a0
   INSTPAT("??????? ????? ????? ??? ????? ???????", invalid , N, INV(D->pc));
   //M extension
-  TODO();
+  //TODO();
 
 
 
@@ -194,7 +195,7 @@ static int decode_exec(Decode *D) {
 
 int isa_exec_once(Decode *D) {
   uint32_t inst = inst_fetch(&D -> snpc, 4);  //snpc will be updated in fetch ( +4 )
-  D->decInfo.inst = inst;
+  D->inst = inst;
   //set some decode flags here
   D -> decInfo.is_JALR = BITS(inst, 6, 0) == 0b1100111; 
   D -> decInfo.is_lui  = BITS(inst, 5, 5);    //just a possibility
