@@ -106,7 +106,7 @@ static int decode_exec(Decode *D) {
 
 /*
 
-#define INSTPAT_MATCH(D, name, type, ... /* body  ) { \
+#define INSTPAT_MATCH(D, name, type, ...  body  ) { \
   decode_operand(D, &dest, &src1, &src2, concat(TYPE_, type)); \
   __VA_ARGS__ ; \
   IFDEF(CONFIG_SHOW_DECODE_INFORMATION,  \
