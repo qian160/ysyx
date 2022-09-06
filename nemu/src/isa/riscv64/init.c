@@ -12,8 +12,8 @@ static const uint32_t img [] = {             //offset
   0x0052be23,  // sd t0, 28(t0)               /*16*/
   0x01c2be03,  // ld a0, 28(t0)               /*20*/
   0x00100073,  // ebreak (used as nemu_trap)  /*24*/
-  0x198100ff,  // some data                   /*28*/
-  0x11451419,                                 /*32*/
+  0x41919810,  // some data                   /*28*/
+  0x00011451,                                 /*32*/
 };
 
 static void restart() {
