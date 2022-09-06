@@ -41,8 +41,8 @@ static void decode_operand(Decode * D, word_t *dest, word_t *src1, word_t *src2,
   word_t pc_Plus4 = pc + 4;
   word_t JAL_TARGET     = (int64_t)immJ(inst) + (int64_t)pc;//immJ fails for neg numbers
   word_t JALR_TARGET    = immI(inst) + rs1Val;
-  Log("\njal target : %lx\n", JAL_TARGET);
-  Log("\nimmJ = 0x%lx\nimmI = 0x%lx\n", immJ(inst), immI(inst));
+  //Log("\njal target : %lx\n", JAL_TARGET);
+  //Log("\nimmJ = 0x%lx\nimmI = 0x%lx\n", immJ(inst), immI(inst));
   word_t BRANCH_TARGET  = immB(inst) + pc;
   word_t storeAddr      = immS(inst) + rs1Val;
   //Log("\nJ: %lx\nI: %lx\nU: %lx\nS: %lx\n", imm_J, imm_I, imm_U, imm_S);
@@ -195,7 +195,6 @@ static int decode_exec(Decode *D) {
   INSTPAT("??????? ????? ????? ??? ????? 0010111", auipc,    U, R(dest) = src1 + src2);
   //JAL
   INSTPAT("??????? ????? ????? ??? ????? 1101111", jal,      J, R(dest) = src1, D->dnpc = src2);
-  Log("\n\n\njal failed\n\n\n");
   INSTPAT("??????? ????? ????? 000 ????? 1100111", jalr,     I, R(dest) = src1, D->dnpc = src2);
   INSTPAT("0000000 00001 00000 000 00000 1110011", ebreak  , N, NEMUTRAP(D->pc, R(10))); // R(10) is $a0
   //M extension
