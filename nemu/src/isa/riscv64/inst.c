@@ -21,11 +21,11 @@ static const char tp[] = "IUSJRB";    //use type as index
 #define destI(i) do { *dest = i; } while (0)
 
 #define funct3(inst) (BITS(inst, 14, 12))
-
+#define opcode(inst) (BITS(inst, 6, 0))
 static word_t immI(uint32_t i) { return SEXT(BITS(i, 31, 20), 12); }
 static word_t immU(uint32_t i) { return SEXT(BITS(i, 31, 12), 20) << 12; }
 static word_t immS(uint32_t i) { return (SEXT(BITS(i, 31, 25), 7) << 5) | BITS(i, 11, 7); }
-static word_t immJ(uint32_t i) { return SEXT((BITS(i, 31, 31) << 20) | (BITS(i, 19, 12) << 12) | (BITS(i, 20, 20) << 11) | (BITS(i, 30, 21) << 1 ), 21); }
+static word_t immJ(uint32_t i) { return SEXT((BITS(i, 31, 31) << 20) | (BITS(i, 19, 12) << 12) | (BITS(i, 20, 20) << 11) | (BITS(i, 30, 21) << 1 | 0 ), 21); }
 static word_t immB(uint32_t i) { return SEXT(BITS(i, 31, 31) << 12 | BITS(i, 7, 7) << 11 | BITS(i, 30, 25) << 5 | BITS(i, 11, 8) << 1, 21);}
 //src1 and src2 are the source operands which will join the future calculation. Use pointer to communicate with outside
 //question: how to make good use of dest, src1, src2
@@ -39,8 +39,10 @@ static void decode_operand(Decode * D, word_t *dest, word_t *src1, word_t *src2,
   word_t rs2Val = R(rs2);
   word_t pc = D -> pc;
   word_t pc_Plus4 = pc + 4;
-  word_t JAL_TARGET     = immJ(inst) + pc;
+  word_t JAL_TARGET     = (int64_t)immJ(inst) + (int64_t)pc;//immJ fails for neg numbers
   word_t JALR_TARGET    = immI(inst) + rs1Val;
+  //Log("\njal target : %lx\n", JAL_TARGET);
+  //Log("\nimmJ = 0x%lx\nimmI = 0x%lx\n", immJ(inst), immI(inst));
   word_t BRANCH_TARGET  = immB(inst) + pc;
   word_t storeAddr      = immS(inst) + rs1Val;
   //Log("\nJ: %lx\nI: %lx\nU: %lx\nS: %lx\n", imm_J, imm_I, imm_U, imm_S);
@@ -94,17 +96,32 @@ static int decode_exec(Decode *D) {
   puts(ANSI_FMT("\nInformation about the just execuated instruction:", ANSI_FG_GREEN));\
   char buf[30];\
   disassemble(buf, sizeof(buf), D -> pc, (uint8_t *)(&D -> inst), 4);\
-  printf(ANSI_FMT("type-%c: \t%s  \noperand1 = 0x%-16lx, operand2 = 0x%-16lx \n", ANSI_FG_GREEN),tp[TYPE_##type], buf, src1, src2);\
+  printf(ANSI_FMT("type-%c:  %s\nold PC = 0x%lx  \noperand1 = 0x%-16lx, operand2 = 0x%-16lx \n", ANSI_FG_GREEN),tp[TYPE_##type], buf, D -> pc, src1, src2);\
   switch(TYPE_##type){  \
     case(TYPE_I):case(TYPE_R):case(TYPE_U):\
-      printf(ANSI_FMT("this set %s to be 0x%lx\n", ANSI_FG_GREEN), reg_name(dest, 64), R(dest)); break;\
+    if(D -> decInfo.is_load){\
+      printf("width = %d\n", D->decInfo.L_width);\
+      printf(ANSI_FMT("load a value 0x%lx from address: 0x%lx\n", ANSI_FG_YELLOW), Mr(src1 + src2, D -> decInfo.L_width), src1 + src2); \
+    }  \
+    else  {\
+      printf(ANSI_FMT("set %s to be 0x%lx\n", ANSI_FG_GREEN), reg_name(dest, 64), R(dest)); \
+    }\
+    break;\
     case(TYPE_B):case(TYPE_J):\
       if( src1 == 0){  \
-        printf(ANSI_FMT("branch/jump not taken\n",  ANSI_FG_YELLOW)); break;}\
-      else {printf(ANSI_FMT("branch/jump is taken, new PC at 0x%lx", ANSI_FG_YELLOW), src2); break;}\
+        printf(ANSI_FMT("branch/jump not taken\n",  ANSI_FG_YELLOW)); \
+      }\
+      else {\
+        printf(ANSI_FMT("branch/jump is taken, new PC at 0x%lx", ANSI_FG_YELLOW), src2); \
+      }\
+      break;\
+    case(TYPE_S):{\
+      printf(ANSI_FMT("store a value 0x%llx to address 0x%lx\n", ANSI_FG_YELLOW), src2 | BITMASK(D->decInfo.S_width << 3), src1);\
+      break;\
+    }\
     default:  printf("%d\n", TYPE_##type);break;}\
 )}
-
+//width is needed in store
 
 /*
 
@@ -152,8 +169,8 @@ static int decode_exec(Decode *D) {
   //compare
   INSTPAT("0000000 ????? ????? 010 ????? 0110011", slt,      R, R(dest) = (sword_t)src1 < (sword_t)src2 ? 1 : 0);
   INSTPAT("??????? ????? ????? 010 ????? 0010011", slti,     I, R(dest) = (sword_t)src1 < (sword_t)src2 ? 1 : 0);
-  INSTPAT("0000000 ????? ????? 010 ????? 0110011", sltu,     R, R(dest) = src1 < src2 ? 1 : 0);
-  INSTPAT("0000000 ????? ????? 010 ????? 0110011", sltiu,    I, R(dest) = src1 < src2 ? 1 : 0);
+  INSTPAT("0000000 ????? ????? 011 ????? 0110011", sltu,     R, R(dest) = src1 < src2 ? 1 : 0);
+  INSTPAT("??????? ????? ????? 011 ????? 0010011", sltiu,    I, R(dest) = src1 < src2 ? 1 : 0);
   //shifts
   INSTPAT("0000000 ????? ????? 001 ????? 0110011", sll,      R, R(dest) = src1 << BITS(src2, 5, 0));
   INSTPAT("0000000 ????? ????? 001 ????? 0010011", slli,     I, R(dest) = src1 << BITS(src2, 5, 0));
@@ -165,9 +182,10 @@ static int decode_exec(Decode *D) {
   INSTPAT("??????? ????? ????? 000 ????? 0000011", lb,       I, R(dest) = SEXT(Mr(src1 + src2, 1), 8));
   INSTPAT("??????? ????? ????? 001 ????? 0000011", lh,       I, R(dest) = SEXT(Mr(src1 + src2, 2), 16));
   INSTPAT("??????? ????? ????? 010 ????? 0000011", lw,       I, R(dest) = SEXT(Mr(src1 + src2, 4), 32));
-  INSTPAT("??????? ????? ????? 011 ????? 0000011", ld,       I, R(dest) = Mr(src1 + src2, 8));
   INSTPAT("??????? ????? ????? 100 ????? 0000011", lbu,      I, R(dest) = Mr(src1 + src2, 1));
   INSTPAT("??????? ????? ????? 101 ????? 0000011", lhu,      I, R(dest) = Mr(src1 + src2, 2));
+  //store
+  
   //branches
   INSTPAT("??????? ????? ????? 000 ????? 1100011", beq,      B, D -> dnpc = src1? src2 : D -> dnpc);    //use src1 as a flag
   INSTPAT("??????? ????? ????? 001 ????? 1100011", bne,      B, D -> dnpc = src1? src2 : D -> dnpc);
@@ -177,17 +195,33 @@ static int decode_exec(Decode *D) {
   INSTPAT("??????? ????? ????? 111 ????? 1100011", bgtu,     B, D -> dnpc = src1? src2 : D -> dnpc);
   //
   INSTPAT("??????? ????? ????? ??? ????? 0010111", auipc,    U, R(dest) = src1 + src2);
-  INSTPAT("??????? ????? ????? 011 ????? 0100011", sd,       S, Mw(src1, 8, src2));    //addr, len, data
   //JAL
   INSTPAT("??????? ????? ????? ??? ????? 1101111", jal,      J, R(dest) = src1, D->dnpc = src2);
   INSTPAT("??????? ????? ????? 000 ????? 1100111", jalr,     I, R(dest) = src1, D->dnpc = src2);
   INSTPAT("0000000 00001 00000 000 00000 1110011", ebreak  , N, NEMUTRAP(D->pc, R(10))); // R(10) is $a0
-  INSTPAT("??????? ????? ????? ??? ????? ???????", invalid , N, INV(D->pc));
   //M extension
+
+  //RV64I
+  INSTPAT("0000000 ????? ????? 000 ????? 0111011", addw,     R, R(dest) = SEXT((int)src1 + (int)src2, 32));
+  INSTPAT("0100000 ????? ????? 000 ????? 0111011", subw,     R, R(dest) = SEXT((int)src1 - (int)src2, 32));
+  INSTPAT("0000000 ????? ????? 001 ????? 0111011", sllw,     R, R(dest) = SEXT((int)src1 << (int)src2, 32));
+  INSTPAT("0000000 ????? ????? 101 ????? 0111011", srlw,     R, R(dest) = SEXT((uint32_t)src1 >> (uint32_t)src2, 32));
+  INSTPAT("0100000 ????? ????? 101 ????? 0111011", sraw,     R, R(dest) = SEXT((int)src1 >> (int)src2, 32));
+  INSTPAT("??????? ????? ????? 110 ????? 0000011", lwu,      I, R(dest) = Mr(src1 + src2, 4));
+  INSTPAT("??????? ????? ????? 011 ????? 0000011", ld,       I, R(dest) = Mr(src1 + src2, 8));
+  INSTPAT("??????? ????? ????? 011 ????? 0100011", sd,       S, Mw(src1, 8, src2));    //addr, len, data
+
+  INSTPAT("??????? ????? ????? 000 ????? 0011011", addiw,    I, R(dest) = SEXT((int)src1 + (int)src2, 32));
+  INSTPAT("0000000 ????? ????? 001 ????? 0011011", slliw,    I, R(dest) = SEXT((int)src1 << (int)src2, 32));
+  INSTPAT("0000000 ????? ????? 101 ????? 0011011", srliw,    I, R(dest) = SEXT((uint32_t)src1 >> (uint32_t)src2, 32));
+  INSTPAT("0100000 ????? ????? 101 ????? 0011011", sraiw,    I, R(dest) = SEXT((int)src1 >> (int)src2, 32));
+
+  //RV64M
   //TODO();
 
 
 
+  INSTPAT("??????? ????? ????? ??? ????? ???????", invalid , N, INV(D->pc));
   INSTPAT_END();
 
   R(0) = 0; // reset $zero to 0
@@ -197,10 +231,13 @@ static int decode_exec(Decode *D) {
 int isa_exec_once(Decode *D) {
   uint32_t inst = inst_fetch(&D -> snpc, 4);  //snpc will be updated in fetch ( +4 )
   D->inst = inst;
+  char fct3 = funct3(inst);
   //set some decode flags here
-  D -> decInfo.is_JALR = BITS(inst, 6, 0) == 0b1100111; 
-  D -> decInfo.is_lui  = BITS(inst, 5, 5);    //just a possibility
-  D -> decInfo.funct3  = funct3(inst);
-
+  D -> decInfo.is_JALR  = opcode(inst) == jalr_opcode; 
+  D -> decInfo.is_lui   = BITS(inst, 5, 5);    //just a possibility
+  D -> decInfo.funct3   = fct3;
+  D -> decInfo.is_load  = opcode(inst) == load_opcode;
+  D -> decInfo.L_width  = 1 << (fct3 & 0b11);
+  D -> decInfo.S_width  = 1 << fct3;
   return decode_exec(D);
 }

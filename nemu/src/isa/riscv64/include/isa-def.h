@@ -10,15 +10,19 @@ typedef struct {
 
 // decode
 typedef struct {  ///????????
-  char funct3 : 3;
+  char funct3  : 3;
   bool is_JALR : 1;
   bool is_lui  : 1;
-
+  bool is_load : 1;
+  unsigned char L_width : 4; //1,2,4,8
+  unsigned char S_width : 4;
 } riscv64_ISADecodeInfo;
 
 #define isa_mmu_check(vaddr, len, type) (MMU_DIRECT)
 
 #define jalr_opcode  0b1100111
+#define load_opcode  0b0000011
+#define store_opcode 0b0100011
 
 #define beq_funct3   0b000
 #define bne_funct3   0b001
