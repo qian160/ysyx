@@ -229,10 +229,12 @@ static int decode_exec(Decode *D) {
 int isa_exec_once(Decode *D) {
   uint32_t inst = inst_fetch(&D -> snpc, 4);  //snpc will be updated in fetch ( +4 )
   D->inst = inst;
+  char fct3 = funct3(inst);
   //set some decode flags here
   D -> decInfo.is_JALR  = opcode(inst) == jalr_opcode; 
   D -> decInfo.is_lui   = BITS(inst, 5, 5);    //just a possibility
-  D -> decInfo.funct3   = funct3(inst);
+  D -> decInfo.funct3   = fct3;
   D -> decInfo.is_load  = opcode(inst) == load_opcode;
+  D -> decInfo.L_width  = fct3 == 0 ? 1 : fct3 == 1 ? 2 : fct3 == 2 ? 4 : fct3 == 3 ? 8 : fct3 == 4 ? 1 ? fct3 == 5 ? 2 : 4 : 0;
   return decode_exec(D);
 }
