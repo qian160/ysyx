@@ -11,7 +11,7 @@ config PRINT_TOKEN
   bool "Enable print tokens"
   default y
   help
-    Print the tokens after they are generated in make_token
+    Print the tokens after you type some expressions. This is used in early debug time
 config AUTO_DISASM_NEXT
   string "Automatically disasm next instruction"
   default "1"
