@@ -6,14 +6,14 @@
 //a memcpy will overcover this if a img file is used
 static const uint32_t img [] = {             //offset
   0x00000297,  // auipc t0,0                  /*0*/
-  0x07200313,  // li t1, 114                  /*4*/
-  0x20200393,  // li t2, 514                  /*8*/
+  0xfff00313,  // li t1, -1                   /*4*/
+  0x02028e83,  // lb t4, 32(t0)               /*8*/
   0x01c2be03,  // ld t3, 28(t0)               /*12*/
   0x0052be23,  // sd t0, 28(t0)               /*16*/
   0x01c2be03,  // ld a0, 28(t0)               /*20*/
   0x00100073,  // ebreak (used as nemu_trap)  /*24*/
   0x11451419,  // some data                   /*28*/
-  0X000000ff,                                 /*32*/
+  0X198100ff,                                 /*32*/
 };
 
 static void restart() {
