@@ -39,7 +39,7 @@ static void decode_operand(Decode * D, word_t *dest, word_t *src1, word_t *src2,
   word_t rs2Val = R(rs2);
   word_t pc = D -> pc;
   word_t pc_Plus4 = pc + 4;
-  word_t JAL_TARGET     = immJ(inst) + pc;//immJ fails for neg numbers
+  word_t JAL_TARGET     = (int64_t)immJ(inst) + (int64_t)pc;//immJ fails for neg numbers
   word_t JALR_TARGET    = immI(inst) + rs1Val;
   Log("\njal target : %lx\n", JAL_TARGET);
   Log("\nimmJ = 0x%lx\n", immJ(inst));
