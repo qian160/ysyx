@@ -148,8 +148,8 @@ static int cmd_d(char * e){
     char * n, * arg2;
     Log("\ne = %s\n",e);
     //auto disasm
-    if(e == NULL || streq(e, "riscv64-pc-linux-gnu")){
-    //if(e == NULL || *(e + 1) == '\0'){      //e == NULL is a guard
+    //if(e == NULL || streq(e, "riscv64-pc-linux-gnu")){
+    if(e == NULL || *(e + 1) == '\0'){      //e == NULL is a guard
         n = e;
         arg2 = NULL;
     }
