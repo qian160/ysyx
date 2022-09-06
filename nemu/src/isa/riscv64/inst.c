@@ -42,7 +42,7 @@ static void decode_operand(Decode * D, word_t *dest, word_t *src1, word_t *src2,
   word_t JAL_TARGET     = (int64_t)immJ(inst) + (int64_t)pc;//immJ fails for neg numbers
   word_t JALR_TARGET    = immI(inst) + rs1Val;
   Log("\njal target : %lx\n", JAL_TARGET);
-  Log("\nimmJ = 0x%lx, inst = 0x%x\n", immJ(inst), inst);
+  Log("\nimmJ = 0x%lx\nimmI = 0x%lx\n", immJ(inst), immI(inst));
   word_t BRANCH_TARGET  = immB(inst) + pc;
   word_t storeAddr      = immS(inst) + rs1Val;
   //Log("\nJ: %lx\nI: %lx\nU: %lx\nS: %lx\n", imm_J, imm_I, imm_U, imm_S);
