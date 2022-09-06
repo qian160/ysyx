@@ -55,7 +55,7 @@ static void decode_operand(Decode * D, word_t *dest, word_t *src1, word_t *src2,
       else{
           src1R(rs1);         src2I(immI(inst));  
 #ifdef CONFIG_SHOW_DECODE_INFORMATION
-    printf(ANSI_FMT("rs1Val = %lx, rs2Val = %lx\n", ANSI_FG_CYAN), rs1Val, rs2Val);
+    printf(ANSI_FMT("operand1 = %lx, operand2 = %lx\n", ANSI_FG_CYAN), rs1Val, immI(inst));
 #endif
           break;
       } 
