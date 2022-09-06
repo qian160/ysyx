@@ -22,6 +22,11 @@ config SHOW_DECODE_INFORMATION
   default y
   help
     For debug use
+config SHOW_EXECUATED
+  bool "Show the instruction after it was execuated"
+  default y
+  help
+    This is sometimes annoying
 endmenu
 
 choice
