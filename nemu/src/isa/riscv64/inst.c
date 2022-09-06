@@ -21,7 +21,7 @@ static const char tp[] = "IUSJRB";    //use type as index
 #define destI(i) do { *dest = i; } while (0)
 
 #define funct3(inst) (BITS(inst, 14, 12))
-
+#define opcode(inst) (BITS(inst, 6, 0))
 static word_t immI(uint32_t i) { return SEXT(BITS(i, 31, 20), 12); }
 static word_t immU(uint32_t i) { return SEXT(BITS(i, 31, 12), 20) << 12; }
 static word_t immS(uint32_t i) { return (SEXT(BITS(i, 31, 25), 7) << 5) | BITS(i, 11, 7); }
@@ -99,7 +99,9 @@ static int decode_exec(Decode *D) {
   printf(ANSI_FMT("type-%c:  %s\nold PC = 0x%lx  \noperand1 = 0x%-16lx, operand2 = 0x%-16lx \n", ANSI_FG_GREEN),tp[TYPE_##type], buf, D -> pc, src1, src2);\
   switch(TYPE_##type){  \
     case(TYPE_I):case(TYPE_R):case(TYPE_U):\
-      printf(ANSI_FMT("this set %s to be 0x%lx\n", ANSI_FG_GREEN), reg_name(dest, 64), R(dest)); break;\
+    if(D -> decInfo.is_load){\
+      printf(ANSI_FMT("load a value 0x%lx from address: 0x%lx", ANSI_FG_YELLOW), Mr(src1 + src2, 8), src1 + src2); break;}  \
+    else  {printf(ANSI_FMT("set %s to be 0x%lx\n", ANSI_FG_GREEN), reg_name(dest, 64), R(dest)); break;}\
     case(TYPE_B):case(TYPE_J):\
       if( src1 == 0){  \
         printf(ANSI_FMT("branch/jump not taken\n",  ANSI_FG_YELLOW)); break;}\
@@ -216,9 +218,9 @@ int isa_exec_once(Decode *D) {
   uint32_t inst = inst_fetch(&D -> snpc, 4);  //snpc will be updated in fetch ( +4 )
   D->inst = inst;
   //set some decode flags here
-  D -> decInfo.is_JALR = BITS(inst, 6, 0) == 0b1100111; 
-  D -> decInfo.is_lui  = BITS(inst, 5, 5);    //just a possibility
-  D -> decInfo.funct3  = funct3(inst);
-
+  D -> decInfo.is_JALR  = opcode(inst) == jalr_opcode; 
+  D -> decInfo.is_lui   = BITS(inst, 5, 5);    //just a possibility
+  D -> decInfo.funct3   = funct3(inst);
+  D -> decInfo.is_load  = opcode(inst) == load_opcode;
   return decode_exec(D);
 }
