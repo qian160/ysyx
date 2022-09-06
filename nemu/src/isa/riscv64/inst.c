@@ -53,7 +53,11 @@ static void decode_operand(Decode * D, word_t *dest, word_t *src1, word_t *src2,
           src1I(pc_Plus4);    src2I(JALR_TARGET); break;
       }
       else{
-          src1R(rs1);         src2I(immI(inst));  break;
+          src1R(rs1);         src2I(immI(inst));  
+#ifdef CONFIG_SHOW_DECODE_INFORMATION
+    printf(ANSI_FMT("rs1Val = %lx, rs2Val = %lx\n", ANSI_FG_CYAN), rs1Val, rs2Val);
+#endif
+          break;
       } 
     }
     case TYPE_U: {
