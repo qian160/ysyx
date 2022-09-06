@@ -198,7 +198,7 @@ static int cmd_d(char * e){
         //name
         disassemble(p, buf + sizeof(buf) - p, pc, (uint8_t *)&inst, 4);
         //full inst is ready
-        puts(ANSI_FMT(buf, ANSI_FG_CYAN));
+        printf(ANSI_FMT(buf, ANSI_FG_CYAN));
         pc += 4;        
     }
 
