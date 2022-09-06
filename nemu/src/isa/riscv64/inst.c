@@ -95,7 +95,7 @@ static int decode_exec(Decode *D) {
   puts(ANSI_FMT("\nInformation about the just execuated instruction:", ANSI_FG_GREEN));\
   char buf[30];\
   disassemble(buf, sizeof(buf), D -> pc, (uint8_t *)(&D -> inst), 4);\
-  printf(ANSI_FMT("type-%c: \t%s  \noperand1 = 0x%-16lx, operand2 = 0x%-16lx \n", ANSI_FG_GREEN),tp[TYPE_##type], buf, src1, src2);\
+  printf(ANSI_FMT("type-%c:  %s  at PC = 0x%lx  \noperand1 = 0x%-16lx, operand2 = 0x%-16lx \n", ANSI_FG_GREEN),tp[TYPE_##type], buf, D -> pc, src1, src2);\
   switch(TYPE_##type){  \
     case(TYPE_I):case(TYPE_R):case(TYPE_U):\
       printf(ANSI_FMT("this set %s to be 0x%lx\n", ANSI_FG_GREEN), reg_name(dest, 64), R(dest)); break;\
