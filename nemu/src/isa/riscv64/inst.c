@@ -99,7 +99,7 @@ static int decode_exec(Decode *D) {
       if( src1 == 0){  \
         printf(ANSI_FMT("branch/jump not taken\n",  ANSI_FG_YELLOW)); break;}\
       else {printf(ANSI_FMT("branch/jump is taken, new PC at 0x%lx", ANSI_FG_YELLOW), src2); break;}\
-    default:  printf("test\n");break;}\
+    default:  printf("%d\n", TYPE_##type);break;}\
 )}
 
 
