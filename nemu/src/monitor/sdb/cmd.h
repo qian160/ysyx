@@ -173,7 +173,7 @@ static int cmd_d(char * e){
     }
     */
     Log("\ne = %s\n", e);
-    char * n = strtok(NULL, " ");
+    char * n = strtok(e, " ");
     Log("\nn = %s", n);
     char * have_expr = strtok(NULL, " ");
     char * Expr = " $pc";       //default
