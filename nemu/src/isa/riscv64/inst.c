@@ -115,7 +115,7 @@ static int decode_exec(Decode *D) {
       }\
       break;\
     case(TYPE_S):\
-      printf(ANSI_FMT("store a value 0x%lx to address 0x%lx\n", ANSI_FG_YELLOW), src2 | BITMASK(D->decInfo.S_width << 3), src1);\
+      printf(ANSI_FMT("store a value 0x%llx to address 0x%lx\n", ANSI_FG_YELLOW), src2 | BITMASK(D->decInfo.S_width << 3), src1);\
     default:  printf("%d\n", TYPE_##type);break;}\
 )}
 //width is needed in store
