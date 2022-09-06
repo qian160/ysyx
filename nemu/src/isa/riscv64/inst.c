@@ -94,12 +94,12 @@ static int decode_exec(Decode *D) {
   __VA_ARGS__ ; \
   IFDEF(CONFIG_SHOW_DECODE_INFORMATION,  \
   if(TYPE_##type == TYPE_I || TYPE_##type == TYPE_R)  \
-    printf(ANSI_FMT("the result is 0x%lx\n", ANSI_FG_PINK), R(dest));) \
+    printf(ANSI_FMT("the result is 0x%lx\n", ANSI_FG_PINK), R(dest)); \
   else if(TYPE_##type == TYPE_I || TYPE_##type == TYPE_R){  \
     if( src1 == 0)  \
       printf(ANSI_FMT("branch/jump not taken\n",  ANSI_FG_YELLOW)); \
     else printf(ANSI_FMT("branch/jump is taken, new PC at 0x%lx", ANSI_FG_YELLOW), src2);}\
-}
+)}
   //check one by one
   //note that when we say inst(0), we are counting from the right side(LSB), but str(0) below starts at left side
   //each pattern has its unique mask, key and shift
