@@ -98,7 +98,7 @@ static int decode_exec(Decode *D) {
   char buf[30];\
   disassemble(buf, sizeof(buf), D -> pc, (uint8_t *)(&D -> inst), 4);\
   printf(ANSI_FMT("type-%c:  %s\nold PC = 0x%lx  \noperand1 = 0x%-16lx, operand2 = 0x%-16lx \n", ANSI_FG_GREEN),tp[TYPE_##type], buf, D -> pc, src1, src2);\
-  char fct3 = D -> decInfo.funct3;\
+  int fct3 = D -> decInfo.funct3;\
   switch(TYPE_##type){  \
     case(TYPE_I):case(TYPE_R):case(TYPE_U):\
     if(D -> decInfo.is_load){\
