@@ -26,7 +26,7 @@ config SHOW_EXECUATED
   bool "Show the instruction after it was execuated"
   default y
   help
-    This is sometimes annoying
+    This will cause conflicts with SHOW_DECODE_INFORMATION. Dont open both
 endmenu
 
 choice
