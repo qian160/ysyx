@@ -100,6 +100,7 @@ static int decode_exec(Decode *D) {
   switch(TYPE_##type){  \
     case(TYPE_I):case(TYPE_R):case(TYPE_U):\
     if(D -> decInfo.is_load){\
+      printf("width = %d\n", D->decInfo.L_width);\
       printf(ANSI_FMT("load a value 0x%lx from address: 0x%lx", ANSI_FG_YELLOW), Mr(src1 + src2, D -> decInfo.L_width), src1 + src2); \
     }  \
     else  {\
