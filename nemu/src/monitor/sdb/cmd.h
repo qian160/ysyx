@@ -163,7 +163,7 @@ static int cmd_d(char * e){
     }
     if(have_expr)
         //Expr = n + strlen(n) + 1;
-        Expr = temp + n - e + strlen(n) + 1;
+        Expr = temp + (int64_t)n - (int64_t)e + strlen(n) + 1;
     int N  = atoi(n);
     bool * success = (bool *)malloc(sizeof(bool));
     *success = true;
