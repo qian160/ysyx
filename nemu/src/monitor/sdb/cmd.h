@@ -146,6 +146,7 @@ static int cmd_d(char * e){
     //d n, or d n address
     //can't use strtok in auto disasm mode. Because strtok will start from the previous position(When the arg is NULL)
     char * n, * arg2;
+    Log("\ne = %s\n",e);
     //auto disasm
     if(e == NULL || streq(e, "riscv64-pc-linux-gnu")){
     //if(e == NULL || *(e + 1) == '\0'){      //e == NULL is a guard
