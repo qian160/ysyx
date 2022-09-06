@@ -148,7 +148,6 @@ static int cmd_w(char *args){
 }
 
 static int cmd_d(char * e){
-    Log("\n%s\n", e);
     //d n, or d n address
     char * n = strtok(e, " ");          //start from e
     char * have_expr = strtok(NULL, " ");
