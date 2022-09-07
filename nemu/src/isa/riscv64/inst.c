@@ -80,8 +80,10 @@ static void decode_operand(Decode * D, word_t *dest, word_t *src1, word_t *src2,
     }
   }
 }
+
 #define L_width(fct3) (1 << (fct3 & 0b11))
 #define S_width(fct3) (1 << fct3)
+
 static int decode_exec(Decode *D) {
   word_t dest = 0, src1 = 0, src2 = 0;
   D->dnpc = D->snpc;    //default
@@ -122,27 +124,7 @@ static int decode_exec(Decode *D) {
     }\
     default:  printf("type %d\n", TYPE_##type);break;}\
 )}
-//width is needed in store
 
-/*
-
-#define INSTPAT_MATCH(D, name, type, ...  body  ) { \
-  decode_operand(D, &dest, &src1, &src2, concat(TYPE_, type)); \
-  __VA_ARGS__ ; \
-  IFDEF(CONFIG_SHOW_DECODE_INFORMATION,  \
-  switch(TYPE_##type)  \
-  if(TYPE_##type == TYPE_I || TYPE_##type == TYPE_R)  \
-    printf(ANSI_FMT("the result is 0x%lx\n", ANSI_FG_PINK), R(dest)); \
-  else if(TYPE_##type == TYPE_J || TYPE_##type == TYPE_B){  \
-    if( src1 == 0)  \
-      printf(ANSI_FMT("branch/jump not taken\n",  ANSI_FG_YELLOW)); \
-    else printf(ANSI_FMT("branch/jump is taken, new PC at 0x%lx", ANSI_FG_YELLOW), src2);}\
-)}
-
-
-
-
-*/
   //check one by one
   //note that when we say inst(0), we are counting from the right side(LSB), but str(0) below starts at left side
   //each pattern has its unique mask, key and shift
