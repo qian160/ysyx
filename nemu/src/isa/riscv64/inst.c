@@ -140,6 +140,8 @@ static int decode_exec(Decode *D) {
       j offset:    -> jal x0, offset (write to x0 will make no influence). j 0 may be useful
       jal offset:  -> jalr ra, offset. Use default ra register
       ret -> jalr x0, ra, 0
+
+      auipc + addi : get the address of a section
   */
   INSTPAT_START();
   //we can put frequently used inst at first, since these matches will be execuated in sequence
