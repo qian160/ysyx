@@ -113,13 +113,16 @@ static int decode_exec(Decode *D) {
       printf(ANSI_FMT("set %s to be 0x%lx\n", ANSI_FG_GREEN), reg_name(dest), R(dest)); \
     }\
     break;\
-    case(TYPE_B):case(TYPE_J):\
+    case(TYPE_B):\
       if( src1 == 0){  \
-        printf(ANSI_FMT("branch/jump not taken\n",  ANSI_FG_YELLOW)); \
+        printf(ANSI_FMT("branch is not taken\n",  ANSI_FG_YELLOW)); \
       }\
       else {\
-        printf(ANSI_FMT("branch/jump is taken, new PC at 0x%lx", ANSI_FG_YELLOW), src2); \
+        printf(ANSI_FMT("branch is taken, new PC at 0x%lx", ANSI_FG_YELLOW), src2); \
       }\
+      break;\
+    case(TYPE_J):\
+      printf(ANSI_FMT("jal, set %s = 0x%lx, new PC at 0x%lx", ANSI_FG_YELLOW), reg_name(dest), src1, src2);\
       break;\
     case(TYPE_S):{\
       printf(ANSI_FMT("store a value 0x%llx to address 0x%lx\n", ANSI_FG_YELLOW), src2 | BITMASK(S_width(fct3) << 3), src1);\
