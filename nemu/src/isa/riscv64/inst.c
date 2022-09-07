@@ -109,7 +109,7 @@ static int decode_exec(Decode *D) {
       printf(ANSI_FMT("jalr, set %s = 0x%lx, new PC at 0x%lx\n", ANSI_FG_YELLOW), reg_name(dest), src1, src2);\
     }\
     else  {\
-      printf(ANSI_FMT("set %s to be 0x%lx\n", ANSI_FG_GREEN), reg_name(dest), R(dest)); \
+      printf(ANSI_FMT("set %s = 0x%lx\n", ANSI_FG_GREEN), reg_name(dest), R(dest)); \
     }\
     break;\
     case(TYPE_B):\
