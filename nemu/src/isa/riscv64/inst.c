@@ -24,9 +24,10 @@ static const char tp[] = "IUSJRB";    //use type as index
 #define opcode(inst) (BITS(inst, 6, 0))
 static word_t immI(uint32_t i) { return SEXT(BITS(i, 31, 20), 12); }
 static word_t immU(uint32_t i) { return SEXT(BITS(i, 31, 12), 20) << 12; }
-static word_t immS(uint32_t i) { return (SEXT(BITS(i, 31, 25), 7) << 5) | BITS(i, 11, 7); }
-static word_t immJ(uint32_t i) { return SEXT((BITS(i, 31, 31) << 20) | (BITS(i, 19, 12) << 12) | (BITS(i, 20, 20) << 11) | (BITS(i, 30, 21) << 1 | 0 ), 21); }
-static word_t immB(uint32_t i) { return SEXT(BITS(i, 31, 31) << 12 | BITS(i, 7, 7) << 11 | BITS(i, 30, 25) << 5 | BITS(i, 11, 8) << 1, 21);}
+static word_t immS(uint32_t i) { return SEXT((BITS(i, 31, 25) << 5) | BITS(i, 11, 7), 12); }
+static word_t immJ(uint32_t i) { return SEXT((BITS(i, 31, 31) << 20) | (BITS(i, 19, 12) << 12) | (BITS(i, 20, 20) << 11) | (BITS(i, 30, 21) << 1 ), 21); }
+static word_t immB(uint32_t i) { return SEXT((BITS(i, 31, 31) << 12) | (BITS(i, 7, 7) << 11) | (BITS(i, 30, 25) << 5) | (BITS(i, 11, 8) << 1) | 0, 13);}
+//static word_t immB(uint32_t i) { return SEXT( (BITS(i, 31, 31)) | , 12); }
 //src1 and src2 are the source operands which will join the future calculation. Use pointer to communicate with outside
 //question: how to make good use of dest, src1, src2
 static void decode_operand(Decode * D, word_t *dest, word_t *src1, word_t *src2, int type) {
@@ -41,11 +42,9 @@ static void decode_operand(Decode * D, word_t *dest, word_t *src1, word_t *src2,
   word_t pc_Plus4 = pc + 4;
   word_t JAL_TARGET     = (int64_t)immJ(inst) + (int64_t)pc;//immJ fails for neg numbers
   word_t JALR_TARGET    = immI(inst) + rs1Val;
-  //Log("\njal target : %lx\n", JAL_TARGET);
-  //Log("\nimmJ = 0x%lx\nimmI = 0x%lx\n", immJ(inst), immI(inst));
+  Log("\nimmJ = 0x%lx\nimmI = 0x%lx\nimmB = 0x%lx\nimmS = 0x%lx\n", immJ(inst), immI(inst), immB(inst), immS(inst));
   word_t BRANCH_TARGET  = immB(inst) + pc;
   word_t storeAddr      = immS(inst) + rs1Val;
-  //Log("\nJ: %lx\nI: %lx\nU: %lx\nS: %lx\n", imm_J, imm_I, imm_U, imm_S);
   destR(rd);
   switch (type) {
     case TYPE_R: src1I(rs1Val);       src2I(rs2Val);    break;
@@ -125,7 +124,7 @@ static int decode_exec(Decode *D) {
       printf(ANSI_FMT("jal, set %s = 0x%lx, new PC at 0x%lx\n", ANSI_FG_YELLOW), reg_name(dest), src1, src2);\
       break;\
     case(TYPE_S):{\
-      printf(ANSI_FMT("store a value 0x%llx to address 0x%lx\n", ANSI_FG_YELLOW), src2 | BITMASK(S_width(fct3) << 3), src1);\
+      printf(ANSI_FMT("store a value 0x%lx to address 0x%lx\n", ANSI_FG_YELLOW), src2 | BITMASK(S_width(fct3) << 3), src1);\
       break;\
     }\
     default:  printf("type %d\n", TYPE_##type);break;}\
@@ -139,6 +138,9 @@ static int decode_exec(Decode *D) {
       li rd, imm:  -> addi rd, x0, 0  load immediate
       j offset:    -> jal x0, offset (write to x0 will make no influence). j 0 may be useful
       jal offset:  -> jalr ra, offset. Use default ra register
+      ret -> jalr x0, ra, 0
+
+      auipc + addi : get the address of a section
   */
   INSTPAT_START();
   //we can put frequently used inst at first, since these matches will be execuated in sequence
@@ -154,7 +156,6 @@ static int decode_exec(Decode *D) {
   INSTPAT("??????? ????? ????? 110 ????? 0010011", ori,      I, R(dest) = src1 | src2);
   INSTPAT("0000000 ????? ????? 111 ????? 0110011", and,      R, R(dest) = src1 & src2);
   INSTPAT("??????? ????? ????? 111 ????? 0010011", andi,     I, R(dest) = src1 & src2);
-  INSTPAT("??????? ????? ????? ??? ????? 0110111", lui,      U, R(dest) = src1 + src2);
   //compare
   INSTPAT("0000000 ????? ????? 010 ????? 0110011", slt,      R, R(dest) = (sword_t)src1 < (sword_t)src2 ? 1 : 0);
   INSTPAT("??????? ????? ????? 010 ????? 0010011", slti,     I, R(dest) = (sword_t)src1 < (sword_t)src2 ? 1 : 0);
@@ -174,7 +175,9 @@ static int decode_exec(Decode *D) {
   INSTPAT("??????? ????? ????? 100 ????? 0000011", lbu,      I, R(dest) = Mr(src1 + src2, 1));
   INSTPAT("??????? ????? ????? 101 ????? 0000011", lhu,      I, R(dest) = Mr(src1 + src2, 2));
   //store
-  
+  INSTPAT("??????? ????? ????? 010 ????? 0100011", sw,       S, Mw(src1, 4, src2));
+  INSTPAT("??????? ????? ????? 001 ????? 0100011", sh,       S, Mw(src1, 2, src2));
+  INSTPAT("??????? ????? ????? 000 ????? 0100011", sb,       S, Mw(src1, 1, src2));
   //branches
   INSTPAT("??????? ????? ????? 000 ????? 1100011", beq,      B, D -> dnpc = src1? src2 : D -> dnpc);    //use src1 as a flag
   INSTPAT("??????? ????? ????? 001 ????? 1100011", bne,      B, D -> dnpc = src1? src2 : D -> dnpc);
@@ -182,14 +185,21 @@ static int decode_exec(Decode *D) {
   INSTPAT("??????? ????? ????? 101 ????? 1100011", bge,      B, D -> dnpc = src1? src2 : D -> dnpc);
   INSTPAT("??????? ????? ????? 110 ????? 1100011", bltu,     B, D -> dnpc = src1? src2 : D -> dnpc);
   INSTPAT("??????? ????? ????? 111 ????? 1100011", bgtu,     B, D -> dnpc = src1? src2 : D -> dnpc);
-  //
+  //U-type
   INSTPAT("??????? ????? ????? ??? ????? 0010111", auipc,    U, R(dest) = src1 + src2);
+  INSTPAT("??????? ????? ????? ??? ????? 0110111", lui,      U, R(dest) = src1 + src2);
   //JAL
   INSTPAT("??????? ????? ????? ??? ????? 1101111", jal,      J, R(dest) = src1, D->dnpc = src2);
   INSTPAT("??????? ????? ????? 000 ????? 1100111", jalr,     I, R(dest) = src1, D->dnpc = src2);
-  INSTPAT("0000000 00001 00000 000 00000 1110011", ebreak  , N, NEMUTRAP(D->pc, R(10))); // R(10) is $a0
   //M extension
-
+  INSTPAT("0000001 ????? ????? 000 ????? 0110011", mul,      R, R(dest) = (sword_t)src1 * (sword_t)src2);
+  INSTPAT("0000001 ????? ????? 001 ????? 0110011", mulh,     R, R(dest) = BITS((__int128_t)src1 * (__int128_t)src2, 127, 64));
+  INSTPAT("0000001 ????? ????? 010 ????? 0110011", mulhsu,   R, R(dest) = BITS((__int128_t)src1 * (__uint128_t)src2, 127, 64));
+  INSTPAT("0000001 ????? ????? 011 ????? 0110011", mulhu,    R, R(dest) = BITS((__uint128_t)src1 * (__uint128_t)src2, 127, 64));
+  INSTPAT("0000001 ????? ????? 100 ????? 0110011", div,      R, R(dest) = (sword_t)src1 / (sword_t)src2);
+  INSTPAT("0000001 ????? ????? 101 ????? 0110011", divu,     R, R(dest) = src1 / src2);
+  INSTPAT("0000001 ????? ????? 110 ????? 0110011", rem,      R, R(dest) = (sword_t)src1 / (sword_t)src2);
+  INSTPAT("0000001 ????? ????? 111 ????? 0110011", remu,     R, R(dest) = src1 / src2);
   //RV64I
   INSTPAT("0000000 ????? ????? 000 ????? 0111011", addw,     R, R(dest) = SEXT((int)src1 + (int)src2, 32));
   INSTPAT("0100000 ????? ????? 000 ????? 0111011", subw,     R, R(dest) = SEXT((int)src1 - (int)src2, 32));
@@ -204,12 +214,14 @@ static int decode_exec(Decode *D) {
   INSTPAT("0000000 ????? ????? 001 ????? 0011011", slliw,    I, R(dest) = SEXT((int)src1 << (int)src2, 32));
   INSTPAT("0000000 ????? ????? 101 ????? 0011011", srliw,    I, R(dest) = SEXT((uint32_t)src1 >> (uint32_t)src2, 32));
   INSTPAT("0100000 ????? ????? 101 ????? 0011011", sraiw,    I, R(dest) = SEXT((int)src1 >> (int)src2, 32));
-
   //RV64M
-  //TODO();
+  INSTPAT("0000001 ????? ????? 000 ????? 0111011", mulw,     R, R(dest) = (int32_t)src1 * (int32_t)src2);
+  INSTPAT("0000001 ????? ????? 100 ????? 0111011", divw,     R, R(dest) = (int32_t)src1 / (int32_t)src2);
+  INSTPAT("0000001 ????? ????? 101 ????? 0111011", divuw,    R, R(dest) = (uint32_t)src1 / (uint32_t)src2);
+  INSTPAT("0000001 ????? ????? 110 ????? 0111011", remw,     R, R(dest) = (int32_t)src1 % (int32_t)src2);
+  INSTPAT("0000001 ????? ????? 111 ????? 0111011", remuw,    R, R(dest) = (uint32_t)src1 % (uint32_t)src2);
 
-
-
+  INSTPAT("0000000 00001 00000 000 00000 1110011", ebreak  , N, NEMUTRAP(D->pc, R(10))); // R(10) is $a0
   INSTPAT("??????? ????? ????? ??? ????? ???????", invalid , N, INV(D->pc));
   INSTPAT_END();
 
