@@ -74,7 +74,7 @@
 // NOTE2: each element in the container can be a tuple
 #define MAP(c, f) c(f)
 
-#define BITMASK(bits) (((__uint128_t)1 << (bits)) - 1)
+#define BITMASK(bits) (word_t)(((__uint128_t)1 << (bits)) - 1)
 #define BITS(x, hi, lo) (((x) >> (lo)) & BITMASK((hi) - (lo) + 1)) // similar to x[hi:lo] in verilog
 /*
         ___________________________________________________
