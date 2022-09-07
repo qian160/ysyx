@@ -26,7 +26,7 @@ static word_t immI(uint32_t i) { return SEXT(BITS(i, 31, 20), 12); }
 static word_t immU(uint32_t i) { return SEXT(BITS(i, 31, 12), 20) << 12; }
 static word_t immS(uint32_t i) { return (SEXT(BITS(i, 31, 25), 7) << 5) | BITS(i, 11, 7); }
 static word_t immJ(uint32_t i) { return SEXT((BITS(i, 31, 31) << 20) | (BITS(i, 19, 12) << 12) | (BITS(i, 20, 20) << 11) | (BITS(i, 30, 21) << 1 | 0 ), 21); }
-static word_t immB(uint32_t i) { return SEXT(BITS(i, 31, 31) << 12 | BITS(i, 7, 7) << 11 | BITS(i, 30, 25) << 5 | BITS(i, 11, 8) << 1, 21);}
+static word_t immB(uint32_t i) { return SEXT((BITS(i, 31, 31) << 12) | (BITS(i, 7, 7) << 11) | (BITS(i, 30, 25) << 5) | (BITS(i, 11, 8) << 1) | 0, 21);}
 //src1 and src2 are the source operands which will join the future calculation. Use pointer to communicate with outside
 //question: how to make good use of dest, src1, src2
 static void decode_operand(Decode * D, word_t *dest, word_t *src1, word_t *src2, int type) {
@@ -41,11 +41,9 @@ static void decode_operand(Decode * D, word_t *dest, word_t *src1, word_t *src2,
   word_t pc_Plus4 = pc + 4;
   word_t JAL_TARGET     = (int64_t)immJ(inst) + (int64_t)pc;//immJ fails for neg numbers
   word_t JALR_TARGET    = immI(inst) + rs1Val;
-  //Log("\njal target : %lx\n", JAL_TARGET);
-  //Log("\nimmJ = 0x%lx\nimmI = 0x%lx\n", immJ(inst), immI(inst));
+  Log("\nimmJ = 0x%lx\nimmI = 0x%lx\nimm_B =0x%lx\n", immJ(inst), immI(inst), immB(inst));
   word_t BRANCH_TARGET  = immB(inst) + pc;
   word_t storeAddr      = immS(inst) + rs1Val;
-  //Log("\nJ: %lx\nI: %lx\nU: %lx\nS: %lx\n", imm_J, imm_I, imm_U, imm_S);
   destR(rd);
   switch (type) {
     case TYPE_R: src1I(rs1Val);       src2I(rs2Val);    break;
