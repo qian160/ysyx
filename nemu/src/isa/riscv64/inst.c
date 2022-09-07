@@ -52,7 +52,7 @@ static void decode_operand(Decode * D, word_t *dest, word_t *src1, word_t *src2,
     case TYPE_S: src1I(storeAddr);    src2R(rs2);       break;
     case TYPE_J: src1I(pc_Plus4);     src2I(JAL_TARGET);break;
     case TYPE_I: {
-      if(D -> decInfo.is_JALR){ //jalr is I type, which is special
+      if(D -> decInfo.is_jalr){ //jalr is I type, which is special
           src1I(pc_Plus4);    src2I(JALR_TARGET); break;
       }
       else{
@@ -106,8 +106,11 @@ static int decode_exec(Decode *D) {
     if(D -> decInfo.is_load){\
       printf(ANSI_FMT("load a value 0x%lx from address: 0x%lx\n", ANSI_FG_YELLOW), Mr(src1 + src2, L_width(fct3)), src1 + src2); \
     }  \
+    else if(D->decInfo.is_jalr){\
+      printf(ANSI_FMT("jalr, set %s = 0x%lx, new PC at 0x%lx", ANSI_FG_YELLOW), reg_name(dest), src1, src2);\
+    }\
     else  {\
-      printf(ANSI_FMT("set %s to be 0x%lx\n", ANSI_FG_GREEN), reg_name(dest, 64), R(dest)); \
+      printf(ANSI_FMT("set %s to be 0x%lx\n", ANSI_FG_GREEN), reg_name(dest), R(dest)); \
     }\
     break;\
     case(TYPE_B):case(TYPE_J):\
@@ -216,7 +219,7 @@ int isa_exec_once(Decode *D) {
   D->inst = inst;
   char fct3 = funct3(inst);
   //set some decode flags here
-  D -> decInfo.is_JALR  = opcode(inst) == jalr_opcode; 
+  D -> decInfo.is_jalr  = opcode(inst) == jalr_opcode; 
   D -> decInfo.is_lui   = BITS(inst, 5, 5);    //just a possibility
   D -> decInfo.funct3   = fct3;
   D -> decInfo.is_load  = opcode(inst) == load_opcode;
