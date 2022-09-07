@@ -1,6 +1,6 @@
 #include "sdb.h"
 
-#define NR_WP 8//32
+#define NR_WP 32
 
 static WP wp_pool[NR_WP] = {};
 static WP *head = NULL, *free_ = NULL;
