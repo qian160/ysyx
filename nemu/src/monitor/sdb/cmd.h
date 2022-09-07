@@ -82,15 +82,17 @@ static int cmd_info(char * args){
     return 0;
 }
 
-static int cmd_x(char * args){  //usage: x num addr
-    puts(args);
-    char * nump = strtok(NULL," ");
+static int cmd_x(char * args){  //usage: x num expr
+    //as for the temp, see cmd_d
+    char * temp  = (char * )malloc(40);
+    strcpy(temp, args);
+    char * n = strtok(NULL," ");
     char * has_expr = strtok(NULL, " ");
-    if(!has_expr || !nump){
+    if(!has_expr || !n){
         printf(ANSI_FMT("too few arguments\n", ANSI_FG_YELLOW));
         return 0;
     }
-    char * Expr = nump + strlen(nump) + 1;
+    char * Expr = temp + (int64_t)n - (int64_t)args + strlen(n) + 1;
     bool * success = (bool * )malloc(sizeof(bool));
     *success = true;
     word_t address = expr(Expr, success);
@@ -100,7 +102,7 @@ static int cmd_x(char * args){  //usage: x num addr
         printf(ANSI_FMT("illegal expression\n",ANSI_FG_MAGENTA));
         return 0;
     }
-    uint64_t  num = atoi(nump);
+    uint64_t  num = atoi(n);
     printf(ANSI_FMT("[little endian, the MSB is located at low adress]\n",ANSI_FG_PINK));
     examine_memory(num, address);
     //here we dont do mem check. we pass the job to that em function
@@ -150,6 +152,7 @@ static int cmd_w(char *args){
 static int cmd_d(char * e){
     //strtok will put a NULL at the end of the substring when a match happens
     //which may cut the value of Expr. So I copy the original string e first. It's not a good idea but at least it works
+    //cmd_x has the same problem
     /*
         **** ************ ********* e
 
