@@ -215,7 +215,7 @@ static int cmd_shell(char * args){
     return system("zsh");
 }
 
-static int cmd_b(char args){
+static int cmd_b(char * args){
     if(!args){
         printf(ANSI_FMT("too few args\n", ANSI_FG_YELLOW));
         return 0;
