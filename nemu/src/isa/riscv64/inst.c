@@ -116,7 +116,7 @@ static int decode_exec(Decode *D) {
   printf(ANSI_FMT("| src1 = 0x%-64lx | \n", ANSI_FG_YELLOW), src1);   \
   printf(ANSI_FMT("| ", ANSI_FG_PINK));show_bits(src1);putchar('\n');\
   printf(ANSI_FMT("| src2 = 0x%-64lx | \n", ANSI_FG_YELLOW), src2);   \
-  printf(ANSI_FMT("| ", ANSI_FG_PINK));show_bits(src2);putchar('\n');\
+  printf(ANSI_FMT("| ", ANSI_FG_PINK));show_bits(src2);putchar('\n'); printf(ANSI_FMT("  |", ANSI_FG_PINK));\
   \
   int fct3 = D -> decInfo.funct3;\
   switch(TYPE_##type){  \
