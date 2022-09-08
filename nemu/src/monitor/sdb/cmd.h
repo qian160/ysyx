@@ -220,7 +220,8 @@ static int cmd_b(char * args){
     }
     char * temp = (char *)malloc(30);
     //(w) a expr
-    strcat(strcat(temp, " a "), args);
+    strcat(strcat(temp, "w a "), args);
+    strtok(temp, " ");      //let cmd_w start from this string
     cmd_w(temp);
     free(temp);
     return 0;
