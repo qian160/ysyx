@@ -129,7 +129,7 @@ static int decode_exec(Decode *D) {
       printf(ANSI_FMT("jal, set %s = 0x%lx, new PC at 0x%lx\n", ANSI_FG_YELLOW), reg_name(dest), src1, src2);\
       break;\
     case(TYPE_S):{\
-      printf(ANSI_FMT("store a value 0x%lx to address 0x%lx\n", ANSI_FG_YELLOW), src2 | BITMASK(S_width(fct3) << 3), src1);\
+      printf(ANSI_FMT("store a value 0x%lx to address 0x%lx\n", ANSI_FG_YELLOW), src2 & BITMASK(S_width(fct3) << 3), src1);\
       break;\
     }\
     default:  printf("type %d\n", TYPE_##type);break;}\
