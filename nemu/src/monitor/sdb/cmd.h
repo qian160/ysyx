@@ -161,8 +161,6 @@ static int cmd_d(char * e){
                 n + strlen(n) + 1, which will meet the '\0' earlier and the right side of e is lost
 
         ************************* temp
-        |      |        |
-          n - e  len(n) 
     
     */
     char * temp  = (char * )malloc(40);
@@ -213,22 +211,18 @@ static int cmd_d(char * e){
     return 0;
 }
 
-static int cmd_b(char * args){
+static int cmd_shell(char * args){
+    return system("zsh");
+}
+
+static int cmd_b(char args){
     if(!args){
         printf(ANSI_FMT("too few args\n", ANSI_FG_YELLOW));
         return 0;
     }
     char * temp = (char *)malloc(30);
-    //(w) a expr
-    strcat(strcat(temp, "w a "), args);
-    strtok(temp, " ");      //let cmd_w start from this string
-    cmd_w(temp);
-    free(temp);
-    return 0;
-}
-
-static int cmd_shell(char * args){
-    return system("zsh");
+    strcat(strcat(buf, "114514 a "), args);
+    puts(temp);
 }
 
 static int cmd_help(char *args);  //if not defined here, cmd_table will find the 
@@ -252,8 +246,7 @@ static struct {
     {"w",    "watch",      "Add or delete watchpoint.",                                    cmd_w,      "w a expr, w d num0, num1, ..."},
     {"d",    "disasm",     "disasmble the next n inst. Or starting at other address ",     cmd_d,      "d n (expr). the second arg is optional"},
     {"sh",   "shell",      "temporarily transfer control to a shell",                      cmd_shell,  "no argument"},
-    {"b",    "break",      "set breakpoints",                                              cmd_b,      "b expr"},
-
+    {"b",    "break",      "set breakpoints at some address",                              cmd_b,      "b expr"},
 
   /* TODO: Add more commands */
 };
