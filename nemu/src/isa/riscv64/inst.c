@@ -23,7 +23,7 @@ void show_bits(word_t b){
   const long long mask = 1l << 63;
   putchar('\n');
   while(cnt --){
-    is(space == 8){
+    if(space == 8){
       putchar(' ');
       space = 0;
     }
