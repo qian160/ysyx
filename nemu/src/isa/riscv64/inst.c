@@ -26,8 +26,7 @@ void show_bits(word_t b){
     printf("%d", bit);
     b = b << 1;
   }
-  putchar('\n');
-  putchar('\n');
+
   return;
 }
 
@@ -118,7 +117,7 @@ static int decode_exec(Decode *D) {
   \
   IFDEF(CONFIG_CNT, printf(ANSI_FMT("cnt = %d\n", ANSI_FG_YELLOW), ++cnt));\
   disassemble(buf, sizeof(buf), D -> pc, (uint8_t *)(&D -> inst), 4);\
-  printf(ANSI_FMT("| type-%c:  %s\nold PC = 0x%lx\n", ANSI_FG_GREEN),tp[TYPE_##type], buf, D -> pc);\
+  printf(ANSI_FMT("| type-%c:  %s\n| old PC = 0x%lx\n", ANSI_FG_GREEN),tp[TYPE_##type], buf, D -> pc);\
   printf(ANSI_FMT("| src1 = 0x%lx\n", ANSI_FG_YELLOW), src1);show_bits(src1);\
   printf(ANSI_FMT("| src2 = 0x%lx\n", ANSI_FG_YELLOW), src2);show_bits(src2);\
   \
@@ -137,7 +136,7 @@ static int decode_exec(Decode *D) {
       \
     }\
     else  {\
-      printf(ANSI_FMT("| set %s = 0x%lx\n", ANSI_FG_PINK), reg_name(dest), R(dest)); \
+      printf(ANSI_FMT("| set %s = 0x%lx\n", ANSI_FG_YELLOW), reg_name(dest), R(dest)); \
       show_bits(R(dest));\
     }\
     break;\
