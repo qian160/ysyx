@@ -13,6 +13,10 @@ enum {
 
 static const char tp[] = "IUSJRB";    //use type as index
 
+#ifdef CONFIG_CNT
+  int cnt = 0;
+#endif
+
 #define src1R(n) do { *src1 = R(n); } while (0)
 #define src2R(n) do { *src2 = R(n); } while (0)
 #define destR(n) do { *dest = n; } while (0)
@@ -42,7 +46,7 @@ static void decode_operand(Decode * D, word_t *dest, word_t *src1, word_t *src2,
   word_t pc_Plus4 = pc + 4;
   word_t JAL_TARGET     = (int64_t)immJ(inst) + (int64_t)pc;//immJ fails for neg numbers
   word_t JALR_TARGET    = immI(inst) + rs1Val;
-  Log("\nimmJ = 0x%lx\nimmI = 0x%lx\nimmB = 0x%lx\nimmS = 0x%lx\n", immJ(inst), immI(inst), immB(inst), immS(inst));
+  //Log("\nimmJ = 0x%lx\nimmI = 0x%lx\nimmB = 0x%lx\nimmS = 0x%lx\n", immJ(inst), immI(inst), immB(inst), immS(inst));
   word_t BRANCH_TARGET  = immB(inst) + pc;
   word_t storeAddr      = immS(inst) + rs1Val;
   destR(rd);
@@ -68,6 +72,7 @@ static void decode_operand(Decode * D, word_t *dest, word_t *src1, word_t *src2,
     }
     case TYPE_B: {
       src2I(BRANCH_TARGET);
+        printf(ANSI_FMT("funct3 = %d\n", ANSI_FG_GREEN), D ->decInfo.funct3);
         switch (D -> decInfo.funct3){  //use src1 as a flag, src2 = branch_target
         case beq_funct3:  src1I(rs1Val == rs2Val);  break;
         case bne_funct3:  src1I(rs1Val ^  rs2Val);  break;
@@ -97,8 +102,9 @@ static int decode_exec(Decode *D) {
   IFDEF(CONFIG_SHOW_DECODE_INFORMATION,  \
   puts(ANSI_FMT("\nInformation about the just execuated instruction:", ANSI_FG_GREEN));\
   char buf[30];\
+  IFDEF(CONFIG_CNT, printf(ANSI_FMT("cnt = %d\n", ANSI_FG_YELLOW), ++cnt));\
   disassemble(buf, sizeof(buf), D -> pc, (uint8_t *)(&D -> inst), 4);\
-  printf(ANSI_FMT("type-%c:  %s\nold PC = 0x%lx  \noperand1 = 0x%-16lx, operand2 = 0x%-16lx \n", ANSI_FG_GREEN),tp[TYPE_##type], buf, D -> pc, src1, src2);\
+  printf(ANSI_FMT("type-%c:  %s\nold PC = 0x%lx  \nsrc1 = 0x%-16lx, src2 = 0x%-16lx \n", ANSI_FG_GREEN),tp[TYPE_##type], buf, D -> pc, src1, src2);\
   int fct3 = D -> decInfo.funct3;\
   switch(TYPE_##type){  \
     case(TYPE_I):case(TYPE_R):case(TYPE_U):\
@@ -109,7 +115,7 @@ static int decode_exec(Decode *D) {
       printf(ANSI_FMT("jalr, set %s = 0x%lx, new PC at 0x%lx\n", ANSI_FG_YELLOW), reg_name(dest), src1, src2);\
     }\
     else  {\
-      printf(ANSI_FMT("set %s to be 0x%lx\n", ANSI_FG_GREEN), reg_name(dest), R(dest)); \
+      printf(ANSI_FMT("set %s = 0x%lx\n", ANSI_FG_GREEN), reg_name(dest), R(dest)); \
     }\
     break;\
     case(TYPE_B):\
@@ -124,7 +130,7 @@ static int decode_exec(Decode *D) {
       printf(ANSI_FMT("jal, set %s = 0x%lx, new PC at 0x%lx\n", ANSI_FG_YELLOW), reg_name(dest), src1, src2);\
       break;\
     case(TYPE_S):{\
-      printf(ANSI_FMT("store a value 0x%lx to address 0x%lx\n", ANSI_FG_YELLOW), src2 | BITMASK(S_width(fct3) << 3), src1);\
+      printf(ANSI_FMT("store a value 0x%lx to address 0x%lx\n", ANSI_FG_YELLOW), src2 & BITMASK(S_width(fct3) << 3), src1);\
       break;\
     }\
     default:  printf("type %d\n", TYPE_##type);break;}\
@@ -179,6 +185,7 @@ static int decode_exec(Decode *D) {
   INSTPAT("??????? ????? ????? 001 ????? 0100011", sh,       S, Mw(src1, 2, src2));
   INSTPAT("??????? ????? ????? 000 ????? 0100011", sb,       S, Mw(src1, 1, src2));
   //branches
+  //zhen fu hao mei kao lv
   INSTPAT("??????? ????? ????? 000 ????? 1100011", beq,      B, D -> dnpc = src1? src2 : D -> dnpc);    //use src1 as a flag
   INSTPAT("??????? ????? ????? 001 ????? 1100011", bne,      B, D -> dnpc = src1? src2 : D -> dnpc);
   INSTPAT("??????? ????? ????? 100 ????? 1100011", blt,      B, D -> dnpc = src1? src2 : D -> dnpc);
