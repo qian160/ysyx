@@ -154,14 +154,16 @@ static int cmd_d(char * e){
     //which may cut the value of Expr. So I copy the original string e first. It's not a good idea but at least it works
     //cmd_x has the same problem
     /*
-        **** ************ ********* e
+        **** ************ ********* *******\0   e
 
-        ****'\0'**********'\0'*********** e
-        n       have_expr
-                n + strlen(n) + 1, which will meet the '\0' earlier and the right side of e is lost
-
-        ************************* temp
-    
+        ****'\0'**********'\0'***********(\0) *****\0  e
+        n       have_expr                 |
+                n + strlen(n) + 1         |
+                                    if use strtok a third time, this not counted into the 3rd arg
+        ************************* **********\0 temp
+        |       |       |
+        n - e       len |
+                        |the remaining all
     */
     char * temp  = (char * )malloc(40);
     strcpy(temp, e);
@@ -175,6 +177,7 @@ static int cmd_d(char * e){
     }
     if(have_expr)
         Expr = temp + (int64_t)n - (int64_t)e + strlen(n) + 1;
+        //bad usage: n + strlen(n) + 1
     int N  = atoi(n);
     bool * success = (bool *)malloc(sizeof(bool));
     *success = true;
@@ -215,6 +218,20 @@ static int cmd_shell(char * args){
     return system("zsh");
 }
 
+static int cmd_b(char * args){
+    if(!args){
+        printf(ANSI_FMT("too few args\n", ANSI_FG_YELLOW));
+        return 0;
+    }
+    char * temp = (char *)calloc(30, 1);
+    strcat(strcat(temp, "114514 a $pc == "), args);
+    puts(temp);
+    strtok(temp, " ");      //let cmd_w start from this string
+    cmd_w(temp);
+    free(temp);
+    return 0;
+}
+
 static int cmd_help(char *args);  //if not defined here, cmd_table will find the 
 
 //we put this table in an embarressing position, cmd_help needs this so it must be put before it. 
@@ -236,7 +253,7 @@ static struct {
     {"w",    "watch",      "Add or delete watchpoint.",                                    cmd_w,      "w a expr, w d num0, num1, ..."},
     {"d",    "disasm",     "disasmble the next n inst. Or starting at other address ",     cmd_d,      "d n (expr). the second arg is optional"},
     {"sh",   "shell",      "temporarily transfer control to a shell",                      cmd_shell,  "no argument"},
-
+    {"b",    "break",      "set breakpoints at some address",                              cmd_b,      "b expr"},
 
   /* TODO: Add more commands */
 };
