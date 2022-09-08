@@ -125,13 +125,19 @@ static int decode_exec(Decode *D) {
   switch(TYPE_##type){  \
     case(TYPE_I):case(TYPE_R):case(TYPE_U):\
     if(D -> decInfo.is_load){\
-      printf(ANSI_FMT("load a value 0x%lx from address: 0x%lx\n", ANSI_FG_YELLOW), Mr(src1 + src2, L_width(fct3)), src1 + src2); \
+      word_t address = src1 + src2;\
+      word_t loadVal = Mr(src1 + src2, L_width(fct3));\
+      printf(ANSI_FMT("load a value 0x%lx from address: 0x%lx\n", ANSI_FG_YELLOW), loadVal, address); \
+      show_bits(loadVal);\
     }  \
     else if(D->decInfo.is_jalr){\
-      printf(ANSI_FMT("jalr, set %s = 0x%lx, new PC at 0x%lx\n", ANSI_FG_YELLOW), reg_name(dest), src1, src2);\
+      printf(ANSI_FMT("jalr, set %s = 0x%lx, new PC at 0x%lx. %s's bits are:\n", ANSI_FG_YELLOW), reg_name(dest), src1, src2, reg_name(dest));\
+      show_bits(src1);\
+      \
     }\
     else  {\
       printf(ANSI_FMT("set %s = 0x%lx\n", ANSI_FG_GREEN), reg_name(dest), R(dest)); \
+      show_bits(R(dest));\
     }\
     break;\
     case(TYPE_B):\
@@ -143,10 +149,14 @@ static int decode_exec(Decode *D) {
       }\
       break;\
     case(TYPE_J):\
-      printf(ANSI_FMT("jal, set %s = 0x%lx, new PC at 0x%lx\n", ANSI_FG_YELLOW), reg_name(dest), src1, src2);\
+      printf(ANSI_FMT("jal, set %s = 0x%lx, new PC at 0x%lx. %s's new bits are:\n", ANSI_FG_YELLOW), reg_name(dest), src1, src2, reg_name(dest));\
+      show_bits(src1);\
+      \
       break;\
     case(TYPE_S):{\
-      printf(ANSI_FMT("store a value 0x%lx to address 0x%lx\n", ANSI_FG_YELLOW), src2 & BITMASK(S_width(fct3) << 3), src1);\
+      word_t storeVal = src2 & BITMASK(S_width(fct3) << 3);\
+      printf(ANSI_FMT("store a value 0x%lx to address 0x%lx\n", ANSI_FG_YELLOW), storeVal, src1);\
+      show_bits(storeVal);\
       break;\
     }\
     default:  printf("type %d\n", TYPE_##type);break;}\
