@@ -253,7 +253,7 @@ static struct {
     {"w",    "watch",      "Add or delete watchpoint.",                                    cmd_w,      "w a expr, w d num0, num1, ..."},
     {"d",    "disasm",     "disasmble the next n inst. Or starting at other address ",     cmd_d,      "d n (expr). the second arg is optional"},
     {"sh",   "shell",      "temporarily transfer control to a shell",                      cmd_shell,  "no argument"},
-    {"b",    "break",      "set breakpoints at some address",                              cmd_b,      "b expr"},
+    {"b",    "break",      "set breakpoints at some address",                              cmd_b,      "b expr. In fact this is just a wrap of watchpoints"},
 
   /* TODO: Add more commands */
 };
