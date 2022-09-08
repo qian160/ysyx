@@ -19,12 +19,18 @@ static const char tp[] = "IUSJRB";    //use type as index
 
 void show_bits(word_t b){
   int cnt = 64;
+  char space = 0;
   const long long mask = 1l << 63;
   putchar('\n');
   while(cnt --){
+    is(space == 8){
+      putchar(' ');
+      space = 0;
+    }
     int bit = (b & mask) >> 63;
     printf("%d", bit);
     b = b << 1;
+    space ++;
   }
   putchar('\n');
   return;
