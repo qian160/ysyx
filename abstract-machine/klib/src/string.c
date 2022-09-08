@@ -5,7 +5,10 @@
 #if !defined(__ISA_NATIVE__) || defined(__NATIVE_USE_KLIB__)
 
 size_t strlen(const char *s) {
-  panic("Not implemented");
+  size_t len = 0;
+  while(*s++)len++;
+  return len;
+  //panic("Not implemented");
 }
 
 char *strcpy(char *dst, const char *src) {
@@ -35,7 +38,7 @@ void *memset(void *s, int c, size_t n) {
 void *memmove(void *dst, const void *src, size_t n) {
   panic("Not implemented");
 }
-
+//overlap
 void *memcpy(void *out, const void *in, size_t n) {
   panic("Not implemented");
 }
