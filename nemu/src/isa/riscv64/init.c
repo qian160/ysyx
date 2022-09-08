@@ -6,9 +6,9 @@
 //a memcpy will overcover this if a img file is used
 static const uint32_t img [] = {             //offset
   0x00000297,  // auipc t0,0                  /*0*/
-  0xfff00313,  // li t1, -1                   /*4*/
-  0x02028e83,  // lb t4, 32(t0)               /*8*/
-  0x01c2be03,  // ld t3, 28(t0)               /*12*/
+  0x80000093,  // li x1, -2048                /*4*/
+  0x00100113,  // li x2, 1                    /*8*/
+  0x003081bb,  // addw x3, x1, x2             /*12*/
   0x0052be23,  // sd t0, 28(t0)               /*16*/
   0x01c2be03,  // ld a0, 28(t0)               /*20*/
   0x00100073,  // ebreak (used as nemu_trap)  /*24*/
