@@ -10,7 +10,7 @@ typedef struct {
 
 // decode
 typedef struct {  ///????????
-  char funct3  : 3;
+  unsigned char funct3  : 3;
   bool is_jalr : 1;
   bool is_lui  : 1;
   bool is_load : 1;
