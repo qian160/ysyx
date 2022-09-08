@@ -119,7 +119,7 @@ static int decode_exec(Decode *D) {
   char buf[30];\
   \
   disassemble(buf, sizeof(buf), D -> pc, (uint8_t *)(&D -> inst), 4);\
-  printf(ANSI_FMT("| type-%c:  %32s \t\t\t\t | \n| old PC = 0x%-60lx   |\n", ANSI_FG_GREEN),tp[TYPE_##type], buf, D -> pc);\
+  printf(ANSI_FMT("| type-%c:  %32s \t\t\t\t    | \n| old PC = 0x%-60lx   |\n", ANSI_FG_GREEN),tp[TYPE_##type], buf, D -> pc);\
   printf(ANSI_FMT("| src1 = 0x%-64lx | \n", ANSI_FG_YELLOW), src1);   \
   show_bits_fmt(src1);\
   printf(ANSI_FMT("| src2 = 0x%-64lx | \n", ANSI_FG_YELLOW), src2);   \
@@ -139,7 +139,7 @@ static int decode_exec(Decode *D) {
       \
     }\
     else  {\
-      printf(ANSI_FMT("| set %s = 0x%-60lx | \n", ANSI_FG_YELLOW), reg_name(dest), R(dest)); \
+      printf(ANSI_FMT("| set %s = 0x%-60lx  | \n", ANSI_FG_YELLOW), reg_name(dest), R(dest)); \
       show_bits_fmt(R(dest));\
     }\
     break;\
