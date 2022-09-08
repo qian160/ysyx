@@ -118,8 +118,10 @@ static int decode_exec(Decode *D) {
   IFDEF(CONFIG_CNT, printf(ANSI_FMT("cnt = %d\n", ANSI_FG_YELLOW), ++cnt));\
   disassemble(buf, sizeof(buf), D -> pc, (uint8_t *)(&D -> inst), 4);\
   printf(ANSI_FMT("| type-%c:  %s\n| old PC = 0x%lx\n", ANSI_FG_GREEN),tp[TYPE_##type], buf, D -> pc);\
-  printf(ANSI_FMT("| src1 = 0x%lx\n", ANSI_FG_YELLOW), src1);   printf(ANSI_FMT("| ", ANSI_FG_PINK));show_bits(src1);putchar('\n');\
-  printf(ANSI_FMT("| src2 = 0x%lx\n", ANSI_FG_YELLOW), src2);   printf(ANSI_FMT("| ", ANSI_FG_PINK));show_bits(src2);putchar('\n');\
+  printf(ANSI_FMT("| src1 = 0x%lx\n", ANSI_FG_YELLOW), src1);   \
+  printf(ANSI_FMT("| ", ANSI_FG_PINK));show_bits(src1);putchar('\n');\
+  printf(ANSI_FMT("| src2 = 0x%lx\n", ANSI_FG_YELLOW), src2);   \
+  printf(ANSI_FMT("| ", ANSI_FG_PINK));show_bits(src2);putchar('\n');\
   \
   int fct3 = D -> decInfo.funct3;\
   switch(TYPE_##type){  \
@@ -132,12 +134,12 @@ static int decode_exec(Decode *D) {
     }  \
     else if(D->decInfo.is_jalr){\
       printf(ANSI_FMT("jalr, set %s = 0x%lx, new PC at 0x%lx. %s's bits are:\n", ANSI_FG_YELLOW), reg_name(dest), src1, src2, reg_name(dest));\
-      show_bits(src1);\
+      printf(ANSI_FMT("| ", ANSI_FG_PINK));show_bits(src1);\
       \
     }\
     else  {\
       printf(ANSI_FMT("| set %s = 0x%lx\n", ANSI_FG_YELLOW), reg_name(dest), R(dest)); \
-      printf(ANSI_FMT("| ", ANSI_FG_PINK)); show_bits(R(dest));putchar('\n');\
+      printf(ANSI_FMT("| ", ANSI_FG_PINK)); printf(ANSI_FMT("| ", ANSI_FG_PINK));show_bits(R(dest));putchar('\n');\
     }\
     break;\
     case(TYPE_B):\
@@ -150,13 +152,13 @@ static int decode_exec(Decode *D) {
       break;\
     case(TYPE_J):\
       printf(ANSI_FMT("jal, set %s = 0x%lx, new PC at 0x%lx. %s's new bits are:\n", ANSI_FG_YELLOW), reg_name(dest), src1, src2, reg_name(dest));\
-      show_bits(src1);\
+      printf(ANSI_FMT("| ", ANSI_FG_PINK));show_bits(src1);putchar('\n');\
       \
       break;\
     case(TYPE_S):{\
       word_t storeVal = src2 & BITMASK(S_width(fct3) << 3);\
       printf(ANSI_FMT("store a value 0x%lx to address 0x%lx\n", ANSI_FG_YELLOW), storeVal, src1);\
-      show_bits(storeVal);\
+      printf(ANSI_FMT("| ", ANSI_FG_PINK));show_bits(storeVal);putchar('\n');\
       break;\
     }\
     default:  printf("type %d\n", TYPE_##type);break;}\
