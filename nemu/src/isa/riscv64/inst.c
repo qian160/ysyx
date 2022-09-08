@@ -137,7 +137,7 @@ static int decode_exec(Decode *D) {
     }\
     else  {\
       printf(ANSI_FMT("| set %s = 0x%lx\n", ANSI_FG_YELLOW), reg_name(dest), R(dest)); \
-      show_bits(R(dest));putchar('\n');\
+      printf(ANSI_FMT("| ", ANSI_FG_PINK)); show_bits(R(dest));putchar('\n');\
     }\
     break;\
     case(TYPE_B):\
