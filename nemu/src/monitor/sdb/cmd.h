@@ -161,6 +161,8 @@ static int cmd_d(char * e){
                 n + strlen(n) + 1, which will meet the '\0' earlier and the right side of e is lost
 
         ************************* temp
+        |      |        |
+          n - e  len(n) 
     
     */
     char * temp  = (char * )malloc(40);
@@ -207,6 +209,22 @@ static int cmd_d(char * e){
         puts(buf);
         pc += 4;        
     }
+
+    return 0;
+}
+
+static int cmd_b(char * args){
+    char * temp = (char * )malloc(30);
+    strcpy(temp, args);
+    char addr = strtok(NULL, " ;");
+    if(!addr){
+        printf(ANSI_FMT("too few args\n", ANSI_FG_YELLOW));
+        return 0;
+    }
+    char * addrp = temp + (int64_t n) - (int64_t)args + strlen(addr ) + 1;
+
+    printf("%s\n", addrp);
+
 
     return 0;
 }
