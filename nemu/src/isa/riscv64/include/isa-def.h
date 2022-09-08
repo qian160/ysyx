@@ -9,11 +9,12 @@ typedef struct {
 } riscv64_CPU_state;
 
 // decode
-typedef struct {  ///????????
+typedef struct {
   unsigned char funct3  : 3;
   bool is_jalr : 1;
   bool is_lui  : 1;
   bool is_load : 1;
+  //add more signals
 } riscv64_ISADecodeInfo;
 
 #define isa_mmu_check(vaddr, len, type) (MMU_DIRECT)

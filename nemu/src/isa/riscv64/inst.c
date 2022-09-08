@@ -72,7 +72,6 @@ static void decode_operand(Decode * D, word_t *dest, word_t *src1, word_t *src2,
     }
     case TYPE_B: {
       src2I(BRANCH_TARGET);
-        printf(ANSI_FMT("funct3 = %d\n", ANSI_FG_GREEN), D ->decInfo.funct3);
         switch (D -> decInfo.funct3){  //use src1 as a flag, src2 = branch_target
         case beq_funct3:  src1I(rs1Val == rs2Val);  break;
         case bne_funct3:  src1I(rs1Val ^  rs2Val);  break;
