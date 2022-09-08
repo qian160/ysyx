@@ -216,7 +216,7 @@ static int cmd_d(char * e){
 static int cmd_b(char * args){
     char * temp = (char * )malloc(30);
     strcpy(temp, args);
-    char addr = strtok(NULL, " ;");
+    char *addr = strtok(NULL, " ");
     if(!addr){
         printf(ANSI_FMT("too few args\n", ANSI_FG_YELLOW));
         return 0;
