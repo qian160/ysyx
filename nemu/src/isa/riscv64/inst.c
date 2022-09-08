@@ -113,9 +113,9 @@ static int decode_exec(Decode *D) {
   \
   disassemble(buf, sizeof(buf), D -> pc, (uint8_t *)(&D -> inst), 4);\
   printf(ANSI_FMT("| type-%c:  %40s |\n| old PC = 0x%lx \t\t\t\t\t\t\t  |\n", ANSI_FG_GREEN),tp[TYPE_##type], buf, D -> pc);\
-  printf(ANSI_FMT("| src1 = 0x%16lx \t\t\t\t\t\t\t\t   | \n", ANSI_FG_YELLOW), src1);   \
+  printf(ANSI_FMT("| src1 = 0x%-16lx \t\t\t\t\t\t\t\t   | \n", ANSI_FG_YELLOW), src1);   \
   printf(ANSI_FMT("| ", ANSI_FG_PINK));show_bits(src1);putchar('\n');\
-  printf(ANSI_FMT("| src2 = 0x%16lx \t\t\t\t\t\t\t\t   | \n", ANSI_FG_YELLOW), src2);   \
+  printf(ANSI_FMT("| src2 = 0x%-16lx \t\t\t\t\t\t\t\t   | \n", ANSI_FG_YELLOW), src2);   \
   printf(ANSI_FMT("| ", ANSI_FG_PINK));show_bits(src2);putchar('\n');\
   \
   int fct3 = D -> decInfo.funct3;\
@@ -128,7 +128,7 @@ static int decode_exec(Decode *D) {
       printf(ANSI_FMT("| ", ANSI_FG_PINK));show_bits(loadVal);putchar('\n');\
     }  \
     else if(D->decInfo.is_jalr){\
-      printf(ANSI_FMT("jalr, set %s = 0x%lx, new PC at 0x%lx. %s's bits are:\n", ANSI_FG_YELLOW), reg_name(dest), src1, src2, reg_name(dest));\
+      printf(ANSI_FMT("jalr, set %s = 0x%-lx, new PC at 0x%lx. %s's bits are:\n", ANSI_FG_YELLOW), reg_name(dest), src1, src2, reg_name(dest));\
       printf(ANSI_FMT("| ", ANSI_FG_PINK));show_bits(src1);\
       \
     }\
