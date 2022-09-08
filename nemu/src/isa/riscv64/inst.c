@@ -130,7 +130,7 @@ static int decode_exec(Decode *D) {
     if(D -> decInfo.is_load){\
       word_t address = src1 + src2;\
       word_t loadVal = Mr(src1 + src2, L_width(fct3));\
-      printf(ANSI_FMT("| load a value 0x%-16lx from address: 0x%-24lx | \n", ANSI_FG_YELLOW), loadVal, address); \
+      printf(ANSI_FMT("| load a value 0x%-16lx from address: 0x%-24lx  | \n", ANSI_FG_YELLOW), loadVal, address); \
       show_bits_fmt(loadVal);\
     }  \
     else if(D->decInfo.is_jalr){\
