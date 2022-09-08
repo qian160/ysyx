@@ -111,7 +111,7 @@ static int decode_exec(Decode *D) {
   decode_operand(D, &dest, &src1, &src2, concat(TYPE_, type)); \
   __VA_ARGS__ ; \
   IFDEF(CONFIG_SHOW_DECODE_INFORMATION,  \
-  printf(ANSI_FMT(" ------------------------------------------------------------------------\n", ANSI_FG_YELLOW));\
+  printf(ANSI_FMT(" --------------------------------------------------------------------------\n", ANSI_FG_YELLOW));\
   puts(ANSI_FMT("| Information about the just execuated instruction:", ANSI_FG_GREEN));\
   char buf[30];\
   \
@@ -139,7 +139,7 @@ static int decode_exec(Decode *D) {
     }\
     else  {\
       printf(ANSI_FMT("| set %s = 0x%lx\n", ANSI_FG_YELLOW), reg_name(dest), R(dest)); \
-      printf(ANSI_FMT("| ", ANSI_FG_PINK)); printf(ANSI_FMT("| ", ANSI_FG_PINK));show_bits(R(dest));putchar('\n');\
+      printf(ANSI_FMT("| ", ANSI_FG_PINK));show_bits(R(dest));putchar('\n');\
     }\
     break;\
     case(TYPE_B):\
@@ -162,7 +162,7 @@ static int decode_exec(Decode *D) {
       break;\
     }\
     default:  printf("type %d\n", TYPE_##type);break;}\
-printf(ANSI_FMT(" ------------------------------------------------------------------------\n", ANSI_FG_YELLOW));\
+printf(ANSI_FMT(" --------------------------------------------------------------------------\n", ANSI_FG_YELLOW));\
 )}
 
   //check one by one
