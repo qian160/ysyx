@@ -17,6 +17,20 @@ static const char tp[] = "IUSJRB";    //use type as index
   int cnt = 0;
 #endif
 
+void show_bits(word_t b){
+  int cnt = 65;
+  const long long mask = 1l << 63;
+  while(cnt -- > 1){
+    if(cnt % 8 == 0)putchar(' ');
+    int bit = (b & mask) >> 63;
+    printf("%d", bit);
+    b = b << 1;
+  }
+  putchar('\n');
+  putchar('\n');
+  return;
+}
+
 #define src1R(n) do { *src1 = R(n); } while (0)
 #define src2R(n) do { *src2 = R(n); } while (0)
 #define destR(n) do { *dest = n; } while (0)
@@ -94,27 +108,36 @@ static int decode_exec(Decode *D) {
 #define INSTPAT_INST(D) ((D)->inst)
 //a match is found, do what it supposed to do.
 //first prepare for operands, then do the things listed in __VA_ARGS__
-
 #define INSTPAT_MATCH(D, name, type, ... /* body */ ) { \
   decode_operand(D, &dest, &src1, &src2, concat(TYPE_, type)); \
   __VA_ARGS__ ; \
   IFDEF(CONFIG_SHOW_DECODE_INFORMATION,  \
   puts(ANSI_FMT("\nInformation about the just execuated instruction:", ANSI_FG_GREEN));\
   char buf[30];\
+  \
   IFDEF(CONFIG_CNT, printf(ANSI_FMT("cnt = %d\n", ANSI_FG_YELLOW), ++cnt));\
   disassemble(buf, sizeof(buf), D -> pc, (uint8_t *)(&D -> inst), 4);\
-  printf(ANSI_FMT("type-%c:  %s\nold PC = 0x%lx  \nsrc1 = 0x%-16lx, src2 = 0x%-16lx \n", ANSI_FG_GREEN),tp[TYPE_##type], buf, D -> pc, src1, src2);\
+  printf(ANSI_FMT("type-%c:  %s\nold PC = 0x%lx\n", ANSI_FG_GREEN),tp[TYPE_##type], buf, D -> pc);\
+  printf(ANSI_FMT("src1 = 0x%lx\n", ANSI_FG_YELLOW), src1);show_bits(src1);\
+  printf(ANSI_FMT("src2 = 0x%lx\n", ANSI_FG_YELLOW), src2);show_bits(src2);\
+  \
   int fct3 = D -> decInfo.funct3;\
   switch(TYPE_##type){  \
     case(TYPE_I):case(TYPE_R):case(TYPE_U):\
     if(D -> decInfo.is_load){\
-      printf(ANSI_FMT("load a value 0x%lx from address: 0x%lx\n", ANSI_FG_YELLOW), Mr(src1 + src2, L_width(fct3)), src1 + src2); \
+      word_t address = src1 + src2;\
+      word_t loadVal = Mr(src1 + src2, L_width(fct3));\
+      printf(ANSI_FMT("load a value 0x%lx from address: 0x%lx\n", ANSI_FG_YELLOW), loadVal, address); \
+      show_bits(loadVal);\
     }  \
     else if(D->decInfo.is_jalr){\
-      printf(ANSI_FMT("jalr, set %s = 0x%lx, new PC at 0x%lx\n", ANSI_FG_YELLOW), reg_name(dest), src1, src2);\
+      printf(ANSI_FMT("jalr, set %s = 0x%lx, new PC at 0x%lx. %s's bits are:\n", ANSI_FG_YELLOW), reg_name(dest), src1, src2, reg_name(dest));\
+      show_bits(src1);\
+      \
     }\
     else  {\
-      printf(ANSI_FMT("set %s = 0x%lx\n", ANSI_FG_GREEN), reg_name(dest), R(dest)); \
+      printf(ANSI_FMT("set %s = 0x%lx\n", ANSI_FG_PINK), reg_name(dest), R(dest)); \
+      show_bits(R(dest));\
     }\
     break;\
     case(TYPE_B):\
@@ -126,10 +149,14 @@ static int decode_exec(Decode *D) {
       }\
       break;\
     case(TYPE_J):\
-      printf(ANSI_FMT("jal, set %s = 0x%lx, new PC at 0x%lx\n", ANSI_FG_YELLOW), reg_name(dest), src1, src2);\
+      printf(ANSI_FMT("jal, set %s = 0x%lx, new PC at 0x%lx. %s's new bits are:\n", ANSI_FG_YELLOW), reg_name(dest), src1, src2, reg_name(dest));\
+      show_bits(src1);\
+      \
       break;\
     case(TYPE_S):{\
-      printf(ANSI_FMT("store a value 0x%lx to address 0x%lx\n", ANSI_FG_YELLOW), src2 & BITMASK(S_width(fct3) << 3), src1);\
+      word_t storeVal = src2 & BITMASK(S_width(fct3) << 3);\
+      printf(ANSI_FMT("store a value 0x%lx to address 0x%lx\n", ANSI_FG_YELLOW), storeVal, src1);\
+      show_bits(storeVal);\
       break;\
     }\
     default:  printf("type %d\n", TYPE_##type);break;}\
