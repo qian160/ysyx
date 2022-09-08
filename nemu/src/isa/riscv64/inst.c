@@ -148,17 +148,17 @@ static int decode_exec(Decode *D) {
         printf(ANSI_FMT("branch is not taken %-40s | \n",  ANSI_FG_YELLOW), " "); \
       }\
       else {\
-        printf(ANSI_FMT("| branch is taken, new PC at 0x%-40lx | \n", ANSI_FG_YELLOW), src2); \
+        printf(ANSI_FMT("| branch is taken, new PC at 0x%-44lx | \n", ANSI_FG_YELLOW), src2); \
       }\
       break;\
     case(TYPE_J):\
-      printf(ANSI_FMT("jal, set %s = 0x%lx, new PC at 0x%lx. %s's new bits are:\n", ANSI_FG_YELLOW), reg_name(dest), src1, src2, reg_name(dest));\
+      printf(ANSI_FMT("| jal, set %s = 0x%lx, new PC at 0x%-40lx. | \n", ANSI_FG_YELLOW), reg_name(dest), src1, src2);\
       printf(ANSI_FMT("| ", ANSI_FG_PINK));show_bits(src1);putchar('\n');\
       \
       break;\
     case(TYPE_S):{\
       word_t storeVal = src2 & BITMASK(S_width(fct3) << 3);\
-      printf(ANSI_FMT("store a value 0x%lx to address 0x%lx\n", ANSI_FG_YELLOW), storeVal, src1);\
+      printf(ANSI_FMT("store a value 0x%-40lx to address 0x%lx\n", ANSI_FG_YELLOW), storeVal, src1);\
       printf(ANSI_FMT("| ", ANSI_FG_PINK));show_bits(storeVal);putchar('\n');\
       break;\
     }\
