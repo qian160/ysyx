@@ -108,11 +108,11 @@ static int decode_exec(Decode *D) {
   __VA_ARGS__ ; \
   IFDEF(CONFIG_SHOW_DECODE_INFORMATION,  \
   printf(ANSI_FMT(" --------------------------------------------------------------------------\n", ANSI_FG_YELLOW));\
-  puts(ANSI_FMT("| Information about the just execuated instruction: \t\t\t   |", ANSI_FG_GREEN));\
+  puts(ANSI_FMT("| Information about the just execuated instruction: \t\t\t    |", ANSI_FG_GREEN));\
   char buf[30];\
   \
   disassemble(buf, sizeof(buf), D -> pc, (uint8_t *)(&D -> inst), 4);\
-  printf(ANSI_FMT("| type-%c:  %40s |\n| old PC = 0x%-40lx  |\n", ANSI_FG_GREEN),tp[TYPE_##type], buf, D -> pc);\
+  printf(ANSI_FMT("| type-%c:  %-64s | \n| old PC = 0x%-64lx  |\n", ANSI_FG_GREEN),tp[TYPE_##type], buf, D -> pc);\
   printf(ANSI_FMT("| src1 = 0x%-64lx | \n", ANSI_FG_YELLOW), src1);   \
   printf(ANSI_FMT("| ", ANSI_FG_PINK));show_bits(src1);putchar('\n');\
   printf(ANSI_FMT("| src2 = 0x%-64lx | \n", ANSI_FG_YELLOW), src2);   \
