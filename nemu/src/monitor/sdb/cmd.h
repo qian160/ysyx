@@ -221,7 +221,7 @@ static int cmd_b(char * args){
     char * temp = (char *)malloc(30);
     strcat(strcat(temp, " a "), args);
 
-    printf(ANSI_FMT("temp = \n%ns\n", ANSI_FG_YELLOW), temp);
+    printf(ANSI_FMT("temp = \n%s\n", ANSI_FG_YELLOW), temp);
 
 
     return 0;
