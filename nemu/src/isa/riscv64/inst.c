@@ -22,7 +22,14 @@ void show_bits(word_t b){
     printf("%d", bit);
     b = b << 1;
   }
+  return;
+}
 
+void show_bits_fmt(word_t b){
+  printf(ANSI_FMT("| ", ANSI_FG_PINK));
+  show_bits(b); 
+  printf(ANSI_FMT("  |", ANSI_FG_PINK));
+  putchar('\n');
   return;
 }
 
@@ -114,10 +121,9 @@ static int decode_exec(Decode *D) {
   disassemble(buf, sizeof(buf), D -> pc, (uint8_t *)(&D -> inst), 4);\
   printf(ANSI_FMT("| type-%c:  %-57s | \n| old PC = 0x%-60lx   |\n", ANSI_FG_GREEN),tp[TYPE_##type], buf, D -> pc);\
   printf(ANSI_FMT("| src1 = 0x%-64lx | \n", ANSI_FG_YELLOW), src1);   \
-  printf(ANSI_FMT("| ", ANSI_FG_PINK));show_bits(src1);putchar('\n');\
+  show_bits_fmt(src1);\
   printf(ANSI_FMT("| src2 = 0x%-64lx | \n", ANSI_FG_YELLOW), src2);   \
-  printf(ANSI_FMT("| ", ANSI_FG_PINK));show_bits(src2); printf(ANSI_FMT("  |", ANSI_FG_PINK));putchar('\n');\
-  \
+  show_bits_fmt(src2);\
   int fct3 = D -> decInfo.funct3;\
   switch(TYPE_##type){  \
     case(TYPE_I):case(TYPE_R):case(TYPE_U):\
@@ -125,11 +131,11 @@ static int decode_exec(Decode *D) {
       word_t address = src1 + src2;\
       word_t loadVal = Mr(src1 + src2, L_width(fct3));\
       printf(ANSI_FMT("load a value 0x%lx from address: 0x%lx\n", ANSI_FG_YELLOW), loadVal, address); \
-      printf(ANSI_FMT("| ", ANSI_FG_PINK));show_bits(loadVal);putchar('\n');\
+      show_bits_fmt(loadVal);\
     }  \
     else if(D->decInfo.is_jalr){\
       printf(ANSI_FMT("jalr, set %s = 0x%-lx, new PC at 0x%lx. %s's bits are:\n", ANSI_FG_YELLOW), reg_name(dest), src1, src2, reg_name(dest));\
-      printf(ANSI_FMT("| ", ANSI_FG_PINK));show_bits(src1);\
+      show_bits_fmt(src1);\
       \
     }\
     else  {\
