@@ -101,7 +101,7 @@ static int decode_exec(Decode *D) {
   IFDEF(CONFIG_SHOW_DECODE_INFORMATION,  \
   puts(ANSI_FMT("\nInformation about the just execuated instruction:", ANSI_FG_GREEN));\
   char buf[30];\
-  printf(ANSI_FMT("cnt = %d\n", ANSI_FG_YELLOW), ++cnt);\
+  IFDEF(CONFIG_CNT, printf(ANSI_FMT("cnt = %d\n", ANSI_FG_YELLOW), ++cnt));\
   disassemble(buf, sizeof(buf), D -> pc, (uint8_t *)(&D -> inst), 4);\
   printf(ANSI_FMT("type-%c:  %s\nold PC = 0x%lx  \nsrc1 = 0x%-16lx, src2 = 0x%-16lx \n", ANSI_FG_GREEN),tp[TYPE_##type], buf, D -> pc, src1, src2);\
   int fct3 = D -> decInfo.funct3;\
