@@ -6,6 +6,7 @@
 //a memcpy will overcover this if a img file is used
 static const uint32_t img [] = {             //offset
   0x00000297,  // auipc t0,0                  /*0*/
+  0xfff00093,  // li x1, -1
   0x80000093,  // li x1, -2048                /*4*/
   0x00100113,  // li x2, 1                    /*8*/
   0x003081bb,  // addw x3, x1, x2             /*12*/
