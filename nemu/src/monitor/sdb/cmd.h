@@ -220,7 +220,7 @@ static int cmd_b(char * args){
         printf(ANSI_FMT("too few args\n", ANSI_FG_YELLOW));
         return 0;
     }
-    char * temp = (char *)calloc(30);
+    char * temp = (char *)calloc(30, 1);
     strcat(strcat(temp, "114514 a "), args);
     puts(temp);
     free(temp);
