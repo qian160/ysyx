@@ -219,11 +219,10 @@ static int cmd_b(char * args){
         return 0;
     }
     char * temp = (char *)malloc(30);
+    //(w) a expr
     strcat(strcat(temp, " a "), args);
-
-    printf(ANSI_FMT("temp = \n%s\n", ANSI_FG_YELLOW), temp);
-
-
+    cmd_w(temp);
+    free(temp);
     return 0;
 }
 
