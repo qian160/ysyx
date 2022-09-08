@@ -13,10 +13,6 @@ enum {
 
 static const char tp[] = "IUSJRB";    //use type as index
 
-#ifdef CONFIG_CNT
-  int cnt = 0;
-#endif
-
 void show_bits(word_t b){
   int cnt = 65;
   const long long mask = 1l << 63;
@@ -26,7 +22,13 @@ void show_bits(word_t b){
     printf("%d", bit);
     b = b << 1;
   }
-  putchar('\n');
+  return;
+}
+
+void show_bits_fmt(word_t b){
+  printf(ANSI_FMT("| ", ANSI_FG_PINK));
+  show_bits(b); 
+  printf(ANSI_FMT("  |", ANSI_FG_PINK));
   putchar('\n');
   return;
 }
@@ -112,54 +114,56 @@ static int decode_exec(Decode *D) {
   decode_operand(D, &dest, &src1, &src2, concat(TYPE_, type)); \
   __VA_ARGS__ ; \
   IFDEF(CONFIG_SHOW_DECODE_INFORMATION,  \
-  puts(ANSI_FMT("\nInformation about the just execuated instruction:", ANSI_FG_GREEN));\
+  printf(ANSI_FMT(" ---------------------------------------------------------------------------\n", ANSI_FG_YELLOW));\
+  puts(ANSI_FMT("| Information about the just execuated instruction: \t\t\t    |", ANSI_FG_GREEN));\
   char buf[30];\
   \
-  IFDEF(CONFIG_CNT, printf(ANSI_FMT("cnt = %d\n", ANSI_FG_YELLOW), ++cnt));\
   disassemble(buf, sizeof(buf), D -> pc, (uint8_t *)(&D -> inst), 4);\
-  printf(ANSI_FMT("type-%c:  %s\nold PC = 0x%lx\n", ANSI_FG_GREEN),tp[TYPE_##type], buf, D -> pc);\
-  printf(ANSI_FMT("src1 = 0x%lx\n", ANSI_FG_YELLOW), src1);show_bits(src1);\
-  printf(ANSI_FMT("src2 = 0x%lx\n", ANSI_FG_YELLOW), src2);show_bits(src2);\
-  \
+  printf(ANSI_FMT("| type-%c:  %32s \t\t\t\t    | \n| old PC = 0x%-60lx   |\n", ANSI_FG_GREEN),tp[TYPE_##type], buf, D -> pc);\
+  printf(ANSI_FMT("| src1 = 0x%-64lx | \n", ANSI_FG_YELLOW), src1);   \
+  show_bits_fmt(src1);\
+  printf(ANSI_FMT("| src2 = 0x%-64lx | \n", ANSI_FG_YELLOW), src2);   \
+  show_bits_fmt(src2);\
   int fct3 = D -> decInfo.funct3;\
   switch(TYPE_##type){  \
     case(TYPE_I):case(TYPE_R):case(TYPE_U):\
     if(D -> decInfo.is_load){\
       word_t address = src1 + src2;\
       word_t loadVal = Mr(src1 + src2, L_width(fct3));\
-      printf(ANSI_FMT("load a value 0x%lx from address: 0x%lx\n", ANSI_FG_YELLOW), loadVal, address); \
-      show_bits(loadVal);\
+      printf(ANSI_FMT("| load a value 0x%-16lx from address: 0x%-24lx  | \n", ANSI_FG_YELLOW), loadVal, address); \
+      show_bits_fmt(loadVal);\
     }  \
     else if(D->decInfo.is_jalr){\
-      printf(ANSI_FMT("jalr, set %s = 0x%lx, new PC at 0x%lx. %s's bits are:\n", ANSI_FG_YELLOW), reg_name(dest), src1, src2, reg_name(dest));\
-      show_bits(src1);\
+      printf(ANSI_FMT("jalr, set %s = 0x%-lx, new PC at 0x%lx. %s's bits are:\n", ANSI_FG_YELLOW), reg_name(dest), src1, src2, reg_name(dest));\
+      show_bits_fmt(src1);\
       \
     }\
     else  {\
-      printf(ANSI_FMT("set %s = 0x%lx\n", ANSI_FG_PINK), reg_name(dest), R(dest)); \
-      show_bits(R(dest));\
+      printf(ANSI_FMT("| set %s = 0x%-60lx  | \n", ANSI_FG_YELLOW), reg_name(dest), R(dest)); \
+      show_bits_fmt(R(dest));\
     }\
     break;\
     case(TYPE_B):\
       if( src1 == 0){  \
-        printf(ANSI_FMT("branch is not taken\n",  ANSI_FG_YELLOW)); \
+        printf(ANSI_FMT("| branch is not taken %-40s | \n",  ANSI_FG_YELLOW), " "); \
       }\
       else {\
-        printf(ANSI_FMT("branch is taken, new PC at 0x%lx\n", ANSI_FG_YELLOW), src2); \
+        printf(ANSI_FMT("| branch is taken, new PC at 0x%-44lx | \n", ANSI_FG_YELLOW), src2); \
       }\
       break;\
     case(TYPE_J):\
-      printf(ANSI_FMT("jal, set %s = 0x%lx, new PC at 0x%lx. %s's new bits are:\n", ANSI_FG_YELLOW), reg_name(dest), src1, src2, reg_name(dest));\
-      show_bits(src1);\
+      printf(ANSI_FMT("| jal, set %s = 0x%lx, new PC at 0x%-34lx | \n", ANSI_FG_YELLOW), reg_name(dest), src1, src2);\
+      show_bits_fmt(src1);\
       \
       break;\
     case(TYPE_S):{\
       word_t storeVal = src2 & BITMASK(S_width(fct3) << 3);\
-      printf(ANSI_FMT("store a value 0x%lx to address 0x%lx\n", ANSI_FG_YELLOW), storeVal, src1);\
-      show_bits(storeVal);\
+      printf(ANSI_FMT("| store a value 0x%-16lx to address 0x%-27lx | \n", ANSI_FG_YELLOW), storeVal, src1);\
+      show_bits_fmt(storeVal);\
       break;\
     }\
-    default:  printf("type %d\n", TYPE_##type);break;}\
+    default:  break;}\
+printf(ANSI_FMT(" ---------------------------------------------------------------------------\n", ANSI_FG_YELLOW));\
 )}
 
   //check one by one
