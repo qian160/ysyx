@@ -139,7 +139,7 @@ static int decode_exec(Decode *D) {
       \
     }\
     else  {\
-      printf(ANSI_FMT("| set %s = 0x%-64lx \n", ANSI_FG_YELLOW), reg_name(dest), R(dest)); \
+      printf(ANSI_FMT("| set %s = 0x%-64lx |\n", ANSI_FG_YELLOW), reg_name(dest), R(dest)); \
       show_bits_fmt(R(dest));\
     }\
     break;\
