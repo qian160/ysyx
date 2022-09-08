@@ -214,21 +214,14 @@ static int cmd_d(char * e){
 }
 
 static int cmd_b(char * args){
-    printf(ANSI_FMT("args = %s\n", ANSI_FG_YELLOW), args);
-    char * temp = (char * )malloc(30);
-    strcpy(temp, args);
-    printf(ANSI_FMT("temp = %s\n", ANSI_FG_YELLOW), temp);
-    char *addr = strtok(NULL, " ");
-    printf(ANSI_FMT("addr = %s\n", ANSI_FG_YELLOW), addr);
-
-    if(!addr){
+    if(!args){
         printf(ANSI_FMT("too few args\n", ANSI_FG_YELLOW));
         return 0;
     }
-    char * addrp = temp + (int64_t) addr - (int64_t)args + strlen(addr ) + 1;
-    printf(ANSI_FMT("addrp = %s\n", ANSI_FG_YELLOW), addrp);
+    char * temp = (char *)malloc(30);
+    strcat(strcat(temp, " a "), args);
 
-    printf("%s\n", addrp);
+    printf(ANSI_FMT("temp = %\ns\n", ANSI_FG_YELLOW), temp);
 
 
     return 0;
