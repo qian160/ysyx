@@ -13,10 +13,6 @@ enum {
 
 static const char tp[] = "IUSJRB";    //use type as index
 
-#ifdef CONFIG_CNT
-  int cnt = 0;
-#endif
-
 void show_bits(word_t b){
   int cnt = 65;
   const long long mask = 1l << 63;
@@ -112,15 +108,14 @@ static int decode_exec(Decode *D) {
   __VA_ARGS__ ; \
   IFDEF(CONFIG_SHOW_DECODE_INFORMATION,  \
   printf(ANSI_FMT(" --------------------------------------------------------------------------\n", ANSI_FG_YELLOW));\
-  puts(ANSI_FMT("| Information about the just execuated instruction:", ANSI_FG_GREEN));\
+  puts(ANSI_FMT("| Information about the just execuated instruction: \t\t\t|", ANSI_FG_GREEN));\
   char buf[30];\
   \
-  IFDEF(CONFIG_CNT, printf(ANSI_FMT("cnt = %d\n", ANSI_FG_YELLOW), ++cnt));\
   disassemble(buf, sizeof(buf), D -> pc, (uint8_t *)(&D -> inst), 4);\
-  printf(ANSI_FMT("| type-%c:  %s\n| old PC = 0x%lx\n", ANSI_FG_GREEN),tp[TYPE_##type], buf, D -> pc);\
-  printf(ANSI_FMT("| src1 = 0x%lx\n", ANSI_FG_YELLOW), src1);   \
+  printf(ANSI_FMT("| type-%c:  %s\n| old PC = 0x%lx \t\t\t\t\t|\n", ANSI_FG_GREEN),tp[TYPE_##type], buf, D -> pc);\
+  printf(ANSI_FMT("| src1 = 0x%lx \t\t\t\t\t\t\t| \n", ANSI_FG_YELLOW), src1);   \
   printf(ANSI_FMT("| ", ANSI_FG_PINK));show_bits(src1);putchar('\n');\
-  printf(ANSI_FMT("| src2 = 0x%lx\n", ANSI_FG_YELLOW), src2);   \
+  printf(ANSI_FMT("| src2 = 0x%lx \t\t\t\t\t\t\t| \n", ANSI_FG_YELLOW), src2);   \
   printf(ANSI_FMT("| ", ANSI_FG_PINK));show_bits(src2);putchar('\n');\
   \
   int fct3 = D -> decInfo.funct3;\
@@ -138,7 +133,7 @@ static int decode_exec(Decode *D) {
       \
     }\
     else  {\
-      printf(ANSI_FMT("| set %s = 0x%lx\n", ANSI_FG_YELLOW), reg_name(dest), R(dest)); \
+      printf(ANSI_FMT("| set %s = 0x%lx \t\t\t\t\t\t\n", ANSI_FG_YELLOW), reg_name(dest), R(dest)); \
       printf(ANSI_FMT("| ", ANSI_FG_PINK));show_bits(R(dest));putchar('\n');\
     }\
     break;\
