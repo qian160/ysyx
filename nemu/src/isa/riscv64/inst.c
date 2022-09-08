@@ -112,6 +112,7 @@ static int decode_exec(Decode *D) {
   decode_operand(D, &dest, &src1, &src2, concat(TYPE_, type)); \
   __VA_ARGS__ ; \
   IFDEF(CONFIG_SHOW_DECODE_INFORMATION,  \
+  printf(ANSI_FMT("-------------------------------------------------------------------\n", ANSI_FG_YELLOW));\
   puts(ANSI_FMT("\nInformation about the just execuated instruction:", ANSI_FG_GREEN));\
   char buf[30];\
   \
@@ -160,6 +161,7 @@ static int decode_exec(Decode *D) {
       break;\
     }\
     default:  printf("type %d\n", TYPE_##type);break;}\
+  printf(ANSI_FMT("-------------------------------------------------------------------\n", ANSI_FG_YELLOW));\
 )}
 
   //check one by one
