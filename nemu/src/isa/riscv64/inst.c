@@ -19,19 +19,13 @@ static const char tp[] = "IUSJRB";    //use type as index
 
 void show_bits(word_t b){
   int cnt = 65;
-  //char space = 0;
   const long long mask = 1l << 63;
   putchar('\n');
   while(cnt -- > 1){
-    //if(space == 8){
-      //putchar(' ');
-      //space = 0;
-    //}
     if(cnt % 8 == 0)putchar(' ');
     int bit = (b & mask) >> 63;
     printf("%d", bit);
     b = b << 1;
-    //space ++;
   }
   putchar('\n');
   return;
@@ -123,7 +117,10 @@ static int decode_exec(Decode *D) {
   \
   IFDEF(CONFIG_CNT, printf(ANSI_FMT("cnt = %d\n", ANSI_FG_YELLOW), ++cnt));\
   disassemble(buf, sizeof(buf), D -> pc, (uint8_t *)(&D -> inst), 4);\
-  printf(ANSI_FMT("type-%c:  %s\nold PC = 0x%lx  \nsrc1 = 0x%-16lx, src2 = 0x%-16lx \n", ANSI_FG_GREEN),tp[TYPE_##type], buf, D -> pc, src1, src2);\
+  printf(ANSI_FMT("type-%c:  %s\nold PC = 0x%lx\n", ANSI_FG_GREEN),tp[TYPE_##type], buf, D -> pc);\
+  printf(ANSI_FMT("src1 = 0x%lx\n", ANSI_FG_YELLOW), src1);show_bits(src1);\
+  printf(ANSI_FMT("src2 = 0x%lx\n", ANSI_FG_YELLOW), src2);show_bits(src2);\
+  \
   int fct3 = D -> decInfo.funct3;\
   show_bits(src1);\
   show_bits(src2);\
