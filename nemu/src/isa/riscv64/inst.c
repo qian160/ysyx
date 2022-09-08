@@ -112,15 +112,15 @@ static int decode_exec(Decode *D) {
   decode_operand(D, &dest, &src1, &src2, concat(TYPE_, type)); \
   __VA_ARGS__ ; \
   IFDEF(CONFIG_SHOW_DECODE_INFORMATION,  \
-  printf(ANSI_FMT("---------------------------------------------------------------------------\n", ANSI_FG_YELLOW));\
+  printf(ANSI_FMT("------------------------------------------------------------------------\n", ANSI_FG_YELLOW));\
   puts(ANSI_FMT("\nInformation about the just execuated instruction:", ANSI_FG_GREEN));\
   char buf[30];\
   \
   IFDEF(CONFIG_CNT, printf(ANSI_FMT("cnt = %d\n", ANSI_FG_YELLOW), ++cnt));\
   disassemble(buf, sizeof(buf), D -> pc, (uint8_t *)(&D -> inst), 4);\
-  printf(ANSI_FMT("type-%c:  %s\nold PC = 0x%lx\n", ANSI_FG_GREEN),tp[TYPE_##type], buf, D -> pc);\
-  printf(ANSI_FMT("src1 = 0x%lx\n", ANSI_FG_YELLOW), src1);show_bits(src1);\
-  printf(ANSI_FMT("src2 = 0x%lx\n", ANSI_FG_YELLOW), src2);show_bits(src2);\
+  printf(ANSI_FMT("| type-%c:  %s\nold PC = 0x%lx\n", ANSI_FG_GREEN),tp[TYPE_##type], buf, D -> pc);\
+  printf(ANSI_FMT("| src1 = 0x%lx\n", ANSI_FG_YELLOW), src1);show_bits(src1);\
+  printf(ANSI_FMT("| src2 = 0x%lx\n", ANSI_FG_YELLOW), src2);show_bits(src2);\
   \
   int fct3 = D -> decInfo.funct3;\
   switch(TYPE_##type){  \
@@ -137,7 +137,7 @@ static int decode_exec(Decode *D) {
       \
     }\
     else  {\
-      printf(ANSI_FMT("set %s = 0x%lx\n", ANSI_FG_PINK), reg_name(dest), R(dest)); \
+      printf(ANSI_FMT("| set %s = 0x%lx\n", ANSI_FG_PINK), reg_name(dest), R(dest)); \
       show_bits(R(dest));\
     }\
     break;\
@@ -161,7 +161,7 @@ static int decode_exec(Decode *D) {
       break;\
     }\
     default:  printf("type %d\n", TYPE_##type);break;}\
-  printf(ANSI_FMT("---------------------------------------------------------------------------\n", ANSI_FG_YELLOW));\
+  printf(ANSI_FMT("------------------------------------------------------------------------\n", ANSI_FG_YELLOW));\
 )}
 
   //check one by one
