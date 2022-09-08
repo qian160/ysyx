@@ -154,14 +154,16 @@ static int cmd_d(char * e){
     //which may cut the value of Expr. So I copy the original string e first. It's not a good idea but at least it works
     //cmd_x has the same problem
     /*
-        **** ************ ********* e
+        **** ************ ********* *******\0   e
 
-        ****'\0'**********'\0'*********** e
-        n       have_expr
-                n + strlen(n) + 1, which will meet the '\0' earlier and the right side of e is lost
-
-        ************************* temp
-    
+        ****'\0'**********'\0'***********(\0) *****\0  e
+        n       have_expr                 |
+                n + strlen(n) + 1         |
+                                    if use strtok a third time, this not counted into the 3rd arg
+        ************************* **********\0 temp
+        |       |       |
+        n - e       len |
+                        |the remaining all
     */
     char * temp  = (char * )malloc(40);
     strcpy(temp, e);
@@ -175,6 +177,7 @@ static int cmd_d(char * e){
     }
     if(have_expr)
         Expr = temp + (int64_t)n - (int64_t)e + strlen(n) + 1;
+        //bad usage: n + strlen(n) + 1
     int N  = atoi(n);
     bool * success = (bool *)malloc(sizeof(bool));
     *success = true;
@@ -223,6 +226,8 @@ static int cmd_b(char * args){
     char * temp = (char *)calloc(30, 1);
     strcat(strcat(temp, "114514 a "), args);
     puts(temp);
+    strtok(temp, " ");      //let cmd_w start from this string
+    cmd_w(temp);
     free(temp);
     return 0;
 }
