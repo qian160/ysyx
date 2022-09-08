@@ -17,6 +17,19 @@ static const char tp[] = "IUSJRB";    //use type as index
   int cnt = 0;
 #endif
 
+void show_bits(word_t b){
+  int cnt = 64;
+  const int mask = 1l << 63;
+  putchar('\n');
+  while(cnt --){
+    int bit = b & mask;
+    printf("%d", bit);
+    b = b << 1;
+  }
+  putchar('\n');
+  return;
+}
+
 #define src1R(n) do { *src1 = R(n); } while (0)
 #define src2R(n) do { *src2 = R(n); } while (0)
 #define destR(n) do { *dest = n; } while (0)
@@ -94,17 +107,19 @@ static int decode_exec(Decode *D) {
 #define INSTPAT_INST(D) ((D)->inst)
 //a match is found, do what it supposed to do.
 //first prepare for operands, then do the things listed in __VA_ARGS__
-
 #define INSTPAT_MATCH(D, name, type, ... /* body */ ) { \
   decode_operand(D, &dest, &src1, &src2, concat(TYPE_, type)); \
   __VA_ARGS__ ; \
   IFDEF(CONFIG_SHOW_DECODE_INFORMATION,  \
   puts(ANSI_FMT("\nInformation about the just execuated instruction:", ANSI_FG_GREEN));\
   char buf[30];\
+  \
   IFDEF(CONFIG_CNT, printf(ANSI_FMT("cnt = %d\n", ANSI_FG_YELLOW), ++cnt));\
   disassemble(buf, sizeof(buf), D -> pc, (uint8_t *)(&D -> inst), 4);\
   printf(ANSI_FMT("type-%c:  %s\nold PC = 0x%lx  \nsrc1 = 0x%-16lx, src2 = 0x%-16lx \n", ANSI_FG_GREEN),tp[TYPE_##type], buf, D -> pc, src1, src2);\
   int fct3 = D -> decInfo.funct3;\
+  show_bits(src1);\
+  show_bits(src2);\
   switch(TYPE_##type){  \
     case(TYPE_I):case(TYPE_R):case(TYPE_U):\
     if(D -> decInfo.is_load){\
