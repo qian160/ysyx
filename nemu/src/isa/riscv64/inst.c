@@ -162,7 +162,7 @@ static int decode_exec(Decode *D) {
       printf(ANSI_FMT("| ", ANSI_FG_PINK));show_bits(storeVal);putchar('\n');\
       break;\
     }\
-    default:  printf("type %d\n", TYPE_##type);break;}\
+    default:  break;}\
 printf(ANSI_FMT(" ---------------------------------------------------------------------------\n", ANSI_FG_YELLOW));\
 )}
 
