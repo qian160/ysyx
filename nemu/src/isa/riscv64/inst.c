@@ -112,14 +112,14 @@ static int decode_exec(Decode *D) {
   __VA_ARGS__ ; \
   IFDEF(CONFIG_SHOW_DECODE_INFORMATION,  \
   printf(ANSI_FMT("------------------------------------------------------------------------\n", ANSI_FG_YELLOW));\
-  puts(ANSI_FMT("\nInformation about the just execuated instruction:", ANSI_FG_GREEN));\
+  puts(ANSI_FMT("\n| Information about the just execuated instruction:", ANSI_FG_GREEN));\
   char buf[30];\
   \
   IFDEF(CONFIG_CNT, printf(ANSI_FMT("cnt = %d\n", ANSI_FG_YELLOW), ++cnt));\
   disassemble(buf, sizeof(buf), D -> pc, (uint8_t *)(&D -> inst), 4);\
   printf(ANSI_FMT("| type-%c:  %s\n| old PC = 0x%lx\n", ANSI_FG_GREEN),tp[TYPE_##type], buf, D -> pc);\
-  printf(ANSI_FMT("| src1 = 0x%lx\n", ANSI_FG_YELLOW), src1);show_bits(src1);\
-  printf(ANSI_FMT("| src2 = 0x%lx\n", ANSI_FG_YELLOW), src2);show_bits(src2);\
+  printf(ANSI_FMT("| src1 = 0x%lx\n", ANSI_FG_YELLOW), src1);show_bits(src1);putchar('\n');\
+  printf(ANSI_FMT("| src2 = 0x%lx\n", ANSI_FG_YELLOW), src2);show_bits(src2);putchar('\n');\
   \
   int fct3 = D -> decInfo.funct3;\
   switch(TYPE_##type){  \
@@ -128,7 +128,7 @@ static int decode_exec(Decode *D) {
       word_t address = src1 + src2;\
       word_t loadVal = Mr(src1 + src2, L_width(fct3));\
       printf(ANSI_FMT("load a value 0x%lx from address: 0x%lx\n", ANSI_FG_YELLOW), loadVal, address); \
-      show_bits(loadVal);\
+      show_bits(loadVal);putchar('\n');\
     }  \
     else if(D->decInfo.is_jalr){\
       printf(ANSI_FMT("jalr, set %s = 0x%lx, new PC at 0x%lx. %s's bits are:\n", ANSI_FG_YELLOW), reg_name(dest), src1, src2, reg_name(dest));\
