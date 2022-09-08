@@ -223,6 +223,7 @@ static int cmd_b(char * args){
     char * temp = (char *)malloc(30);
     strcat(strcat(temp, "114514 a "), args);
     puts(temp);
+    free(temp);
     return 0;
 }
 
