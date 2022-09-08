@@ -221,7 +221,7 @@ static int cmd_b(char * args){
         return 0;
     }
     char * temp = (char *)malloc(30);
-    strcat(strcat(buf, "114514 a "), args);
+    strcat(strcat(temp, "114514 a "), args);
     puts(temp);
 }
 
