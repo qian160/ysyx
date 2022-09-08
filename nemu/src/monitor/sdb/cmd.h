@@ -221,7 +221,7 @@ static int cmd_b(char * args){
         printf(ANSI_FMT("too few args\n", ANSI_FG_YELLOW));
         return 0;
     }
-    char * addrp = temp + (int64_t n) - (int64_t)args + strlen(addr ) + 1;
+    char * addrp = temp + (int64_t) n - (int64_t)args + strlen(addr ) + 1;
 
     printf("%s\n", addrp);
 
