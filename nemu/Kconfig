@@ -27,6 +27,9 @@ config SHOW_EXECUATED
   default y
   help
     This will cause conflicts with SHOW_DECODE_INFORMATION. Dont open both
+config CNT
+  bool "Count insts execuated"
+  default y
 endmenu
 
 choice

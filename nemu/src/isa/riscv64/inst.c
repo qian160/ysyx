@@ -13,6 +13,10 @@ enum {
 
 static const char tp[] = "IUSJRB";    //use type as index
 
+#ifdef CONFIG_CNT
+  int cnt = 0;
+#endif
+
 #define src1R(n) do { *src1 = R(n); } while (0)
 #define src2R(n) do { *src2 = R(n); } while (0)
 #define destR(n) do { *dest = n; } while (0)
@@ -97,6 +101,7 @@ static int decode_exec(Decode *D) {
   IFDEF(CONFIG_SHOW_DECODE_INFORMATION,  \
   puts(ANSI_FMT("\nInformation about the just execuated instruction:", ANSI_FG_GREEN));\
   char buf[30];\
+  printf(ANSI_FMT("cnt = %d\n", ANSI_FG_YELLOW), ++cnt);\
   disassemble(buf, sizeof(buf), D -> pc, (uint8_t *)(&D -> inst), 4);\
   printf(ANSI_FMT("type-%c:  %s\nold PC = 0x%lx  \nsrc1 = 0x%-16lx, src2 = 0x%-16lx \n", ANSI_FG_GREEN),tp[TYPE_##type], buf, D -> pc, src1, src2);\
   int fct3 = D -> decInfo.funct3;\
