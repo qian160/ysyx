@@ -145,10 +145,10 @@ static int decode_exec(Decode *D) {
     break;\
     case(TYPE_B):\
       if( src1 == 0){  \
-        printf(ANSI_FMT("branch is not taken\n",  ANSI_FG_YELLOW)); \
+        printf(ANSI_FMT("branch is not taken %-40s | \n",  ANSI_FG_YELLOW), " "); \
       }\
       else {\
-        printf(ANSI_FMT("branch is taken, new PC at 0x%lx\n", ANSI_FG_YELLOW), src2); \
+        printf(ANSI_FMT("| branch is taken, new PC at 0x%-40lx | \n", ANSI_FG_YELLOW), src2); \
       }\
       break;\
     case(TYPE_J):\
