@@ -48,30 +48,24 @@ char *itoa(int number, int base)  //10, 16
         arr[i + 1] = '\0';
         return arr;
     }
-
     if (number < 0)
     {
         number *= -1;
         negative = 1;
     }
-
     while (number != 0)
     {
         r = number % base;
         arr[i++] = (r > 9) ? (r - 10) + 'a' : r + '0';
         number /= base;
     }
-
     if (negative)
     {
         arr[i] = '-';
         i++;
     }
-
     strrev(arr, 0, i - 1);
-
     arr[i] = '\0';
-
     return arr;
 }
 
@@ -99,7 +93,7 @@ int sprintf(char *out, const char *fmt, ...) {
         break;
       case 'd':
         d = va_arg(l, int);
-        char * decNum = itoa(d);
+        char * decNum = itoa(d, 10);
         out = strcat(out, decNum);
         break;
 
