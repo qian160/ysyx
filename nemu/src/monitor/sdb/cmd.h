@@ -114,9 +114,9 @@ static int cmd_w(char *args){
         printf(ANSI_FMT("need 2 arguments. Usage: w a expr, w d number\n", ANSI_FG_YELLOW));
         return 0;
     }
-    char * cmd = strtok(NULL, " "); //a or d
+    char cmd = strtok(NULL, " ")[0] | 0x20; //a or d
     //delete
-    if(streq(cmd, "d")){
+    if(cmd == 'd'){
         char *idx = strtok(NULL, " ");
         if(idx == NULL){
             printf(ANSI_FMT("too few arguments\n",ANSI_FG_MAGENTA));
@@ -131,8 +131,8 @@ static int cmd_w(char *args){
         }
     }
     //add
-    else if(streq(cmd, "a")){
-        char * expr = cmd + strlen(cmd) + 1;
+    else if(cmd == 'a'){
+        char * expr = args + 2;
         if(expr == NULL ){
             printf(ANSI_FMT("too few arguments\n",ANSI_FG_MAGENTA));
             return 0;
@@ -238,22 +238,23 @@ static int cmd_help(char *args);  //if not defined here, cmd_table will find the
 //And the table contains lots of functions, so it also must be put after the functions to find their definations
 static struct {
     const char *short_name;
+    const char *capital_name;
     const char *full_name;
     const char *description;
     int (*handler) (char *);
     const char * Usage;
 } cmd_table [] = {
-    {"h",    "help",       "Display informations about commands. Can take an argument",    cmd_help,   "help (cmd), show cmd's description and usage. If default show all but without usage"},
-    {"c",    "continue",   "Continue the execution of the program",                        cmd_c,      "no argument"},
-    {"q",    "quit",       "Exit NEMU",                                                    cmd_q,      "no argument"},
-    {"s",    "step",       "Step and execuate n instrction",                               cmd_s,      "s (num), default -1"},
-    {"i",    "info",       "Print the specific information. See help info",                cmd_info,   "info {r/w/reg_name}"},
-    {"x",    "examine",    "Examine the memory",                                           cmd_x,      "x num expr"},
-    {"p",    "print",      "Print the expression's value",                                 cmd_p,      "p expr"},
-    {"w",    "watch",      "Add or delete watchpoint.",                                    cmd_w,      "w a expr, w d num0, num1, ..."},
-    {"d",    "disasm",     "disasmble the next n inst. Or starting at other address ",     cmd_d,      "d n (expr). the second arg is optional"},
-    {"sh",   "shell",      "temporarily transfer control to a shell",                      cmd_shell,  "no argument"},
-    {"b",    "break",      "set breakpoints at some address. A wrap function of cmd_w",                              cmd_b,      "b expr. In fact this is just a wrap of watchpoints"},
+    {"h",   "H",    "help",       "Display informations about commands. Can take an argument",    cmd_help,   "help (cmd), show cmd's description and usage. If default show all but without usage"},
+    {"c",   "C",    "continue",   "Continue the execution of the program",                        cmd_c,      "no argument"},
+    {"q",   "Q",    "quit",       "Exit NEMU",                                                    cmd_q,      "no argument"},
+    {"s",   "S",    "step",       "Step and execuate n instrction",                               cmd_s,      "s (num), default -1"},
+    {"i",   "I",    "info",       "Print the specific information. See help info",                cmd_info,   "info {r/w/reg_name}"},
+    {"x",   "X",    "examine",    "Examine the memory",                                           cmd_x,      "x num expr"},
+    {"p",   "P",    "print",      "Print the expression's value",                                 cmd_p,      "p expr"},
+    {"w",   "W",    "watch",      "Add or delete watchpoint.",                                    cmd_w,      "w a expr, w d num0, num1, ..."},
+    {"d",   "D",    "disasm",     "disasmble the next n inst. Or starting at other address ",     cmd_d,      "d n (expr). the second arg is optional"},
+    {"sh",  "SH",   "shell",      "temporarily transfer control to a shell",                      cmd_shell,  "no argument"},
+    {"b",   "B",    "break",      "set breakpoints at some address. A wrap function of cmd_w",                              cmd_b,      "b expr. In fact this is just a wrap of watchpoints"},
 
   /* TODO: Add more commands */
 };

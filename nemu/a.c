@@ -1,66 +1,102 @@
 #include<stdio.h>
+#include<stdarg.h>
 #include<stdint.h>
-#include<string.h>
-
-#define s(a,b) 1
-
-size_t strlen(const char *s) {
-  size_t len = 0;
-  if(!s) return 0;
-  while(*s++)len++;
-  return len;
-  // \0 is not counted
-  //panic("Not implemented");
+//neg
+int atoi(const char* nptr) {
+  int x = 0;
+  while (*nptr == ' ') { nptr ++; }
+  while (*nptr >= '0' && *nptr <= '9') {
+    x = x * 10 + *nptr - '0';
+    nptr ++;
+  }
+  return x;
 }
 
-int strcmp(const char *s1, const char *s2) {
-  if(!s1 || !s2)  {
-    if(!s1 && s2) return *s2;
-    else if(!s2 && s1) return *s1;
-    else return 0;    ///both NULL, seems to be equal?...
-  }
-  while (*s1){
-  // if characters differ, or end of the second string is reached
-    if (*s1++ != *s2++) break;
-  }
-  // return the ASCII difference after converting `char*` to `unsigned char*`
-  return *s1 - *s2;
+void strrev(char *arr, int start, int end)
+{
+    char temp;
+
+    if (start >= end)
+        return;
+
+    temp = *(arr + start);
+    *(arr + start) = *(arr + end);
+    *(arr + end) = temp;
+
+    start++;
+    end--;
+    strrev(arr, start, end);
+}
+
+char *itoa(int number, int base)  //10, 16
+{
+  char * arr = (char *)malloc(32);
+    int i = 0, r, negative = 0;
+
+    if (number == 0)
+    {
+        arr[i] = '0';
+        arr[i + 1] = '\0';
+        return arr;
+    }
+
+    if (number < 0)
+    {
+        number *= -1;
+        negative = 1;
+    }
+
+    while (number != 0)
+    {
+        r = number % base;
+        arr[i++] = (r > 9) ? (r - 10) + 'a' : r + '0';
+        number /= base;
+    }
+
+    if (negative)
+    {
+        arr[i] = '-';
+        i++;
+    }
+
+    strrev(arr, 0, i - 1);
+
+    arr[i] = '\0';
+
+    return arr;
 }
 
 
-int strncmp(const char *s1, const char *s2, size_t n) {
-  if(n == 0) {
-  	return 1;
-  }
-  if(n > strlen(s1) || n > strlen(s2)){
-	return 1;
-  }
-  if(!s1 || !s2)  {
-    if(!s1 && s2) return *s2;
-    else if(!s2 && s1) return *s1;
-    else return 0;    ///both NULL, seems to be equal?...
-  }
-  while (*s1 && n--){
-  // if characters differ, or end of the second string is reached
-    if (*s1 != *s2) break;
-    s1 ++;
-    s2 ++;
-  }
-  // return the ASCII difference after converting `char*` to `unsigned char*`
-  return *s1 - *s2;
-}
+int sprintf(char *out, const char *fmt, ...) {
+  int n = 0;    //number of bytes put into out
+  va_list l;
+  va_start(l, fmt);
+  int d;
+  char c, *s;
+  while(*fmt){
+    switch (*fmt++)
+    {
+      case 's':
+        s = va_arg(l, char *);
+        out = strcat(out, s);
+        break;
+      case 'd':
+        d = va_arg(l, int);
+        char * decNum = itoa(d, 10);
+        out = strcat(out, decNum);
+        break;
 
+      default: break;
+    }
+  }
+  va_end(l);
+  return n;
+}
 
 
 int main()
 {
-	char * s1 = "hello",  * s2 = "hello";
-	char * s3 = "hell1o", * s4 = "hello";
-	char * s5 = NULL,     * s6 = "";
-	char * s7 = NULL,     * s8 = "hello";
-
-	printf("%d : %d\n", strncmp(s1,s2, 1), strcmp(s1, s2));
-	printf("%d : %d\n", strncmp(s3,s4, 4), strcmp(s3, s4));
-	printf("%d : %d\n", strncmp(s5,s6, 5), strcmp(s5, s6));
-	printf("%d : %d\n", strncmp(s7,s8, 6), strcmp(s7, s8));
+	char * s = (char *)malloc(30);
+	sprintf(s, "%s %s %d %d", "114 514", " ", 191, 9810);
+	puts(s);
 }
