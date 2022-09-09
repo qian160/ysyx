@@ -1,5 +1,4 @@
 #include<stdio.h>
-#include<string.h>
 #include<stdarg.h>
 #include<stdint.h>
 //neg
@@ -98,6 +97,6 @@ int sprintf(char *out, const char *fmt, ...) {
 int main()
 {
 	char * s = (char *)malloc(30);
-	sprintf(s, "%d %d", 114, 514);
+	sprintf(s, "%s %s %d %d", "114", "514", 191, 9810);
 	puts(s);
 }
