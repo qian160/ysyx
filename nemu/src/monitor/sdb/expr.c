@@ -21,6 +21,7 @@ enum {
   POINTER,        //can't be distinguished directly. need also to check the previous token's type
   LET,            //<=
   GET,            //>=
+  ALPHA,
   //ADDRESS = '&',
   LT      = '<',  //LESS THAN
   GT      = '>',  //GREATER THAN
@@ -107,9 +108,10 @@ static struct rule {
   {"\\|",             BIT_OR,   2},
   {"&",               BIT_AND,  2},
   {"\\^",             BIT_XOR,  2},
-  //numbers and white space
+  //const numbers and white space
   {"0[xX][0-9a-f]+",  HEXNUM,   0},   //check before DECNUM, or the 0 prefix will be lost
   {"[0-9]+",          DECNUM,   0},
+  {"[a-zA-Z]{1}",     ALPHA,    0},
   {"\\$[pP][cC]",     PC,       0},
   {"\\$[a-zA-Z0-9]+", REG,      0},
   {" +",              NOTYPE,   0},   // multiple spaces, not addition
@@ -232,7 +234,7 @@ static int dominant_operator(int start, int end)
   for (int i = start; i <= end;i ++)
   {		
     int type = tokens[i].type; 
-    if (type == HEXNUM || type == DECNUM || type == REG || type == PC)
+    if (type == HEXNUM || type == DECNUM || type == REG || type == PC || type == ALPHA)
       continue;
     //number can't be operator
     if(type == LEFT){
@@ -342,6 +344,9 @@ word_t calculate(int p, int q, bool * success){
     }
     else if(type == PC){
       return cpu.pc;
+    }
+    else if(type == ALPHA){
+      return tk_val[0];
     }
     else{   //the single token should be of numeric type, not others
       Log("bad token: %s\n", tk_val);
