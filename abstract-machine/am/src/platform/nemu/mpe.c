@@ -1,3 +1,4 @@
+//multi-processor extension
 #include <am.h>
 #include <stdatomic.h>
 #include <klib-macros.h>
