@@ -19,7 +19,7 @@
 #if defined(__ARCH_X86_NEMU)
 # define DEVICE_BASE 0x0
 #else
-# define DEVICE_BASE 0xa0000000
+# define DEVICE_BASE 0xa0000000   //string.c: hit bad trap
 #endif
 
 #define MMIO_BASE 0xa0000000
