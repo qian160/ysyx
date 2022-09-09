@@ -99,7 +99,7 @@ int sprintf(char *out, const char *fmt, ...) {
         break;
       case 'd':
         d = va_arg(l, int);
-        char * decNum = itoa(d, 10);
+        char * decNum = itoa(d);
         out = strcat(out, decNum);
         break;
 

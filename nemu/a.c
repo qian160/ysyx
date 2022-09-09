@@ -2,22 +2,15 @@
 #include<string.h>
 #include<stdarg.h>
 #include<stdint.h>
-
-int64_t atoi(char *s){
-  if(!s) return 0;
-  while(*s == ' ')  s++;    //skip spaces
-  char neg = 0;
-  if(*s == '-'){
-    neg = 1;
-    s++;
-  } 
-  int64_t res = 0;
-  while(*s && *s != ' '){
-    res *= 10;
-    res += *s - '0';
-    s++;
+//neg
+int atoi(const char* nptr) {
+  int x = 0;
+  while (*nptr == ' ') { nptr ++; }
+  while (*nptr >= '0' && *nptr <= '9') {
+    x = x * 10 + *nptr - '0';
+    nptr ++;
   }
-  return neg? -res: res;
+  return x;
 }
 
 void strrev(char *arr, int start, int end)

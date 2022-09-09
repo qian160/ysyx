@@ -19,6 +19,7 @@ int abs(int x) {
   return (x < 0 ? -x : x);
 }
 
+//neg???
 int atoi(const char* nptr) {
   int x = 0;
   while (*nptr == ' ') { nptr ++; }
