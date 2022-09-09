@@ -97,6 +97,6 @@ int sprintf(char *out, const char *fmt, ...) {
 int main()
 {
 	char * s = (char *)malloc(30);
-	sprintf(s, "%s %s %d %d", "114", "514", 191, 9810);
+	sprintf(s, "%s %s %d %d", "114 514", " ", 191, 9810);
 	puts(s);
 }
