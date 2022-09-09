@@ -2,7 +2,7 @@
 #include <klib.h>
 #include <klib-macros.h>
 #include <stdarg.h>
-
+#include <stdio.h>
 #if !defined(__ISA_NATIVE__) || defined(__NATIVE_USE_KLIB__)
 
 int printf(const char *fmt, ...) {
@@ -14,6 +14,7 @@ int vsprintf(char *out, const char *fmt, va_list ap) {
 }
 
 int sprintf(char *out, const char *fmt, ...) {
+  
   panic("Not implemented");
 }
 

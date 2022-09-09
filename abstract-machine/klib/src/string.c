@@ -21,7 +21,6 @@ char *strcpy(char *dst, const char *src) {
   if (dst == NULL) {
       return NULL;
   }
-
   // take a pointer pointing to the beginning of the dst string
   char *ptr = dst;
 
