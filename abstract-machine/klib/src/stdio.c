@@ -39,7 +39,7 @@ void strrev(char *arr, int start, int end)
 
 char *itoa(int number, int base)  //10, 16
 {
-  char * arr = (char *)malloc(32);
+    char * arr = (char *)malloc(32);
     int i = 0, r, negative = 0;
 
     if (number == 0)

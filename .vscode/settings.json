@@ -1,6 +1,7 @@
 {
     "files.associations": {
         "klib.h": "c",
-        "am.h": "c"
+        "am.h": "c",
+        "klib-macros.h": "c"
     }
 }
