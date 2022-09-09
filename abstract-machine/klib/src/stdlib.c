@@ -37,6 +37,7 @@ void *malloc(size_t size) { //size: bytes
 #if !(defined(__ISA_NATIVE__) && defined(__NATIVE_USE_KLIB__))
   //panic("Not implemented");
 #endif
+  asm volatile("li t0,0x114");
   void * addr = heap.start;
   heap.start += size*8;
   return addr;
