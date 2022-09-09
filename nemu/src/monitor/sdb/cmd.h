@@ -132,7 +132,7 @@ static int cmd_w(char *args){
     }
     //add
     else if(cmd == 'a'){
-        char * expr = cmd + 2;
+        char * expr = args + 2;
         if(expr == NULL ){
             printf(ANSI_FMT("too few arguments\n",ANSI_FG_MAGENTA));
             return 0;

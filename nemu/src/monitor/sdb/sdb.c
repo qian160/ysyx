@@ -71,7 +71,7 @@ void sdb_mainloop() {   //get command
 
     int i;
     for (i = 0; i < NR_CMD; i ++) {
-      if (streq(cmd, cmd_table[i].short_name) || streq(cmd, cmd_table[i].full_name || streq(cmd, cmd_table[i].capital_name))) {
+      if (streq(cmd, cmd_table[i].short_name) || streq(cmd, cmd_table[i].full_name) || streq(cmd, cmd_table[i].capital_name)) {
         //Log("\nargs = %s\n", args);
         if (cmd_table[i].handler(args) < 0) { return; } //error when running
         break;
