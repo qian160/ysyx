@@ -4,6 +4,7 @@
 #include <locale.h>
 
 #include "../monitor/sdb/sdb.h"
+#include "../../include/trace.h"
 /* The assembly code of instructions executed is only output to the screen
  * when the number of instructions executed is less than this value.
  * This is useful when you use the `si' command.
@@ -18,18 +19,7 @@ static bool g_print_step = false;
 
 void device_update();
 void disassemble(char *str, int size, uint64_t pc, uint8_t *code, int nbyte);
-
-#ifdef CONFIG_ITRACE_ENABLE
-//ring buffer
-typedef struct {
-  int index;
-  char buf[CONFIG_ITRACE_SIZE][128];
-}Iringbuf;
-
-Iringbuf iringbuf;
-
-#endif
-
+extern Iringbuf iringbuf;
 static void trace_and_difftest(Decode *_this, vaddr_t dnpc) {
 
 #ifdef CONFIG_ITRACE_COND
