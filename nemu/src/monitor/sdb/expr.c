@@ -111,7 +111,7 @@ static struct rule {
   //const numbers and white space
   {"0[xX][0-9a-f]+",  HEXNUM,   0},   //check before DECNUM, or the 0 prefix will be lost
   {"[0-9]+",          DECNUM,   0},
-  {"[a-zA-Z]{1}",     ALPHA,    0},
+  {"'[a-zA-Z]{1}'",   ALPHA,    0},
   {"\\$[pP][cC]",     PC,       0},
   {"\\$[a-zA-Z0-9]+", REG,      0},
   {" +",              NOTYPE,   0},   // multiple spaces, not addition
@@ -346,7 +346,7 @@ word_t calculate(int p, int q, bool * success){
       return cpu.pc;
     }
     else if(type == ALPHA){
-      return tk_val[0];
+      return tk_val[1];
     }
     else{   //the single token should be of numeric type, not others
       Log("bad token: %s\n", tk_val);
