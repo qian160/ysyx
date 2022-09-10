@@ -2,31 +2,45 @@
 mainmenu "NEMU Configuration Menu"
 
 menu "My config"
-config WP_ENABLE
-  bool "Enable watchpoints"
-  default y 
-  help
-    Disable watchpoint will improve performance
-config PRINT_TOKEN
-  bool "Enable print tokens"
-  default y
-  help
-    Print the tokens after you type some expressions. This is used in early debug time
-config AUTO_DISASM_NEXT
-  string "Automatically disasm next instruction"
-  default " 1 $pc"
-  help
-    must have space...
-config SHOW_DECODE_INFORMATION
-  bool "show decode information after decoding"
-  default y
-  help
-    For debug use
-config SHOW_EXECUATED
-  bool "Show the instruction after it was execuated"
-  default y
-  help
-    This will cause conflicts with SHOW_DECODE_INFORMATION. Dont open both
+    menu "WatchPoints"
+        config WP_ENABLE
+        bool "Enable watchpoints"
+        default y 
+    endmenu
+    
+    menu "Expr"	
+        config PRINT_TOKEN
+        bool "Enable print tokens"
+        default y
+    endmenu
+
+    config AUTO_DISASM_NEXT
+    string "Automatically disasm next instruction"
+    default "1"
+
+    config SHOW_DECODE_INFORMATION
+    bool "Show decode information after decoding"
+    default y
+
+    menu "Trace"
+	config ITRACE_ENABLE
+	bool "Enable Itrace"
+	default y
+
+	config ITRACE_SIZE
+	int "The length of Itrace"
+	depends on ITRACE_ENABLE
+	default 8
+
+	config MTRACE_ENABLE
+	bool "Enable Mtrace"
+	default y
+
+	config MTRACE_SIZE
+	int "The number of traces recorded"
+	default 20
+	depends on MTRACE_ENABLE
+    endmenu
 endmenu
 
 choice

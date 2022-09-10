@@ -9,6 +9,32 @@ static uint8_t *pmem = NULL;
 static uint8_t pmem[CONFIG_MSIZE] PG_ALIGN = {};
 #endif
 
+#ifdef CONFIG_MTRACE_ENABLE
+
+typedef struct {
+    bool isLoad : 1;    //1 -> load, 0 -> store
+    unsigned width : 3;
+    uint64_t addr;
+    uint64_t data;
+
+}MtraceInfo;
+
+typedef struct 
+{
+  //addr L/S width data
+    int index;
+    MtraceInfo info[CONFIG_MTRACE_SIZE];
+}Mringbuf;
+
+Mringbuf mringbuf;
+
+void show_mtrace()
+{
+
+}
+
+#endif
+
 uint8_t* guest_to_host(paddr_t paddr) { return pmem + paddr - CONFIG_MBASE; }
 paddr_t host_to_guest(uint8_t *haddr) { return haddr - pmem + CONFIG_MBASE; }
 
@@ -43,14 +69,38 @@ void init_mem() {
 }
 
 word_t paddr_read(paddr_t addr, int len) {
-  if (likely(in_pmem(addr))) return pmem_read(addr, len);
+  if (likely(in_pmem(addr))) 
+  {
+    word_t val = pmem_read(addr, len);
+    IFDEF(CONFIG_MTRACE_ENABLE, 
+      int idx = mringbuf.index;
+      mringbuf.info[idx].addr    = addr;
+      mringbuf.info[idx].width   = len;
+      mringbuf.info[idx].data    = val;
+      mringbuf.info[idx].isLoad  = 1;
+
+      mringbuf.index = (idx + 1) % CONFIG_MTRACE_SIZE;
+    );
+    return val;
+  }
   IFDEF(CONFIG_DEVICE, return mmio_read(addr, len));
   out_of_bound(addr);
   return 0;
 }
 
 void paddr_write(paddr_t addr, int len, word_t data) {
-  if (likely(in_pmem(addr))) { pmem_write(addr, len, data); return; }
+  if (likely(in_pmem(addr))) { 
+    IFDEF(CONFIG_MTRACE_ENABLE, 
+      int idx = mringbuf.index;
+      mringbuf.info[idx].addr    = addr;
+      mringbuf.info[idx].width   = len;
+      mringbuf.info[idx].data    = data;
+      mringbuf.info[idx].isLoad  = 0;
+
+      mringbuf.index = (idx + 1) % CONFIG_MTRACE_SIZE;
+    );
+    pmem_write(addr, len, data); return; 
+  }
   IFDEF(CONFIG_DEVICE, mmio_write(addr, len, data); return);
   out_of_bound(addr);
 }
