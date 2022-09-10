@@ -20,6 +20,7 @@ void device_update();
 void disassemble(char *str, int size, uint64_t pc, uint8_t *code, int nbyte);
 
 #ifdef CONFIG_ITRACE_ENABLE
+//ring buffer
 typedef struct {
   int index;
   char buf[CONFIG_ITRACE_SIZE][128];
@@ -145,13 +146,15 @@ void cpu_exec(uint64_t n) {
           (nemu_state.halt_ret == 0 ? ANSI_FMT("HIT GOOD TRAP", ANSI_FG_GREEN) :
             ANSI_FMT("HIT BAD TRAP", ANSI_FG_RED)),
           nemu_state.halt_pc);
+          break;
     case NEMU_ABORT:
+    //at first I want to use red, but it makes your eyes uncomfortabe
       Log("nemu: %s at pc = " FMT_WORD,
           ANSI_FMT("ABORT", ANSI_FG_RED), nemu_state.halt_pc);
 #ifdef CONFIG_ITRACE_ENABLE
         for (int i = 0; i < CONFIG_ITRACE_SIZE; i++)
         {
-            printf(ANSI_FMT("%s\n", ANSI_FG_RED), it.buf[i]);
+            printf(ANSI_FMT("%s\n", ANSI_FG_PINK), it.buf[i]);
         }
 #endif
       // fall through
