@@ -12,7 +12,6 @@ size_t strlen(const char *s) {
   while(*s++)len++;
   return len;
   // \0 is not counted
-  //panic("Not implemented");
 }
 
 char *strcpy(char *dst, const char *src) {
@@ -151,6 +150,7 @@ void *memmove(void *dst, const void *src, size_t n) {
     }
     return dst;
 }
+
 //can not overlap. UB
 void *memcpy(void *dst, const void *src, size_t n) {
   char *pszDest = (char *)dst;
