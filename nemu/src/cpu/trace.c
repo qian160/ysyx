@@ -2,7 +2,6 @@
 #include "../../include/generated/autoconf.h"
 #include "../../include/common.h"
 #ifdef CONFIG_ITRACE_ENABLE
-extern Iringbuf iringbuf;
 void show_itrace()
 {
     printf(ANSI_FMT("\nHere is the ring buffer:\n", ANSI_FG_YELLOW));
