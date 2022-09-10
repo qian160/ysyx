@@ -79,11 +79,14 @@ int vsprintf(char *out, const char *fmt, va_list ap) {
 
 //this function won't add spaces between 2 calls, it just append
 int sprintf(char *out, const char *fmt, ...) {
+  *out = '\0';      //reset the buf
   int n = 0;    //number of bytes put into out
   va_list l;
   va_start(l, fmt);
   int d;
   char c __attribute__((unused)), *s;
+  char temp[1];
+
   while(*fmt){
     switch (*fmt++)
     {
@@ -96,8 +99,10 @@ int sprintf(char *out, const char *fmt, ...) {
         char * decNum = itoa(d, 10);
         out = strcat(out, decNum);
         break;
-
-      default: break;
+      case '%': break;    //need to be improved
+      default: 
+        temp[0] = *(fmt - 1);
+        strcat(out, temp);
     }
   }
   va_end(l);
