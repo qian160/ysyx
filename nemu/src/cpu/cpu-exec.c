@@ -146,7 +146,7 @@ void cpu_exec(uint64_t n) {
           (nemu_state.halt_ret == 0 ? ANSI_FMT("HIT GOOD TRAP", ANSI_FG_GREEN) :
             ANSI_FMT("HIT BAD TRAP", ANSI_FG_RED)),
           nemu_state.halt_pc);
-          break;
+          //break;
     case NEMU_ABORT:
     //at first I want to use red, but it makes your eyes uncomfortabe
       Log("nemu: %s at pc = " FMT_WORD,
@@ -154,7 +154,10 @@ void cpu_exec(uint64_t n) {
 #ifdef CONFIG_ITRACE_ENABLE
         for (int i = 0; i < CONFIG_ITRACE_SIZE; i++)
         {
-            printf(ANSI_FMT("%s\n", ANSI_FG_PINK), it.buf[i]);
+          word_t pc;
+          sscanf(it.buf[i], "%x", &pc);
+          printf("%0xlx:  ", pc);
+          printf(ANSI_FMT("%s\n", ANSI_FG_PINK), it.buf[i]);
         }
 #endif
       // fall through
