@@ -155,7 +155,7 @@ void cpu_exec(uint64_t n) {
         for (int i = 0; i < CONFIG_ITRACE_SIZE; i++)
         {
           word_t pc;
-          sscanf(it.buf[i], "%x", &pc);
+          sscanf(it.buf[i], "%lx", &pc);
           printf("0x%lx:  ", pc);
           printf(ANSI_FMT("%s\n", ANSI_FG_PINK), it.buf[i]);
         }
