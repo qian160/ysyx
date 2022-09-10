@@ -152,13 +152,14 @@ void cpu_exec(uint64_t n) {
       Log("nemu: %s at pc = " FMT_WORD,
           ANSI_FMT("ABORT", ANSI_FG_RED), nemu_state.halt_pc);
 #ifdef CONFIG_ITRACE_ENABLE
-        for (int i = 0; i < CONFIG_ITRACE_SIZE; i++)
-        {
-          word_t pc;
-          sscanf(it.buf[i], "%lx", &pc);
-          printf("0x%lx:  ", pc);
-          printf(ANSI_FMT("%s\n", ANSI_FG_PINK), it.buf[i]);
-        }
+  printf(ANSI_FMT("Here is the ring buffer:\n", ANSI_FG_YELLOW));
+  for (int i = 0; i < CONFIG_ITRACE_SIZE; i++)
+  {
+    word_t pc;
+    sscanf(it.buf[i], "%lx", &pc);
+    printf(ANSI_FMT("  %s ", ANSI_FG_RED), pc == nemu_state.halt_pc ? "-->" : "   ");
+    printf(ANSI_FMT("%s\n", ANSI_FG_PINK), it.buf[i]);
+  }
 #endif
       // fall through
     case NEMU_QUIT: statistic();
