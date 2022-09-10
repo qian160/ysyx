@@ -9,7 +9,32 @@
  * This is useful when you use the `si' command.
  * You can modify this value as you want.
  */
-extern Iringbuf iringbuf;
+
+#ifdef CONFIG_ITRACE_ENABLE
+
+typedef struct {
+    int index;
+    char buf[CONFIG_ITRACE_SIZE][128];
+}Iringbuf;
+
+Iringbuf iringbuf;
+
+void show_itrace()
+{
+    printf(ANSI_FMT("\nHere is the ring buffer:\n", ANSI_FG_YELLOW));
+    int temp = CONFIG_ITRACE_SIZE;
+    for (int i = iringbuf.index ; temp--; i = (i + 1) % temp)
+    {
+        unsigned long long pc;
+        sscanf(iringbuf.buf[i], "%lx", &pc);
+        printf(ANSI_FMT("  %s ", ANSI_FG_YELLOW), pc == nemu_state.halt_pc ? "-->" : "   ");
+        printf(ANSI_FMT("%s\n", ANSI_FG_PINK), iringbuf.buf[i]);
+    }
+    putchar('\n');
+}
+#endif
+
+
 #define MAX_INST_TO_PRINT 10
 CPU_state cpu = {};
 uint64_t g_nr_guest_inst = 0;
