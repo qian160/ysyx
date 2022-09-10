@@ -146,20 +146,22 @@ void cpu_exec(uint64_t n) {
           (nemu_state.halt_ret == 0 ? ANSI_FMT("HIT GOOD TRAP", ANSI_FG_GREEN) :
             ANSI_FMT("HIT BAD TRAP", ANSI_FG_RED)),
           nemu_state.halt_pc);
-          //break;
+          break;
     case NEMU_ABORT:
     //at first I want to use red, but it makes your eyes uncomfortabe
       Log("nemu: %s at pc = " FMT_WORD,
           ANSI_FMT("ABORT", ANSI_FG_RED), nemu_state.halt_pc);
+
 #ifdef CONFIG_ITRACE_ENABLE
-  printf(ANSI_FMT("Here is the ring buffer:\n", ANSI_FG_YELLOW));
-  for (int i = 0; i < CONFIG_ITRACE_SIZE && strlen(it.buf[i]); i++)
-  {
-    word_t pc;
-    sscanf(it.buf[i], "%lx", &pc);
-    printf(ANSI_FMT("  %s ", ANSI_FG_RED), pc == nemu_state.halt_pc ? "-->" : "   ");
-    printf(ANSI_FMT("%s\n", ANSI_FG_PINK), it.buf[i]);
-  }
+      printf(ANSI_FMT("\nHere is the ring buffer:\n", ANSI_FG_YELLOW));
+      for (int i = 0; i < CONFIG_ITRACE_SIZE && strlen(it.buf[i]); i++)
+      {
+        word_t pc;
+        sscanf(it.buf[i], "%lx", &pc);
+        printf(ANSI_FMT("  %s ", ANSI_FG_YELLOW), pc == nemu_state.halt_pc ? "-->" : "   ");
+        printf(ANSI_FMT("%s\n", ANSI_FG_PINK), it.buf[i]);
+      }
+      putchar('\n');
 #endif
       // fall through
     case NEMU_QUIT: statistic();
