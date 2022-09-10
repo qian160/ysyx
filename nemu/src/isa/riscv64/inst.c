@@ -11,7 +11,7 @@ enum {
   TYPE_N, // none
 };
 
-static const char tp[] = "IUSJRB";    //use type as index
+static const char tp[] __attribute__((unused)) "IUSJRB";    //use type as index
 
 void show_bits(word_t b){
   int cnt = 65;
