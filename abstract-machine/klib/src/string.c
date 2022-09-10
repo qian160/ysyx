@@ -2,9 +2,13 @@
 #include <klib-macros.h>
 #include <stdint.h>
 
-#include<stdio.h>
-
 #if !defined(__ISA_NATIVE__) || defined(__NATIVE_USE_KLIB__)
+
+/*    something about va_arg
+      the va_arg(ap, )
+
+
+*/
 
 size_t strlen(const char *s) {
   size_t len = 0;
