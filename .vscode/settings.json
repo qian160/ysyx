@@ -4,6 +4,7 @@
         "am.h": "c",
         "klib-macros.h": "c",
         "common.h": "c",
-        "trace.h": "c"
+        "trace.h": "c",
+        "sdb.h": "c"
     }
 }
