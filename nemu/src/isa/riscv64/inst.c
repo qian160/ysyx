@@ -43,7 +43,7 @@ void show_bits_fmt(word_t b){
 #define funct3(inst) (BITS(inst, 14, 12))
 #define opcode(inst) (BITS(inst, 6, 0))
 static word_t immI(uint32_t i) { return SEXT(BITS(i, 31, 20), 12); }
-static word_t immU(uint32_t i) { return SEXT(BITS(i, 31, 12), 20) << 12; }
+static word_t immU(uint32_t i) { return SEXT(BITS(i, 31, 12), 20) /*<< 12*/; }
 static word_t immS(uint32_t i) { return SEXT((BITS(i, 31, 25) << 5) | BITS(i, 11, 7), 12); }
 static word_t immJ(uint32_t i) { return SEXT((BITS(i, 31, 31) << 20) | (BITS(i, 19, 12) << 12) | (BITS(i, 20, 20) << 11) | (BITS(i, 30, 21) << 1 ), 21); }
 static word_t immB(uint32_t i) { return SEXT((BITS(i, 31, 31) << 12) | (BITS(i, 7, 7) << 11) | (BITS(i, 30, 25) << 5) | (BITS(i, 11, 8) << 1) | 0, 13);}
@@ -82,7 +82,7 @@ static void decode_operand(Decode * D, word_t *dest, word_t *src1, word_t *src2,
       //to dest's upper 20 bits
       if(D -> decInfo.is_lui){
         Log_Color(RED, "\n\nIMMU = 0x%lx\\nn", immU(inst));
-        src1I(immU(inst) << 20);    break;
+        src1I(immU(inst) << 12);    break;
       }
       else{           //auipc rd, imm -> rd = pc + imm
         src1I(immU(inst));   src2I(pc); break;
