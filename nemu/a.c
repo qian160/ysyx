@@ -123,18 +123,31 @@ void check(int cond){
 	}
 }
 
+void print(const char * s)
+{
+	while(*s++)
+		putchar('.');
+	putchar('\n');
+}
+
 int main() {
         sprintf(buf, "%s", "Hello world!\n");
         printf("%d\nbuf = %s\n", __LINE__, buf);
-//	check(strcmp(buf, "Hello world!\n") == 0); 
+	check(strcmp(buf, "Hello world!\n") == 0); 
+	print(buf);
+	print("Hello World!\n");
 
         sprintf(buf, "%d + %d = %d\n", 1, 1, 2); 
         printf("%d\nbuf = %s\n", __LINE__, buf);
-//        check(strcmp(buf, "1 + 1 = 2\n") == 0); 
+        check(strcmp(buf, "1 + 1 = 2\n") == 0); 
+	print(buf);
+	print("1 + 1 = 2\n");
 
         sprintf(buf, "%d + %d = %d\n", 2, 10, 12);
         printf("%d\nbuf = %s\n", __LINE__, buf);
-//        check(strcmp(buf, "2 + 10 = 12\n") == 0); 
+        check(strcmp(buf, "2 + 10 = 12\n") == 0); 
+	print(buf);
+	print("2 + 10 = 12\n");
 
         return 0;
 }
