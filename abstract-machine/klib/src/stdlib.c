@@ -38,9 +38,10 @@ void *malloc(size_t size) { //size: bytes
   //panic("Not implemented");
 #endif
   asm volatile("li t0,0x114");
-  void * addr = heap.start;
+  void * addr __attribute__((unused)) = heap.start;
   heap.start += size * 16;
-  return addr;
+  return NULL;
+  //return addr;
 }
 
 void free(void *ptr) {
