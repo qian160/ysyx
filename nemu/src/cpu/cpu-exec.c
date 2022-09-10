@@ -153,7 +153,7 @@ void cpu_exec(uint64_t n) {
           ANSI_FMT("ABORT", ANSI_FG_RED), nemu_state.halt_pc);
 #ifdef CONFIG_ITRACE_ENABLE
   printf(ANSI_FMT("Here is the ring buffer:\n", ANSI_FG_YELLOW));
-  for (int i = 0; i < CONFIG_ITRACE_SIZE; i++)
+  for (int i = 0; i < CONFIG_ITRACE_SIZE && strlen(it.buf[i]); i++)
   {
     word_t pc;
     sscanf(it.buf[i], "%lx", &pc);
