@@ -5,6 +5,8 @@
         "klib-macros.h": "c",
         "common.h": "c",
         "trace.h": "c",
-        "sdb.h": "c"
+        "sdb.h": "c",
+        "macro.h": "c",
+        "utils.h": "c"
     }
 }
