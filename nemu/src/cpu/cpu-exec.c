@@ -156,7 +156,7 @@ void cpu_exec(uint64_t n) {
         {
           word_t pc;
           sscanf(it.buf[i], "%x", &pc);
-          printf("%0xlx:  ", pc);
+          printf("0x%lx:  ", pc);
           printf(ANSI_FMT("%s\n", ANSI_FG_PINK), it.buf[i]);
         }
 #endif
