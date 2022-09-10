@@ -2,6 +2,9 @@
 #include<stdarg.h>
 #include<stdint.h>
 //neg
+//
+char buf[128];
+
 int atoi(const char* nptr) {
   int x = 0;
   while (*nptr == ' ') { nptr ++; }
@@ -30,7 +33,7 @@ void strrev(char *arr, int start, int end)
 
 char *itoa(int number, int base)  //10, 16
 {
-  char * arr = (char *)malloc(32);
+    char * arr = (char *)malloc(32);
     int i = 0, r, negative = 0;
 
     if (number == 0)
@@ -39,40 +42,37 @@ char *itoa(int number, int base)  //10, 16
         arr[i + 1] = '\0';
         return arr;
     }
-
     if (number < 0)
     {
         number *= -1;
         negative = 1;
     }
-
     while (number != 0)
     {
         r = number % base;
         arr[i++] = (r > 9) ? (r - 10) + 'a' : r + '0';
         number /= base;
     }
-
     if (negative)
     {
         arr[i] = '-';
         i++;
     }
-
     strrev(arr, 0, i - 1);
-
     arr[i] = '\0';
-
     return arr;
 }
 
-
+//this function won't add spaces between 2 calls, it just append
 int sprintf(char *out, const char *fmt, ...) {
+  *out = '\0';      //reset the buf
   int n = 0;    //number of bytes put into out
   va_list l;
   va_start(l, fmt);
   int d;
-  char c, *s;
+  char c __attribute__((unused)), *s;
+  char temp[1];
+
   while(*fmt){
     switch (*fmt++)
     {
@@ -85,8 +85,10 @@ int sprintf(char *out, const char *fmt, ...) {
         char * decNum = itoa(d, 10);
         out = strcat(out, decNum);
         break;
-
-      default: break;
+      case '%': break;    //need to be improved
+      default: 
+        temp[0] = *(fmt - 1);
+        strcat(out, temp);
     }
   }
   va_end(l);
@@ -94,9 +96,39 @@ int sprintf(char *out, const char *fmt, ...) {
 }
 
 
-int main()
-{
-	char * s = (char *)malloc(30);
-	sprintf(s, "%s %s %d %d", "114 514", " ", 191, 9810);
-	puts(s);
+void check(int cond){
+	if(!cond){
+		printf("bad\n");
+		while(1);
+	}
 }
+
+void print(const char * s)
+{
+	while(*s++)
+		putchar('.');
+	putchar('\n');
+}
+
+int main() {
+        sprintf(buf, "%s", "Hello world!\n");
+        printf("%d\nbuf = %s\n", __LINE__, buf);
+	check(strcmp(buf, "Hello world!\n") == 0); 
+	print(buf);
+	print("Hello World!\n");
+
+        sprintf(buf, "%d + %d = %d\n", 1, 1, 2); 
+        printf("%d\nbuf = %s\n", __LINE__, buf);
+        check(strcmp(buf, "1 + 1 = 2\n") == 0); 
+	print(buf);
+	print("1 + 1 = 2\n");
+
+        sprintf(buf, "%d + %d = %d\n", 2, 10, 12);
+        printf("%d\nbuf = %s\n", __LINE__, buf);
+        check(strcmp(buf, "2 + 10 = 12\n") == 0); 
+	print(buf);
+	print("2 + 10 = 12\n");
+
+        return 0;
+}
+

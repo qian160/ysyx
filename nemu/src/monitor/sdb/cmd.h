@@ -114,6 +114,7 @@ static int cmd_w(char *args){
         printf(ANSI_FMT("need 2 arguments. Usage: w a expr, w d number\n", ANSI_FG_YELLOW));
         return 0;
     }
+    Log("\n%s\n", args);
     char cmd = strtok(NULL, " ")[0] | 0x20; //a or d
     //delete
     if(cmd == 'd'){
@@ -224,10 +225,10 @@ static int cmd_b(char * args){
         return 0;
     }
     char * temp = (char *)calloc(30, 1);
-    strcat(strcat(temp, "114514 a $pc == "), args);
+    strcat(strcat(temp, "w a $pc == "), args);
     puts(temp);
     strtok(temp, " ");      //let cmd_w start from this string
-    cmd_w(temp);
+    cmd_w(temp + 2);
     //free(temp);
     return 0;
 }
