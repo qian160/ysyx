@@ -5,21 +5,14 @@
 //
 char buf[128];
 
-int atoi(const char *s){
-  if(!s) return 0;
-  while(*s == ' ')  s++;    //skip spaces
-  char neg = 0;
-  if(*s == '-'){
-    neg = 1;
-    s++;
-  } 
-  int res = 0;
-  while(*s && *s != ' '){
-    res *= 10;
-    res += *s - '0';
-    s++;
+int atoi(const char* nptr) {
+  int x = 0;
+  while (*nptr == ' ') { nptr ++; }
+  while (*nptr >= '0' && *nptr <= '9') {
+    x = x * 10 + *nptr - '0';
+    nptr ++;
   }
-  return neg? -res: res;
+  return x;
 }
 
 void strrev(char *arr, int start, int end)

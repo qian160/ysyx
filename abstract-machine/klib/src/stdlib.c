@@ -39,7 +39,7 @@ void *malloc(size_t size) { //size: bytes
 #endif
   asm volatile("li t0,0x114");
   void * addr = heap.start;
-  heap.start += size*8;
+  heap.start += size * 16;
   return addr;
 }
 
