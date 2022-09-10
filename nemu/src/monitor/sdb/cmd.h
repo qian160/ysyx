@@ -110,11 +110,11 @@ static int cmd_x(char * args){  //usage: x num expr
 }
 
 static int cmd_w(char *args){
-    Log("\n%s\n", args)
     if(args == NULL){
         printf(ANSI_FMT("need 2 arguments. Usage: w a expr, w d number\n", ANSI_FG_YELLOW));
         return 0;
     }
+    Log("\n%s\n", args)
     char cmd = strtok(NULL, " ")[0] | 0x20; //a or d
     //delete
     if(cmd == 'd'){
