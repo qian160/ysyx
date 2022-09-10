@@ -172,6 +172,12 @@ while(*fmt){
 
 //this function won't add spaces between 2 calls, it just append
 int sprintf(char *out, const char *fmt, ...) {
+  va_list ap;
+  va_start(ap, fmt);
+  int ret = vsprintf(out, fmt, ap);
+  va_end(ap);
+  return ret;
+  /*
   *out = '\0';      //reset the buf
   int n = 0;    //number of bytes put into out
   va_list l;
@@ -200,6 +206,7 @@ int sprintf(char *out, const char *fmt, ...) {
   }
   va_end(l);
   return n;
+  */
 }
 int snprintf(char *out, size_t n, const char *fmt, ...) {
   panic("Not implemented");
