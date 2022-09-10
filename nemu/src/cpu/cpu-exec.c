@@ -19,7 +19,7 @@ static bool g_print_step = false;
 void device_update();
 void disassemble(char *str, int size, uint64_t pc, uint8_t *code, int nbyte);
 static void trace_and_difftest(Decode *_this, vaddr_t dnpc) {
-
+extern void show_itrace();
 #ifdef CONFIG_ITRACE_COND
   if (ITRACE_COND) { log_write("%s\n", _this->logbuf); }
 #endif
@@ -141,16 +141,7 @@ void cpu_exec(uint64_t n) {
           ANSI_FMT("ABORT", ANSI_FG_RED), nemu_state.halt_pc);
 
 #ifdef CONFIG_ITRACE_ENABLE
-      printf(ANSI_FMT("\nHere is the ring buffer:\n", ANSI_FG_YELLOW));
-      int temp = CONFIG_ITRACE_SIZE;
-      for (int i = iringbuf.index ; temp--; i = (i + 1) % temp)
-      {
-        word_t pc;
-        sscanf(iringbuf.buf[i], "%lx", &pc);
-        printf(ANSI_FMT("  %s ", ANSI_FG_YELLOW), pc == nemu_state.halt_pc ? "-->" : "   ");
-        printf(ANSI_FMT("%s\n", ANSI_FG_PINK), iringbuf.buf[i]);
-      }
-      putchar('\n');
+  show_itrace();
 #endif
       // fall through
     case NEMU_QUIT: statistic();
