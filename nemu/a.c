@@ -3,30 +3,23 @@
 #include<stdint.h>
 //neg
 //
-int strcmp(const char *s1, const char *s2) {
-  if(!s1 || !s2)  {
-    if(!s1 && s2) return *s2;
-    else if(!s2 && s1) return *s1;
-    else return 0;    ///both NULL, seems to be equal?...
-  }
-  while (*s1){
-  // if characters differ, or end of the second string is reached
-    if (*s1 != *s2) break;
-    s1 ++;
-    s2 ++;
-  }
-  // return the ASCII difference after converting `char*` to `unsigned char*`
-  return *s1 - *s2;
-}
+char buf[128];
 
-int atoi(const char* nptr) {
-  int x = 0;
-  while (*nptr == ' ') { nptr ++; }
-  while (*nptr >= '0' && *nptr <= '9') {
-    x = x * 10 + *nptr - '0';
-    nptr ++;
+int atoi(const char *s){
+  if(!s) return 0;
+  while(*s == ' ')  s++;    //skip spaces
+  char neg = 0;
+  if(*s == '-'){
+    neg = 1;
+    s++;
+  } 
+  int res = 0;
+  while(*s && *s != ' '){
+    res *= 10;
+    res += *s - '0';
+    s++;
   }
-  return x;
+  return neg? -res: res;
 }
 
 void strrev(char *arr, int start, int end)
@@ -47,7 +40,7 @@ void strrev(char *arr, int start, int end)
 
 char *itoa(int number, int base)  //10, 16
 {
-  char * arr = (char *)malloc(32);
+    char * arr = (char *)malloc(32);
     int i = 0, r, negative = 0;
 
     if (number == 0)
@@ -56,42 +49,37 @@ char *itoa(int number, int base)  //10, 16
         arr[i + 1] = '\0';
         return arr;
     }
-
     if (number < 0)
     {
         number *= -1;
         negative = 1;
     }
-
     while (number != 0)
     {
         r = number % base;
         arr[i++] = (r > 9) ? (r - 10) + 'a' : r + '0';
         number /= base;
     }
-
     if (negative)
     {
         arr[i] = '-';
         i++;
     }
-
     strrev(arr, 0, i - 1);
-
     arr[i] = '\0';
-
     return arr;
 }
 
-
+//this function won't add spaces between 2 calls, it just append
 int sprintf(char *out, const char *fmt, ...) {
-  *out = '\0';
+  *out = '\0';      //reset the buf
   int n = 0;    //number of bytes put into out
   va_list l;
   va_start(l, fmt);
   int d;
-  char c, *s;
+  char c __attribute__((unused)), *s;
   char temp[1];
+
   while(*fmt){
     switch (*fmt++)
     {
@@ -104,7 +92,7 @@ int sprintf(char *out, const char *fmt, ...) {
         char * decNum = itoa(d, 10);
         out = strcat(out, decNum);
         break;
-	case '%': break;
+      case '%': break;    //need to be improved
       default: 
         temp[0] = *(fmt - 1);
         strcat(out, temp);
@@ -114,7 +102,6 @@ int sprintf(char *out, const char *fmt, ...) {
   return n;
 }
 
-char buf[128];
 
 void check(int cond){
 	if(!cond){
