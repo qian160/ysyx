@@ -26,7 +26,7 @@ void show_itrace()
     for (int i = iringbuf.index ; temp--; i = (i + 1) % temp)
     {
         unsigned long long pc;
-        sscanf(iringbuf.buf[i], "%lx", &pc);
+        sscanf(iringbuf.buf[i], "%llx", &pc);
         printf(ANSI_FMT("  %s ", ANSI_FG_YELLOW), pc == nemu_state.halt_pc ? "-->" : "   ");
         printf(ANSI_FMT("%s\n", ANSI_FG_PINK), iringbuf.buf[i]);
     }
