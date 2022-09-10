@@ -23,7 +23,7 @@ void show_itrace()
 {
     printf(ANSI_FMT("\nHere is the ring buffer:\n", ANSI_FG_YELLOW));
     int temp = CONFIG_ITRACE_SIZE;
-    for (int i = iringbuf.index ; temp--; i = (i + 1) % temp)
+    for (int i = iringbuf.index ; temp--; i = (i + 1) % CONFIG_ITRACE_SIZE)
     {
         unsigned long long pc;
         sscanf(iringbuf.buf[i], "%llx", &pc);
