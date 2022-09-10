@@ -5,6 +5,8 @@ typedef struct {
     char buf[CONFIG_ITRACE_SIZE][128];
 }Iringbuf;
 
+Iringbuf iringbuf;
+
 #endif
 
 #ifdef CONFIG_MTRACE_ENABLE
@@ -23,5 +25,6 @@ typedef struct
     MtraceInfo info[CONFIG_MTRACE_SIZE];
 }Mringbuf;
 
+Mringbuf mringbuf;
 
 #endif
