@@ -228,7 +228,7 @@ static int cmd_b(char * args){
     strcat(strcat(temp, "w a $pc == "), args);
     puts(temp);
     strtok(temp, " ");      //let cmd_w start from this string
-    cmd_w(temp);
+    cmd_w(temp + 2);
     //free(temp);
     return 0;
 }
