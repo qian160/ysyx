@@ -21,6 +21,11 @@ int atoi(const char *s){
   return neg? -res: res;
 }
 */
+
+bool is_num(char c){
+  return c >= '0' && c <= '9';
+}
+
 void strrev(char *arr, int start, int end)
 {
     char temp;
@@ -73,8 +78,96 @@ int printf(const char *fmt, ...) {
   panic("Not implemented");
 }
 
+//v: use va_list as argument instead of ... its behavior is same as sprintf
+
 int vsprintf(char *out, const char *fmt, va_list ap) {
-  panic("Not implemented");
+  //support %s %d %c %x 
+  char *str = out;
+while(*fmt){
+  if(*fmt != '%'){
+      *str = *fmt++;
+      str++;
+      continue;
+  }
+  fmt++;    //fmt now points to the char after %, which could be the width or fmt
+
+  //check if it's a number
+  //char * format_begin = fmt;
+  //char * format_end = fmt; 
+  /*
+  while (is_num(*fmt)) {
+    format_end ++;
+    fmt ++;
+  }
+  */
+  //int format_len = get_format_length(format_begin, format_end);
+
+  switch (*fmt++) {
+    case 's' : {
+      char * t = va_arg(ap, char*);
+      int len = strlen(t);
+      for(int i = 0; i < len; i++) {
+        *str++ = *t++;
+      }
+      break;
+    }
+    case 'd' : {
+      long int n = va_arg(ap, int);
+      if (n < 0) {
+        n = - n;
+        *str++ = '-';
+      }
+      //uint32_t num = (uint32_t)n;
+      char *np = itoa(n, 10);
+      //int i = num_2_10str(num_str, num);
+      //if ( i < format_len) {
+      //  memset(str, ' ', format_len - i);
+      //  str += format_len - i;
+      //}
+      strcpy(str, np);
+      str += strlen(np);
+      break;
+    }
+    case 'u': {
+      uint32_t num = va_arg(ap, int);
+      char *n = itoa(num, 10);
+      //int i = num_2_10str(num_str, num);
+      //if ( i < format_len) {
+      //  memset(str, ' ', format_len - i);
+      //  str += format_len - i;
+      //}
+      strcpy(str, n);
+      str += strlen(n);
+      break;
+    }
+    case 'c': {
+      char c = (char)va_arg(ap, int);
+      *str++ = c;
+      break;
+    }
+    case 'p':
+    case 'x': {
+      uint32_t num = va_arg(ap, uint32_t);
+      char *n = itoa(num, 16);
+      //int i = num_2_16str(num_str, num);
+      //if ( (i + 2) < format_len) {
+      //  memset(str, ' ', format_len - i - 2 );
+      //  str += format_len - i -2 ;
+      //}
+      *str++ = '0';
+      *str++ = 'x';
+      strcpy(str, n);
+      str += strlen(n);
+      break;
+    }
+    default :
+      // printf("%c\n", --fmt);
+      assert(0);
+      break;
+    }
+  }
+  *str='\0';
+  return 0;
 }
 
 //this function won't add spaces between 2 calls, it just append
