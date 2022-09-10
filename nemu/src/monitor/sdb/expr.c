@@ -111,7 +111,7 @@ static struct rule {
   //const numbers and white space
   {"0[xX][0-9a-f]+",  HEXNUM,   0},   //check before DECNUM, or the 0 prefix will be lost
   {"[0-9]+",          DECNUM,   0},
-  {"'[a-zA-Z]{1}'",   ALPHA,    0},
+  {"'[a-zA-Z0-9]'",   ALPHA,    0},
   {"\\$[pP][cC]",     PC,       0},
   {"\\$[a-zA-Z0-9]+", REG,      0},
   {" +",              NOTYPE,   0},   // multiple spaces, not addition
