@@ -4,8 +4,10 @@
 
 #if !defined(__ISA_NATIVE__) || defined(__NATIVE_USE_KLIB__)
 
-/*    something about va_arg
-      the va_arg(ap, )
+/*
+        the va_arg(ap, ptr) is a macro, during a afunction call, variable arguments will be pushed
+      onto stack, and this macro sets ap to point at the address above ptr, which is the last non-variable argument
+
 
 
 */

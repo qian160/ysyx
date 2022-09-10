@@ -19,14 +19,27 @@ static bool g_print_step = false;
 void device_update();
 void disassemble(char *str, int size, uint64_t pc, uint8_t *code, int nbyte);
 
+#ifdef CONFIG_ITRACE_ENABLE
+typedef struct {
+  int index;
+  char buf[CONFIG_ITRACE_SIZE][128];
+}itrace;
+
+itrace it;
+
+#endif
+
 static void trace_and_difftest(Decode *_this, vaddr_t dnpc) {
+
 #ifdef CONFIG_ITRACE_COND
   if (ITRACE_COND) { log_write("%s\n", _this->logbuf); }
 #endif
-  //there is where the disasm information is printed----------
-#ifdef CONFIG_SHOW_EXECUATED
-  if (g_print_step) { IFDEF(CONFIG_ITRACE, puts(_this->logbuf)); }
-#endif
+  IFDEF(CONFIG_ITRACE_ENABLE, 
+    strcpy(it.buf[it.index], _this -> logbuf);
+    it.index = (it.index + 1) % CONFIG_ITRACE_SIZE;
+  )
+  //if (g_print_step) { IFDEF(CONFIG_ITRACE, puts(_this->logbuf)); }
+
   IFDEF(CONFIG_DIFFTEST, difftest_step(_this->pc, dnpc));
 
 #ifdef CONFIG_WP_ENABLE
@@ -119,13 +132,28 @@ void cpu_exec(uint64_t n) {
 
   switch (nemu_state.state) {
     case NEMU_RUNNING: nemu_state.state = NEMU_STOP; break; //n instructions have been execuated, time to stop and wait for new cmd
-
+    /*
     case NEMU_END: case NEMU_ABORT:
       Log("nemu: %s at pc = " FMT_WORD,
           (nemu_state.state == NEMU_ABORT ? ANSI_FMT("ABORT", ANSI_FG_RED) :
             (nemu_state.halt_ret == 0 ? ANSI_FMT("HIT GOOD TRAP", ANSI_FG_GREEN) :
             ANSI_FMT("HIT BAD TRAP", ANSI_FG_RED))),
           nemu_state.halt_pc);
+    */
+    case NEMU_END: 
+      Log("nemu: %s at pc = " FMT_WORD,
+          (nemu_state.halt_ret == 0 ? ANSI_FMT("HIT GOOD TRAP", ANSI_FG_GREEN) :
+            ANSI_FMT("HIT BAD TRAP", ANSI_FG_RED)),
+          nemu_state.halt_pc);
+    case NEMU_ABORT:
+      Log("nemu: %s at pc = " FMT_WORD,
+          ANSI_FMT("ABORT", ANSI_FG_RED), nemu_state.halt_pc);
+#ifdef CONFIG_ITRACE_ENABLE
+        for (int i = 0; i < CONFIG_ITRACE_SIZE; i++)
+        {
+            printf(ANSI_FMT("%s\n", ANSI_FG_RED), it.buf[i]);
+        }
+#endif
       // fall through
     case NEMU_QUIT: statistic();
   }

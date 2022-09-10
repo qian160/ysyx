@@ -177,7 +177,8 @@ int sprintf(char *out, const char *fmt, ...) {
   int ret = vsprintf(out, fmt, ap);
   va_end(ap);
   return ret;
-  /*
+
+  /* the code below is my implementation,  but it doesn't work in nemu...
   *out = '\0';      //reset the buf
   int n = 0;    //number of bytes put into out
   va_list l;
