@@ -224,7 +224,7 @@ static int cmd_b(char * args){
         return 0;
     }
     char * temp = (char *)calloc(30, 1);
-    strcat(strcat(temp, "114514 a $pc == "), args);
+    strcat(strcat(temp, "w a $pc == "), args);
     puts(temp);
     strtok(temp, " ");      //let cmd_w start from this string
     cmd_w(temp);
