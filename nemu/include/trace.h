@@ -4,7 +4,6 @@ typedef struct {
     int index;
     char buf[CONFIG_ITRACE_SIZE][128];
 }Iringbuf;
-extern Iringbuf iringbuf;
 
 #endif
 
@@ -24,6 +23,5 @@ typedef struct
     MtraceInfo info[CONFIG_MTRACE_SIZE];
 }Mringbuf;
 
-extern Mringbuf mringbuf;
 
 #endif
