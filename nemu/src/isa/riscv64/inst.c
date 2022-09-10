@@ -79,8 +79,10 @@ static void decode_operand(Decode * D, word_t *dest, word_t *src1, word_t *src2,
       } 
     }
     case TYPE_U: {
+      //to dest's upper 20 bits
       if(D -> decInfo.is_lui){
-        src1I(immU(inst) << 12);    break;
+        Log_Color(RED, "\n\nIMMU = 0x%lx\\nn", immU(inst));
+        src1I(immU(inst));    break;
       }
       else{           //auipc rd, imm -> rd = pc + imm
         src1I(immU(inst));   src2I(pc); break;
