@@ -3,6 +3,25 @@
 
 #include <common.h>
 
+#ifdef CONFIG_MTRACE_ENABLE
+
+typedef struct {
+  bool isLoad : 1;    //1 -> load, 0 -> store
+  unsigned width : 3;
+  word_t addr;
+  word_t data; 
+}MtraceInfo;
+
+typedef struct 
+{
+  //addr L/S width data
+  int index;
+  MtraceInfo info[CONFIG_MTRACE_SIZE];
+}Mringbuf;
+
+Mringbuf mringbuf;
+#endif
+
 #define RESET_VECTOR (CONFIG_MBASE + CONFIG_PC_RESET_OFFSET)
 
 /* convert the guest physical address in the guest program to host virtual address in NEMU */

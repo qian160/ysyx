@@ -24,9 +24,9 @@ void disassemble(char *str, int size, uint64_t pc, uint8_t *code, int nbyte);
 typedef struct {
   int index;
   char buf[CONFIG_ITRACE_SIZE][128];
-}itrace;
+}Iringbuf;
 
-itrace it;
+Iringbuf iringbuf;
 
 #endif
 
@@ -36,8 +36,8 @@ static void trace_and_difftest(Decode *_this, vaddr_t dnpc) {
   if (ITRACE_COND) { log_write("%s\n", _this->logbuf); }
 #endif
   IFDEF(CONFIG_ITRACE_ENABLE, 
-    strcpy(it.buf[it.index], _this -> logbuf);
-    it.index = (it.index + 1) % CONFIG_ITRACE_SIZE;
+    strcpy(iringbuf.buf[iringbuf.index], _this -> logbuf);
+    iringbuf.index = (iringbuf.index + 1) % CONFIG_ITRACE_SIZE;
   )
   //if (g_print_step) { IFDEF(CONFIG_ITRACE, puts(_this->logbuf)); }
 
@@ -154,12 +154,13 @@ void cpu_exec(uint64_t n) {
 
 #ifdef CONFIG_ITRACE_ENABLE
       printf(ANSI_FMT("\nHere is the ring buffer:\n", ANSI_FG_YELLOW));
-      for (int i = 0; i < CONFIG_ITRACE_SIZE && strlen(it.buf[i]); i++)
+      int temp = CONFIG_ITRACE_SIZE;
+      for (int i = iringbuf.index ; temp--; i = (i + 1) % temp)
       {
         word_t pc;
-        sscanf(it.buf[i], "%lx", &pc);
+        sscanf(iringbuf.buf[i], "%lx", &pc);
         printf(ANSI_FMT("  %s ", ANSI_FG_YELLOW), pc == nemu_state.halt_pc ? "-->" : "   ");
-        printf(ANSI_FMT("%s\n", ANSI_FG_PINK), it.buf[i]);
+        printf(ANSI_FMT("%s\n", ANSI_FG_PINK), iringbuf.buf[i]);
       }
       putchar('\n');
 #endif
