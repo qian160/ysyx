@@ -71,7 +71,7 @@ void show_ftrace(){
         Ftrace_entry f = ftrace.trace[i];
         char * s = f.is_call ? "call" : "ret";
         for(char j = 0; j < f.depth; j++)
-            putchar('\t');
+            puts("    ");
         printf(ANSI_FMT("%s %s <0x%lx>\n", ANSI_FG_GREEN), s, f.name, f.address);
     }
     putchar('\n');
