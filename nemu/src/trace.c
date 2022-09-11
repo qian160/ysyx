@@ -74,7 +74,7 @@ void show_ftrace(){
             putchar('\t');
         printf(ANSI_FMT("%s %s <0x%lx>\n", ANSI_FG_YELLOW), s, f.name, f.address);
     }
-    puutchar('\n');
+    putchar('\n');
 }
 
 int depth = 0;
