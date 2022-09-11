@@ -14,7 +14,7 @@ void examine_memory(int n, word_t p){
     char cnt = 0;
     for (int i = 0 ; i < n ; i++)
     {
-        printf(ANSI_FMT("%02lx  ", ANSI_FG_YELLOW),paddr_read(p, 1));
+        printf(ANSI_FMT("%02lx  ", ANSI_FG_YELLOW),paddr_read(p, 1, 0));
         p ++;
         cnt ++;
         if(cnt == (char)4 && i != n-1)

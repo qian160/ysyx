@@ -11,6 +11,7 @@
         "cpu.h": "c",
         "reg.h": "c",
         "locale.h": "c",
-        "isa-def.h": "c"
+        "isa-def.h": "c",
+        "debug.h": "c"
     }
 }

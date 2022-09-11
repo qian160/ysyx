@@ -3,7 +3,7 @@
  * Type 'man regex' for more information about POSIX regex functions.
  */
 
-word_t paddr_read(paddr_t addr, int len);
+word_t paddr_read(paddr_t addr, int len, bool flag);
 #include <regex.h>        
 enum {
   NOTYPE, 
@@ -374,7 +374,7 @@ word_t calculate(int p, int q, bool * success){
         case('!'):  return !temp;
         case('~'):  return ~temp;
         case(MINUS):  return -temp;
-        case(POINTER):return paddr_read(temp, 8);
+        case(POINTER):return paddr_read(temp, 8, 0);
       }
     }
     //a op b case
