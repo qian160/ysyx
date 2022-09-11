@@ -69,10 +69,10 @@ void show_ftrace(){
     for(int i = 0; i < ftrace.cnt ; i++)
     {
         Ftrace_entry f = ftrace.trace[i];
-        char * s = f.is_call ? "call" : "ret";
+        char * s = f.is_call ? "call" : "ret ";
         for(char j = 0; j < f.depth; j++)
             printf("  ");
-        printf(ANSI_FMT("%s %s <0x%lx>\n", ANSI_FG_GREEN), s, f.name, f.address);
+        printf(ANSI_FMT("%s %s <0x%lx>, depth = %d\n", ANSI_FG_YELLOW), s, f.name, f.address, );
     }
     putchar('\n');
 }
