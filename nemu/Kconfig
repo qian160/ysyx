@@ -28,19 +28,26 @@ menu "My config"
 	default y
 
 	config ITRACE_SIZE
-	int "The length of Itrace"
+	int "The size of i-ringbuf buffer"
 	depends on ITRACE_ENABLE
 	default 8
 
 	config MTRACE_ENABLE
 	bool "Enable Mtrace"
+	depends on SHOW_DECODE_INFORMATION
 	default y
+	help
+		It's a pity to have this dependence
 
 	config MTRACE_SIZE
-	int "The number of traces recorded"
+	int "The size of m-ringbuf"
 	default 20
 	depends on MTRACE_ENABLE
-    endmenu
+	
+	config FTRACE_ENABLE
+	bool "Enable function trace"
+	default y
+	endmenu
 endmenu
 
 choice

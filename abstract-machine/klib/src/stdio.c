@@ -179,6 +179,7 @@ int sprintf(char *out, const char *fmt, ...) {
   return ret;
 
   /* the code below is my implementation,  but it doesn't work in nemu...
+  //strcpy and strcat ?
   *out = '\0';      //reset the buf
   int n = 0;    //number of bytes put into out
   va_list l;

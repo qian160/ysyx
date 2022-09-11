@@ -5,12 +5,10 @@ typedef struct {
     uint64_t addr;
     uint64_t data;
     unsigned int rd : 5;
-
 }MtraceInfo;
 
 typedef struct 
 {
-  //addr L/S width data
     int index;
     MtraceInfo info[CONFIG_MTRACE_SIZE];
 }Mringbuf;
@@ -32,5 +30,19 @@ typedef struct {
 Iringbuf iringbuf;
 
 void show_itrace();
+
+#endif
+
+#ifdef CONFIG_FTRACE_ENABLE
+
+typedef struct {
+    unsigned depth : 8;
+    word_t address;
+    char name[32];
+}Ftrace_entry;
+
+Ftrace_entry Ftrace[128];
+
+void show_ftrace();
 
 #endif
