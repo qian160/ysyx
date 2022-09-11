@@ -41,17 +41,16 @@ void show_mtrace()
 }
 
 void update_mringbuf(bool isLoad, word_t addr, word_t data, int rd){
+    int idx = mringbuf.index;
     switch (isLoad)
     {
         case 1:
-            int idx = mringbuf.index;
             mringbuf.info[idx].addr    = addr;
             mringbuf.info[idx].data    = data;
             mringbuf.info[idx].isLoad  = 1;
             mringbuf.index = (idx + 1) % CONFIG_MTRACE_SIZE;
             break;
         case 0:
-            int idx = mringbuf.index;
             mringbuf.info[idx].addr    = addr;
             mringbuf.info[idx].data    = data;
             mringbuf.info[idx].isLoad  = 0;
