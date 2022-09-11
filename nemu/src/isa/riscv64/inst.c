@@ -5,15 +5,8 @@
 
 #include "../../../include/trace.h"   //load op will set ringbuf's rd
 
-#define R(i) gpr(i)
-#define Mr vaddr_read   //memory read
-#define Mw vaddr_write  //memory write
-enum {
-  TYPE_I, TYPE_U, TYPE_S, TYPE_J, TYPE_R, TYPE_B, TYPE_SYS,
-  TYPE_N, // none
-};
 
-static const char tp[] __attribute__((unused))= "IUSJRB";    //use type as index
+
 extern void update_mringbuf(bool isLoad, word_t addr, word_t data, int rd);
 extern void update_ftrace(bool is_call, word_t addr, const char * name, int depth);
 extern int depth;

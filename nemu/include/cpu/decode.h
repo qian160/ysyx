@@ -105,7 +105,17 @@ void show_bits_fmt(word_t b){
   return;
 }
 
+
+#define R(i) gpr(i)
+#define Mr vaddr_read   //memory read
+#define Mw vaddr_write  //memory write
+enum {
+  TYPE_I, TYPE_U, TYPE_S, TYPE_J, TYPE_R, TYPE_B, TYPE_SYS,
+  TYPE_N, // none
+};
+
 //#ifdef CONFIG_SHOW_DECODE_INFORMATION
+static const char tp[] __attribute__((unused))= "IUSJRB";    //use type as index
 
 void show_decode(Decode *D, word_t src1, word_t src2, int dest, int type){
 printf(ANSI_FMT(" ---------------------------------------------------------------------------\n", ANSI_FG_YELLOW));\
