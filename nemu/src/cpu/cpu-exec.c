@@ -31,6 +31,7 @@ void show_itrace()
 void show_mtrace()
 {
   int size = CONFIG_MTRACE_SIZE;
+  printf(ANSI_FMT("M - Trace:\n", ANSI_FG_YELLOW));
   for(int i = mringbuf.index; size --; i = (i + 1) % CONFIG_MTRACE_SIZE){
     bool c = mringbuf.info[i].isLoad;
     MtraceInfo temp = mringbuf.info[i];

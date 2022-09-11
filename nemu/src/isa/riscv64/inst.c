@@ -30,6 +30,7 @@ void show_bits(word_t b){
 static inline void set_ringbuf_rd(int rd){
   mringbuf.info[mringbuf.index].rd = rd;
   mringbuf.index = (mringbuf.index + 1) % CONFIG_MTRACE_SIZE;
+  Log("\nrd = %s\n", reg_name(rd));
 }
 
 void show_bits_fmt(word_t b){
