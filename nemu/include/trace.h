@@ -16,6 +16,10 @@ typedef struct
 }Mringbuf;
 
 Mringbuf mringbuf;
+
+void update_mringbuf(bool isLoad, word_t addr, word_t data, int rd);
+void show_mtrace();
+
 #endif
 
 #ifdef CONFIG_ITRACE_ENABLE
@@ -26,5 +30,7 @@ typedef struct {
 }Iringbuf;
 
 Iringbuf iringbuf;
+
+void show_itrace();
 
 #endif
