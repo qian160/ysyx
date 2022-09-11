@@ -72,12 +72,12 @@ void show_ftrace(){
         char * s = f.is_call ? "call" : "ret ";
         for(char j = 0; j < f.depth; j++)
             printf("  ");
-        printf(ANSI_FMT("%s %s <0x%lx>, depth = %d\n", ANSI_FG_YELLOW), s, f.name, f.address, );
+        printf(ANSI_FMT("%s %s <0x%lx>, depth = %d\n", ANSI_FG_YELLOW), s, f.name, f.address, f.depth);
     }
     putchar('\n');
 }
 
-int depth = 0;
+int depth = 0;      //this is used at runtime
 
 void update_ftrace(bool is_call, word_t addr, const char * name, int d){
     int cnt = ftrace.cnt;
