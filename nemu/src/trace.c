@@ -63,7 +63,8 @@ void update_mringbuf(bool isLoad, word_t addr, word_t data, int rd){
 #endif
 
 #ifdef CONFIG_FTRACE_ENABLE
-    for(int i = 0; i < ARRLEN(Ftrace) ; i++)
+    int len = ARRLEN(Ftrace);
+    for(int i = 0; i < len ; i++)
     {
         Ftrace_entry f = Ftrace_entry[i];
         
