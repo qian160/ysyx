@@ -21,6 +21,8 @@ menu "My config"
     config SHOW_DECODE_INFORMATION
     bool "Show decode information after decoding"
     default y
+    help
+	This is very beautiful, but also consumes a lot of memory
 
     menu "Trace"
 	config ITRACE_ENABLE
