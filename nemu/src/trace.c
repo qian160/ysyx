@@ -2,6 +2,7 @@
 #include <../include/generated/autoconf.h>
 #include "../include/trace.h"
 #include "isa/riscv64/local-include/reg.h"
+
 #ifdef CONFIG_ITRACE_ENABLE
 
 void show_itrace()
@@ -60,5 +61,23 @@ void update_mringbuf(bool isLoad, word_t addr, word_t data, int rd){
     }
 }
 
+#endif
 
+#ifdef CONFIG_FTRACE_ENABLE
+void show_ftrace(){
+    for(int i = 0; i < ftrace.cnt ; i++)
+    {
+        Ftrace_entry f = ftrace.trace[i];
+        char * s = f.is_call ? "call" : "ret";
+        for(char j = 0; j < f.depth; j++)
+            putchar('\t');
+        printf(ANSI_FMT("%s %s <0x%lx>\n", ANSI_FG_YELLOW), s, f.name, f.address);
+    }
+}
+
+int depth = 0;
+
+void update_ftrace(bool is_call, word_t addr, const char * name, int depth){
+
+}
 #endif

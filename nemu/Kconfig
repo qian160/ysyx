@@ -43,7 +43,11 @@ menu "My config"
 	int "The size of m-ringbuf"
 	default 20
 	depends on MTRACE_ENABLE
-    endmenu
+	
+	config FTRACE_ENABLE
+	bool "Enable function trace"
+	default y
+	endmenu
 endmenu
 
 choice

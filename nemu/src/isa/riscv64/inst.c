@@ -15,7 +15,8 @@ enum {
 
 static const char tp[] __attribute__((unused))= "IUSJRB";    //use type as index
 extern void update_mringbuf(bool isLoad, word_t addr, word_t data, int rd);
-
+extern void update_ftrace(bool is_call, word_t addr, const char * name, int depth);
+extern int depth;
 void show_bits(word_t b){
   int cnt = 65;
   const long long mask = 1l << 63;
@@ -119,11 +120,11 @@ static int decode_exec(Decode *D) {
 #define INSTPAT_MATCH(D, name, type, ... /* body */ ) { \
   decode_operand(D, &dest, &src1, &src2, concat(TYPE_, type)); \
   __VA_ARGS__ ; \
+  \
   IFDEF(CONFIG_SHOW_DECODE_INFORMATION,  \
   printf(ANSI_FMT(" ---------------------------------------------------------------------------\n", ANSI_FG_YELLOW));\
   puts(ANSI_FMT("| Information about the just execuated instruction: \t\t\t    |", ANSI_FG_GREEN));\
   char buf[30];\
-  \
   disassemble(buf, sizeof(buf), D -> pc, (uint8_t *)(&D -> inst), 4);\
   printf(ANSI_FMT("| type-%c:  %32s \t\t\t\t    | \n| old PC = 0x%-60lx   |\n", ANSI_FG_GREEN),tp[TYPE_##type], buf, D -> pc);\
   printf(ANSI_FMT("| src1 = 0x%-64lx | \n", ANSI_FG_YELLOW), src1);   \
@@ -156,6 +157,7 @@ static int decode_exec(Decode *D) {
       }\
       else {\
         printf(ANSI_FMT("| branch is taken, new PC at 0x%-44lx | \n", ANSI_FG_YELLOW), src2); \
+        IFDEF(CONFIG_FTRACE_ENABLE, update_ftrace(1, src2, "dont know", depth++));\
       }\
       break;\
     case(TYPE_J):\
