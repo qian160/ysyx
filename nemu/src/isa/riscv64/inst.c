@@ -166,6 +166,7 @@ static int decode_exec(Decode *D) {
     case(TYPE_J):\
       printf(ANSI_FMT("| jal, set %s = 0x%lx, new PC at 0x%-34lx | \n", ANSI_FG_YELLOW), reg_name(dest), src1, src2);\
       show_bits_fmt(src1);\
+      IFDEF(CONFIG_FTRACE_ENABLE, update_ftrace(1, src2, "dont know", depth++));\
       \
       break;\
     case(TYPE_S):{\
