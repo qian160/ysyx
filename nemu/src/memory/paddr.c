@@ -3,6 +3,8 @@
 #include <device/mmio.h>
 #include <isa.h>
 
+#include "../include/trace.h"
+
 #if   defined(CONFIG_PMEM_MALLOC)
 static uint8_t *pmem = NULL;
 #else // CONFIG_PMEM_GARRAY
@@ -11,26 +13,22 @@ static uint8_t pmem[CONFIG_MSIZE] PG_ALIGN = {};
 
 #ifdef CONFIG_MTRACE_ENABLE
 
-typedef struct {
-    bool isLoad : 1;    //1 -> load, 0 -> store
-    unsigned width : 3;
-    uint64_t addr;
-    uint64_t data;
-
-}MtraceInfo;
-
-typedef struct 
-{
-  //addr L/S width data
-    int index;
-    MtraceInfo info[CONFIG_MTRACE_SIZE];
-}Mringbuf;
-
-Mringbuf mringbuf;
-
 void show_mtrace()
 {
-
+  int size = CONFIG_MTRACE_SIZE;
+  for(int i = mringbuf.index; size --; i = (i + 1) % CONFIG_MTRACE_SIZE){
+    bool c = mringbuf.info[i].isLoad;
+    MtraceInfo temp = mringbuf.info[i];
+      switch (c)
+      {
+      case 1:
+        printf(ANSI_FMT("Load: address = 0x%lx, val = 0x%lx\n", ANSI_FG_YELLOW), temp.addr, temp.data );
+        break;
+      case 0:
+        printf(ANSI_FMT("Store: 0x%lx -> pmem[0x%lx]\n", ANSI_FG_MAGENTA), temp.data, temp.addr);
+        break;
+      }
+  }
 }
 
 #endif
@@ -75,7 +73,6 @@ word_t paddr_read(paddr_t addr, int len) {
     IFDEF(CONFIG_MTRACE_ENABLE, 
       int idx = mringbuf.index;
       mringbuf.info[idx].addr    = addr;
-      mringbuf.info[idx].width   = len;
       mringbuf.info[idx].data    = val;
       mringbuf.info[idx].isLoad  = 1;
 
@@ -93,7 +90,6 @@ void paddr_write(paddr_t addr, int len, word_t data) {
     IFDEF(CONFIG_MTRACE_ENABLE, 
       int idx = mringbuf.index;
       mringbuf.info[idx].addr    = addr;
-      mringbuf.info[idx].width   = len;
       mringbuf.info[idx].data    = data;
       mringbuf.info[idx].isLoad  = 0;
 

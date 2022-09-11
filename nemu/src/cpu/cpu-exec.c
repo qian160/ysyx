@@ -9,19 +9,12 @@
  * This is useful when you use the `si' command.
  * You can modify this value as you want.
  */
-
+#include "../include/trace.h"
 #ifdef CONFIG_ITRACE_ENABLE
-
-typedef struct {
-    int index;
-    char buf[CONFIG_ITRACE_SIZE][128];
-}Iringbuf;
-
-Iringbuf iringbuf;
 
 void show_itrace()
 {
-    printf(ANSI_FMT("\nHere is the ring buffer:\n", ANSI_FG_YELLOW));
+    printf(ANSI_FMT("\nI - Trace:\n", ANSI_FG_YELLOW));
     int temp = CONFIG_ITRACE_SIZE;
     for (int i = iringbuf.index ; temp--; i = (i + 1) % CONFIG_ITRACE_SIZE)
     {
