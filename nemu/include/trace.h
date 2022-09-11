@@ -4,6 +4,7 @@ typedef struct {
     bool isLoad : 1;    //1 -> load, 0 -> store
     uint64_t addr;
     uint64_t data;
+    unsigned int rd : 5;
 
 }MtraceInfo;
 
