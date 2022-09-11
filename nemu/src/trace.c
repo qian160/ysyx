@@ -65,6 +65,7 @@ void update_mringbuf(bool isLoad, word_t addr, word_t data, int rd){
 
 #ifdef CONFIG_FTRACE_ENABLE
 void show_ftrace(){
+    printf(ANSI_FMT("F - Trace:\n", ANSI_FG_YELLOW));
     for(int i = 0; i < ftrace.cnt ; i++)
     {
         Ftrace_entry f = ftrace.trace[i];
@@ -73,6 +74,7 @@ void show_ftrace(){
             putchar('\t');
         printf(ANSI_FMT("%s %s <0x%lx>\n", ANSI_FG_YELLOW), s, f.name, f.address);
     }
+    puutchar('\n');
 }
 
 int depth = 0;
