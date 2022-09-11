@@ -39,7 +39,7 @@ typedef struct {
     unsigned depth : 8;
     word_t address;
     bool is_call : 1;
-    char name[32];
+    char name[16];
 }Ftrace_entry;
 
 typedef struct {
