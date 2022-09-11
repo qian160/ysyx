@@ -1,3 +1,13 @@
+#include <isa.h>
+#include <cpu/cpu.h>
+#include <readline/readline.h>
+#include <readline/history.h>
+#include "sdb.h"
+#include <utils.h>
+#include "../../isa/riscv64/local-include/reg.h"
+
+#define NR_CMD ARRLEN(cmd_table)
+
 void examine_memory(int n, word_t p){
   //if we directly derefference the pointer, we are in fact examing our real computer's address!!!
     printf(ANSI_FMT(" 0x%lx: ",ANSI_FG_MAGENTA), p);
