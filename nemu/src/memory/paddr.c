@@ -71,7 +71,7 @@ void paddr_write(paddr_t addr, int len, word_t data) {
       mringbuf.info[idx].data    = data;
       mringbuf.info[idx].isLoad  = 0;
 
-      Log("\naddr = 0x%x, idx = %x, val = 0x%lx, isload\n", addr, idx, data);
+      Log("\naddr = 0x%x, idx = %x, val = 0x%lx, isStore\n", addr, idx, data);
       //mringbuf.index = (idx + 1) % CONFIG_MTRACE_SIZE;
     );
     pmem_write(addr, len, data); return; 
