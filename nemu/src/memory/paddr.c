@@ -56,15 +56,6 @@ word_t paddr_read(paddr_t addr, int len) {
 
 void paddr_write(paddr_t addr, int len, word_t data) {
   if (likely(in_pmem(addr))) { 
-    IFDEF(CONFIG_MTRACE_ENABLE, 
-      int idx = mringbuf.index;
-      mringbuf.info[idx].addr    = addr;
-      mringbuf.info[idx].data    = data;
-      mringbuf.info[idx].isLoad  = 0;
-
-      Log("\naddr = 0x%x, idx = %x, val = 0x%lx, isStore\n", addr, idx, data);
-      //mringbuf.index = (idx + 1) % CONFIG_MTRACE_SIZE;
-    );
     pmem_write(addr, len, data); return; 
   }
   IFDEF(CONFIG_DEVICE, mmio_write(addr, len, data); return);

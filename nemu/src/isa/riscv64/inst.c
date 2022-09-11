@@ -173,6 +173,15 @@ static int decode_exec(Decode *D) {
       word_t storeVal = src2 & BITMASK(S_width(fct3) << 3);\
       printf(ANSI_FMT("| store a value 0x%-16lx to address 0x%-27lx | \n", ANSI_FG_YELLOW), storeVal, src1);\
       show_bits_fmt(storeVal);\
+      \
+      IFDEF(CONFIG_MTRACE_ENABLE, \
+      int idx = mringbuf.index;\
+      mringbuf.info[idx].addr    = src1;\
+      mringbuf.info[idx].data    = storeVal;\
+      mringbuf.info[idx].isLoad  = 0;\
+\
+      mringbuf.index = (idx + 1) % CONFIG_MTRACE_SIZE;\
+    );\
       break;\
     }\
     default:  break;}\
