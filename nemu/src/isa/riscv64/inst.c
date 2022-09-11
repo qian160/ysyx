@@ -14,6 +14,7 @@ enum {
 };
 
 static const char tp[] __attribute__((unused))= "IUSJRB";    //use type as index
+extern void update_mringbuf(bool isLoad, word_t addr, word_t data, int rd);
 
 void show_bits(word_t b){
   int cnt = 65;
@@ -137,14 +138,7 @@ static int decode_exec(Decode *D) {
       word_t loadVal = Mr(src1 + src2, L_width(fct3));\
       printf(ANSI_FMT("| load a value 0x%-16lx from address: 0x%-24lx  | \n", ANSI_FG_YELLOW), loadVal, address); \
       show_bits_fmt(loadVal);\
-      \
-      IFDEF(CONFIG_MTRACE_ENABLE, \
-        int idx = mringbuf.index;\
-        mringbuf.info[idx].addr    = address;\
-        mringbuf.info[idx].data    = loadVal;\
-        mringbuf.info[idx].isLoad  = 1;\
-        mringbuf.index = (idx + 1) % CONFIG_MTRACE_SIZE;\
-      );\
+      IFDEF(CONFIG_MTRACE_ENABLE, update_mringbuf(1, address, loadVal, 0));\
     }  \
     else if(D->decInfo.is_jalr){\
       printf(ANSI_FMT("jalr, set %s = 0x%-lx, new PC at 0x%lx. %s's bits are:\n", ANSI_FG_YELLOW), reg_name(dest), src1, src2, reg_name(dest));\
@@ -173,15 +167,7 @@ static int decode_exec(Decode *D) {
       word_t storeVal = src2 & BITMASK(S_width(fct3) << 3);\
       printf(ANSI_FMT("| store a value 0x%-16lx to address 0x%-27lx | \n", ANSI_FG_YELLOW), storeVal, src1);\
       show_bits_fmt(storeVal);\
-      \
-      IFDEF(CONFIG_MTRACE_ENABLE, \
-      int idx = mringbuf.index;\
-      mringbuf.info[idx].addr    = src1;\
-      mringbuf.info[idx].data    = storeVal;\
-      mringbuf.info[idx].isLoad  = 0;\
-\
-      mringbuf.index = (idx + 1) % CONFIG_MTRACE_SIZE;\
-    );\
+      IFDEF(CONFIG_MTRACE_ENABLE, update_mringbuf(0, src1, storeVal, dest));\
       break;\
     }\
     default:  break;}\
