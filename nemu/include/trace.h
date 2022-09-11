@@ -38,10 +38,16 @@ void show_itrace();
 typedef struct {
     unsigned depth : 8;
     word_t address;
+    bool is_call : 1;
     char name[32];
 }Ftrace_entry;
 
-Ftrace_entry Ftrace[128];
+typedef struct {
+    Ftrace_entry trace[256];
+    unsigned int cnt;
+}Ftrace;
+
+Ftrace ftrace;
 
 void show_ftrace();
 
