@@ -5,8 +5,6 @@
 
 #include "../../../include/trace.h"   //load op will set ringbuf's rd
 
-
-
 extern void update_mringbuf(bool isLoad, word_t addr, word_t data, int rd);
 extern void update_ftrace(bool is_call, word_t addr, const char * name, int depth);
 extern int depth;
@@ -37,6 +35,25 @@ enum {
 
 static const char tp[] __attribute__((unused))= "IUSJRB";    //use type as index
 
+void show_bits(word_t b){
+  int cnt = 65;
+  const long long mask = 1l << 63;
+  while(cnt -- > 1){
+    if(cnt % 8 == 0)putchar(' ');
+    int bit = (b & mask) >> 63;
+    printf("%d", bit);
+    b = b << 1;
+  }
+  return;
+}
+
+void show_bits_fmt(word_t b){
+  printf(ANSI_FMT("| ", ANSI_FG_PINK));
+  show_bits(b); 
+  printf(ANSI_FMT("  |", ANSI_FG_PINK));
+  putchar('\n');
+  return;
+}
 
 //#ifdef CONFIG_SHOW_DECODE_INFORMATION
 

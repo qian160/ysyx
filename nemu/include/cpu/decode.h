@@ -85,23 +85,4 @@ static inline void pattern_decode_hex(const char *str, int len,
 #define L_width(fct3) (1 << (fct3 & 0b11))
 #define S_width(fct3) (1 << fct3)
 
-void show_bits(word_t b){
-  int cnt = 65;
-  const long long mask = 1l << 63;
-  while(cnt -- > 1){
-    if(cnt % 8 == 0)putchar(' ');
-    int bit = (b & mask) >> 63;
-    printf("%d", bit);
-    b = b << 1;
-  }
-  return;
-}
-
-void show_bits_fmt(word_t b){
-  printf(ANSI_FMT("| ", ANSI_FG_PINK));
-  show_bits(b); 
-  printf(ANSI_FMT("  |", ANSI_FG_PINK));
-  putchar('\n');
-  return;
-}
 
