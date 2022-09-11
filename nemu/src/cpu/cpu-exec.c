@@ -9,6 +9,7 @@
  * This is useful when you use the `si' command.
  * You can modify this value as you want.
  */
+#include "../../src/isa/riscv64/local-include/reg.h"
 #include "../include/trace.h"
 #ifdef CONFIG_ITRACE_ENABLE
 
