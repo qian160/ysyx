@@ -12,11 +12,6 @@
 #include "../../src/isa/riscv64/local-include/reg.h"
 #include "../include/trace.h"
 
-/*
-extern void show_itrace();
-extern void show_mtrace();
-extern void update_mringbuf(bool isLoad, word_t addr, word_t data, int rd);
-*/
 #define MAX_INST_TO_PRINT 10
 CPU_state cpu = {};
 uint64_t g_nr_guest_inst = 0;
@@ -149,6 +144,7 @@ void cpu_exec(uint64_t n) {
 
       IFDEF(CONFIG_ITRACE_ENABLE, show_itrace());
       IFDEF(CONFIG_MTRACE_ENABLE, show_mtrace());
+      IFDEF(CONFIG_FTRACE_ENABLE, show_ftrace());
       // fall through
     case NEMU_QUIT: statistic();
   }

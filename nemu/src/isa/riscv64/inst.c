@@ -144,6 +144,9 @@ static int decode_exec(Decode *D) {
     else if(D->decInfo.is_jalr){\
       printf(ANSI_FMT("jalr, set %s = 0x%-lx, new PC at 0x%lx. %s's bits are:\n", ANSI_FG_YELLOW), reg_name(dest), src1, src2, reg_name(dest));\
       show_bits_fmt(src1);\
+      IFDEF(CONFIG_FTRACE_ENABLE, \
+        if(dest == 0) update_ftrace(0, src2, "dont know", depth);\
+      );\
       \
     }\
     else  {\
@@ -157,12 +160,13 @@ static int decode_exec(Decode *D) {
       }\
       else {\
         printf(ANSI_FMT("| branch is taken, new PC at 0x%-44lx | \n", ANSI_FG_YELLOW), src2); \
-        IFDEF(CONFIG_FTRACE_ENABLE, update_ftrace(1, src2, "dont know", depth++));\
+        IFDEF(CONFIG_FTRACE_ENABLE, update_ftrace(1, src2, "dont know", depth));\
       }\
       break;\
     case(TYPE_J):\
       printf(ANSI_FMT("| jal, set %s = 0x%lx, new PC at 0x%-34lx | \n", ANSI_FG_YELLOW), reg_name(dest), src1, src2);\
       show_bits_fmt(src1);\
+      IFDEF(CONFIG_FTRACE_ENABLE, update_ftrace(1, src2, "dont know", depth));\
       \
       break;\
     case(TYPE_S):{\
