@@ -2,7 +2,6 @@
 #define __CPU_DECODE_H__
 
 #include <isa.h>
-#include "../../isa/riscv64/local-include/reg.h"
 
 typedef struct Decode {
   vaddr_t pc;
