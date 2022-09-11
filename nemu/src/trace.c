@@ -12,7 +12,7 @@ void show_itrace()
     for (int i = iringbuf.index ; temp--; i = (i + 1) % CONFIG_ITRACE_SIZE)
     {
         if(strlen(iringbuf.buf[i]) > 0)
-            printf(ANSI_FMT("   %s\n", ANSI_FG_PINK), iringbuf.buf[i]);
+            printf(ANSI_FMT("   %s\n", ANSI_FG_GREEN), iringbuf.buf[i]);
     }
     putchar('\n');
 }
@@ -31,7 +31,7 @@ void show_mtrace()
             switch (c)
             {
                 case 1:
-                    printf(ANSI_FMT("Load:  %s <- pmem[0x%lx],  val = 0x%lx\n", ANSI_FG_YELLOW), reg_name(temp.rd), temp.addr, temp.data );
+                    printf(ANSI_FMT("Load:  %s <- pmem[0x%lx],  val = 0x%lx\n", ANSI_FG_CYAN), reg_name(temp.rd), temp.addr, temp.data );
                 break;
                 case 0:
                     printf(ANSI_FMT("Store: 0x%lx -> pmem[0x%lx]\n", ANSI_FG_GREEN), temp.data, temp.addr);
@@ -72,7 +72,7 @@ void show_ftrace(){
         char * s = f.is_call ? "call" : "ret";
         for(char j = 0; j < f.depth; j++)
             putchar('\t');
-        printf(ANSI_FMT("%s %s <0x%lx>\n", ANSI_FG_YELLOW), s, f.name, f.address);
+        printf(ANSI_FMT("%s %s <0x%lx>\n", ANSI_FG_GREEN), s, f.name, f.address);
     }
     putchar('\n');
 }
@@ -80,6 +80,13 @@ void show_ftrace(){
 int depth = 0;
 
 void update_ftrace(bool is_call, word_t addr, const char * name, int depth){
-
+    int cnt = ftrace.cnt;
+    ftrace.trace[cnt].depth   = depth;
+    ftrace.trace[cnt].is_call = is_call;
+    strcpy(ftrace.trace[cnt].name, name);
+    ftrace.trace[cnt].address = addr;
+    cnt ++;
+    if(is_call) depth++ ;
+    else depth --;
 }
 #endif
