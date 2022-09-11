@@ -81,7 +81,7 @@ int depth = 0;      //this is used at runtime
 
 void update_ftrace(bool is_call, word_t addr, const char * name, int d){
     int cnt = ftrace.cnt;
-    ftrace.trace[cnt].depth   = d;
+    ftrace.trace[cnt].depth   = d - !is_call;
     ftrace.trace[cnt].is_call = is_call;
     strcpy(ftrace.trace[cnt].name, name);
     ftrace.trace[cnt].address = addr;
