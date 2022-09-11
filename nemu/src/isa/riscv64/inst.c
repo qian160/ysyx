@@ -3,6 +3,8 @@
 #include <cpu/ifetch.h>
 #include <cpu/decode.h>
 
+#include "../../../include/trace.h"   //load op will set ringbuf's rd
+
 #define R(i) gpr(i)
 #define Mr vaddr_read   //memory read
 #define Mw vaddr_write  //memory write
@@ -12,6 +14,7 @@ enum {
 };
 
 static const char tp[] __attribute__((unused))= "IUSJRB";    //use type as index
+extern void update_mringbuf(bool isLoad, word_t addr, word_t data, int rd);
 
 void show_bits(word_t b){
   int cnt = 65;
@@ -112,6 +115,7 @@ static int decode_exec(Decode *D) {
 #define INSTPAT_INST(D) ((D)->inst)
 //a match is found, do what it supposed to do.
 //first prepare for operands, then do the things listed in __VA_ARGS__
+//very complex macro...
 #define INSTPAT_MATCH(D, name, type, ... /* body */ ) { \
   decode_operand(D, &dest, &src1, &src2, concat(TYPE_, type)); \
   __VA_ARGS__ ; \
@@ -134,6 +138,7 @@ static int decode_exec(Decode *D) {
       word_t loadVal = Mr(src1 + src2, L_width(fct3));\
       printf(ANSI_FMT("| load a value 0x%-16lx from address: 0x%-24lx  | \n", ANSI_FG_YELLOW), loadVal, address); \
       show_bits_fmt(loadVal);\
+      IFDEF(CONFIG_MTRACE_ENABLE, update_mringbuf(1, address, loadVal, 0));\
     }  \
     else if(D->decInfo.is_jalr){\
       printf(ANSI_FMT("jalr, set %s = 0x%-lx, new PC at 0x%lx. %s's bits are:\n", ANSI_FG_YELLOW), reg_name(dest), src1, src2, reg_name(dest));\
@@ -162,6 +167,7 @@ static int decode_exec(Decode *D) {
       word_t storeVal = src2 & BITMASK(S_width(fct3) << 3);\
       printf(ANSI_FMT("| store a value 0x%-16lx to address 0x%-27lx | \n", ANSI_FG_YELLOW), storeVal, src1);\
       show_bits_fmt(storeVal);\
+      IFDEF(CONFIG_MTRACE_ENABLE, update_mringbuf(0, src1, storeVal, dest));\
       break;\
     }\
     default:  break;}\

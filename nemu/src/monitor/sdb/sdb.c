@@ -1,17 +1,7 @@
-#include <isa.h>
-#include <cpu/cpu.h>
-#include <readline/readline.h>
-#include <readline/history.h>
-#include "sdb.h"
-#include <utils.h>
-#include "../../isa/riscv64/local-include/reg.h"
-
-static int is_batch_mode __attribute__((unused)) = false;
-#define NR_CMD ARRLEN(cmd_table)
-
-#include "cmd.h"  //put this under all the definations
+#include "cmd.h"
 
 #define uint64_t  long long
+static int is_batch_mode __attribute__((unused)) = false;
 
 void init_regex();
 void init_wp_pool();

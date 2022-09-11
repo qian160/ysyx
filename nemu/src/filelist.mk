@@ -1,4 +1,6 @@
-SRCS-y += src/nemu-main.c
+#this file manages the src module's blacklists and whitelists
+
+SRCS-y += src/nemu-main.c src/trace.c	
 DIRS-y += src/cpu src/monitor src/utils
 DIRS-$(CONFIG_MODE_SYSTEM) += src/memory
 DIRS-BLACKLIST-$(CONFIG_TARGET_AM) += src/monitor/sdb

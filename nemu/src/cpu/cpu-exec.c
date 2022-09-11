@@ -9,39 +9,20 @@
  * This is useful when you use the `si' command.
  * You can modify this value as you want.
  */
+#include "../../src/isa/riscv64/local-include/reg.h"
+#include "../include/trace.h"
 
-#ifdef CONFIG_ITRACE_ENABLE
-
-typedef struct {
-    int index;
-    char buf[CONFIG_ITRACE_SIZE][128];
-}Iringbuf;
-
-Iringbuf iringbuf;
-
-void show_itrace()
-{
-    printf(ANSI_FMT("\nHere is the ring buffer:\n", ANSI_FG_YELLOW));
-    int temp = CONFIG_ITRACE_SIZE;
-    for (int i = iringbuf.index ; temp--; i = (i + 1) % CONFIG_ITRACE_SIZE)
-    {
-        unsigned long long pc;
-        sscanf(iringbuf.buf[i], "%llx", &pc);
-        printf(ANSI_FMT("  %s ", ANSI_FG_YELLOW), pc == nemu_state.halt_pc ? "-->" : "   ");
-        printf(ANSI_FMT("%s\n", ANSI_FG_PINK), iringbuf.buf[i]);
-    }
-    putchar('\n');
-}
-#endif
-
-
+/*
+extern void show_itrace();
+extern void show_mtrace();
+extern void update_mringbuf(bool isLoad, word_t addr, word_t data, int rd);
+*/
 #define MAX_INST_TO_PRINT 10
 CPU_state cpu = {};
 uint64_t g_nr_guest_inst = 0;
 static uint64_t g_timer = 0; // unit: us
 static bool g_print_step = false;
 
-extern void show_itrace();
 void device_update();
 void disassemble(char *str, int size, uint64_t pc, uint8_t *code, int nbyte);
 static void trace_and_difftest(Decode *_this, vaddr_t dnpc) {
@@ -50,6 +31,7 @@ static void trace_and_difftest(Decode *_this, vaddr_t dnpc) {
 #endif
   IFDEF(CONFIG_ITRACE_ENABLE, 
     strcpy(iringbuf.buf[iringbuf.index], _this -> logbuf);
+    //index changed here
     iringbuf.index = (iringbuf.index + 1) % CONFIG_ITRACE_SIZE;
   )
   //if (g_print_step) { IFDEF(CONFIG_ITRACE, puts(_this->logbuf)); }
@@ -159,15 +141,14 @@ void cpu_exec(uint64_t n) {
           (nemu_state.halt_ret == 0 ? ANSI_FMT("HIT GOOD TRAP", ANSI_FG_GREEN) :
             ANSI_FMT("HIT BAD TRAP", ANSI_FG_RED)),
           nemu_state.halt_pc);
-          break;
+//          break;
     case NEMU_ABORT:
     //at first I want to use red, but it makes your eyes uncomfortabe
       Log("nemu: %s at pc = " FMT_WORD,
           ANSI_FMT("ABORT", ANSI_FG_RED), nemu_state.halt_pc);
 
-#ifdef CONFIG_ITRACE_ENABLE
-  show_itrace();
-#endif
+      IFDEF(CONFIG_ITRACE_ENABLE, show_itrace());
+      IFDEF(CONFIG_MTRACE_ENABLE, show_mtrace());
       // fall through
     case NEMU_QUIT: statistic();
   }

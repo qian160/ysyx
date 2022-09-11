@@ -3,36 +3,12 @@
 #include <device/mmio.h>
 #include <isa.h>
 
+#include "../include/trace.h"
+
 #if   defined(CONFIG_PMEM_MALLOC)
 static uint8_t *pmem = NULL;
 #else // CONFIG_PMEM_GARRAY
 static uint8_t pmem[CONFIG_MSIZE] PG_ALIGN = {};
-#endif
-
-#ifdef CONFIG_MTRACE_ENABLE
-
-typedef struct {
-    bool isLoad : 1;    //1 -> load, 0 -> store
-    unsigned width : 3;
-    uint64_t addr;
-    uint64_t data;
-
-}MtraceInfo;
-
-typedef struct 
-{
-  //addr L/S width data
-    int index;
-    MtraceInfo info[CONFIG_MTRACE_SIZE];
-}Mringbuf;
-
-Mringbuf mringbuf;
-
-void show_mtrace()
-{
-
-}
-
 #endif
 
 uint8_t* guest_to_host(paddr_t paddr) { return pmem + paddr - CONFIG_MBASE; }
@@ -67,20 +43,10 @@ void init_mem() {
   Log("physical memory area [" FMT_PADDR ", " FMT_PADDR "]",
       (paddr_t)CONFIG_MBASE, (paddr_t)CONFIG_MBASE + CONFIG_MSIZE - 1);
 }
-
 word_t paddr_read(paddr_t addr, int len) {
   if (likely(in_pmem(addr))) 
   {
     word_t val = pmem_read(addr, len);
-    IFDEF(CONFIG_MTRACE_ENABLE, 
-      int idx = mringbuf.index;
-      mringbuf.info[idx].addr    = addr;
-      mringbuf.info[idx].width   = len;
-      mringbuf.info[idx].data    = val;
-      mringbuf.info[idx].isLoad  = 1;
-
-      mringbuf.index = (idx + 1) % CONFIG_MTRACE_SIZE;
-    );
     return val;
   }
   IFDEF(CONFIG_DEVICE, return mmio_read(addr, len));
@@ -90,15 +56,6 @@ word_t paddr_read(paddr_t addr, int len) {
 
 void paddr_write(paddr_t addr, int len, word_t data) {
   if (likely(in_pmem(addr))) { 
-    IFDEF(CONFIG_MTRACE_ENABLE, 
-      int idx = mringbuf.index;
-      mringbuf.info[idx].addr    = addr;
-      mringbuf.info[idx].width   = len;
-      mringbuf.info[idx].data    = data;
-      mringbuf.info[idx].isLoad  = 0;
-
-      mringbuf.index = (idx + 1) % CONFIG_MTRACE_SIZE;
-    );
     pmem_write(addr, len, data); return; 
   }
   IFDEF(CONFIG_DEVICE, mmio_write(addr, len, data); return);
