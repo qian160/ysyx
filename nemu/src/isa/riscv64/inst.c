@@ -9,6 +9,10 @@ extern void update_mringbuf(bool isLoad, word_t addr, word_t data, int rd);
 extern void update_ftrace(bool is_call, word_t addr, const char * name, int depth);
 
 extern int depth;
+enum {
+  TYPE_I, TYPE_U, TYPE_S, TYPE_J, TYPE_R, TYPE_B, TYPE_SYS,
+  TYPE_N, // none
+};
 
 #define src1R(n) do { *src1 = R(n); } while (0)
 #define src2R(n) do { *src2 = R(n); } while (0)
@@ -29,11 +33,16 @@ static word_t immB(uint32_t i) { return SEXT((BITS(i, 31, 31) << 12) | (BITS(i, 
   void _ftrace(bool is_ret, bool flag, word_t addr, int type){
     switch(type){
       case(TYPE_B):
-        if(flag) update_ftrace(1, addr, "dont know", depth);break;
+        if(flag) 
+          update_ftrace(1, addr, "dont know", depth);
+        break;
       case(TYPE_I):
-        if(is_ret){update_ftrace(0, addr, "dont know", depth);}break;
+        if(is_ret)
+          update_ftrace(0, addr, "dont know", depth);
+        break;
       case(TYPE_J):
         update_ftrace(1, addr, "dont know", depth);
+        break;
     }
   }
 #endif
@@ -42,10 +51,7 @@ static word_t immB(uint32_t i) { return SEXT((BITS(i, 31, 31) << 12) | (BITS(i, 
 #define Mr vaddr_read   //memory read
 #define Mw vaddr_write  //memory write
 
-enum {
-  TYPE_I, TYPE_U, TYPE_S, TYPE_J, TYPE_R, TYPE_B, TYPE_SYS,
-  TYPE_N, // none
-};
+
 static const char tp[] __attribute__((unused))= "IUSJRB";    //use type as index
 
 void show_bits(word_t b){
