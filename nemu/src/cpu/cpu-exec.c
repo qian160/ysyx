@@ -179,7 +179,8 @@ void cpu_exec(uint64_t n) {
       Log("nemu: %s at pc = " FMT_WORD,
           ANSI_FMT("ABORT", ANSI_FG_RED), nemu_state.halt_pc);
 
-      IFDEF(CONFIG_ITRACE_ENABLE,show_itrace());
+      IFDEF(CONFIG_ITRACE_ENABLE, show_itrace());
+      IFDEF(CONFIG_MTRACE_ENABLE, show_mtrace());
       // fall through
     case NEMU_QUIT: statistic();
   }
