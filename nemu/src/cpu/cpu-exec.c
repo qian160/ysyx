@@ -25,6 +25,28 @@ void show_itrace()
 }
 #endif
 
+#ifdef CONFIG_MTRACE_ENABLE
+
+void show_mtrace()
+{
+  int size = CONFIG_MTRACE_SIZE;
+  for(int i = mringbuf.index; size --; i = (i + 1) % CONFIG_MTRACE_SIZE){
+    bool c = mringbuf.info[i].isLoad;
+    MtraceInfo temp = mringbuf.info[i];
+      switch (c)
+      {
+      case 1:
+        printf(ANSI_FMT("Load: %s <- pmem[0x%lx],  val = 0x%lx\n", ANSI_FG_YELLOW), reg_name(temp.rd), temp.addr, temp.data );
+        break;
+      case 0:
+        printf(ANSI_FMT("Store: 0x%lx -> pmem[0x%lx]\n", ANSI_FG_MAGENTA), temp.data, temp.addr);
+        break;
+      }
+  }
+}
+
+#endif
+
 
 #define MAX_INST_TO_PRINT 10
 CPU_state cpu = {};
@@ -32,7 +54,6 @@ uint64_t g_nr_guest_inst = 0;
 static uint64_t g_timer = 0; // unit: us
 static bool g_print_step = false;
 
-extern void show_itrace();
 void device_update();
 void disassemble(char *str, int size, uint64_t pc, uint8_t *code, int nbyte);
 static void trace_and_difftest(Decode *_this, vaddr_t dnpc) {

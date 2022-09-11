@@ -7,6 +7,8 @@
         "trace.h": "c",
         "sdb.h": "c",
         "macro.h": "c",
-        "utils.h": "c"
+        "utils.h": "c",
+        "cpu.h": "c",
+        "reg.h": "c"
     }
 }

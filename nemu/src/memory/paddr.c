@@ -11,28 +11,6 @@ static uint8_t *pmem = NULL;
 static uint8_t pmem[CONFIG_MSIZE] PG_ALIGN = {};
 #endif
 
-#ifdef CONFIG_MTRACE_ENABLE
-
-void show_mtrace()
-{
-  int size = CONFIG_MTRACE_SIZE;
-  for(int i = mringbuf.index; size --; i = (i + 1) % CONFIG_MTRACE_SIZE){
-    bool c = mringbuf.info[i].isLoad;
-    MtraceInfo temp = mringbuf.info[i];
-      switch (c)
-      {
-      case 1:
-        printf(ANSI_FMT("Load: address = 0x%lx, val = 0x%lx\n", ANSI_FG_YELLOW), temp.addr, temp.data );
-        break;
-      case 0:
-        printf(ANSI_FMT("Store: 0x%lx -> pmem[0x%lx]\n", ANSI_FG_MAGENTA), temp.data, temp.addr);
-        break;
-      }
-  }
-}
-
-#endif
-
 uint8_t* guest_to_host(paddr_t paddr) { return pmem + paddr - CONFIG_MBASE; }
 paddr_t host_to_guest(uint8_t *haddr) { return haddr - pmem + CONFIG_MBASE; }
 
