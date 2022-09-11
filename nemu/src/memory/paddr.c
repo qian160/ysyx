@@ -45,19 +45,17 @@ void init_mem() {
 }
 //when flag = 1, this read is called by system,
 //and 0 for user debug or other case, no update to M - Trace shoule be added in this case
-word_t paddr_read(paddr_t addr, int len, bool flag) {
+word_t paddr_read(paddr_t addr, int len) {
   if (likely(in_pmem(addr))) 
   {
-    word_t val = pmem_read(addr, len, flag);
+    word_t val = pmem_read(addr, len);
     IFDEF(CONFIG_MTRACE_ENABLE, 
-      if(flag){
         int idx = mringbuf.index;
         mringbuf.info[idx].addr    = addr;
         mringbuf.info[idx].data    = val;
         mringbuf.info[idx].isLoad  = 1;
         Log("\naddr = 0x%x, idx = %x, val = 0x%lx, isload\n", addr, idx, val);
         //mringbuf.index = (idx + 1) % CONFIG_MTRACE_SIZE;
-      }
     );
     return val;
   }
