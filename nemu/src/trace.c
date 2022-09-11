@@ -1,6 +1,7 @@
 #include <common.h>
 #include <../include/generated/autoconf.h>
 #include "../include/trace.h"
+#include "isa/riscv64/local-include/reg.h"
 #ifdef CONFIG_ITRACE_ENABLE
 
 void show_itrace()
