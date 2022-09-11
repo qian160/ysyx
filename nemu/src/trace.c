@@ -69,6 +69,7 @@ void show_ftrace(){
     for(int i = 0; i < ftrace.cnt ; i++)
     {
         Ftrace_entry f = ftrace.trace[i];
+        Log("\ni = %d\n , i");
         char * s = f.is_call ? "call" : "ret";
         for(char j = 0; j < f.depth; j++)
             putchar('\t');
