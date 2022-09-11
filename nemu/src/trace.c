@@ -81,7 +81,6 @@ void show_ftrace(){
 int depth = 0;
 
 void update_ftrace(bool is_call, word_t addr, const char * name, int d){
-    Log("\n%d\t%lx\t%s\t%d\n", is_call, addr, name, d);
     int cnt = ftrace.cnt;
     ftrace.trace[cnt].depth   = d;
     ftrace.trace[cnt].is_call = is_call;
