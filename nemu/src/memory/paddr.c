@@ -43,8 +43,6 @@ void init_mem() {
   Log("physical memory area [" FMT_PADDR ", " FMT_PADDR "]",
       (paddr_t)CONFIG_MBASE, (paddr_t)CONFIG_MBASE + CONFIG_MSIZE - 1);
 }
-//when flag = 1, this read is called by system,
-//and 0 for user debug or other case, no update to M - Trace shoule be added in this case
 word_t paddr_read(paddr_t addr, int len) {
   if (likely(in_pmem(addr))) 
   {

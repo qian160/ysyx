@@ -35,6 +35,7 @@ void show_mtrace()
   for(int i = mringbuf.index; size --; i = (i + 1) % CONFIG_MTRACE_SIZE){
     bool c = mringbuf.info[i].isLoad;
     MtraceInfo temp = mringbuf.info[i];
+    if(temp.addr | temp.rd){    //store 0 t0 $0 is skipped, which is also the default struct
       switch (c)
       {
       case 1:
@@ -44,6 +45,7 @@ void show_mtrace()
         printf(ANSI_FMT("Store: 0x%lx -> pmem[0x%lx]\n", ANSI_FG_MAGENTA), temp.data, temp.addr);
         break;
       }
+    }
   }
 }
 
