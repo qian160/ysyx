@@ -85,7 +85,7 @@ void update_ftrace(bool is_call, word_t addr, const char * name, int depth){
     ftrace.trace[cnt].is_call = is_call;
     strcpy(ftrace.trace[cnt].name, name);
     ftrace.trace[cnt].address = addr;
-    cnt ++;
+    ftrace.cnt ++;
     if(is_call) depth++ ;
     else depth --;
 }
