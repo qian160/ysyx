@@ -30,7 +30,7 @@ void show_mtrace()
             switch (c)
             {
                 case 1:
-                    printf(ANSI_FMT("Load: %s <- pmem[0x%lx],  val = 0x%lx\n", ANSI_FG_YELLOW), reg_name(temp.rd), temp.addr, temp.data );
+                    printf(ANSI_FMT("Load:  %s <- pmem[0x%lx],  val = 0x%lx\n", ANSI_FG_YELLOW), reg_name(temp.rd), temp.addr, temp.data );
                 break;
                 case 0:
                     printf(ANSI_FMT("Store: 0x%lx -> pmem[0x%lx]\n", ANSI_FG_GREEN), temp.data, temp.addr);
