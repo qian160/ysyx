@@ -1,5 +1,5 @@
 #include <common.h>
-#include <../generated/autoconf.h>
+#include <../include/generated/autoconf.h>
 #include "../include/trace.h"
 #ifdef CONFIG_ITRACE_ENABLE
 
