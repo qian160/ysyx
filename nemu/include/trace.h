@@ -51,4 +51,7 @@ Ftrace ftrace;
 
 void show_ftrace();
 
+void update_ftrace(bool is_call, word_t addr, const char * name, int d);
+
+
 #endif
