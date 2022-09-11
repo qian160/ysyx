@@ -120,6 +120,7 @@ static int decode_exec(Decode *D) {
 #define INSTPAT_INST(D) ((D)->inst)
 //a match is found, do what it supposed to do.
 //first prepare for operands, then do the things listed in __VA_ARGS__
+//very complex macro...
 #define INSTPAT_MATCH(D, name, type, ... /* body */ ) { \
   decode_operand(D, &dest, &src1, &src2, concat(TYPE_, type)); \
   __VA_ARGS__ ; \
@@ -142,6 +143,14 @@ static int decode_exec(Decode *D) {
       word_t loadVal = Mr(src1 + src2, L_width(fct3));\
       printf(ANSI_FMT("| load a value 0x%-16lx from address: 0x%-24lx  | \n", ANSI_FG_YELLOW), loadVal, address); \
       show_bits_fmt(loadVal);\
+      \
+      IFDEF(CONFIG_MTRACE_ENABLE, \
+        int idx = mringbuf.index;\
+        mringbuf.info[idx].addr    = address;\
+        mringbuf.info[idx].data    = loadVal;\
+        mringbuf.info[idx].isLoad  = 1;\
+        mringbuf.index = (idx + 1) % CONFIG_MTRACE_SIZE;\
+      );\
     }  \
     else if(D->decInfo.is_jalr){\
       printf(ANSI_FMT("jalr, set %s = 0x%-lx, new PC at 0x%lx. %s's bits are:\n", ANSI_FG_YELLOW), reg_name(dest), src1, src2, reg_name(dest));\
