@@ -28,7 +28,6 @@ void show_bits(word_t b){
 }
 
 static inline void set_ringbuf_rd(int rd){
-  printf("\n1\n1\n4\n5\n1\nn4\n");
   mringbuf.info[mringbuf.index].rd = rd;
   mringbuf.index = (mringbuf.index + 1) % CONFIG_MTRACE_SIZE;
   Log("\nrd = %s\n", reg_name(rd));
