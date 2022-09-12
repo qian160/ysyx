@@ -31,11 +31,11 @@ static char *img_file = NULL;
 static int difftest_port = 1234;
 static char *elf_file = NULL;
 
-typedef struct {
+typedef struct symbol {
   char * name;
   word_t offset;
   word_t size;
-  symbol * next;
+  struct symbol * next;
 }symbol;
 
 symbol * head = NULL;
