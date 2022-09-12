@@ -22,7 +22,7 @@ void device_update();
 void disassemble(char *str, int size, uint64_t pc, uint8_t *code, int nbyte);
 static void trace_and_difftest(Decode *_this, vaddr_t dnpc) {
 #ifdef CONFIG_ITRACE_COND
-  if (ITRACE_COND) { log_write("%s\n", _this->logbuf); }
+  //if (ITRACE_COND) { log_write("%s\n", _this->logbuf); }
 #endif
   IFDEF(CONFIG_ITRACE_ENABLE, 
     strcpy(iringbuf.buf[iringbuf.index], _this -> logbuf);
@@ -84,6 +84,7 @@ static void execute(uint64_t n) {
   //execuate n steps
   for (;n > 0; n --) {
     exec_once(&D, cpu.pc);
+    Log("\n %s \n", D.logbuf);
     g_nr_guest_inst ++;
     trace_and_difftest(&D, cpu.pc);
     if (nemu_state.state != NEMU_RUNNING) break;
