@@ -34,17 +34,16 @@ static word_t immB(uint32_t i) { return SEXT((BITS(i, 31, 31) << 12) | (BITS(i, 
     //is_ret need to be improved, jal could also ret
     char * name = getFuncName(D->decInfo.target);
     if(!name) return;   //not a function call or ret
+    log("\nname = %s\n", name);
     word_t addr = D->decInfo.target;
     switch(D->decInfo.type){
       case(TYPE_B):
-        if(D->decInfo.branch_taken) 
+        //if(D->decInfo.branch_taken) 
           //update_ftrace(1, addr, pc, name, depth);
         break;
       case(TYPE_I):   //jalr, and other normal insts
         if(D->decInfo.is_jalr)
           update_ftrace(D->decInfo.is_ret, addr, D->pc, name, depth);
-        else
-
         break;
       case(TYPE_J):
         update_ftrace(D->decInfo.is_ret, addr, D->pc, name, depth);
