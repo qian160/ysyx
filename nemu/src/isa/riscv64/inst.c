@@ -34,7 +34,7 @@ static word_t immB(uint32_t i) { return SEXT((BITS(i, 31, 31) << 12) | (BITS(i, 
     //is_ret need to be improved, jal could also ret
     char * name = getFuncName(D->decInfo.target);
     if(!name) return;   //not a function call or ret
-    log("\nname = %s\n", name);
+    Log("\nname = %s\n", name);
     word_t addr = D->decInfo.target;
     switch(D->decInfo.type){
       case(TYPE_B):
