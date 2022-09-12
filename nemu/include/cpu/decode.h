@@ -81,3 +81,8 @@ static inline void pattern_decode_hex(const char *str, int len,
 #define INSTPAT_END(name)   concat(__instpat_end_, name): ; }
 
 #endif
+
+#define L_width(fct3) (1 << (fct3 & 0b11))
+#define S_width(fct3) (1 << fct3)
+
+

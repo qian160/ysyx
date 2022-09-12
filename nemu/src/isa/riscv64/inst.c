@@ -5,18 +5,56 @@
 
 #include "../../../include/trace.h"   //load op will set ringbuf's rd
 
-#define R(i) gpr(i)
-#define Mr vaddr_read   //memory read
-#define Mw vaddr_write  //memory write
+extern void update_mringbuf(bool isLoad, word_t addr, word_t data, int rd);
+extern void update_ftrace(bool is_call, word_t addr, const char * name, int depth);
+
+extern int depth;
 enum {
   TYPE_I, TYPE_U, TYPE_S, TYPE_J, TYPE_R, TYPE_B, TYPE_SYS,
   TYPE_N, // none
 };
 
+#define src1R(n) do { *src1 = R(n); } while (0)
+#define src2R(n) do { *src2 = R(n); } while (0)
+#define destR(n) do { *dest = n; } while (0)
+#define src1I(i) do { *src1 = i; } while (0)
+#define src2I(i) do { *src2 = i; } while (0)
+#define destI(i) do { *dest = i; } while (0)
+
+#define funct3(inst) (BITS(inst, 14, 12))
+#define opcode(inst) (BITS(inst, 6, 0))
+static word_t immI(uint32_t i) { return SEXT(BITS(i, 31, 20), 12); }
+static word_t immU(uint32_t i) { return SEXT(BITS(i, 31, 12), 20) << 12; }
+static word_t immS(uint32_t i) { return SEXT((BITS(i, 31, 25) << 5) | BITS(i, 11, 7), 12); }
+static word_t immJ(uint32_t i) { return SEXT((BITS(i, 31, 31) << 20) | (BITS(i, 19, 12) << 12) | (BITS(i, 20, 20) << 11) | (BITS(i, 30, 21) << 1 ), 21); }
+static word_t immB(uint32_t i) { return SEXT((BITS(i, 31, 31) << 12) | (BITS(i, 7, 7) << 11) | (BITS(i, 30, 25) << 5) | (BITS(i, 11, 8) << 1) | 0, 13);}
+
+#ifdef CONFIG_FTRACE_ENABLE
+  void _ftrace(bool is_ret, bool flag, word_t addr, int type){
+    //is_ret need to be improved, jal could also ret
+    switch(type){
+      case(TYPE_B):
+        if(flag) 
+          update_ftrace(1, addr, "dont know", depth);
+        break;
+      case(TYPE_I):
+        if(is_ret)
+          update_ftrace(0, addr, "dont know", depth);
+        break;
+      case(TYPE_J):
+        update_ftrace(1, addr, "dont know", depth);
+        break;
+    }
+  }
+#endif
+
+#define R(i) gpr(i)
+#define Mr vaddr_read   //memory read
+#define Mw vaddr_write  //memory write
+
+
 static const char tp[] __attribute__((unused))= "IUSJRB";    //use type as index
-extern void update_mringbuf(bool isLoad, word_t addr, word_t data, int rd);
-extern void update_ftrace(bool is_call, word_t addr, const char * name, int depth);
-extern int depth;
+
 void show_bits(word_t b){
   int cnt = 65;
   const long long mask = 1l << 63;
@@ -37,21 +75,67 @@ void show_bits_fmt(word_t b){
   return;
 }
 
-#define src1R(n) do { *src1 = R(n); } while (0)
-#define src2R(n) do { *src2 = R(n); } while (0)
-#define destR(n) do { *dest = n; } while (0)
-#define src1I(i) do { *src1 = i; } while (0)
-#define src2I(i) do { *src2 = i; } while (0)
-#define destI(i) do { *dest = i; } while (0)
+#ifdef CONFIG_SHOW_DECODE_INFORMATION
 
-#define funct3(inst) (BITS(inst, 14, 12))
-#define opcode(inst) (BITS(inst, 6, 0))
-static word_t immI(uint32_t i) { return SEXT(BITS(i, 31, 20), 12); }
-static word_t immU(uint32_t i) { return SEXT(BITS(i, 31, 12), 20) << 12; }
-static word_t immS(uint32_t i) { return SEXT((BITS(i, 31, 25) << 5) | BITS(i, 11, 7), 12); }
-static word_t immJ(uint32_t i) { return SEXT((BITS(i, 31, 31) << 20) | (BITS(i, 19, 12) << 12) | (BITS(i, 20, 20) << 11) | (BITS(i, 30, 21) << 1 ), 21); }
-static word_t immB(uint32_t i) { return SEXT((BITS(i, 31, 31) << 12) | (BITS(i, 7, 7) << 11) | (BITS(i, 30, 25) << 5) | (BITS(i, 11, 8) << 1) | 0, 13);}
-//static word_t immB(uint32_t i) { return SEXT( (BITS(i, 31, 31)) | , 12); }
+void show_decode(Decode *D, word_t src1, word_t src2, int dest, int type){
+printf(ANSI_FMT(" ---------------------------------------------------------------------------\n", ANSI_FG_YELLOW));
+  puts(ANSI_FMT("| Information about the just execuated instruction: \t\t\t    |", ANSI_FG_GREEN));
+  char buf[30];
+  disassemble(buf, sizeof(buf), D -> pc, (uint8_t *)(&D -> inst), 4);
+  printf(ANSI_FMT("| type-%c:  %32s \t\t\t\t    | \n| old PC = 0x%-60lx   |\n", ANSI_FG_GREEN),tp[type], buf, D -> pc);
+  printf(ANSI_FMT("| src1 = 0x%-64lx | \n", ANSI_FG_YELLOW), src1);   
+  show_bits_fmt(src1);
+  printf(ANSI_FMT("| src2 = 0x%-64lx | \n", ANSI_FG_YELLOW), src2);   
+  show_bits_fmt(src2);
+  int fct3 = D -> decInfo.funct3;
+  switch(type){  
+    case(TYPE_I):case(TYPE_R):case(TYPE_U):
+    if(D -> decInfo.is_load){
+      word_t address = src1 + src2;
+      word_t loadVal = Mr(src1 + src2, L_width(fct3));
+      printf(ANSI_FMT("| load a value 0x%-16lx from address: 0x%-24lx  | \n", ANSI_FG_YELLOW), loadVal, address);
+      show_bits_fmt(loadVal);
+      IFDEF(CONFIG_MTRACE_ENABLE, update_mringbuf(1, address, loadVal, dest));
+    }
+    else if(D->decInfo.is_jalr){
+      printf(ANSI_FMT("jalr, set %s = 0x%-lx, new PC at 0x%lx. %s's bits are:\n", ANSI_FG_YELLOW), reg_name(dest), src1, src2, reg_name(dest));
+      show_bits_fmt(src1);
+      /*IFDEF(CONFIG_FTRACE_ENABLE,
+        if(dest == 0) update_ftrace(0, src2, "dont know", depth);
+      );*/
+    }
+    else  {
+      printf(ANSI_FMT("| set %s = 0x%-60lx  | \n", ANSI_FG_YELLOW), reg_name(dest), R(dest)); 
+      show_bits_fmt(R(dest));
+    }
+    break;
+    case(TYPE_B):
+      if( src1 == 0){
+        printf(ANSI_FMT("| branch is not taken %-40s | \n",  ANSI_FG_YELLOW), " ");
+      }
+      else {
+        printf(ANSI_FMT("| branch is taken, new PC at 0x%-44lx | \n", ANSI_FG_YELLOW), src2);
+        //IFDEF(CONFIG_FTRACE_ENABLE, update_ftrace(1, src2, "dont know", depth));
+      }
+      break;
+    case(TYPE_J):
+      printf(ANSI_FMT("| jal, set %s = 0x%lx, new PC at 0x%-34lx | \n", ANSI_FG_YELLOW), reg_name(dest), src1, src2);
+      show_bits_fmt(src1);
+      //IFDEF(CONFIG_FTRACE_ENABLE, update_ftrace(1, src2, "dont know", depth));
+      break;
+    case(TYPE_S):{
+      word_t storeVal = src2 & BITMASK(S_width(fct3) << 3);
+      printf(ANSI_FMT("| store a value 0x%-16lx to address 0x%-27lx | \n", ANSI_FG_YELLOW), storeVal, src1);
+      show_bits_fmt(storeVal);
+      IFDEF(CONFIG_MTRACE_ENABLE, update_mringbuf(0, src1, storeVal, dest));
+      break;
+    }
+    default:  break;
+  }
+  printf(ANSI_FMT(" ---------------------------------------------------------------------------\n", ANSI_FG_YELLOW));
+}
+#endif
+
 //src1 and src2 are the source operands which will join the future calculation. Use pointer to communicate with outside
 //question: how to make good use of dest, src1, src2
 static void decode_operand(Decode * D, word_t *dest, word_t *src1, word_t *src2, int type) {
@@ -60,7 +144,9 @@ static void decode_operand(Decode * D, word_t *dest, word_t *src1, word_t *src2,
   int rd  = BITS(inst, 11, 7);
   int rs1 = BITS(inst, 19, 15);
   int rs2 = BITS(inst, 24, 20);
-  word_t rs1Val = R(rs1);
+  //Branch : src1 = flag, src2 = address
+  //Jump   : src1 = link address, src2 = target address
+  word_t rs1Val = R(rs1);   //src2 should be the address
   word_t rs2Val = R(rs2);
   word_t pc = D -> pc;
   word_t pc_Plus4 = pc + 4;
@@ -85,7 +171,6 @@ static void decode_operand(Decode * D, word_t *dest, word_t *src1, word_t *src2,
     case TYPE_U: {
       //to dest's upper 20 bits
       if(D -> decInfo.is_lui){
-        Log_Color(RED, "\n\nIMMU = 0x%lx\\nn", immU(inst));
         src1I(immU(inst));    break;
       }
       else{           //auipc rd, imm -> rd = pc + imm
@@ -106,9 +191,6 @@ static void decode_operand(Decode * D, word_t *dest, word_t *src1, word_t *src2,
   }
 }
 
-#define L_width(fct3) (1 << (fct3 & 0b11))
-#define S_width(fct3) (1 << fct3)
-
 static int decode_exec(Decode *D) {
   word_t dest = 0, src1 = 0, src2 = 0;
   D->dnpc = D->snpc;    //default
@@ -120,65 +202,10 @@ static int decode_exec(Decode *D) {
 #define INSTPAT_MATCH(D, name, type, ... /* body */ ) { \
   decode_operand(D, &dest, &src1, &src2, concat(TYPE_, type)); \
   __VA_ARGS__ ; \
+  IFDEF(CONFIG_SHOW_DECODE_INFORMATION, show_decode(D, src1, src2, dest, TYPE_##type));\
   \
-  IFDEF(CONFIG_SHOW_DECODE_INFORMATION,  \
-  printf(ANSI_FMT(" ---------------------------------------------------------------------------\n", ANSI_FG_YELLOW));\
-  puts(ANSI_FMT("| Information about the just execuated instruction: \t\t\t    |", ANSI_FG_GREEN));\
-  char buf[30];\
-  disassemble(buf, sizeof(buf), D -> pc, (uint8_t *)(&D -> inst), 4);\
-  printf(ANSI_FMT("| type-%c:  %32s \t\t\t\t    | \n| old PC = 0x%-60lx   |\n", ANSI_FG_GREEN),tp[TYPE_##type], buf, D -> pc);\
-  printf(ANSI_FMT("| src1 = 0x%-64lx | \n", ANSI_FG_YELLOW), src1);   \
-  show_bits_fmt(src1);\
-  printf(ANSI_FMT("| src2 = 0x%-64lx | \n", ANSI_FG_YELLOW), src2);   \
-  show_bits_fmt(src2);\
-  int fct3 = D -> decInfo.funct3;\
-  switch(TYPE_##type){  \
-    case(TYPE_I):case(TYPE_R):case(TYPE_U):\
-    if(D -> decInfo.is_load){\
-      word_t address = src1 + src2;\
-      word_t loadVal = Mr(src1 + src2, L_width(fct3));\
-      printf(ANSI_FMT("| load a value 0x%-16lx from address: 0x%-24lx  | \n", ANSI_FG_YELLOW), loadVal, address); \
-      show_bits_fmt(loadVal);\
-      IFDEF(CONFIG_MTRACE_ENABLE, update_mringbuf(1, address, loadVal, 0));\
-    }  \
-    else if(D->decInfo.is_jalr){\
-      printf(ANSI_FMT("jalr, set %s = 0x%-lx, new PC at 0x%lx. %s's bits are:\n", ANSI_FG_YELLOW), reg_name(dest), src1, src2, reg_name(dest));\
-      show_bits_fmt(src1);\
-      IFDEF(CONFIG_FTRACE_ENABLE, \
-        if(dest == 0) update_ftrace(0, src2, "dont know", depth);\
-      );\
-      \
-    }\
-    else  {\
-      printf(ANSI_FMT("| set %s = 0x%-60lx  | \n", ANSI_FG_YELLOW), reg_name(dest), R(dest)); \
-      show_bits_fmt(R(dest));\
-    }\
-    break;\
-    case(TYPE_B):\
-      if( src1 == 0){  \
-        printf(ANSI_FMT("| branch is not taken %-40s | \n",  ANSI_FG_YELLOW), " "); \
-      }\
-      else {\
-        printf(ANSI_FMT("| branch is taken, new PC at 0x%-44lx | \n", ANSI_FG_YELLOW), src2); \
-        IFDEF(CONFIG_FTRACE_ENABLE, update_ftrace(1, src2, "dont know", depth));\
-      }\
-      break;\
-    case(TYPE_J):\
-      printf(ANSI_FMT("| jal, set %s = 0x%lx, new PC at 0x%-34lx | \n", ANSI_FG_YELLOW), reg_name(dest), src1, src2);\
-      show_bits_fmt(src1);\
-      IFDEF(CONFIG_FTRACE_ENABLE, update_ftrace(1, src2, "dont know", depth));\
-      \
-      break;\
-    case(TYPE_S):{\
-      word_t storeVal = src2 & BITMASK(S_width(fct3) << 3);\
-      printf(ANSI_FMT("| store a value 0x%-16lx to address 0x%-27lx | \n", ANSI_FG_YELLOW), storeVal, src1);\
-      show_bits_fmt(storeVal);\
-      IFDEF(CONFIG_MTRACE_ENABLE, update_mringbuf(0, src1, storeVal, dest));\
-      break;\
-    }\
-    default:  break;}\
-printf(ANSI_FMT(" ---------------------------------------------------------------------------\n", ANSI_FG_YELLOW));\
-)}
+  IFDEF(CONFIG_FTRACE_ENABLE, bool ret = D -> decInfo.is_jalr && dest == 0;_ftrace(ret, src1, src2, TYPE_##type ));\
+}
 
   //check one by one
   //note that when we say inst(0), we are counting from the right side(LSB), but str(0) below starts at left side

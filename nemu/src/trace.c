@@ -50,6 +50,7 @@ void update_mringbuf(bool isLoad, word_t addr, word_t data, int rd){
             mringbuf.info[idx].addr    = addr;
             mringbuf.info[idx].data    = data;
             mringbuf.info[idx].isLoad  = 1;
+            mringbuf.info[idx].rd      = rd;
             mringbuf.index = (idx + 1) % CONFIG_MTRACE_SIZE;
             break;
         case 0:

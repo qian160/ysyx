@@ -15,12 +15,14 @@ menu "My config"
     endmenu
 
     config AUTO_DISASM_NEXT
-    string "Automatically disasm next instruction"
-    default "1"
+	string "Numbers to disasm"
+	default "1"
 
     config SHOW_DECODE_INFORMATION
     bool "Show decode information after decoding"
     default y
+    help
+	This is very beautiful, but also consumes a lot of memory
 
     menu "Trace"
 	config ITRACE_ENABLE
@@ -34,10 +36,7 @@ menu "My config"
 
 	config MTRACE_ENABLE
 	bool "Enable Mtrace"
-	depends on SHOW_DECODE_INFORMATION
 	default y
-	help
-		It's a pity to have this dependence
 
 	config MTRACE_SIZE
 	int "The size of m-ringbuf"

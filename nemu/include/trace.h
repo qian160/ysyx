@@ -39,16 +39,19 @@ typedef struct {
     unsigned depth : 8;
     word_t address;
     bool is_call : 1;
-    char name[32];
+    char name[16];
 }Ftrace_entry;
 
 typedef struct {
-    Ftrace_entry trace[256];
+    Ftrace_entry trace[1024];
     unsigned int cnt;
 }Ftrace;
 
 Ftrace ftrace;
 
 void show_ftrace();
+
+void update_ftrace(bool is_call, word_t addr, const char * name, int d);
+
 
 #endif

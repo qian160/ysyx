@@ -22,7 +22,7 @@ void device_update();
 void disassemble(char *str, int size, uint64_t pc, uint8_t *code, int nbyte);
 static void trace_and_difftest(Decode *_this, vaddr_t dnpc) {
 #ifdef CONFIG_ITRACE_COND
-  if (ITRACE_COND) { log_write("%s\n", _this->logbuf); }
+  //if (ITRACE_COND) { log_write("%s\n", _this->logbuf); }
 #endif
   IFDEF(CONFIG_ITRACE_ENABLE, 
     strcpy(iringbuf.buf[iringbuf.index], _this -> logbuf);
@@ -55,6 +55,7 @@ static void exec_once(Decode *D, vaddr_t pc) {
   isa_exec_once(D);
   cpu.pc = D->dnpc; //dnpc is updated in decode_exec, currently dnpc = snpc(pc + 4)
 #ifdef CONFIG_ITRACE
+  IFDEF(CONFIG_ITRACE_ENABLE
   char *p = D->logbuf;
   //add address to logbuf
   p += snprintf(p, sizeof(D->logbuf), FMT_WORD ":", D->pc);
@@ -74,7 +75,7 @@ static void exec_once(Decode *D, vaddr_t pc) {
   p += space_len;
   //add inst name to logbuf
   disassemble(p, D->logbuf + sizeof(D->logbuf) - p,
-      MUXDEF(CONFIG_ISA_x86, D->snpc, D->pc), (uint8_t *)&D->inst, ilen);
+    MUXDEF(CONFIG_ISA_x86, D->snpc, D->pc), (uint8_t *)&D->inst, ilen));
 #endif
 }
 
@@ -123,14 +124,18 @@ void cpu_exec(uint64_t n) {
 
   switch (nemu_state.state) {
     case NEMU_RUNNING: nemu_state.state = NEMU_STOP; break; //n instructions have been execuated, time to stop and wait for new cmd
-    /*
+    
     case NEMU_END: case NEMU_ABORT:
       Log("nemu: %s at pc = " FMT_WORD,
           (nemu_state.state == NEMU_ABORT ? ANSI_FMT("ABORT", ANSI_FG_RED) :
             (nemu_state.halt_ret == 0 ? ANSI_FMT("HIT GOOD TRAP", ANSI_FG_GREEN) :
             ANSI_FMT("HIT BAD TRAP", ANSI_FG_RED))),
-          nemu_state.halt_pc);
-    */
+          nemu_state.halt_pc);      
+          IFDEF(CONFIG_ITRACE_ENABLE, show_itrace());
+          IFDEF(CONFIG_MTRACE_ENABLE, show_mtrace());
+          IFDEF(CONFIG_FTRACE_ENABLE, show_ftrace());
+    
+/*
     case NEMU_END: 
       Log("nemu: %s at pc = " FMT_WORD,
           (nemu_state.halt_ret == 0 ? ANSI_FMT("HIT GOOD TRAP", ANSI_FG_GREEN) :
@@ -141,10 +146,8 @@ void cpu_exec(uint64_t n) {
     //at first I want to use red, but it makes your eyes uncomfortabe
       Log("nemu: %s at pc = " FMT_WORD,
           ANSI_FMT("ABORT", ANSI_FG_RED), nemu_state.halt_pc);
+*/
 
-      IFDEF(CONFIG_ITRACE_ENABLE, show_itrace());
-      IFDEF(CONFIG_MTRACE_ENABLE, show_mtrace());
-      IFDEF(CONFIG_FTRACE_ENABLE, show_ftrace());
       // fall through
     case NEMU_QUIT: statistic();
   }

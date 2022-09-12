@@ -69,19 +69,21 @@ void sdb_mainloop() {   //get command
     }
 
     if (i == NR_CMD) { printf("Unknown command '%s'\n", cmd); }
-#ifdef CONFIG_AUTO_DISASM_NEXT
-  if(cmd[0] != 'q' && cmd[0] != 'd')
-  {
-    int n = atoi(CONFIG_AUTO_DISASM_NEXT);
-    printf(ANSI_FMT("\nnext %d instruction(s) is:\n", ANSI_FG_YELLOW), n);
-    char *buf = (char *) malloc(30);
-    memset(buf, 0, 30);
-    char * arg = strcat(strcat(strcat(buf, " "), CONFIG_AUTO_DISASM_NEXT), " $pc");
-    cmd_d(arg);
-    putchar('\n');
-    free(buf);
+  if(strcmp(CONFIG_AUTO_DISASM_NEXT, "0")!= 0){
+    if(cmd[0] != 'q' && cmd[0] != 'd')
+    {
+      int n = atoi(CONFIG_AUTO_DISASM_NEXT);
+      printf(ANSI_FMT("\nnext %d instruction(s) is:\n", ANSI_FG_YELLOW), n);
+      char *buf = (char *) malloc(30);
+      memset(buf, 0, 30);
+      char * arg = strcat(strcat(strcat(buf, " "), CONFIG_AUTO_DISASM_NEXT), " $pc");
+      cmd_d(arg);
+      putchar('\n');
+      free(buf);
+    }
   }
-#endif
+
+
   }
 }
 

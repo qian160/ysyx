@@ -117,7 +117,7 @@ those bits in the BITMASK's range will join the & computation. And since the bit
             printf("%s\n, "message);                   \
     } while (0)
 
-#define __unused__ __attribute__((unused))
+#define __u__ __attribute__((unused))
 
 /*generally, a macro's value is different from its name(from the view of string)
   for things like #define foo bar, the argument of TRACE_STRINGIFY will be substituted by bar.
