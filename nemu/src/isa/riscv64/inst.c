@@ -192,12 +192,12 @@ static void decode_operand(Decode * D, word_t *dest, word_t *src1, word_t *src2,
       src2I(BRANCH_TARGET);
       D->decInfo.target = BRANCH_TARGET;
         switch (D -> decInfo.funct3){  //use src1 as a flag, src2 = branch_target
-        case beq_funct3:  src1I(rs1Val == rs2Val);  D->decInfo.branch_taken = (rs1Val == rs1Val);  break;
-        case bne_funct3:  src1I(rs1Val ^  rs2Val);  D->decInfo.branch_taken = (rs1Val ^  rs1Val);  break;
-        case blt_funct3:  src1I((sword_t)rs1Val <  (sword_t)rs2Val);  D->decInfo.branch_taken = ((sword_t)rs1Val <  (sword_t)rs1Val); break;
-        case bge_funct3:  src1I((sword_t)rs1Val >= (sword_t)rs2Val);  D->decInfo.branch_taken = ((sword_t)rs1Val >= (sword_t)rs1Val); break;
-        case bltu_funct3: src1I(rs1Val <  rs2Val);  D->decInfo.branch_taken = (rs1Val <  rs1Val);   break;
-        case bgeu_funct3: src1I(rs1Val >= rs2Val);  D->decInfo.branch_taken = (rs1Val >= rs1Val);   break;
+        case beq_funct3:  src1I(rs1Val == rs2Val);  D->decInfo.branch_taken = (rs1Val == rs2Val);  break;
+        case bne_funct3:  src1I(rs1Val ^  rs2Val);  D->decInfo.branch_taken = (rs1Val ^  rs2Val);  break;
+        case blt_funct3:  src1I((sword_t)rs1Val <  (sword_t)rs2Val);  D->decInfo.branch_taken = ((sword_t)rs1Val <  (sword_t)rs2Val); break;
+        case bge_funct3:  src1I((sword_t)rs1Val >= (sword_t)rs2Val);  D->decInfo.branch_taken = ((sword_t)rs1Val >= (sword_t)rs2Val); break;
+        case bltu_funct3: src1I(rs1Val <  rs2Val);  D->decInfo.branch_taken = (rs1Val <  rs2Val);   break;
+        case bgeu_funct3: src1I(rs1Val >= rs2Val);  D->decInfo.branch_taken = (rs1Val >= rs2Val);   break;
         }
     }
   }
