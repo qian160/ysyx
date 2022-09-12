@@ -100,8 +100,8 @@ static void load_elf(const char * file) {
     return;
   else
   {
-    FILE *fp;
-    fp = fopen(file, "r");
+    FILE *fp = fopen(file, "r");
+    int ret;
     if (NULL == fp)
     {
       printf("fail to open the file");
