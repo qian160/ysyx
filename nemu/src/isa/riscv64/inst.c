@@ -99,7 +99,7 @@ printf(ANSI_FMT(" --------------------------------------------------------------
       IFDEF(CONFIG_MTRACE_ENABLE, update_mringbuf(1, address, loadVal, dest));
     }
     else if(D->decInfo.is_jalr){
-      printf(ANSI_FMT("jalr, set %s = 0x%-lx, new PC at 0x%lx. %s's bits are:\n", ANSI_FG_YELLOW), reg_name(dest), src1, src2, reg_name(dest));
+      printf(ANSI_FMT("| jalr, set %s = 0x%-lx, new PC at 0x%lx. %s's bits are: |\n", ANSI_FG_YELLOW), reg_name(dest), src1, src2, reg_name(dest));
       show_bits_fmt(src1);
       /*IFDEF(CONFIG_FTRACE_ENABLE,
         if(dest == 0) update_ftrace(0, src2, "dont know", depth);
