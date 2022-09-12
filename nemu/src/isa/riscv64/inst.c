@@ -154,7 +154,7 @@ static void decode_operand(Decode * D, word_t *dest, word_t *src1, word_t *src2,
   word_t rs2Val = R(rs2);
   word_t pc = D -> pc;
   word_t pc_Plus4 = pc + 4;
-  word_t JAL_TARGET     = (int64_t)immJ(inst) + (int64_t)pc;//immJ fails for neg numbers
+  word_t JAL_TARGET     = (int64_t)immJ(inst) + (int64_t)pc;
   word_t JALR_TARGET    = immI(inst) + rs1Val;
   //Log("\nimmJ = 0x%lx\nimmI = 0x%lx\nimmB = 0x%lx\nimmS = 0x%lx\n", immJ(inst), immI(inst), immB(inst), immS(inst));
   word_t BRANCH_TARGET  = immB(inst) + pc;
@@ -164,6 +164,7 @@ static void decode_operand(Decode * D, word_t *dest, word_t *src1, word_t *src2,
   D->decInfo.target = 0;
   D->decInfo.type = type;
   D->decInfo.is_ret = 0;
+  //  ret -> jalr ra, x0, 0
   destR(rd);
   switch (type) {
     case TYPE_R: src1I(rs1Val);       src2I(rs2Val);    break;
@@ -171,6 +172,7 @@ static void decode_operand(Decode * D, word_t *dest, word_t *src1, word_t *src2,
     case TYPE_J: src1I(pc_Plus4);     src2I(JAL_TARGET);  D->decInfo.target = JAL_TARGET; D->decInfo.is_ret = (rd == 0); break;
     case TYPE_I: {
       if(D -> decInfo.is_jalr){ //jalr is I type, which is special
+      Log("\nis jalr. rd = %d, rs1 = %d\n", rd, rs1);
           src1I(pc_Plus4);    src2I(JALR_TARGET);  D->decInfo.target = JALR_TARGET;   D->decInfo.is_ret = (rd == 0 && rs1 == 1);  
           Log("\nisret: %d\n", D->decInfo.is_ret);  break;
       }
