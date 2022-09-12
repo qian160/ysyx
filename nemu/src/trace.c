@@ -89,7 +89,7 @@ void update_ftrace(bool is_ret, word_t addr, word_t pc, const char * name, int d
     ftrace.trace[cnt].pc = pc;
     strcpy(ftrace.trace[cnt].name, name);
     ftrace.trace[cnt].address = addr;
-
+    
     ftrace.cnt ++;
     if(is_ret) depth-- ;
     else depth ++;
