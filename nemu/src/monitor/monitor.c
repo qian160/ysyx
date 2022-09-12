@@ -183,15 +183,15 @@ static void load_elf() {
 
     putchar('\n');
     fseek(fp, symtab_offset, SEEK_SET);
-    //int i = 0;
+    int i __u__ = 0;
     Elf64_Sym * sym = (Elf64_Sym *)malloc(sizeof(Elf64_Sym));
 
     while(len --){
       ret = fread(sym, sizeof(Elf64_Sym), 1, fp);
-      //printf("%2d: %30s \t %lx \t %lx \t %x\n", i++, sym -> st_name + strtab, sym ->st_value, sym ->st_size, sym -> st_name);
-      if(sym->st_info == STT_FUNC){
+      printf("%2d: %30s \t %lx \t %lx \t %x\n", i++, sym -> st_name + strtab, sym ->st_value, sym ->st_size, sym -> st_info);
+      /*if(sym->st_info == STT_FUNC){
       printf("%30s @0x%lx, size = 0x%lx\n", sym -> st_name + strtab, sym -> st_value, sym -> st_size);
-      }
+      }*/
       
     }
 	fclose(fp);
