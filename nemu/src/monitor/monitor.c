@@ -52,9 +52,10 @@ char * getFuncName(word_t addr)
 {
   for(symbol * t = head; t; t = t -> next)
   {
-    //word_t bg = t ->offset, ed = t -> offset + t -> size;
-//    if( bg <= addr && addr < ed)  return t -> name;
-    if(addr == t -> offset)  return t -> name;
+    word_t bg = t ->offset, ed = t -> offset + t -> size;
+    if( bg <= addr && addr < ed)  return t -> name;
+    //call's target is always at the beginning, but ret's could be any value as long as it's between the boundary
+//    if(addr == t -> offset)  return t -> name;
   }
   return NULL;
 }
