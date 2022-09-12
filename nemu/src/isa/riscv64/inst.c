@@ -6,7 +6,7 @@
 #include "../../../include/trace.h"   //load op will set ringbuf's rd
 
 extern void update_mringbuf(bool isLoad, word_t addr, word_t data, int rd);
-extern void update_ftrace(bool is_call, word_t addr, const char * name, int depth);
+extern void update_ftrace(bool is_call, word_t addr, word_t pc, const char * name, int depth);
 extern char * getFuncName(word_t addr);
 extern int depth;
 enum {
