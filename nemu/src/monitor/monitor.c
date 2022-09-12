@@ -41,10 +41,20 @@ typedef struct symbol {
 symbol * head = NULL;
 
 void tranverse(){
-  while(head){
-    printf("%lx: %s %lx\n",head->offset, head->name, head->size);
-    head = head -> next;
+  symbol * t = head;
+  while(t){
+    printf("%lx: %s %lx\n",t->offset, t->name, t->size);
+    t = t -> next;
   }
+}
+
+char * getFuncName(word_t addr)
+{
+  for(symbol * t = head; t; t = t -> next)
+  {
+    if( t -> offset == addr)  return t -> name;
+  }
+  return NULL;
 }
 
 static long load_img() {
@@ -172,7 +182,7 @@ static void load_elf() {
       section_name = shstrtab + shdr[i].sh_name;
       unsigned long offset = shdr[i].sh_offset;
       if(!find1 && strcmp(".strtab", section_name) == 0){
-        printf("find the .strtab, offset at %lx\n", offset);
+        //printf("find the .strtab, offset at %lx\n", offset);
         //read out the information
         fseek(fp, offset, SEEK_SET);
         size_t size = shdr[i].sh_size;
@@ -181,7 +191,7 @@ static void load_elf() {
         find1 = true;
       }
       else if(!find2 && shdr[i].sh_type == SHT_SYMTAB){
-        printf("find the .symtab, offset at %lx\n", offset);
+        //printf("find the .symtab, offset at %lx\n", offset);
         len = shdr[i].sh_size / sizeof(Elf64_Sym);
         symtab_offset = offset;
         find2 = true;
@@ -197,7 +207,7 @@ static void load_elf() {
     while(len --){
       ret = fread(sym, sizeof(Elf64_Sym), 1, fp);
       //printf("%2d: %30s \t %lx \t %lx \t %x\n", i++, sym -> st_name + strtab, sym ->st_value, sym ->st_size, sym -> st_info);
-      if(sym->st_info == 18){
+      if(sym->st_info == 18){   //functions
         printf("%30s @0x%lx, size = 0x%lx\n", sym -> st_name + strtab, sym -> st_value, sym -> st_size);
         symbol * s = (symbol *)malloc(sizeof(symbol));
         assert(s);
@@ -212,11 +222,7 @@ static void load_elf() {
     }
 	fclose(fp);
   }
-  printf("start tranversing\n");
   tranverse();
-  while(1);
-
-
   return;
 }
 

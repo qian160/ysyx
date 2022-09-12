@@ -7,7 +7,7 @@
 
 extern void update_mringbuf(bool isLoad, word_t addr, word_t data, int rd);
 extern void update_ftrace(bool is_call, word_t addr, const char * name, int depth);
-
+extern char * getFuncName(word_t addr);
 extern int depth;
 enum {
   TYPE_I, TYPE_U, TYPE_S, TYPE_J, TYPE_R, TYPE_B, TYPE_SYS,
@@ -30,19 +30,19 @@ static word_t immJ(uint32_t i) { return SEXT((BITS(i, 31, 31) << 20) | (BITS(i, 
 static word_t immB(uint32_t i) { return SEXT((BITS(i, 31, 31) << 12) | (BITS(i, 7, 7) << 11) | (BITS(i, 30, 25) << 5) | (BITS(i, 11, 8) << 1) | 0, 13);}
 
 #ifdef CONFIG_FTRACE_ENABLE
-  void _ftrace(bool is_ret, bool flag, word_t addr, int type){
+  void _ftrace(bool is_ret, bool flag, word_t addr, const char * name, int type){
     //is_ret need to be improved, jal could also ret
     switch(type){
       case(TYPE_B):
         if(flag) 
-          update_ftrace(1, addr, "dont know", depth);
+          update_ftrace(1, addr, name, depth);
         break;
       case(TYPE_I):
         if(is_ret)
-          update_ftrace(0, addr, "dont know", depth);
+          update_ftrace(0, addr, name, depth);
         break;
       case(TYPE_J):
-        update_ftrace(1, addr, "dont know", depth);
+        update_ftrace(1, addr, name, depth);
         break;
     }
   }
@@ -204,7 +204,7 @@ static int decode_exec(Decode *D) {
   __VA_ARGS__ ; \
   IFDEF(CONFIG_SHOW_DECODE_INFORMATION, show_decode(D, src1, src2, dest, TYPE_##type));\
   \
-  IFDEF(CONFIG_FTRACE_ENABLE, bool ret = D -> decInfo.is_jalr && dest == 0;_ftrace(ret, src1, src2, TYPE_##type ));\
+  IFDEF(CONFIG_FTRACE_ENABLE, bool ret = D -> decInfo.is_jalr && dest == 0;_ftrace(ret, src1, src2, getFuncName(src2), TYPE_##type ));\
 }
 
   //check one by one
