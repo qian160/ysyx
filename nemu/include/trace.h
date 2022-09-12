@@ -40,6 +40,7 @@ typedef struct {
     word_t address;
     bool is_call : 1;
     char name[16];
+    word_t pc;
 }Ftrace_entry;
 
 typedef struct {
@@ -51,7 +52,7 @@ Ftrace ftrace;
 
 void show_ftrace();
 
-void update_ftrace(bool is_call, word_t addr, const char * name, int d);
+void update_ftrace(bool is_call, word_t addr, word_t pc, const char * name, int d);
 
 
 #endif

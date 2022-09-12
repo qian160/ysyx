@@ -80,12 +80,15 @@ void show_ftrace(){
 
 int depth = 0;      //this is used at runtime
 
-void update_ftrace(bool is_call, word_t addr, const char * name, int d){
+void update_ftrace(bool is_call, word_t addr, word_t pc, const char * name, int d){
     int cnt = ftrace.cnt;
-    ftrace.trace[cnt].depth   = d - !is_call;   //if not call(ret), depth-=1
-    ftrace.trace[cnt].is_call = is_call;
-    strcpy(ftrace.trace[cnt].name, name);
-    ftrace.trace[cnt].address = addr;
+    Ftrace_entry t = ftrace.trace[cnt];
+    t.depth   = d - !is_call;   //if not call(ret), depth-=1
+    t.is_call = is_call;
+    t.pc = pc;
+    strcpy(t.name, name);
+    t.address = addr;
+
     ftrace.cnt ++;
     if(is_call) depth++ ;
     else depth --;
