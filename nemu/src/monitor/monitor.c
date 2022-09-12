@@ -62,7 +62,7 @@ static long load_img() {
   return size;
 }
 
-static void load_elf() {
+static void load_elf(const char * file) {
   /*
 	size_t fread(void *ptr, size_t size, size_t nmemb, FILE *stream);
 
@@ -101,7 +101,7 @@ static void load_elf() {
   else
   {
     FILE *fp;
-    fp = fopen("hello", "r");
+    fp = fopen(file, "r");
     if (NULL == fp)
     {
       printf("fail to open the file");
@@ -218,6 +218,7 @@ static int parse_args(int argc, char *argv[]) {
       case 'p': sscanf(optarg, "%d", &difftest_port); break;
       case 'l': log_file = optarg; break;
       case 'd': diff_so_file = optarg; break;
+      case 'e': load_elf(optarg);
       //return 1 means success, here specifies an img file
       case  1 : img_file = optarg; return 0;
       default:
