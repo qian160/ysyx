@@ -8,8 +8,6 @@
         the va_arg(ap, ptr) is a macro, during a afunction call, variable arguments will be pushed
       onto stack, and this macro sets ap to point at the address above ptr, which is the last non-variable argument
 
-
-
 */
 
 size_t strlen(const char *s) {
