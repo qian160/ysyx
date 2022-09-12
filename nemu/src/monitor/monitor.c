@@ -169,7 +169,7 @@ static void load_elf(const char * file) {
         fseek(fp, offset, SEEK_SET);
         size_t size = shdr[i].sh_size;
         strtab = (char*)malloc(size);
-        fread(strtab, size, 1, fp);
+        ret = fread(strtab, size, 1, fp);
         find1 = true;
       }
       else if(!find2 && shdr[i].sh_type == SHT_SYMTAB){
@@ -186,7 +186,7 @@ static void load_elf(const char * file) {
     Elf64_Sym * sym = (Elf64_Sym *)malloc(sizeof(Elf64_Sym));
 
     while(len --){
-      fread(sym, sizeof(Elf64_Sym), 1, fp);
+      ret = fread(sym, sizeof(Elf64_Sym), 1, fp);
       printf("%2d: %30s \t %lx \t %lx \t %x\n", i++, sym -> st_name + strtab, sym ->st_value, sym ->st_size, sym -> st_name);
       
     }
