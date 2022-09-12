@@ -198,6 +198,7 @@ static void load_elf() {
       ret = fread(sym, sizeof(Elf64_Sym), 1, fp);
       //printf("%2d: %30s \t %lx \t %lx \t %x\n", i++, sym -> st_name + strtab, sym ->st_value, sym ->st_size, sym -> st_info);
       if(sym->st_info == 18){
+        printf("%s\n", i++);
         printf("%30s @0x%lx, size = 0x%lx\n", sym -> st_name + strtab, sym -> st_value, sym -> st_size);
         symbol * t = (symbol *)malloc(sizeof(symbol));
         assert(t);
@@ -213,6 +214,7 @@ static void load_elf() {
 	return ;
 
   }
+  printf("start tranversing\n");
   tranverse();
   while(1);
 
