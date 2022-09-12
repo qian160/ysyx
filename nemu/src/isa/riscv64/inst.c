@@ -203,7 +203,7 @@ static int decode_exec(Decode *D) {
   decode_operand(D, &dest, &src1, &src2, concat(TYPE_, type)); \
   __VA_ARGS__ ; \
   IFDEF(CONFIG_SHOW_DECODE_INFORMATION, show_decode(D, src1, src2, dest, TYPE_##type));\
-  bool ret = D -> decInfo.is_jalr && dest == 0;\
+  bool ret __attribute__((unused))= D -> decInfo.is_jalr && dest == 0;\
   IFDEF(CONFIG_FTRACE_ENABLE, _ftrace(ret, src1, src2, TYPE_##type ));\
 }
 
