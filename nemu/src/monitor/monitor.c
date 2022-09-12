@@ -152,7 +152,7 @@ static void load_elf() {
     {
       printf("\nfaile to read\n");
     }
-    char * strtab;
+    char * strtab = NULL;
     int len = 0;
 
     //find the wanted section names(symtab and) in shstrtab
