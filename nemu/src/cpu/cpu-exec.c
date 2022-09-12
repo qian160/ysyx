@@ -55,6 +55,7 @@ static void exec_once(Decode *D, vaddr_t pc) {
   isa_exec_once(D);
   cpu.pc = D->dnpc; //dnpc is updated in decode_exec, currently dnpc = snpc(pc + 4)
 #ifdef CONFIG_ITRACE
+  IFDEF(CONFIG_ITRACE_ENABLE
   char *p = D->logbuf;
   //add address to logbuf
   p += snprintf(p, sizeof(D->logbuf), FMT_WORD ":", D->pc);
@@ -74,7 +75,7 @@ static void exec_once(Decode *D, vaddr_t pc) {
   p += space_len;
   //add inst name to logbuf
   disassemble(p, D->logbuf + sizeof(D->logbuf) - p,
-      MUXDEF(CONFIG_ISA_x86, D->snpc, D->pc), (uint8_t *)&D->inst, ilen);
+    MUXDEF(CONFIG_ISA_x86, D->snpc, D->pc), (uint8_t *)&D->inst, ilen));
 #endif
 }
 
