@@ -65,6 +65,9 @@ void update_mringbuf(bool isLoad, word_t addr, word_t data, int rd){
 #endif
 
 #ifdef CONFIG_FTRACE_ENABLE
+
+symbol * Sym_head = NULL;
+
 void show_ftrace(){
     printf(ANSI_FMT("F - Trace:\n", ANSI_FG_YELLOW));
     for(int i = 0; i < ftrace.cnt ; i++)
