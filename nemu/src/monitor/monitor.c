@@ -202,6 +202,7 @@ static void load_elf() {
         printf("%30s @0x%lx, size = 0x%lx\n", sym -> st_name + strtab, sym -> st_value, sym -> st_size);
         symbol * s = (symbol *)malloc(sizeof(symbol));
         assert(s);
+        s -> name = (char *)malloc(strlen(sym -> st_name + strtab));
         strcpy(s -> name, sym -> st_name + strtab);
         printf("copy successful\n");
         s -> offset = sym -> st_value;
