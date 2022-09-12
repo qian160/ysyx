@@ -50,6 +50,25 @@ typedef struct {
 
 Ftrace ftrace;
 
+typedef struct symbol {
+    char * name;
+    word_t offset;
+    word_t size;
+    struct symbol * next;
+}symbol;
+
+symbol * head = NULL;
+
+void tranverse(){
+    symbol * t = head;
+    while(t){
+        printf("%lx: %s %lx\n",t->offset, t->name, t->size);
+        t = t -> next;
+    }
+}
+
+
+
 void show_ftrace();
 
 void update_ftrace(bool is_ret, word_t addr, word_t pc, const char * name, int d);

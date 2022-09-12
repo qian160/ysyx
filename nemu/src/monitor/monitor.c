@@ -1,6 +1,7 @@
 #include <isa.h>
 #include <memory/paddr.h>
 #include <elf.h>
+#include "../include/trace.h"
 
 void init_rand();
 void init_log(const char *log_file);
@@ -31,34 +32,7 @@ static char *img_file = NULL;
 static int difftest_port = 1234;
 static char *elf_file = NULL;
 
-typedef struct symbol {
-  char * name;
-  word_t offset;
-  word_t size;
-  struct symbol * next;
-}symbol;
 
-symbol * head = NULL;
-
-void tranverse(){
-  symbol * t = head;
-  while(t){
-    printf("%lx: %s %lx\n",t->offset, t->name, t->size);
-    t = t -> next;
-  }
-}
-
-char * getFuncName(word_t addr)
-{
-  for(symbol * t = head; t; t = t -> next)
-  {
-    word_t bg = t ->offset, ed = t -> offset + t -> size;
-    if( bg <= addr && addr < ed)  return t -> name;
-    //call's target is always at the beginning, but ret's could be any value as long as it's between the boundary
-//    if(addr == t -> offset)  return t -> name;
-  }
-  return NULL;
-}
 
 static long load_img() {
   if (img_file == NULL) {
@@ -226,7 +200,7 @@ static void load_elf() {
     }
 	fclose(fp);
   }
-  tranverse();
+  //tranverse();
   printf(ANSI_FMT("Done!\n", ANSI_FG_GREEN));
   return;
 }

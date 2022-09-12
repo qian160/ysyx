@@ -94,4 +94,17 @@ void update_ftrace(bool is_ret, word_t addr, word_t pc, const char * name, int d
     if(is_ret) depth-- ;
     else depth ++;
 }
+
+char * getFuncName(word_t addr)
+{
+    for(symbol * t = head; t; t = t -> next)
+    {
+        word_t bg = t ->offset, ed = t -> offset + t -> size;
+        if( bg <= addr && addr < ed)  return t -> name;
+        //call's target is always at the beginning, but ret's could be any value as long as it's between the boundary
+//      if(addr == t -> offset)  return t -> name;
+    }
+    return NULL;
+}
+
 #endif
