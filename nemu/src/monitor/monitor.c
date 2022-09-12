@@ -157,7 +157,7 @@ static void load_elf() {
 
     //find the wanted section names(symtab and) in shstrtab
     char * section_name = shstrtab;
-    int64_t symtab_offset;		//used to reset the file pointer before reading symtab
+    int64_t symtab_offset = 0;		//used to reset the file pointer before reading symtab
     //find the strtab
     bool find1 = false, find2 = false;
     for(int i = 0; i < shnum; i++){
