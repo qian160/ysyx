@@ -36,14 +36,14 @@ static word_t immB(uint32_t i) { return SEXT((BITS(i, 31, 31) << 12) | (BITS(i, 
     switch(type){
       case(TYPE_B):
         if(flag) 
-          update_ftrace(1, addr, name, depth);
+          update_ftrace(1, addr, pc, name, depth);
         break;
       case(TYPE_I):
         if(is_ret)
-          update_ftrace(0, addr, name, depth);
+          update_ftrace(0, addr, pc, name, depth);
         break;
       case(TYPE_J):
-        update_ftrace(1, addr, name, depth);
+        update_ftrace(1, addr, pc, name, depth);
         break;
     }
   }
