@@ -204,7 +204,6 @@ static void load_elf() {
         assert(s);
         s -> name = (char *)malloc(strlen(sym -> st_name + strtab));
         strcpy(s -> name, sym -> st_name + strtab);
-        printf("copy successful\n");
         s -> offset = sym -> st_value;
         s -> size = sym -> st_size;
         s -> next = head;
