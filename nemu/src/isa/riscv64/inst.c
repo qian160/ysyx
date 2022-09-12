@@ -6,7 +6,7 @@
 #include "../../../include/trace.h"   //load op will set ringbuf's rd
 
 extern void update_mringbuf(bool isLoad, word_t addr, word_t data, int rd);
-extern void update_ftrace(bool is_call, word_t addr, word_t pc, const char * name, int depth);
+extern void update_ftrace(bool is_ret, word_t addr, word_t pc, const char * name, int depth);
 extern char * getFuncName(word_t addr);
 extern int depth;
 enum {
@@ -36,14 +36,14 @@ static word_t immB(uint32_t i) { return SEXT((BITS(i, 31, 31) << 12) | (BITS(i, 
     switch(type){
       case(TYPE_B):
         if(flag) 
-          update_ftrace(1, addr, pc, name, depth);
+          //update_ftrace(1, addr, pc, name, depth);
         break;
       case(TYPE_I):
         if(is_ret)
-          update_ftrace(0, addr, pc, name, depth);
+          update_ftrace(1, addr, pc, name, depth);
         break;
       case(TYPE_J):
-        update_ftrace(1, addr, pc, name, depth);
+        update_ftrace(is_ret, addr, pc, name, depth);
         break;
     }
   }
