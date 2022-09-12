@@ -193,8 +193,8 @@ static void load_elf() {
         strcpy(s -> name, sym -> st_name + strtab);
         s -> offset = sym -> st_value;
         s -> size = sym -> st_size;
-        s -> next = head;
-        head = s;
+        s -> next = Sym_head;
+        Sym_head = s;
       }
       
     }
