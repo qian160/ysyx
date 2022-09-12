@@ -118,6 +118,7 @@ static void load_elf() {
     return;
   else
   {
+    printf(ANSI_FMT("Loading the ELF file...\n", ANSI_FG_YELLOW));
     FILE *fp = fopen(elf_file, "r");
     int ret __attribute__((unused));
     if (NULL == fp)
@@ -223,6 +224,7 @@ static void load_elf() {
 	fclose(fp);
   }
   tranverse();
+  printf(ANSI_FMT("Done!\n", ANSI_FG_GREEN));
   return;
 }
 
