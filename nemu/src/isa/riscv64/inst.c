@@ -32,6 +32,7 @@ static word_t immB(uint32_t i) { return SEXT((BITS(i, 31, 31) << 12) | (BITS(i, 
 #ifdef CONFIG_FTRACE_ENABLE
   void _ftrace(bool is_ret, bool flag, word_t addr, const char * name, int type){
     //is_ret need to be improved, jal could also ret
+    if(!name) return;   //not a function call or ret
     switch(type){
       case(TYPE_B):
         if(flag) 
@@ -204,7 +205,8 @@ static int decode_exec(Decode *D) {
   __VA_ARGS__ ; \
   IFDEF(CONFIG_SHOW_DECODE_INFORMATION, show_decode(D, src1, src2, dest, TYPE_##type));\
   \
-  IFDEF(CONFIG_FTRACE_ENABLE, bool ret = D -> decInfo.is_jalr && dest == 0;_ftrace(ret, src1, src2, getFuncName(src2), TYPE_##type ));\
+  IFDEF(CONFIG_FTRACE_ENABLE, \
+    bool ret = D -> decInfo.is_jalr && dest == 0; _ftrace(ret, src1, src2, getFuncName(src2), TYPE_##type ));\
 }
 
   //check one by one
