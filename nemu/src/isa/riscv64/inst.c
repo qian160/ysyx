@@ -198,15 +198,13 @@ static int decode_exec(Decode *D) {
 
 #define INSTPAT_INST(D) ((D)->inst)
 //a match is found, do what it supposed to do.
-//first prepare for operands, then do the things listed in __VA_ARGS__
-//very complex macro...
 #define INSTPAT_MATCH(D, name, type, ... /* body */ ) { \
   decode_operand(D, &dest, &src1, &src2, concat(TYPE_, type)); \
   __VA_ARGS__ ; \
   IFDEF(CONFIG_SHOW_DECODE_INFORMATION, show_decode(D, src1, src2, dest, TYPE_##type));\
   \
   IFDEF(CONFIG_FTRACE_ENABLE, \
-    bool ret = D -> decInfo.is_jalr && dest == 0; _ftrace(ret, src1, src2, getFuncName(src2), TYPE_##type ));\
+    bool ret = (D -> decInfo.is_jalr || TYPE_##type == TYPE_J)  && dest == 0; _ftrace(ret, src1, src2, getFuncName(src2), TYPE_##type ));\
 }
 
   //check one by one
