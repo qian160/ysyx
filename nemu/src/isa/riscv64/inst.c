@@ -30,26 +30,8 @@ static word_t immJ(uint32_t i) { return SEXT((BITS(i, 31, 31) << 20) | (BITS(i, 
 static word_t immB(uint32_t i) { return SEXT((BITS(i, 31, 31) << 12) | (BITS(i, 7, 7) << 11) | (BITS(i, 30, 25) << 5) | (BITS(i, 11, 8) << 1) | 0, 13);}
 
 #ifdef CONFIG_FTRACE_ENABLE
-  void _ftrace(Decode * D){
-    //is_ret need to be improved, jal could also ret
-    char * name = getFuncName(D->decInfo.target);
-    if(!name) return;   //not a function call or ret
-    Log("\nname = %s\n", name);
-    word_t addr = D->decInfo.target;
-    switch(D->decInfo.type){
-      case(TYPE_B):
-        //if(D->decInfo.branch_taken) 
-          //update_ftrace(1, addr, pc, name, depth);
-        break;
-      case(TYPE_I):   //jalr, and other normal insts
-        if(D->decInfo.is_jalr)
-          update_ftrace(D->decInfo.is_ret, addr, D->pc, name, depth);
-        break;
-      case(TYPE_J):
-        update_ftrace(D->decInfo.is_ret, addr, D->pc, name, depth);
-        break;
-    }
-  }
+extern void update_ftrace(bool is_ret, word_t addr, word_t pc, const char * name, int d);
+extern void _ftrace(Decode * D);
 #endif
 
 #define R(i) gpr(i)

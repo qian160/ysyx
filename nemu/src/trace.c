@@ -2,6 +2,7 @@
 #include <../include/generated/autoconf.h>
 #include "../include/trace.h"
 #include "isa/riscv64/local-include/reg.h"
+#include "../include/cpu/decode.h"
 
 #ifdef CONFIG_ITRACE_ENABLE
 
@@ -108,6 +109,30 @@ char * getFuncName(word_t addr)
 //      if(addr == t -> offset)  return t -> name;
     }
     return NULL;
+}
+enum {
+    TYPE_I, TYPE_U, TYPE_S, TYPE_J, TYPE_R, TYPE_B, TYPE_SYS,
+    TYPE_N, // none
+};
+void _ftrace(Decode * D){
+    //is_ret need to be improved, jal could also ret
+    char * name = getFuncName(D->decInfo.target);
+    if(!name) return;   //not a function call or ret
+    Log("\nname = %s\n", name);
+    word_t addr = D->decInfo.target;
+    switch(D->decInfo.type){
+        case(TYPE_B):
+        //if(D->decInfo.branch_taken) 
+          //update_ftrace(1, addr, pc, name, depth);
+        break;
+        case(TYPE_I):   //jalr, and other normal insts
+            if(D->decInfo.is_jalr)
+                update_ftrace(D->decInfo.is_ret, addr, D->pc, name, depth);
+            break;
+        case(TYPE_J):
+            update_ftrace(D->decInfo.is_ret, addr, D->pc, name, depth);
+            break;
+    }
 }
 
 #endif
