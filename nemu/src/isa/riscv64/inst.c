@@ -204,7 +204,7 @@ static int decode_exec(Decode *D) {
   IFDEF(CONFIG_SHOW_DECODE_INFORMATION, show_decode(D, src1, src2, dest, TYPE_##type));\
   \
   IFDEF(CONFIG_FTRACE_ENABLE, \
-    bool ret = (D -> decInfo.is_jalr || TYPE_##type == TYPE_J)  && dest == 0; _ftrace(ret, src1, D -> pc,  src2, getFuncName(src2), TYPE_##type ));\
+    bool ret = (TYPE_##type == TYPE_I && D -> decInfo.is_jalr || TYPE_##type == TYPE_J)  && dest == 0; _ftrace(ret, src1, D -> pc,  src2, getFuncName(src2), TYPE_##type ));\
     printf("%d\n", ret);\
 }
 
