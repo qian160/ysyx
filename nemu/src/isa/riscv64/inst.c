@@ -42,7 +42,7 @@ static word_t immB(uint32_t i) { return SEXT((BITS(i, 31, 31) << 12) | (BITS(i, 
         break;
       case(TYPE_I):   //jalr, and other normal insts
         if(D->decInfo.is_jalr)
-          update_ftrace(1, addr, D->pc, name, depth);
+          update_ftrace(D->decInfo.is_ret, addr, D->pc, name, depth);
         else
 
         break;
@@ -173,6 +173,7 @@ static void decode_operand(Decode * D, word_t *dest, word_t *src1, word_t *src2,
     case TYPE_I: {
       if(D -> decInfo.is_jalr){ //jalr is I type, which is special
           src1I(pc_Plus4);    src2I(JALR_TARGET);  D->decInfo.target = JALR_TARGET;   D->decInfo.is_ret = (rd == 0 && rs1 == 1);  break;
+          Log("\nisret: %d\n", D->decInfo.is_ret);
       }
       else{
           src1R(rs1);         src2I(immI(inst));  break;
@@ -215,9 +216,7 @@ static int decode_exec(Decode *D) {
   __VA_ARGS__ ; \
   IFDEF(CONFIG_SHOW_DECODE_INFORMATION, show_decode(D, src1, src2, dest, TYPE_##type));\
   \
-  IFDEF(CONFIG_FTRACE_ENABLE, \
-    bool ret = (((TYPE_##type == TYPE_I && D -> decInfo.is_jalr) || TYPE_##type == TYPE_J)  && dest == 0); _ftrace(D));\
-    printf("%d\n", ret);\
+  IFDEF(CONFIG_FTRACE_ENABLE, _ftrace(D));\
 }
 
   //check one by one
