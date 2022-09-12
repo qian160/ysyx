@@ -31,7 +31,7 @@ static word_t immB(uint32_t i) { return SEXT((BITS(i, 31, 31) << 12) | (BITS(i, 
 
 #ifdef CONFIG_FTRACE_ENABLE
   void _ftrace(bool is_ret, bool flag, word_t addr, int type){
-    /*
+    //is_ret need to be improved, jal could also ret
     switch(type){
       case(TYPE_B):
         if(flag) 
@@ -45,7 +45,6 @@ static word_t immB(uint32_t i) { return SEXT((BITS(i, 31, 31) << 12) | (BITS(i, 
         update_ftrace(1, addr, "dont know", depth);
         break;
     }
-    */
   }
 #endif
 
