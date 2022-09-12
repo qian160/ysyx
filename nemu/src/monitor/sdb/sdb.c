@@ -72,7 +72,7 @@ void sdb_mainloop() {   //get command
 #ifdef CONFIG_AUTO_DISASM_NEXT
   if(cmd[0] != 'q' && cmd[0] != 'd')
   {
-    int n = atoi(CONFIG_AUTO_DISASM_NEXT);
+    int n = atoi(CONFIG_DISASM_NUMBER);
     printf(ANSI_FMT("\nnext %d instruction(s) is:\n", ANSI_FG_YELLOW), n);
     char *buf = (char *) malloc(30);
     memset(buf, 0, 30);
