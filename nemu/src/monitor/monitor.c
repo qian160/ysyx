@@ -101,7 +101,7 @@ static void load_elf(const char * file) {
   else
   {
     FILE *fp = fopen(file, "r");
-    int ret;
+    int ret __attribute__((unused));
     if (NULL == fp)
     {
       printf("fail to open the file");
