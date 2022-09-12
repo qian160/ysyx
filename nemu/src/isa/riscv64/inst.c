@@ -95,7 +95,7 @@ printf(ANSI_FMT(" --------------------------------------------------------------
       word_t loadVal = Mr(src1 + src2, L_width(fct3));
       printf(ANSI_FMT("| load a value 0x%-16lx from address: 0x%-24lx  | \n", ANSI_FG_YELLOW), loadVal, address);
       show_bits_fmt(loadVal);
-      IFDEF(CONFIG_MTRACE_ENABLE, update_mringbuf(1, address, loadVal, 0));
+      IFDEF(CONFIG_MTRACE_ENABLE, update_mringbuf(1, address, loadVal, dest));
     }
     else if(D->decInfo.is_jalr){
       printf(ANSI_FMT("jalr, set %s = 0x%-lx, new PC at 0x%lx. %s's bits are:\n", ANSI_FG_YELLOW), reg_name(dest), src1, src2, reg_name(dest));
