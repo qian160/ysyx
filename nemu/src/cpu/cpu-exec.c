@@ -133,7 +133,7 @@ void cpu_exec(uint64_t n) {
           nemu_state.halt_pc);      
           IFDEF(CONFIG_ITRACE_ENABLE, show_itrace());
           IFDEF(CONFIG_MTRACE_ENABLE, show_mtrace());
-          //IFDEF(CONFIG_FTRACE_ENABLE, show_ftrace());
+          IFDEF(CONFIG_FTRACE_ENABLE, show_ftrace());
     
 /*
     case NEMU_END: 
