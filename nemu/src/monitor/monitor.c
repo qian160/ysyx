@@ -183,7 +183,7 @@ static void load_elf() {
 
     putchar('\n');
     fseek(fp, symtab_offset, SEEK_SET);
-    int i = 0;
+    //int i = 0;
     Elf64_Sym * sym = (Elf64_Sym *)malloc(sizeof(Elf64_Sym));
 
     while(len --){
