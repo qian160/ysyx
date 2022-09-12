@@ -58,7 +58,7 @@ typedef struct symbol {
 }symbol;
 
 symbol * head = NULL;
-
+/*
 void tranverse(){
     symbol * t = head;
     while(t){
@@ -66,8 +66,7 @@ void tranverse(){
         t = t -> next;
     }
 }
-
-
+*/
 
 void show_ftrace();
 
