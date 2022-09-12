@@ -192,7 +192,7 @@ static void load_elf() {
       
     }
 	fclose(fp);
-	return 0;
+	return ;
 
   }
 
