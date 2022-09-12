@@ -57,7 +57,7 @@ typedef struct symbol {
     struct symbol * next;
 }symbol;
 
-symbol * head = NULL;
+symbol * Sym_head = NULL;
 /*
 void tranverse(){
     symbol * t = head;

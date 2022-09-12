@@ -97,7 +97,7 @@ void update_ftrace(bool is_ret, word_t addr, word_t pc, const char * name, int d
 
 char * getFuncName(word_t addr)
 {
-    for(symbol * t = head; t; t = t -> next)
+    for(symbol * t = Sym_head; t; t = t -> next)
     {
         word_t bg = t ->offset, ed = t -> offset + t -> size;
         if( bg <= addr && addr < ed)  return t -> name;
