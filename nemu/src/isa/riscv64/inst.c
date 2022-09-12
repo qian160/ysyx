@@ -206,7 +206,6 @@ static int decode_exec(Decode *D) {
   IFDEF(CONFIG_FTRACE_ENABLE, \
     bool ret = ((TYPE_##type == TYPE_I && D -> decInfo.is_jalr) || TYPE_##type == TYPE_J)  && dest == 0; _ftrace(ret, src1, D -> pc,  src2, getFuncName(src2), TYPE_##type ));\
     printf("%d\n", ret);\
-    printf("%d\n", ret);\
 }
 
   //check one by one
