@@ -200,13 +200,14 @@ static void load_elf() {
       if(sym->st_info == 18){
         printf("%d\n", i++);
         printf("%30s @0x%lx, size = 0x%lx\n", sym -> st_name + strtab, sym -> st_value, sym -> st_size);
-        symbol * t = (symbol *)malloc(sizeof(symbol));
-        assert(t);
-        strcpy(t -> name, sym -> st_name + strtab);
-        t -> offset = sym -> st_value;
-        t -> size = sym -> st_size;
-        t -> next = head;
-        head = t;
+        symbol * s = (symbol *)malloc(sizeof(symbol));
+        assert(s);
+        strcpy(s -> name, sym -> st_name + strtab);
+        printf("copy successful\n");
+        s -> offset = sym -> st_value;
+        s -> size = sym -> st_size;
+        s -> next = head;
+        head = s;
       }
       
     }
