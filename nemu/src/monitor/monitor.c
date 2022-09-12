@@ -52,8 +52,9 @@ char * getFuncName(word_t addr)
 {
   for(symbol * t = head; t; t = t -> next)
   {
-    word_t bg = t ->offset, ed = t -> offset + t -> size;
-    if( bg <= addr && addr < ed)  return t -> name;
+    //word_t bg = t ->offset, ed = t -> offset + t -> size;
+//    if( bg <= addr && addr < ed)  return t -> name;
+    if(addr == t -> offset)  return t -> name;
   }
   return NULL;
 }
