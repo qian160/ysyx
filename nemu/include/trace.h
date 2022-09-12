@@ -36,7 +36,7 @@ void show_itrace();
 #ifdef CONFIG_FTRACE_ENABLE
 
 typedef struct {
-    unsigned depth : 8;
+    char depth;
     word_t address;
     bool is_call : 1;
     char name[16];
