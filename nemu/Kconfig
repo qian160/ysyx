@@ -15,11 +15,6 @@ menu "My config"
     endmenu
 
     config AUTO_DISASM_NEXT
-	bool "Enable auto disasm next"
-	default y
-
-    config DISASM_NUMBER
-	depends on AUTO_DISASM_NEXT
 	string "Numbers to disasm"
 	default "1"
 
