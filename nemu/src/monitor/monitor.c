@@ -1,6 +1,7 @@
 #include <isa.h>
 #include <memory/paddr.h>
 #include <elf.h>
+#include "../include/trace.h"
 
 void init_rand();
 void init_log(const char *log_file);
@@ -9,6 +10,8 @@ void init_difftest(char *ref_so_file, long img_size, int port);
 void init_device();
 void init_sdb();
 void init_disasm(const char *triple);
+
+extern symbol * Sym_head;
 
 static void welcome() {
   Log("Trace: %s", MUXDEF(CONFIG_TRACE, ANSI_FMT("ON", ANSI_FG_GREEN), ANSI_FMT("OFF", ANSI_FG_RED)));
@@ -31,21 +34,7 @@ static char *img_file = NULL;
 static int difftest_port = 1234;
 static char *elf_file = NULL;
 
-typedef struct symbol {
-  char * name;
-  word_t offset;
-  word_t size;
-  struct symbol * next;
-}symbol;
 
-symbol * head = NULL;
-
-void tranverse(){
-  while(head){
-    printf("%lx: %s %lx\n",head->offset, head->name, head->size);
-    head = head -> next;
-  }
-}
 
 static long load_img() {
   if (img_file == NULL) {
@@ -108,6 +97,7 @@ static void load_elf() {
     return;
   else
   {
+    printf(ANSI_FMT("Loading the ELF file...\n", ANSI_FG_YELLOW));
     FILE *fp = fopen(elf_file, "r");
     int ret __attribute__((unused));
     if (NULL == fp)
@@ -197,7 +187,7 @@ static void load_elf() {
     while(len --){
       ret = fread(sym, sizeof(Elf64_Sym), 1, fp);
       //printf("%2d: %30s \t %lx \t %lx \t %x\n", i++, sym -> st_name + strtab, sym ->st_value, sym ->st_size, sym -> st_info);
-      if(sym->st_info == 18){
+      if(sym->st_info == 18){   //functions
         printf("%30s @0x%lx, size = 0x%lx\n", sym -> st_name + strtab, sym -> st_value, sym -> st_size);
         symbol * s = (symbol *)malloc(sizeof(symbol));
         assert(s);
@@ -205,18 +195,15 @@ static void load_elf() {
         strcpy(s -> name, sym -> st_name + strtab);
         s -> offset = sym -> st_value;
         s -> size = sym -> st_size;
-        s -> next = head;
-        head = s;
+        s -> next = Sym_head;
+        Sym_head = s;
       }
       
     }
 	fclose(fp);
   }
-  printf("start tranversing\n");
-  tranverse();
-  while(1);
-
-
+  //tranverse();
+  printf(ANSI_FMT("Done!\n", ANSI_FG_GREEN));
   return;
 }
 

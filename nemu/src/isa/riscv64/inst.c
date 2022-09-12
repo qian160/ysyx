@@ -6,8 +6,8 @@
 #include "../../../include/trace.h"   //load op will set ringbuf's rd
 
 extern void update_mringbuf(bool isLoad, word_t addr, word_t data, int rd);
-extern void update_ftrace(bool is_call, word_t addr, const char * name, int depth);
-
+extern void update_ftrace(bool is_ret, word_t addr, word_t pc, const char * name, int depth);
+extern char * getFuncName(word_t addr);
 extern int depth;
 enum {
   TYPE_I, TYPE_U, TYPE_S, TYPE_J, TYPE_R, TYPE_B, TYPE_SYS,
@@ -30,22 +30,8 @@ static word_t immJ(uint32_t i) { return SEXT((BITS(i, 31, 31) << 20) | (BITS(i, 
 static word_t immB(uint32_t i) { return SEXT((BITS(i, 31, 31) << 12) | (BITS(i, 7, 7) << 11) | (BITS(i, 30, 25) << 5) | (BITS(i, 11, 8) << 1) | 0, 13);}
 
 #ifdef CONFIG_FTRACE_ENABLE
-  void _ftrace(bool is_ret, bool flag, word_t addr, int type){
-    //is_ret need to be improved, jal could also ret
-    switch(type){
-      case(TYPE_B):
-        if(flag) 
-          update_ftrace(1, addr, "dont know", depth);
-        break;
-      case(TYPE_I):
-        if(is_ret)
-          update_ftrace(0, addr, "dont know", depth);
-        break;
-      case(TYPE_J):
-        update_ftrace(1, addr, "dont know", depth);
-        break;
-    }
-  }
+extern void update_ftrace(bool is_ret, word_t addr, word_t pc, const char * name, int d);
+extern void _ftrace(Decode * D);
 #endif
 
 #define R(i) gpr(i)
@@ -98,7 +84,7 @@ printf(ANSI_FMT(" --------------------------------------------------------------
       IFDEF(CONFIG_MTRACE_ENABLE, update_mringbuf(1, address, loadVal, dest));
     }
     else if(D->decInfo.is_jalr){
-      printf(ANSI_FMT("jalr, set %s = 0x%-lx, new PC at 0x%lx. %s's bits are:\n", ANSI_FG_YELLOW), reg_name(dest), src1, src2, reg_name(dest));
+      printf(ANSI_FMT("| jalr, set %s = 0x%-lx, new PC at 0x%lx. %s's bits are: \t\t|\n", ANSI_FG_YELLOW), reg_name(dest), src1, src2, reg_name(dest));
       show_bits_fmt(src1);
       /*IFDEF(CONFIG_FTRACE_ENABLE,
         if(dest == 0) update_ftrace(0, src2, "dont know", depth);
@@ -150,19 +136,27 @@ static void decode_operand(Decode * D, word_t *dest, word_t *src1, word_t *src2,
   word_t rs2Val = R(rs2);
   word_t pc = D -> pc;
   word_t pc_Plus4 = pc + 4;
-  word_t JAL_TARGET     = (int64_t)immJ(inst) + (int64_t)pc;//immJ fails for neg numbers
+  word_t JAL_TARGET     = (int64_t)immJ(inst) + (int64_t)pc;
   word_t JALR_TARGET    = immI(inst) + rs1Val;
   //Log("\nimmJ = 0x%lx\nimmI = 0x%lx\nimmB = 0x%lx\nimmS = 0x%lx\n", immJ(inst), immI(inst), immB(inst), immS(inst));
   word_t BRANCH_TARGET  = immB(inst) + pc;
   word_t storeAddr      = immS(inst) + rs1Val;
+
+  D->decInfo.rd   = rd;
+  D->decInfo.target = 0;
+  D->decInfo.type = type;
+  D->decInfo.is_ret = 0;
+  //  ret -> jalr ra, x0, 0
   destR(rd);
   switch (type) {
     case TYPE_R: src1I(rs1Val);       src2I(rs2Val);    break;
     case TYPE_S: src1I(storeAddr);    src2R(rs2);       break;
-    case TYPE_J: src1I(pc_Plus4);     src2I(JAL_TARGET);break;
+    case TYPE_J: src1I(pc_Plus4);     src2I(JAL_TARGET);  D->decInfo.target = JAL_TARGET; D->decInfo.is_ret = (rd == 0); break;
     case TYPE_I: {
       if(D -> decInfo.is_jalr){ //jalr is I type, which is special
-          src1I(pc_Plus4);    src2I(JALR_TARGET); break;
+      Log("\nis jalr. rd = %d, rs1 = %d\n", rd, rs1);
+          src1I(pc_Plus4);    src2I(JALR_TARGET);  D->decInfo.target = JALR_TARGET;   D->decInfo.is_ret = (rd == 0 && rs1 == 1);  
+          Log("\nisret: %d\n", D->decInfo.is_ret);  break;
       }
       else{
           src1R(rs1);         src2I(immI(inst));  break;
@@ -179,16 +173,19 @@ static void decode_operand(Decode * D, word_t *dest, word_t *src1, word_t *src2,
     }
     case TYPE_B: {
       src2I(BRANCH_TARGET);
+      D->decInfo.target = BRANCH_TARGET;
         switch (D -> decInfo.funct3){  //use src1 as a flag, src2 = branch_target
-        case beq_funct3:  src1I(rs1Val == rs2Val);  break;
-        case bne_funct3:  src1I(rs1Val ^  rs2Val);  break;
-        case blt_funct3:  src1I((sword_t)rs1Val <  (sword_t)rs2Val);  break;
-        case bge_funct3:  src1I((sword_t)rs1Val >= (sword_t)rs2Val);  break;
-        case bltu_funct3: src1I(rs1Val <  rs2Val);  break;
-        case bgeu_funct3: src1I(rs1Val >= rs2Val);  break;
+        case beq_funct3:  src1I(rs1Val == rs2Val);  D->decInfo.branch_taken = (rs1Val == rs2Val);  break;
+        case bne_funct3:  src1I(rs1Val ^  rs2Val);  D->decInfo.branch_taken = (rs1Val ^  rs2Val);  break;
+        case blt_funct3:  src1I((sword_t)rs1Val <  (sword_t)rs2Val);  D->decInfo.branch_taken = ((sword_t)rs1Val <  (sword_t)rs2Val); break;
+        case bge_funct3:  src1I((sword_t)rs1Val >= (sword_t)rs2Val);  D->decInfo.branch_taken = ((sword_t)rs1Val >= (sword_t)rs2Val); break;
+        case bltu_funct3: src1I(rs1Val <  rs2Val);  D->decInfo.branch_taken = (rs1Val <  rs2Val);   break;
+        case bgeu_funct3: src1I(rs1Val >= rs2Val);  D->decInfo.branch_taken = (rs1Val >= rs2Val);   break;
         }
     }
   }
+  D->decInfo.src1 = *src1;
+  D->decInfo.src2 = *src2;
 }
 
 static int decode_exec(Decode *D) {
@@ -197,14 +194,12 @@ static int decode_exec(Decode *D) {
 
 #define INSTPAT_INST(D) ((D)->inst)
 //a match is found, do what it supposed to do.
-//first prepare for operands, then do the things listed in __VA_ARGS__
-//very complex macro...
 #define INSTPAT_MATCH(D, name, type, ... /* body */ ) { \
   decode_operand(D, &dest, &src1, &src2, concat(TYPE_, type)); \
   __VA_ARGS__ ; \
   IFDEF(CONFIG_SHOW_DECODE_INFORMATION, show_decode(D, src1, src2, dest, TYPE_##type));\
   \
-  IFDEF(CONFIG_FTRACE_ENABLE, bool ret = D -> decInfo.is_jalr && dest == 0;_ftrace(ret, src1, src2, TYPE_##type ));\
+  IFDEF(CONFIG_FTRACE_ENABLE, _ftrace(D));\
 }
 
   //check one by one

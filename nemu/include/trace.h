@@ -36,10 +36,11 @@ void show_itrace();
 #ifdef CONFIG_FTRACE_ENABLE
 
 typedef struct {
-    unsigned depth : 8;
+    unsigned int depth;
     word_t address;
-    bool is_call : 1;
+    bool is_ret : 1;
     char name[16];
+    word_t pc;
 }Ftrace_entry;
 
 typedef struct {
@@ -49,9 +50,26 @@ typedef struct {
 
 Ftrace ftrace;
 
+typedef struct symbol {
+    char * name;
+    word_t offset;
+    word_t size;
+    struct symbol * next;
+}symbol;
+
+/*
+void tranverse(){
+    symbol * t = head;
+    while(t){
+        printf("%lx: %s %lx\n",t->offset, t->name, t->size);
+        t = t -> next;
+    }
+}
+*/
+
 void show_ftrace();
 
-void update_ftrace(bool is_call, word_t addr, const char * name, int d);
+void update_ftrace(bool is_ret, word_t addr, word_t pc, const char * name, int d);
 
 
 #endif
