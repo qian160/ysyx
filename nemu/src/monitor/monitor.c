@@ -35,9 +35,17 @@ typedef struct {
   char * name;
   word_t offset;
   word_t size;
+  symbol * next;
 }symbol;
 
 symbol * head = NULL;
+
+void tranverse(){
+  while(head){
+    printf("%lx: %s %lx\n",head->offset, head->name, head->size);
+    head = head -> next;
+  }
+}
 
 static long load_img() {
   if (img_file == NULL) {
@@ -189,8 +197,15 @@ static void load_elf() {
     while(len --){
       ret = fread(sym, sizeof(Elf64_Sym), 1, fp);
       //printf("%2d: %30s \t %lx \t %lx \t %x\n", i++, sym -> st_name + strtab, sym ->st_value, sym ->st_size, sym -> st_info);
-      if(sym->st_info == 18 && sym -> st_size > 0){
-      printf("%30s @0x%lx, size = 0x%lx\n", sym -> st_name + strtab, sym -> st_value, sym -> st_size);
+      if(sym->st_info == 18){
+        printf("%30s @0x%lx, size = 0x%lx\n", sym -> st_name + strtab, sym -> st_value, sym -> st_size);
+        symbol * t = (symbol *)malloc(sizeof(symbol));
+        assert(t);
+        strcpy(t -> name, sym -> st_name + strtab);
+        t -> offset = sym -> st_value;
+        t -> size = sym -> st_size;
+        t -> next = head;
+        head = t;
       }
       
     }
@@ -198,6 +213,8 @@ static void load_elf() {
 	return ;
 
   }
+  tranverse();
+  while(1);
 
 
   return;
