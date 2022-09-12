@@ -189,7 +189,7 @@ static void load_elf() {
     while(len --){
       ret = fread(sym, sizeof(Elf64_Sym), 1, fp);
       //printf("%2d: %30s \t %lx \t %lx \t %x\n", i++, sym -> st_name + strtab, sym ->st_value, sym ->st_size, sym -> st_info);
-      if(sym->st_info == 18){
+      if(sym->st_info == 18 && sym -> st_size > 0){
       printf("%30s @0x%lx, size = 0x%lx\n", sym -> st_name + strtab, sym -> st_value, sym -> st_size);
       }
       
