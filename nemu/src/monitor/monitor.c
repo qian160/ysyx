@@ -62,7 +62,7 @@ static long load_img() {
   return size;
 }
 
-static void load_elf(const char * file) {
+static void load_elf() {
   /*
 	size_t fread(void *ptr, size_t size, size_t nmemb, FILE *stream);
 
@@ -100,7 +100,7 @@ static void load_elf(const char * file) {
     return;
   else
   {
-    FILE *fp = fopen(file, "r");
+    FILE *fp = fopen(elf_file, "r");
     int ret __attribute__((unused));
     if (NULL == fp)
     {
@@ -218,7 +218,7 @@ static int parse_args(int argc, char *argv[]) {
       case 'p': sscanf(optarg, "%d", &difftest_port); break;
       case 'l': log_file = optarg; break;
       case 'd': diff_so_file = optarg; break;
-      case 'e': printf("case e, optarg = %s\n", optarg);load_elf(optarg);break;
+      case 'e': elf_file = optarg; load_elf();break;
       //return 1 means success, here specifies an img file
       case  1 : img_file = optarg; return 0;
       default:
