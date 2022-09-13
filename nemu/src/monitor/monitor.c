@@ -203,7 +203,7 @@ static void load_elf() {
     }
 	fclose(fp);
   }
-  //tranverse();
+  tranverse();
   printf(ANSI_FMT("Done!\n", ANSI_FG_GREEN));
   return;
 }
