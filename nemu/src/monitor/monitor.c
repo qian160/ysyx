@@ -129,8 +129,6 @@ static void load_elf() {
         Sym_head = s;
       }
     }
-
-    close(fd);
     printf(ANSI_FMT("Done!\n", ANSI_FG_GREEN));
     munmap(elf_file, sb.st_size);
   }
