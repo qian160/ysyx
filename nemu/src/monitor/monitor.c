@@ -15,7 +15,7 @@ void init_device();
 void init_sdb();
 void init_disasm(const char *triple);
 
-extern symbol * Sym_head;
+
 
 static void welcome() {
   Log("Trace: %s", MUXDEF(CONFIG_TRACE, ANSI_FMT("ON", ANSI_FG_GREEN), ANSI_FMT("OFF", ANSI_FG_RED)));
@@ -62,6 +62,8 @@ static long load_img() {
   fclose(fp);
   return size;
 }
+#ifdef CONFIG_FTRACE_ENABLE
+extern symbol * Sym_head;
 
 static void load_elf() {
 
@@ -141,6 +143,8 @@ static void load_elf() {
   }
   return;
 }
+
+#endif
 
 //at boot time.
 static int parse_args(int argc, char *argv[]) {
