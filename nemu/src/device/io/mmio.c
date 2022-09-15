@@ -15,7 +15,7 @@ void add_mmio_map(const char *name, paddr_t addr, void *space, uint32_t len, io_
   assert(nr_map < NR_MAP);
   maps[nr_map] = (IOMap){ .name = name, .low = addr, .high = addr + len - 1,
     .space = space, .callback = callback };
-  Log("\nAdd mmio map '%s' at [" FMT_PADDR ", " FMT_PADDR "]",
+  Log("\nAdd mmio map '%s' at [" FMT_PADDR ", " FMT_PADDR "]\n",
       maps[nr_map].name, maps[nr_map].low, maps[nr_map].high);
 
   nr_map ++;
