@@ -4,6 +4,7 @@
 #include <sys/stat.h>
 #include <fcntl.h>
 #include <sys/mman.h>
+#include <unistd.h>
 #include "../include/trace.h"
 
 void init_rand();
@@ -84,7 +85,7 @@ static void load_elf() {
     Elf64_Shdr * shdr = (Elf64_Shdr *)(elf_file + shoff);
     char * shstrtab = elf_file + (shdr + shstrndx)->sh_offset;
     char * strtab;
-    Elf64_Sym * symtab;
+    Elf64_Sym * symtab = NULL;
     //find the strtab and symtab
     int i = 0;
     bool find1 = false, find2 = false;
@@ -107,7 +108,7 @@ static void load_elf() {
       }
       i++;
     }
-    Elf64_Xword sh_size = shnum * sizeof(Elf64_Shdr);
+    //Elf64_Xword sh_size = shnum * sizeof(Elf64_Shdr);
     printf("\nSymbol Table '.symtab' contains %d entries:\n", symbol_num);
     i = 0;
     printf(" Num: \t Value  \t Size  \t Type  \t Bind  \t Vis  \t Ndx  \t    Name\n");
