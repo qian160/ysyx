@@ -84,7 +84,6 @@ static void execute(uint64_t n) {
   //execuate n steps
   for (;n > 0; n --) {
     exec_once(&D, cpu.pc);
-    Log("\n %s \n", D.logbuf);
     g_nr_guest_inst ++;
     trace_and_difftest(&D, cpu.pc);
     if (nemu_state.state != NEMU_RUNNING) break;
