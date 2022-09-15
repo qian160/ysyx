@@ -36,9 +36,6 @@ static char *log_file = NULL;
 static char *diff_so_file = NULL;
 static char *img_file = NULL;
 static int difftest_port = 1234;
-static char *elf_file = NULL;
-
-
 
 static long load_img() {
   if (img_file == NULL) {
@@ -64,6 +61,7 @@ static long load_img() {
 }
 #ifdef CONFIG_FTRACE_ENABLE
 extern symbol * Sym_head;
+static char *elf_file = NULL;
 
 static void load_elf() {
 
