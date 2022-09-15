@@ -73,11 +73,11 @@ char *itoa(int number, int base)  //10, 16
     arr[i] = '\0';
     return arr;
 }
-
+/*
 int printf(const char *fmt, ...) {
   panic("Not implemented");
 }
-
+*/
 //v: use va_list as argument instead of ... its behavior is same as sprintf
 
 int vsprintf(char *out, const char *fmt, va_list ap) {
@@ -177,7 +177,9 @@ int sprintf(char *out, const char *fmt, ...) {
   int ret = vsprintf(out, fmt, ap);
   va_end(ap);
   return ret;
-  /*
+
+  /* the code below is my implementation,  but it doesn't work in nemu...
+  //strcpy and strcat ?
   *out = '\0';      //reset the buf
   int n = 0;    //number of bytes put into out
   va_list l;

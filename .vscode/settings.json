@@ -2,6 +2,21 @@
     "files.associations": {
         "klib.h": "c",
         "am.h": "c",
-        "klib-macros.h": "c"
+        "klib-macros.h": "c",
+        "common.h": "c",
+        "trace.h": "c",
+        "sdb.h": "c",
+        "macro.h": "c",
+        "utils.h": "c",
+        "cpu.h": "c",
+        "reg.h": "c",
+        "locale.h": "c",
+        "isa-def.h": "c",
+        "debug.h": "c",
+        "elf.h": "c",
+        "errno.h": "c",
+        "errno-base.h": "c",
+        "difftest.h": "c",
+        "difftest-def.h": "c"
     }
 }

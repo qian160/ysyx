@@ -2,9 +2,16 @@
 #include <klib-macros.h>
 #include <stdint.h>
 
-#include<stdio.h>
-
 #if !defined(__ISA_NATIVE__) || defined(__NATIVE_USE_KLIB__)
+
+/*
+        the va_arg(ap, ptr) is a macro, during a afunction call, variable arguments will be pushed
+      onto stack, and this macro sets ap to point at the address above ptr, which is the last non-variable argument
+
+*/
+#ifdef __NATIVE_USE_KLIB__ 
+  extern int printf(const char *s, ...);
+#endif
 
 size_t strlen(const char *s) {
   size_t len = 0;
@@ -32,6 +39,7 @@ char *strcpy(char *dst, const char *src) {
   *dst = '\0';
 
   // the dst is returned by standard `strcpy()`
+  printf("using  klib\n");
   return ptr;
 
 }
