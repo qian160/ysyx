@@ -1,6 +1,10 @@
 #include <isa.h>
 #include <memory/paddr.h>
 #include <elf.h>
+#include <sys/stat.h>
+#include <fcntl.h>
+#include <sys/mman.h>
+#include <unistd.h>
 #include "../include/trace.h"
 
 void init_rand();
@@ -60,136 +64,63 @@ static long load_img() {
 }
 
 static void load_elf() {
-  /*
-	size_t fread(void *ptr, size_t size, size_t nmemb, FILE *stream);
-
-		The function fread() reads nmemb items of data, each size bytes long,
-    from the stream pointed to by stream, storing them  at  the  location given by ptr.
-    seems that nmemb is usually 1
-
-    int fseek(FILE *stream, long offset, int whence);
-
-		The  fseek() function sets the file position indicator for the stream
-    pointed to by stream.  The new position, measured in  bytes,  is  ob‐
-	tained  by  adding  offset bytes to the position specified by whence	
-	
-
-  .strtab vs .shstrtab:
-      strtab holds symbol names, and shstrtab holds section names(while the 'name' field in strtab and symtab is not true name, just an index)
-      To get the symbols, we must find the .symtab and .strtab(where the symtab index is used). 
-    but to find these 2 sections we need .shstrtab(compare the section name)
-
-      steps to load a elf symbol table:
-        1. read out the ELF header and get the offset of the first section's header(shoff)
-        2. let fseek jump to that offset and read out the SCETION HEADER
-        3. allocate enough space to read all the sections
-        4. tranverse the sections, and find the .strtab and .symtab. .shstrtab is also needed which contains section names
-            (note that we can not directly find them without shstrtab. To get a section's name, use its 'sh_name' to index into the shstrtab)
-        5. when finding the 2 sections, fill the strtab and symtab buffer with the values in the section using fseek and fread
-        6. now we get all the bytes in the symtab and strtab, we can progress them freely. To get a symbol name, also use its 'st_name' to index into strtab
-        
-        some notes: 
-          to tranverse a symbol table, the loop number is symbol_table_header.sh_size / sizeof(Elf64_Sym);
-          before tranversing we need to fseek the fp back to the offset where symtab starts
-*/
 
   if(elf_file == NULL)
     return;
   else
   {
-    printf(ANSI_FMT("Loading the ELF file...\n", ANSI_FG_YELLOW));
-    FILE *fp = fopen(elf_file, "r");
-    int ret __attribute__((unused));
-    if (NULL == fp)
-    {
-      printf("fail to open the file");
-      exit(0);
+    int fd = open(elf_file, O_RDONLY);
+    struct stat sb;
+    if(fstat(fd, &sb) == -1){
+      printf("fstat error\n");
     }
+    char * elf_file = mmap(NULL, sb.st_size, PROT_READ, MAP_SHARED, fd, 0);
+    close(fd);
+    Elf64_Ehdr *elf_header = (Elf64_Ehdr *)elf_file;
 
-    Elf64_Ehdr elf_head;
-    //get the ELF head, which contains offset, numbers and size of some special sections
-    if(fread(&elf_head, sizeof(Elf64_Ehdr), 1, fp) == 0)
-    {
-      printf("fail to read head\n");
-      exit(0);
-    }
+    Elf64_Half shnum = elf_header -> e_shnum;
+    Elf64_Half shstrndx = elf_header -> e_shstrndx;
+    Elf64_Half shoff = elf_header -> e_shoff;
 
-    //check
-    if (elf_head.e_ident[0] != 0x7F ||
-      elf_head.e_ident[1] != 'E' ||
-      elf_head.e_ident[2] != 'L' ||
-      elf_head.e_ident[3] != 'F')
-    {
-      printf("Not a ELF file\n");
-      exit(0);
-    }
-    int shnum = elf_head.e_shnum;		//the number of sections, used to control loop time and allocate space
-    //allocate space for all the sections. size = #sections * sizeof(each section)
-    Elf64_Shdr *shdr = (Elf64_Shdr*)malloc(sizeof(Elf64_Shdr) * shnum);
-    if (NULL == shdr)
-    {
-      printf("shdr malloc failed\n");
-      exit(0);
-    }
-    //adjust fp to the section header, prepare for reading
-    if(fseek(fp, elf_head.e_shoff, SEEK_SET) != 0)
-    {
-      printf("\nfaile to fseek\n");
-      exit(0);
-    }
-    //reading out the sections to the buffer
-    if(fread(shdr, sizeof(Elf64_Shdr) * shnum, 1, fp) == 0)
-    {
-      printf("\nfail to read section\n");
-      exit(0);
-    }
-    //find the .shstrtab
-    fseek(fp, shdr[elf_head.e_shstrndx].sh_offset, SEEK_SET);
-    char shstrtab[shdr[elf_head.e_shstrndx].sh_size];		//.shstrtab, which holds the section names. But we want symbol names, so we use it to find the section .strtab
-    if(fread(shstrtab, shdr[elf_head.e_shstrndx].sh_size, 1, fp) == 0)
-    {
-      printf("\nfaile to read\n");
-    }
+    Elf64_Shdr * shdr = (Elf64_Shdr *)(elf_file + shoff);
+    char * shstrtab = elf_file + (shdr + shstrndx)->sh_offset;
     char * strtab = NULL;
-    int len = 0;
-
-    //find the wanted section names(symtab and) in shstrtab
-    char * section_name = shstrtab;
-    int64_t symtab_offset = 0;		//used to reset the file pointer before reading symtab
-    //find the strtab
+    Elf64_Sym * symtab = NULL;
+    //find the strtab and symtab
+    int i = 0;
     bool find1 = false, find2 = false;
-    for(int i = 0; i < shnum; i++){
-      section_name = shstrtab + shdr[i].sh_name;
-      unsigned long offset = shdr[i].sh_offset;
-      if(!find1 && strcmp(".strtab", section_name) == 0){
-        //printf("find the .strtab, offset at %lx\n", offset);
-        //read out the information
-        fseek(fp, offset, SEEK_SET);
-        size_t size = shdr[i].sh_size;
-        strtab = (char*)malloc(size);
-        ret = fread(strtab, size, 1, fp);
+    Elf64_Word symbol_num;
+    Elf64_Shdr *this;
+    for(this = shdr; i < shnum; this++){
+      if(find1 && find2)break;
+      Elf64_Off offset = this->sh_offset;
+      char * name = shstrtab + this-> sh_name;
+      if(!find1 && this->sh_type == SHT_SYMTAB){
+        symtab = (Elf64_Sym *)(elf_file + offset);
+        //printf("find .symtab at 0x%lx\n", offset);
+        symbol_num = this -> sh_size / sizeof(Elf64_Sym);
         find1 = true;
       }
-      else if(!find2 && shdr[i].sh_type == SHT_SYMTAB){
-        //printf("find the .symtab, offset at %lx\n", offset);
-        len = shdr[i].sh_size / sizeof(Elf64_Sym);
-        symtab_offset = offset;
+      else if(!find2 && strcmp(".strtab", name) == 0){
+        strtab = elf_file + offset;
         find2 = true;
+        //printf("find .strtab at 0x%lx\n", offset);
       }
-      if(find1 && find2)break;
+      i++;
     }
-
-    putchar('\n');
-    fseek(fp, symtab_offset, SEEK_SET);
-    int i __u__ = 0;
-    Elf64_Sym * sym = (Elf64_Sym *)malloc(sizeof(Elf64_Sym));
-
-    while(len --){
-      ret = fread(sym, sizeof(Elf64_Sym), 1, fp);
-      //printf("%2d: %30s \t %lx \t %lx \t %x\n", i++, sym -> st_name + strtab, sym ->st_value, sym ->st_size, sym -> st_info);
-      if(sym->st_info == 18){   //functions
-        printf("%30s @0x%lx, size = 0x%lx\n", sym -> st_name + strtab, sym -> st_value, sym -> st_size);
-        symbol * s = (symbol *)malloc(sizeof(symbol));
+    //Elf64_Xword sh_size = shnum * sizeof(Elf64_Shdr);
+    printf("\nSymbol Table '.symtab' contains %d entries:\n", symbol_num);
+    i = 0;
+    printf(" Num: \t Value  \t Size  \t Type  \t Bind  \t Vis  \t Ndx  \t    Name\n");
+    for(Elf64_Sym * sym = symtab; i < symbol_num; sym++){
+      unsigned char info = sym -> st_info;
+      unsigned char type = ELF64_ST_TYPE(info);
+      unsigned char bind = ELF64_ST_BIND(info);
+      unsigned char vis  = ELF64_ST_VISIBILITY(info);
+      char * name = strtab + sym->st_name;
+      printf("%2d: %8lx %8ld %8d %8d %8d %8d %16s\n", i++, sym->st_value, sym->st_size, type, bind, vis, sym->st_shndx, name);
+      if(type == STT_FUNC){
+        symbol *s = (symbol *)malloc(sizeof(symbol));
         assert(s);
         s -> name = (char *)malloc(strlen(sym -> st_name + strtab));
         strcpy(s -> name, sym -> st_name + strtab);
@@ -198,12 +129,10 @@ static void load_elf() {
         s -> next = Sym_head;
         Sym_head = s;
       }
-      
     }
-	fclose(fp);
+    printf(ANSI_FMT("Done!\n", ANSI_FG_GREEN));
+    munmap(elf_file, sb.st_size);
   }
-  //tranverse();
-  printf(ANSI_FMT("Done!\n", ANSI_FG_GREEN));
   return;
 }
 
