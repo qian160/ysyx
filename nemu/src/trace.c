@@ -124,11 +124,7 @@ void _ftrace(Decode * D){
     Log("\nname = %s\n", name);
     word_t addr = D->decInfo.target;
     switch(D->decInfo.type){
-        case(TYPE_B):
-        //if(D->decInfo.branch_taken) 
-          //update_ftrace(1, addr, pc, name, depth);
-        break;
-        case(TYPE_I):   //jalr, and other normal insts
+        case(TYPE_I):   //jalr
             if(D->decInfo.is_jalr)
                 update_ftrace(D->decInfo.is_ret, addr, D->pc, name, depth);
             break;

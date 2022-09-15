@@ -9,6 +9,7 @@
       onto stack, and this macro sets ap to point at the address above ptr, which is the last non-variable argument
 
 */
+extern int printf(char *s, ...);
 
 size_t strlen(const char *s) {
   size_t len = 0;
@@ -36,6 +37,7 @@ char *strcpy(char *dst, const char *src) {
   *dst = '\0';
 
   // the dst is returned by standard `strcpy()`
+  printf("using  klib\n");
   return ptr;
 
 }

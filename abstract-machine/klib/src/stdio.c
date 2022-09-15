@@ -73,11 +73,11 @@ char *itoa(int number, int base)  //10, 16
     arr[i] = '\0';
     return arr;
 }
-
+/*
 int printf(const char *fmt, ...) {
   panic("Not implemented");
 }
-
+*/
 //v: use va_list as argument instead of ... its behavior is same as sprintf
 
 int vsprintf(char *out, const char *fmt, va_list ap) {
