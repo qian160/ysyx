@@ -75,7 +75,8 @@ char *itoa(int number, int base)  //10, 16
 }
 
 int printf(const char *fmt, ...) {
-  panic("Not implemented");
+  return 0;
+  //panic("Not implemented");
 }
 
 //v: use va_list as argument instead of ... its behavior is same as sprintf
