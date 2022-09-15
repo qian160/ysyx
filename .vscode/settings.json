@@ -13,6 +13,8 @@
         "locale.h": "c",
         "isa-def.h": "c",
         "debug.h": "c",
-        "elf.h": "c"
+        "elf.h": "c",
+        "errno.h": "c",
+        "errno-base.h": "c"
     }
 }
