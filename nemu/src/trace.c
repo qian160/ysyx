@@ -4,6 +4,9 @@
 #include "isa/riscv64/local-include/reg.h"
 #include "../include/cpu/decode.h"
 
+typedef uint64_t word_t;
+typedef int64_t sword_t;
+
 #ifdef CONFIG_ITRACE_ENABLE
 
 void show_itrace()
