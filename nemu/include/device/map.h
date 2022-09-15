@@ -12,7 +12,7 @@ typedef struct {
   paddr_t low;
   paddr_t high;
   void *space;
-  io_callback_t callback;
+  io_callback_t callback;   //may be triggered during an access. Mainly modify its io space
 } IOMap;
 
 static inline bool map_inside(IOMap *map, paddr_t addr) {
