@@ -15,6 +15,8 @@
         "debug.h": "c",
         "elf.h": "c",
         "errno.h": "c",
-        "errno-base.h": "c"
+        "errno-base.h": "c",
+        "difftest.h": "c",
+        "difftest-def.h": "c"
     }
 }
