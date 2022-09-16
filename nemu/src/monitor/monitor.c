@@ -73,15 +73,16 @@ static void load_elf() {
   }
   else
   {
-    printf("attemp to open %s...\n", elf_file);
     int fd = open(elf_file, O_RDONLY);
     if(fd < 0){
       printf("failed to open %s\n", elf_file);
+      return;
     }
     printf("opened successfully\n");
     struct stat sb;
     if(fstat(fd, &sb) == -1){
       printf("fstat error\n");
+      return;
     }
     printf("size = %ld\n", sb.st_size);
     char * elf_file = mmap(NULL, sb.st_size, PROT_READ, MAP_SHARED, fd, 0);
@@ -101,22 +102,9 @@ static void load_elf() {
     Elf64_Half shstrndx = elf_header -> e_shstrndx;
     Elf64_Off shoff = elf_header -> e_shoff;
 
-    printf("shnum = %d\n", shnum);
-    printf("shstrndx = %d\n", shstrndx);
-    printf("shoff = %ld\n", shoff);
-
     Elf64_Shdr * shdr = (Elf64_Shdr *)(elf_file + shoff);
-    Elf64_Off shstrtab_off = shdr[shstrndx].sh_offset;
-
-    printf("\n\nheaders offset:\n");
-    for(int k = 0; k < shnum; k++){
-      printf("0x%lx\n", shdr[k].sh_offset);
-    }
-    printf("\n\n");
 
     char * shstrtab = elf_file + (shdr + shstrndx)->sh_offset;
-    printf("off: 0x%lx\n", shstrtab_off);
-    printf("\n%p\n%p\n%p\n", elf_file, shdr, shstrtab);
     char * strtab = NULL;
     Elf64_Sym * symtab = NULL;
     //find the strtab and symtab
