@@ -119,11 +119,8 @@ enum {
 };
 void _ftrace(Decode * D){
     //is_ret need to be improved, jal could also ret
-    Log("\ntarget = 0x%lx\n", D->decInfo.target);
     char * name = getFuncName(D->decInfo.target);
-    Log("%s\n", name);
     if(!name) return;   //not a function call or ret
-    Log("\nname = %s\n", name);
     word_t addr = D->decInfo.target;
     switch(D->decInfo.type){
         case(TYPE_I):   //jalr
