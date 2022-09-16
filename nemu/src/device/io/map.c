@@ -5,10 +5,10 @@
 
 #define IO_SPACE_MAX (2 * 1024 * 1024)
 
-static uint8_t *io_space = NULL;
-static uint8_t *p_space = NULL;   //the allocated io space, a big array
+static uint8_t *io_space = NULL;  //the whole space, points to the start
+static uint8_t *p_space = NULL;   //point to unused io_space, used in allocation
 
-//allocate the io space for a request
+//some device is requesting for a memory space
 uint8_t* new_space(int size) {
   uint8_t *p = p_space;
   // page aligned;
@@ -17,7 +17,7 @@ uint8_t* new_space(int size) {
   assert(p_space - io_space < IO_SPACE_MAX);
   return p;
 }
-
+//compare addr with map->low and map->high
 static void check_bound(IOMap *map, paddr_t addr) {
   if (map == NULL) {
     Assert(map != NULL, "address (" FMT_PADDR ") is out of bound at pc = " FMT_WORD, addr, cpu.pc);
@@ -32,6 +32,7 @@ static void invoke_callback(io_callback_t c, paddr_t offset, int len, bool is_wr
   if (c != NULL) { c(offset, len, is_write); }
 }
 
+//allocate space for mmio use
 void init_map() {
   io_space = malloc(IO_SPACE_MAX);
   assert(io_space);

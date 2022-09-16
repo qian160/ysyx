@@ -11,7 +11,7 @@ typedef struct {
   // we treat ioaddr_t as paddr_t here
   paddr_t low;
   paddr_t high;
-  void *space;
+  void *space;              //a pointer between io_space and its end
   io_callback_t callback;   //may be triggered during an access. Mainly modify its io space
 } IOMap;
 
@@ -22,7 +22,9 @@ static inline bool map_inside(IOMap *map, paddr_t addr) {
 static inline int find_mapid_by_addr(IOMap *maps, int size, paddr_t addr) {
   int i;
   for (i = 0; i < size; i ++) {
-    if (map_inside(maps + i, addr)) {
+    if (map_inside(maps + i, addr)) { // &maps[i]
+      //difftest can't catch up with devices, so when a inst is going to update 
+      //a device, let ret_t skip that difftest and just use nemu's registers afterwords
       difftest_skip_ref();
       return i;
     }

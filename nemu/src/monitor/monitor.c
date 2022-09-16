@@ -59,23 +59,37 @@ static long load_img() {
   fclose(fp);
   return size;
 }
+
 #ifdef CONFIG_FTRACE_ENABLE
+
 extern symbol * Sym_head;
 static char *elf_file = NULL;
 
 static void load_elf() {
 
-  if(elf_file == NULL)
+  if(elf_file == NULL){
+    printf("no elf file\n");
     return;
+  }
   else
   {
     int fd = open(elf_file, O_RDONLY);
+    if(fd < 0){
+      printf("failed to open %s\n", elf_file);
+      return;
+    }
+    printf("opened successfully\n");
     struct stat sb;
     if(fstat(fd, &sb) == -1){
       printf("fstat error\n");
+      return;
     }
+    printf("size = %ld\n", sb.st_size);
     char * elf_file = mmap(NULL, sb.st_size, PROT_READ, MAP_SHARED, fd, 0);
-    
+    if(!elf_file){
+      printf("mmap failed\n");
+      return ;
+    }
     close(fd);
     Elf64_Ehdr *elf_header = (Elf64_Ehdr *)elf_file;
     unsigned char *id = elf_header->e_ident;
@@ -86,9 +100,10 @@ static void load_elf() {
     }
     Elf64_Half shnum = elf_header -> e_shnum;
     Elf64_Half shstrndx = elf_header -> e_shstrndx;
-    Elf64_Half shoff = elf_header -> e_shoff;
+    Elf64_Off shoff = elf_header -> e_shoff;
 
     Elf64_Shdr * shdr = (Elf64_Shdr *)(elf_file + shoff);
+
     char * shstrtab = elf_file + (shdr + shstrndx)->sh_offset;
     char * strtab = NULL;
     Elf64_Sym * symtab = NULL;
@@ -117,14 +132,14 @@ static void load_elf() {
     //Elf64_Xword sh_size = shnum * sizeof(Elf64_Shdr);
     printf("\nSymbol Table '.symtab' contains %d entries:\n", symbol_num);
     i = 0;
-    printf(" Num: \t Value  \t Size  \t Type  \t Bind  \t Vis  \t Ndx  \t    Name\n");
+    printf(" Num: \t Value \t Size  \t Type  \t Bind  \t Vis  \t Ndx  \t    Name\n");
     for(Elf64_Sym * sym = symtab; i < symbol_num; sym++){
       unsigned char info = sym -> st_info;
       unsigned char type = ELF64_ST_TYPE(info);
       unsigned char bind = ELF64_ST_BIND(info);
       unsigned char vis  = ELF64_ST_VISIBILITY(info);
       char * name = strtab + sym->st_name;
-      printf("%2d: %8lx %8ld %8d %8d %8d %8d %16s\n", i++, sym->st_value, sym->st_size, type, bind, vis, sym->st_shndx, name);
+      printf("%2d: %10lx %8ld %8d %8d %8d %8d %16s\n", i++, sym->st_value, sym->st_size, type, bind, vis, sym->st_shndx, name);
       if(type == STT_FUNC){
         symbol *s = (symbol *)malloc(sizeof(symbol));
         assert(s);
@@ -165,7 +180,7 @@ static int parse_args(int argc, char *argv[]) {
       case 'd': diff_so_file = optarg; break;
       IFDEF(CONFIG_FTRACE_ENABLE, case 'e': elf_file = optarg; load_elf();break;);
       //return 1 means success, here specifies an img file
-      case  1 : img_file = optarg; return 0;
+      case  1 : img_file = optarg; break;
       default:
         printf("unknown opt %s\n\n", optarg);
         printf("Usage: %s [OPTION...] IMAGE [args]\n\n", argv[0]);
