@@ -5,8 +5,8 @@
 
 #define IO_SPACE_MAX (2 * 1024 * 1024)
 
-static uint8_t *io_space = NULL;
-static uint8_t *p_space = NULL;   //the allocated io space, a big array
+static uint8_t *io_space = NULL;  //the whole space, points to the start
+static uint8_t *p_space = NULL;   //point to unused io_space, used in allocation
 
 //allocate the io space for a request
 uint8_t* new_space(int size) {
