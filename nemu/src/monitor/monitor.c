@@ -108,9 +108,11 @@ static void load_elf() {
     Elf64_Shdr * shdr = (Elf64_Shdr *)(elf_file + shoff);
     Elf64_Off shstrtab_off = shdr[shstrndx].sh_offset;
 
+    printf("\n\nheaders offset:\n");
     for(int k = 0; k < shnum; k++){
       printf("0x%lx\n", shdr[k].sh_offset);
     }
+    printf("\n\n");
 
     char * shstrtab = elf_file + (shdr + shstrndx)->sh_offset;
     printf("off: 0x%lx\n", shstrtab_off);
