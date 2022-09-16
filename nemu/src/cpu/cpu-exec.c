@@ -31,7 +31,7 @@ static void trace_and_difftest(Decode *_this, vaddr_t dnpc) {
     iringbuf.index = (iringbuf.index + 1) % CONFIG_ITRACE_SIZE;
   )
   //if (g_print_step) { IFDEF(CONFIG_ITRACE, puts(_this->logbuf)); }
-
+  Log("\n pc = 0x%lx, \t dnpc = 0x%lx\n", _this-> pc, _this->dnpc);
   IFDEF(CONFIG_DIFFTEST, difftest_step(_this->pc, dnpc));
 
 #ifdef CONFIG_WP_ENABLE
