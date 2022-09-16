@@ -157,7 +157,7 @@ static void decode_operand(Decode * D, word_t *dest, word_t *src1, word_t *src2,
           src1I(pc_Plus4);    src2I(JALR_TARGET);  D->decInfo.target = JALR_TARGET;   D->decInfo.is_ret = (rd == 0 && rs1 == 1);  
       }
       else{
-          /*src1R(rs1);         src2I(immI(inst));*/  break;
+          src1R(rs1);         src2I(immI(inst));  break;
       } 
     }
     case TYPE_U: {
