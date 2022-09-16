@@ -8,7 +8,7 @@
 extern void update_mringbuf(bool isLoad, word_t addr, word_t data, int rd);
 extern void update_ftrace(bool is_ret, word_t addr, word_t pc, const char * name, int depth);
 extern char * getFuncName(word_t addr);
-extern int depth;
+extern int depth; //ftrace
 enum {
   TYPE_I, TYPE_U, TYPE_S, TYPE_J, TYPE_R, TYPE_B, TYPE_SYS,
   TYPE_N, // none
