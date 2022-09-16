@@ -11,7 +11,7 @@ typedef struct {
   // we treat ioaddr_t as paddr_t here
   paddr_t low;
   paddr_t high;
-  void *space;
+  void *space;              //a pointer between io_space and its end
   io_callback_t callback;   //may be triggered during an access. Mainly modify its io space
 } IOMap;
 
