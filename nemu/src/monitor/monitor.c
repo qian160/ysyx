@@ -165,7 +165,8 @@ static int parse_args(int argc, char *argv[]) {
       case 'd': diff_so_file = optarg; break;
       IFDEF(CONFIG_FTRACE_ENABLE, case 'e': elf_file = optarg; load_elf();break;);
       //return 1 means success, here specifies an img file
-      case  1 : img_file = optarg; return 0;
+      case  1 : img_file = optarg; break;
+      case 'd': diff_so_file = optarg; break;
       default:
         printf("unknown opt %s\n\n", optarg);
         printf("Usage: %s [OPTION...] IMAGE [args]\n\n", argv[0]);
