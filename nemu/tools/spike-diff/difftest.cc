@@ -55,7 +55,6 @@ void sim_t::diff_set_regs(void* diff_context) {
     state->XPR.write(i, (sword_t)ctx->gpr[i]);
   }
   state->pc = ctx->pc;
-  printf("pc = 0x%lx\n", ctx->pc);
 }
 
 void sim_t::diff_memcpy(reg_t dest, void* src, size_t n) {
@@ -76,6 +75,7 @@ void difftest_memcpy(paddr_t addr, void *buf, size_t n, bool direction) {
 }
 
 void difftest_regcpy(void* dut, bool direction) {
+  printf("1\n\n");
   if (direction == DIFFTEST_TO_REF) {
     s->diff_set_regs(dut);
   } else {
