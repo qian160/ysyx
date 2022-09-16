@@ -1,6 +1,5 @@
 #ifndef __AMDEV_H__
 #define __AMDEV_H__
-
 // **MAY SUBJECT TO CHANGE IN THE FUTURE**
 
 #define AM_DEVREG(id, reg, perm, ...) \
