@@ -67,7 +67,7 @@ void update_mringbuf(bool isLoad, word_t addr, word_t data, int rd){
 }
 
 #endif
-
+//to use ftrace, you should also pass an argument which indicates the elf file to nemu
 #ifdef CONFIG_FTRACE_ENABLE
 
 symbol * Sym_head = NULL;

@@ -9,6 +9,9 @@ bool isa_difftest_checkregs(CPU_state *ref_r, vaddr_t pc) {
   }
   //printf("\n\ncpu.pc: 0x%lx \t ref.pc: 0x%lx\n", cpu.pc, ref_r->pc);
   if((cpu.pc  ^ ref_r -> pc) && ref_r->pc != 0)  return false;
+  //ref_r -> pc will sometimes become 0, which is wierd
+  ref_difftest_regcpy(&cpu, DIFFTEST_TO_REF);
+  printf("\n\ncpu.pc: 0x%lx \t ref.pc: 0x%lx\n", cpu.pc, ref_r->pc);
   return true;
 }
 
