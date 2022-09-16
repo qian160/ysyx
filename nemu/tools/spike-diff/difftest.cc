@@ -38,17 +38,7 @@ void sim_t::diff_init(int port) {
 }
 
 void sim_t::diff_step(uint64_t n) {
-  for(int i = 0; i < 32; i++){
-    printf("0x%lx\n", state->XPR[i]);
-  }
-  printf("pc = 0x%lx\n\n", state->pc);
-  
-  step(n);
-
-    for(int i = 0; i < 32; i++){
-    printf("0x%lx\n", state->XPR[i]);
-  }
-  printf("pc = 0x%lx\n\n", state->pc);
+  step(n);    //this will sometimes set pc = 0?
 }
 
 void sim_t::diff_get_regs(void* diff_context) {
