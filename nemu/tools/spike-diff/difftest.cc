@@ -56,7 +56,7 @@ void sim_t::diff_set_regs(void* diff_context) {
     state->XPR.write(i, (sword_t)ctx->gpr[i]);
   }
   state->pc = ctx->pc;
-//  printf("%s %s %d \n pc = 0x%lx\n", __FILE__, __func__, __LINE__, state->pc);
+  printf("%s %s %d \n pc = 0x%lx\n", __FILE__, __func__, __LINE__, state->pc);
 
 }
 

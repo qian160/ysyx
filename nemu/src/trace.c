@@ -73,7 +73,7 @@ void update_mringbuf(bool isLoad, word_t addr, word_t data, int rd){
 symbol * Sym_head = NULL;
 
 void show_ftrace(){
-    printf(ANSI_FMT("F - Trace:\n", ANSI_FG_YELLOW));
+    printf(ANSI_FMT("F - Trace:(if empty, an elf-file argument may not be given)\n", ANSI_FG_YELLOW));
     for(int i = 0; i < ftrace.cnt ; i++)
     {
         Ftrace_entry f = ftrace.trace[i];
