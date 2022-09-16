@@ -114,6 +114,7 @@ static void load_elf() {
       if(find1 && find2)break;
       Elf64_Off offset = this->sh_offset;
       char * name = shstrtab + this-> sh_name;
+      printf("%2d: %s\n", name);
       if(!find1 && this->sh_type == SHT_SYMTAB){
         symtab = (Elf64_Sym *)(elf_file + offset);
         //printf("find .symtab at 0x%lx\n", offset);
@@ -127,7 +128,6 @@ static void load_elf() {
       }
       i++;
     }
-    printf("1\n");
     //Elf64_Xword sh_size = shnum * sizeof(Elf64_Shdr);
     printf("\nSymbol Table '.symtab' contains %d entries:\n", symbol_num);
     i = 0;
