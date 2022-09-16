@@ -67,7 +67,7 @@ void update_mringbuf(bool isLoad, word_t addr, word_t data, int rd){
 }
 
 #endif
-
+//to use ftrace, you should also pass an argument which indicates the elf file to nemu
 #ifdef CONFIG_FTRACE_ENABLE
 
 symbol * Sym_head = NULL;
@@ -119,7 +119,9 @@ enum {
 };
 void _ftrace(Decode * D){
     //is_ret need to be improved, jal could also ret
+    Log("\ntarget = 0x%lx\n", D->decInfo.target);
     char * name = getFuncName(D->decInfo.target);
+    Log("%s\n", name);
     if(!name) return;   //not a function call or ret
     Log("\nname = %s\n", name);
     word_t addr = D->decInfo.target;

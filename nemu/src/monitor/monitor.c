@@ -15,7 +15,7 @@ void init_device();
 void init_sdb();
 void init_disasm(const char *triple);
 
-extern symbol * Sym_head;
+
 
 static void welcome() {
   Log("Trace: %s", MUXDEF(CONFIG_TRACE, ANSI_FMT("ON", ANSI_FG_GREEN), ANSI_FMT("OFF", ANSI_FG_RED)));
@@ -36,14 +36,11 @@ static char *log_file = NULL;
 static char *diff_so_file = NULL;
 static char *img_file = NULL;
 static int difftest_port = 1234;
-static char *elf_file = NULL;
-
-
 
 static long load_img() {
   if (img_file == NULL) {
     Log("No image is given. Use the default build-in image.");
-    return 4096; // built-in image size
+    return 4096 << 1; // built-in image size
   }
 
   FILE *fp = fopen(img_file, "rb");
@@ -62,6 +59,9 @@ static long load_img() {
   fclose(fp);
   return size;
 }
+#ifdef CONFIG_FTRACE_ENABLE
+extern symbol * Sym_head;
+static char *elf_file = NULL;
 
 static void load_elf() {
 
@@ -75,9 +75,15 @@ static void load_elf() {
       printf("fstat error\n");
     }
     char * elf_file = mmap(NULL, sb.st_size, PROT_READ, MAP_SHARED, fd, 0);
+    
     close(fd);
     Elf64_Ehdr *elf_header = (Elf64_Ehdr *)elf_file;
-
+    unsigned char *id = elf_header->e_ident;
+    if(id[0] != 0x7f || id[1] != 'E' || id[2] != 'L' || id[3] != 'F'){
+      printf("bad elf file\n");
+      munmap(elf_file,sb.st_size);
+      exit(0);
+    }
     Elf64_Half shnum = elf_header -> e_shnum;
     Elf64_Half shstrndx = elf_header -> e_shstrndx;
     Elf64_Half shoff = elf_header -> e_shoff;
@@ -136,6 +142,8 @@ static void load_elf() {
   return;
 }
 
+#endif
+
 //at boot time.
 static int parse_args(int argc, char *argv[]) {
   const struct option table[] = {     //name, have_arg, flag, value. if flag == NULL, the function will return value. Otherwise the value will be written to the variable pointed by flag 
@@ -155,7 +163,7 @@ static int parse_args(int argc, char *argv[]) {
       case 'p': sscanf(optarg, "%d", &difftest_port); break;
       case 'l': log_file = optarg; break;
       case 'd': diff_so_file = optarg; break;
-      case 'e': elf_file = optarg; load_elf();break;
+      IFDEF(CONFIG_FTRACE_ENABLE, case 'e': elf_file = optarg; load_elf();break;);
       //return 1 means success, here specifies an img file
       case  1 : img_file = optarg; return 0;
       default:

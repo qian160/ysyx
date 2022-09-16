@@ -38,7 +38,7 @@ void sim_t::diff_init(int port) {
 }
 
 void sim_t::diff_step(uint64_t n) {
-  step(n);
+  step(n);    //this will sometimes set pc = 0?
 }
 
 void sim_t::diff_get_regs(void* diff_context) {

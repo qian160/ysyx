@@ -8,7 +8,7 @@
 extern void update_mringbuf(bool isLoad, word_t addr, word_t data, int rd);
 extern void update_ftrace(bool is_ret, word_t addr, word_t pc, const char * name, int depth);
 extern char * getFuncName(word_t addr);
-extern int depth;
+extern int depth; //ftrace
 enum {
   TYPE_I, TYPE_U, TYPE_S, TYPE_J, TYPE_R, TYPE_B, TYPE_SYS,
   TYPE_N, // none
@@ -136,7 +136,7 @@ static void decode_operand(Decode * D, word_t *dest, word_t *src1, word_t *src2,
   word_t rs2Val = R(rs2);
   word_t pc = D -> pc;
   word_t pc_Plus4 = pc + 4;
-  word_t JAL_TARGET     = (int64_t)immJ(inst) + (int64_t)pc;
+  word_t JAL_TARGET     = (word_t)immJ(inst) + (word_t)pc;
   word_t JALR_TARGET    = immI(inst) + rs1Val;
   //Log("\nimmJ = 0x%lx\nimmI = 0x%lx\nimmB = 0x%lx\nimmS = 0x%lx\n", immJ(inst), immI(inst), immB(inst), immS(inst));
   word_t BRANCH_TARGET  = immB(inst) + pc;
@@ -154,9 +154,8 @@ static void decode_operand(Decode * D, word_t *dest, word_t *src1, word_t *src2,
     case TYPE_J: src1I(pc_Plus4);     src2I(JAL_TARGET);  D->decInfo.target = JAL_TARGET; D->decInfo.is_ret = (rd == 0); break;
     case TYPE_I: {
       if(D -> decInfo.is_jalr){ //jalr is I type, which is special
-      Log("\nis jalr. rd = %d, rs1 = %d\n", rd, rs1);
-          src1I(pc_Plus4);    src2I(JALR_TARGET);  D->decInfo.target = JALR_TARGET;   D->decInfo.is_ret = (rd == 0 && rs1 == 1);  
-          Log("\nisret: %d\n", D->decInfo.is_ret);  break;
+          Log("is jalr\n");
+          src1I(pc_Plus4);    src2I(JALR_TARGET);  D->decInfo.target = JALR_TARGET;   D->decInfo.is_ret = (rd == 0 && rs1 == 1);  break;
       }
       else{
           src1R(rs1);         src2I(immI(inst));  break;
