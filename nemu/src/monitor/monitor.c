@@ -99,11 +99,11 @@ static void load_elf() {
     }
     Elf64_Half shnum = elf_header -> e_shnum;
     Elf64_Half shstrndx = elf_header -> e_shstrndx;
-    Elf64_Half shoff = elf_header -> e_shoff;
+    Elf64_Off shoff = elf_header -> e_shoff;
 
     printf("shnum = %d\n", shnum);
     printf("shstrndx = %d\n", shstrndx);
-    printf("shoff = %d\n", shoff);
+    printf("shoff = %ld\n", shoff);
 
     Elf64_Shdr * shdr = (Elf64_Shdr *)(elf_file + shoff);
     Elf64_Off shstrtab_off = shdr[shstrndx].sh_offset;
