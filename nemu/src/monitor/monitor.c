@@ -61,6 +61,7 @@ static long load_img() {
 }
 
 #ifdef CONFIG_FTRACE_ENABLE
+
 extern symbol * Sym_head;
 static char *elf_file = NULL;
 
@@ -72,7 +73,11 @@ static void load_elf() {
   }
   else
   {
+    printf("attemp to open %s...\n", elf_file);
     int fd = open(elf_file, O_RDONLY);
+    if(fd < 0){
+      printf("failed to open %s\n", elf_file);
+    }
     struct stat sb;
     if(fstat(fd, &sb) == -1){
       printf("fstat error\n");
