@@ -116,7 +116,6 @@ static void load_elf() {
       if(find1 && find2)break;
       Elf64_Off offset = this->sh_offset;
       char * name = shstrtab + this-> sh_name;
-      printf("%2d: %s\n", i, name);
       if(!find1 && this->sh_type == SHT_SYMTAB){
         symtab = (Elf64_Sym *)(elf_file + offset);
         //printf("find .symtab at 0x%lx\n", offset);
@@ -133,14 +132,14 @@ static void load_elf() {
     //Elf64_Xword sh_size = shnum * sizeof(Elf64_Shdr);
     printf("\nSymbol Table '.symtab' contains %d entries:\n", symbol_num);
     i = 0;
-    printf(" Num: \t Value  \t Size  \t Type  \t Bind  \t Vis  \t Ndx  \t    Name\n");
+    printf(" Num: \t Value \t Size  \t Type  \t Bind  \t Vis  \t Ndx  \t    Name\n");
     for(Elf64_Sym * sym = symtab; i < symbol_num; sym++){
       unsigned char info = sym -> st_info;
       unsigned char type = ELF64_ST_TYPE(info);
       unsigned char bind = ELF64_ST_BIND(info);
       unsigned char vis  = ELF64_ST_VISIBILITY(info);
       char * name = strtab + sym->st_name;
-      printf("%2d: %8lx %8ld %8d %8d %8d %8d %16s\n", i++, sym->st_value, sym->st_size, type, bind, vis, sym->st_shndx, name);
+      printf("%2d: %10lx %8ld %8d %8d %8d %8d %16s\n", i++, sym->st_value, sym->st_size, type, bind, vis, sym->st_shndx, name);
       if(type == STT_FUNC){
         symbol *s = (symbol *)malloc(sizeof(symbol));
         assert(s);
