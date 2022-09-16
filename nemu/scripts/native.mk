@@ -16,9 +16,10 @@ override ARGS += $(ARGS_DIFF)
 IMG ?=
 NEMU_EXEC := $(BINARY) $(ARGS) $(IMG)
 #automatically start the program in batch mode
-ifdef CONFIG_TARGET_AM
-	NEMU_EXEC += -b
-endif
+
+#ifdef CONFIG_TARGET_AM
+#	NEMU_EXEC += -b
+#endif
 
 run-env: $(BINARY) $(DIFF_REF_SO)
 
