@@ -55,6 +55,7 @@ void sim_t::diff_set_regs(void* diff_context) {
     state->XPR.write(i, (sword_t)ctx->gpr[i]);
   }
   state->pc = ctx->pc;
+  printf("pc = 0x%;x0, ctx->pc");
 }
 
 void sim_t::diff_memcpy(reg_t dest, void* src, size_t n) {
