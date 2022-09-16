@@ -114,7 +114,7 @@ static void load_elf() {
       if(find1 && find2)break;
       Elf64_Off offset = this->sh_offset;
       char * name = shstrtab + this-> sh_name;
-      printf("%2d: %s\n", name);
+      printf("%2d: %s\n", i, name);
       if(!find1 && this->sh_type == SHT_SYMTAB){
         symtab = (Elf64_Sym *)(elf_file + offset);
         //printf("find .symtab at 0x%lx\n", offset);
