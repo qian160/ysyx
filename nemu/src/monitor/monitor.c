@@ -103,6 +103,7 @@ static void load_elf() {
 
     Elf64_Shdr * shdr = (Elf64_Shdr *)(elf_file + shoff);
     char * shstrtab = elf_file + (shdr + shstrndx)->sh_offset;
+    printf("%p\n", shstrtab);
     char * strtab = NULL;
     Elf64_Sym * symtab = NULL;
     //find the strtab and symtab
