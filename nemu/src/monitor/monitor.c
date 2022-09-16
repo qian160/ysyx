@@ -84,7 +84,7 @@ static void load_elf() {
       printf("fstat error\n");
     }
     printf("size = %ld\n", sb.st_size);
-    char * elf_file = mmap(NULL, sb.st_size, PROT_READ, MAP_SHARED, fd, 0);
+    char * elf_file = mmap(NULL, sb.st_size << 3, PROT_READ, MAP_SHARED, fd, 0);
     if(!elf_file){
       printf("mmap failed\n");
       return ;
