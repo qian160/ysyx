@@ -17,7 +17,7 @@ uint8_t* new_space(int size) {
   assert(p_space - io_space < IO_SPACE_MAX);
   return p;
 }
-
+//compare addr with map->low and map->high
 static void check_bound(IOMap *map, paddr_t addr) {
   if (map == NULL) {
     Assert(map != NULL, "address (" FMT_PADDR ") is out of bound at pc = " FMT_WORD, addr, cpu.pc);

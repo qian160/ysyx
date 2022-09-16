@@ -10,10 +10,10 @@ static uint8_t *serial_base = NULL;
 
 
 static void serial_putc(char ch) {
-  MUXDEF(CONFIG_TARGET_AM, putch(ch), putc(ch, stderr));
+  MUXDEF(CONFIG_TARGET_AM, putch(ch), putc(ch, stderr));    //in general, stderr and stdout both refer to the shell
 }
 
-static void serial_io_handler(uint32_t offset, int len, bool is_write) {
+static void serial_io_handler(uint32_t offset, int len, bool is_write) {  //the 3rd arg seems not necessary?
   assert(len == 1);
   switch (offset) {
     /* We bind the serial port with the host stderr in NEMU. */

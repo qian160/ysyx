@@ -43,6 +43,7 @@ void init_mem() {
   Log("physical memory area [" FMT_PADDR ", " FMT_PADDR "]",
       (paddr_t)CONFIG_MBASE, (paddr_t)CONFIG_MBASE + CONFIG_MSIZE - 1);
 }
+//if in pmem, directly read it out. Otherwise try mmio_read
 word_t paddr_read(paddr_t addr, int len) {
   if (likely(in_pmem(addr))) 
   {

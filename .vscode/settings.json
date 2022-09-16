@@ -19,6 +19,8 @@
         "difftest.h": "c",
         "difftest-def.h": "c",
         "map.h": "c",
-        "tuple": "cpp"
+        "tuple": "cpp",
+        "time.h": "c",
+        "nemu.h": "c"
     }
 }
