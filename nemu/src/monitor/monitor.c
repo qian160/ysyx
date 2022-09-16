@@ -108,7 +108,6 @@ static void load_elf() {
     //find the strtab and symtab
     int i = 0;
     bool find1 = false, find2 = false;
-    printf("1\n");
     Elf64_Word symbol_num;
     Elf64_Shdr *this;
     for(this = shdr; i < shnum; this++){
@@ -128,6 +127,7 @@ static void load_elf() {
       }
       i++;
     }
+    printf("1\n");
     //Elf64_Xword sh_size = shnum * sizeof(Elf64_Shdr);
     printf("\nSymbol Table '.symtab' contains %d entries:\n", symbol_num);
     i = 0;
