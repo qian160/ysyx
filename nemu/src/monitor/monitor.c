@@ -59,14 +59,17 @@ static long load_img() {
   fclose(fp);
   return size;
 }
+
 #ifdef CONFIG_FTRACE_ENABLE
 extern symbol * Sym_head;
 static char *elf_file = NULL;
 
 static void load_elf() {
 
-  if(elf_file == NULL)
+  if(elf_file == NULL){
+    printf("no elf file\n");
     return;
+  }
   else
   {
     int fd = open(elf_file, O_RDONLY);
@@ -163,8 +166,7 @@ static int parse_args(int argc, char *argv[]) {
       case 'p': sscanf(optarg, "%d", &difftest_port); break;
       case 'l': log_file = optarg; break;
       case 'd': diff_so_file = optarg; break;
-      //IFDEF(CONFIG_FTRACE_ENABLE, case 'e': elf_file = optarg; load_elf();break;);
-      case 'e': elf_file = optarg; load_elf(); break;
+      IFDEF(CONFIG_FTRACE_ENABLE, case 'e': elf_file = optarg; load_elf();break;);
       //return 1 means success, here specifies an img file
       case  1 : img_file = optarg; break;
       default:
