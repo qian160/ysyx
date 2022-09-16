@@ -73,7 +73,7 @@ void update_mringbuf(bool isLoad, word_t addr, word_t data, int rd){
 symbol * Sym_head = NULL;
 
 void show_ftrace(){
-    printf(ANSI_FMT("F - Trace:\n", ANSI_FG_YELLOW));
+    printf(ANSI_FMT("F - Trace:(if empty, an elf-file argument may not be given)\n", ANSI_FG_YELLOW));
     for(int i = 0; i < ftrace.cnt ; i++)
     {
         Ftrace_entry f = ftrace.trace[i];
@@ -119,11 +119,8 @@ enum {
 };
 void _ftrace(Decode * D){
     //is_ret need to be improved, jal could also ret
-    Log("\ntarget = 0x%lx\n", D->decInfo.target);
     char * name = getFuncName(D->decInfo.target);
-    Log("%s\n", name);
     if(!name) return;   //not a function call or ret
-    Log("\nname = %s\n", name);
     word_t addr = D->decInfo.target;
     switch(D->decInfo.type){
         case(TYPE_I):   //jalr
