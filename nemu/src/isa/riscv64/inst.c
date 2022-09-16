@@ -155,7 +155,7 @@ static void decode_operand(Decode * D, word_t *dest, word_t *src1, word_t *src2,
     case TYPE_I: {
       if(D -> decInfo.is_jalr){ //jalr is I type, which is special
           Log("is jalr\n");
-          src1I(pc_Plus4);    src2I(JALR_TARGET);  D->decInfo.target = JALR_TARGET;   D->decInfo.is_ret = (rd == 0 && rs1 == 1);  
+          src1I(pc_Plus4);    src2I(JALR_TARGET);  D->decInfo.target = JALR_TARGET;   D->decInfo.is_ret = (rd == 0 && rs1 == 1);  break;
       }
       else{
           src1R(rs1);         src2I(immI(inst));  break;
