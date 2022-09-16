@@ -78,12 +78,17 @@ static void load_elf() {
     if(fd < 0){
       printf("failed to open %s\n", elf_file);
     }
+    printf("opened successfully\n");
     struct stat sb;
     if(fstat(fd, &sb) == -1){
       printf("fstat error\n");
     }
+    printf("size = %ld\n", sb.st_size);
     char * elf_file = mmap(NULL, sb.st_size, PROT_READ, MAP_SHARED, fd, 0);
-    
+    if(!elf_file){
+      printf("mmap failed\n");
+      return 0;
+    }
     close(fd);
     Elf64_Ehdr *elf_header = (Elf64_Ehdr *)elf_file;
     unsigned char *id = elf_header->e_ident;
