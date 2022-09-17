@@ -22,11 +22,17 @@ int abs(int x) {
 //neg???
 int atoi(const char* nptr) {
   int x = 0;
+  bool neg = 0;
   while (*nptr == ' ') { nptr ++; }
+  if(*nptr == '-'){
+    neg = true;
+    nptr ++;
+  }
   while (*nptr >= '0' && *nptr <= '9') {
     x = x * 10 + *nptr - '0';
     nptr ++;
   }
+  x = neg ? -x : x;
   return x;
 }
 
