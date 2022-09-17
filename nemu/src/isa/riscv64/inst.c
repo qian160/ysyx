@@ -198,11 +198,8 @@ static int decode_exec(Decode *D) {
 //a match is found, do what it supposed to do.
 #define INSTPAT_MATCH(D, name, type, ... /* body */ ) { \
   decode_operand(D, &dest, &src1, &src2, concat(TYPE_, type)); \
-  if(src2 != 0)Log("\nbefore: src1 = 0x%lx, src2 = 0x%lx, divu res = 0x%lx, R(dest) = 0x%lx\n", src1, src2, src1 / src2, R(dest));\
-  if(src2 != 0)Log("\nbefore: src1 = 0x%lx, src2 = 0x%lx, divu res = 0x%lx, R(dest) = 0x%lx\n", D->decInfo.src1, D->decInfo.src2, src1 / src2, R(dest));\
+  printf("type = %d\n", D->decInfo.type);\
   __VA_ARGS__ ; \
-  if(src2 != 0)Log("\nafter:  src1 = 0x%lx, src2 = 0x%lx, divu res = 0x%lx, R(dest) = 0x%lx\n", D->decInfo.src1, D->decInfo.src2, src1 / src2, R(dest));\
-  if(src2 != 0)Log("\nafter:  src1 = 0x%lx, src2 = 0x%lx, divu res = 0x%lx, R(dest) = 0x%lx\n", src1, src2, src1 / src2, R(dest));\
   IFDEF(CONFIG_SHOW_DECODE_INFORMATION, show_decode(D));\
   \
   IFDEF(CONFIG_FTRACE_ENABLE, _ftrace(D));\
@@ -276,7 +273,7 @@ static int decode_exec(Decode *D) {
   INSTPAT("0000001 ????? ????? 010 ????? 0110011", mulhsu,   R, R(dest) = BITS((__int128_t)src1 * (__uint128_t)src2, 127, 64));
   INSTPAT("0000001 ????? ????? 011 ????? 0110011", mulhu,    R, R(dest) = BITS((__uint128_t)src1 * (__uint128_t)src2, 127, 64));
   INSTPAT("0000001 ????? ????? 100 ????? 0110011", div,      R, R(dest) = (sword_t)src1 / (sword_t)src2);
-  INSTPAT("0000001 ????? ????? 101 ????? 0110011", divu,     R, R(dest) = (src1 / src2); printf("divu\n"));
+  INSTPAT("0000001 ????? ????? 101 ????? 0110011", divu,     R, R(dest) = (src1 / src2));
   INSTPAT("0000001 ????? ????? 110 ????? 0110011", rem,      R, R(dest) = (sword_t)src1 % (sword_t)src2);
   INSTPAT("0000001 ????? ????? 111 ????? 0110011", remu,     R, R(dest) = src1 % src2);
   //RV64I
