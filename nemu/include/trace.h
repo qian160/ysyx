@@ -44,6 +44,7 @@ typedef struct {
 }Ftrace_entry;
 
 typedef struct {
+    //if ftrace cases a segmentation fault, the buf may need to be enlarged
     Ftrace_entry trace[1 << 16];
     unsigned int cnt;
 }Ftrace;
