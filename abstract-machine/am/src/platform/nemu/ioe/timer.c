@@ -8,9 +8,7 @@ uint64_t init_time = 0;
 
 void __am_timer_init() {
   init_time   = get_time();
-  //WHERE_AM_I;
-  //printf("hi = %d, lo = %d\n", hi, lo);
-  //printf("init time = 0x%lx\n", init_time);
+  printf("init time = 0x%lx\n", init_time);
   return;
 }
 
