@@ -9,7 +9,7 @@ void __am_timer_init() {
   uint32_t lo = inl(RTC_ADDR);
   uint32_t hi = inl(RTC_ADDR + 4);
   init_time = ((uint64_t)hi << 32) | lo;
-  
+  while(1);
   //WHERE_AM_I;
   //printf("hi = %d, lo = %d\n", hi, lo);
   //printf("init time = 0x%lx\n", init_time);
