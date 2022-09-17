@@ -199,6 +199,7 @@ static int decode_exec(Decode *D) {
 #define INSTPAT_MATCH(D, name, type, ... /* body */ ) { \
   decode_operand(D, &dest, &src1, &src2, concat(TYPE_, type)); \
   if(src2 != 0)Log("\nbefore: src1 = 0x%lx, src2 = 0x%lx, divu res = 0x%lx, R(dest) = 0x%lx\n", src1, src2, src1 / src2, R(dest));\
+  if(src2 != 0)Log("\nbefore: src1 = 0x%lx, src2 = 0x%lx, divu res = 0x%lx, R(dest) = 0x%lx\n", D->decInfo.src1, D->decInfo.src2, src1 / src2, R(dest));\
   __VA_ARGS__ ; \
   if(src2 != 0)Log("\nafter:  src1 = 0x%lx, src2 = 0x%lx, divu res = 0x%lx, R(dest) = 0x%lx\n", src1, src2, src1 / src2, R(dest));\
   IFDEF(CONFIG_SHOW_DECODE_INFORMATION, show_decode(D));\
