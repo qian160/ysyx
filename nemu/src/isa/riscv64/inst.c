@@ -63,7 +63,11 @@ void show_bits_fmt(word_t b){
 
 #ifdef CONFIG_SHOW_DECODE_INFORMATION
 
-void show_decode(Decode *D, word_t src1, word_t src2, int dest, int type){
+void show_decode(Decode *D){
+word_t src1   = D->decInfo.src1;
+word_t src2   = D->decInfo.src2;
+uint32_t dest = D->decInfo.rd;
+int type      = D->decInfo.type;
 printf(ANSI_FMT(" ---------------------------------------------------------------------------\n", ANSI_FG_YELLOW));
   puts(ANSI_FMT("| Information about the just execuated instruction: \t\t\t    |", ANSI_FG_GREEN));
   char buf[30];
@@ -151,7 +155,7 @@ static void decode_operand(Decode * D, word_t *dest, word_t *src1, word_t *src2,
   switch (type) {
     case TYPE_R: src1I(rs1Val);       src2I(rs2Val);    break;
     case TYPE_S: src1I(storeAddr);    src2R(rs2);       break;
-    case TYPE_J: src1I(pc_Plus4);     src2I(JAL_TARGET);  D->decInfo.target = JAL_TARGET; D->decInfo.is_ret = (rd == 0); break;
+    case TYPE_J: src1I(pc_Plus4);     src2I(JAL_TARGET);  D->decInfo.target = JAL_TARGET; D->decInfo.is_ret = 0;/*(rd == 0);*/ break;
     case TYPE_I: {
       if(D -> decInfo.is_jalr){ //jalr is I type, which is special
           src1I(pc_Plus4);    src2I(JALR_TARGET);  D->decInfo.target = JALR_TARGET;   D->decInfo.is_ret = (rd == 0 && rs1 == 1);  break;
@@ -195,7 +199,7 @@ static int decode_exec(Decode *D) {
 #define INSTPAT_MATCH(D, name, type, ... /* body */ ) { \
   decode_operand(D, &dest, &src1, &src2, concat(TYPE_, type)); \
   __VA_ARGS__ ; \
-  IFDEF(CONFIG_SHOW_DECODE_INFORMATION, show_decode(D, src1, src2, dest, TYPE_##type));\
+  IFDEF(CONFIG_SHOW_DECODE_INFORMATION, show_decode(D));\
   \
   IFDEF(CONFIG_FTRACE_ENABLE, _ftrace(D));\
 }
@@ -226,18 +230,22 @@ static int decode_exec(Decode *D) {
   INSTPAT("??????? ????? ????? 110 ????? 0010011", ori,      I, R(dest) = src1 | src2);
   INSTPAT("0000000 ????? ????? 111 ????? 0110011", and,      R, R(dest) = src1 & src2);
   INSTPAT("??????? ????? ????? 111 ????? 0010011", andi,     I, R(dest) = src1 & src2);
+  Log("1\n");
   //compare
   INSTPAT("0000000 ????? ????? 010 ????? 0110011", slt,      R, R(dest) = (sword_t)src1 < (sword_t)src2 ? 1 : 0);
   INSTPAT("??????? ????? ????? 010 ????? 0010011", slti,     I, R(dest) = (sword_t)src1 < (sword_t)src2 ? 1 : 0);
   INSTPAT("0000000 ????? ????? 011 ????? 0110011", sltu,     R, R(dest) = src1 < src2 ? 1 : 0);
   INSTPAT("??????? ????? ????? 011 ????? 0010011", sltiu,    I, R(dest) = src1 < src2 ? 1 : 0);
+  Log("2\n");
   //shifts. RV64 needs 6 bits' shamt, so it will take one-bit's position of funct7 
-  INSTPAT("000000? ????? ????? 001 ????? 0110011", sll,      R, R(dest) = src1 << BITS(src2, 5, 0));
+  INSTPAT("0000000 ????? ????? 001 ????? 0110011", sll,      R, R(dest) = src1 << BITS(src2, 5, 0));
   INSTPAT("000000? ????? ????? 001 ????? 0010011", slli,     I, R(dest) = src1 << BITS(src2, 5, 0));
-  INSTPAT("000000? ????? ????? 101 ????? 0110011", srl,      R, R(dest) = src1 >> BITS(src2, 5, 0));
+  INSTPAT("0000000 ????? ????? 101 ????? 0110011", srl,      R, R(dest) = src1 >> BITS(src2, 5, 0));
+//INSTPAT("0000001 ????? ????? 101 ????? 0110011", divu,     R, R(dest) = (src1 / src2));
   INSTPAT("000000? ????? ????? 101 ????? 0010011", srli,     I, R(dest) = src1 >> BITS(src2, 5, 0));
-  INSTPAT("010000? ????? ????? 101 ????? 0110011", sra,      R, R(dest) = (sword_t)src1 >> (sword_t)BITS(src2, 5, 0));
+  INSTPAT("0100000 ????? ????? 101 ????? 0110011", sra,      R, R(dest) = (sword_t)src1 >> (sword_t)BITS(src2, 5, 0));
   INSTPAT("010000? ????? ????? 101 ????? 0010011", srai,     I, R(dest) = (sword_t)src1 >> (sword_t)BITS(src2, 5, 0));
+  Log("3\n");
   //load: 
   INSTPAT("??????? ????? ????? 000 ????? 0000011", lb,       I, R(dest) = SEXT(Mr(src1 + src2, 1), 8));
   INSTPAT("??????? ????? ????? 001 ????? 0000011", lh,       I, R(dest) = SEXT(Mr(src1 + src2, 2), 16));
@@ -268,9 +276,9 @@ static int decode_exec(Decode *D) {
   INSTPAT("0000001 ????? ????? 010 ????? 0110011", mulhsu,   R, R(dest) = BITS((__int128_t)src1 * (__uint128_t)src2, 127, 64));
   INSTPAT("0000001 ????? ????? 011 ????? 0110011", mulhu,    R, R(dest) = BITS((__uint128_t)src1 * (__uint128_t)src2, 127, 64));
   INSTPAT("0000001 ????? ????? 100 ????? 0110011", div,      R, R(dest) = (sword_t)src1 / (sword_t)src2);
-  INSTPAT("0000001 ????? ????? 101 ????? 0110011", divu,     R, R(dest) = src1 / src2);
-  INSTPAT("0000001 ????? ????? 110 ????? 0110011", rem,      R, R(dest) = (sword_t)src1 / (sword_t)src2);
-  INSTPAT("0000001 ????? ????? 111 ????? 0110011", remu,     R, R(dest) = src1 / src2);
+  INSTPAT("0000001 ????? ????? 101 ????? 0110011", divu,     R, R(dest) = (src1 / src2));
+  INSTPAT("0000001 ????? ????? 110 ????? 0110011", rem,      R, R(dest) = (sword_t)src1 % (sword_t)src2);
+  INSTPAT("0000001 ????? ????? 111 ????? 0110011", remu,     R, R(dest) = src1 % src2);
   //RV64I
   INSTPAT("0000000 ????? ????? 000 ????? 0111011", addw,     R, R(dest) = SEXT((int)src1 + (int)src2, 32));
   INSTPAT("0100000 ????? ????? 000 ????? 0111011", subw,     R, R(dest) = SEXT((int)src1 - (int)src2, 32));

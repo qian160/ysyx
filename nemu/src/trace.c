@@ -89,7 +89,7 @@ void show_ftrace(){
 int depth = 0;      //this is used at runtime
 
 void update_ftrace(bool is_ret, word_t addr, word_t pc, const char * name, int d){
-    Log("\nis_ret: %d, addr: 0x%lx, pc: 0x%lx, name: %s, depth: %d\n", is_ret, addr, pc, name, d);
+    //Log("\nis_ret: %d, addr: 0x%lx, pc: 0x%lx, name: %s, depth: %d\n", is_ret, addr, pc, name, d);
     int cnt = ftrace.cnt;
     ftrace.trace[cnt].depth   = d - is_ret;   //if not call(ret), depth-=1
     ftrace.trace[cnt].is_ret = is_ret;
@@ -102,14 +102,21 @@ void update_ftrace(bool is_ret, word_t addr, word_t pc, const char * name, int d
     else depth ++;
 }
 
-char * getFuncName(word_t addr)
+char * getFuncName(word_t addr, bool is_ret)
 {
     for(symbol * t = Sym_head; t; t = t -> next)
     {
         word_t bg = t ->offset, ed = t -> offset + t -> size;
-        if( bg <= addr && addr < ed)  return t -> name;
-        //call's target is always at the beginning, but ret's could be any value as long as it's between the boundary
-//      if(addr == t -> offset)  return t -> name;
+        switch (is_ret)
+        {
+        case true:
+            if( bg <= addr && addr < ed)  return t -> name;
+            break;
+        case false:
+            if( addr == bg) return t -> name;
+            break;
+        }
+        //call's target is always at the beginning, but ret's could be arbitary as long as it's between the boundary
     }
     return NULL;
 }
@@ -119,7 +126,7 @@ enum {
 };
 void _ftrace(Decode * D){
     //is_ret need to be improved, jal could also ret
-    char * name = getFuncName(D->decInfo.target);
+    char * name = getFuncName(D->decInfo.target, D -> decInfo.is_ret);
     if(!name) return;   //not a function call or ret
     word_t addr = D->decInfo.target;
     switch(D->decInfo.type){

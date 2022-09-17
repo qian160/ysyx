@@ -39,12 +39,13 @@ typedef struct {
     unsigned int depth;
     word_t address;
     bool is_ret : 1;
-    char name[16];
+    char name[64];
     word_t pc;
 }Ftrace_entry;
 
 typedef struct {
-    Ftrace_entry trace[1024];
+    //if ftrace cases a segmentation fault, the buf may need to be enlarged
+    Ftrace_entry trace[1 << 16];
     unsigned int cnt;
 }Ftrace;
 

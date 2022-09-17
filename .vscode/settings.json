@@ -17,6 +17,10 @@
         "errno.h": "c",
         "errno-base.h": "c",
         "difftest.h": "c",
-        "difftest-def.h": "c"
+        "difftest-def.h": "c",
+        "map.h": "c",
+        "tuple": "cpp",
+        "time.h": "c",
+        "nemu.h": "c"
     }
 }
