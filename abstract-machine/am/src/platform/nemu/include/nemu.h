@@ -45,4 +45,6 @@ typedef uintptr_t PTE;
 
 #define PGSIZE    4096
 
+//#define WHERE_AM_I (printf("%s %s %d\n", __FILE__, __func__, __LINE__))
+
 #endif
