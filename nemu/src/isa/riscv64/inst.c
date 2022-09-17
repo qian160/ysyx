@@ -151,7 +151,7 @@ static void decode_operand(Decode * D, word_t *dest, word_t *src1, word_t *src2,
   switch (type) {
     case TYPE_R: src1I(rs1Val);       src2I(rs2Val);    break;
     case TYPE_S: src1I(storeAddr);    src2R(rs2);       break;
-    case TYPE_J: src1I(pc_Plus4);     src2I(JAL_TARGET);  D->decInfo.target = JAL_TARGET; D->decInfo.is_ret = (rd == 0); break;
+    case TYPE_J: src1I(pc_Plus4);     src2I(JAL_TARGET);  D->decInfo.target = JAL_TARGET; D->decInfo.is_ret = 0;/*(rd == 0);*/ break;
     case TYPE_I: {
       if(D -> decInfo.is_jalr){ //jalr is I type, which is special
           src1I(pc_Plus4);    src2I(JALR_TARGET);  D->decInfo.target = JALR_TARGET;   D->decInfo.is_ret = (rd == 0 && rs1 == 1);  break;
