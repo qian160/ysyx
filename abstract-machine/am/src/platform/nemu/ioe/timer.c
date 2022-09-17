@@ -7,6 +7,7 @@ uint64_t init_time = 0;
 void __am_timer_init() {
   init_time = io_read(AM_TIMER_UPTIME).us;
   printf("init time = 0x%lx\n", init_time);
+  return;
 }
 
 void __am_timer_uptime(AM_TIMER_UPTIME_T *uptime) {
@@ -14,6 +15,7 @@ void __am_timer_uptime(AM_TIMER_UPTIME_T *uptime) {
   //ioe_read(AM_TIMER_UPTIME, &time);
   //io_read(AM_TIMER_UPTIME);
   uptime->us = io_read(AM_TIMER_UPTIME).us - init_time;
+  return;
 }
 
 void __am_timer_rtc(AM_TIMER_RTC_T *rtc) {
@@ -23,4 +25,5 @@ void __am_timer_rtc(AM_TIMER_RTC_T *rtc) {
   rtc->day    = 0;
   rtc->month  = 0;
   rtc->year   = 1900;
+  return;
 }
