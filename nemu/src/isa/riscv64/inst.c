@@ -149,7 +149,7 @@ static void decode_operand(Decode * D, word_t *dest, word_t *src1, word_t *src2,
   //  ret -> jalr ra, x0, 0
   destR(rd);
   switch (type) {
-    case TYPE_R: src1I(rs1Val);       src2I(rs2Val);    Log("divu: 0x%lx\n", rs1Val / rs2Val); break;
+    case TYPE_R: src1I(rs1Val);       src2I(rs2Val);    if(rs2Val != 0)Log("divu: 0x%lx\n", rs1Val / rs2Val); break;
     case TYPE_S: src1I(storeAddr);    src2R(rs2);       break;
     case TYPE_J: src1I(pc_Plus4);     src2I(JAL_TARGET);  D->decInfo.target = JAL_TARGET; D->decInfo.is_ret = 0;/*(rd == 0);*/ break;
     case TYPE_I: {
