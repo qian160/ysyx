@@ -89,7 +89,7 @@ void show_ftrace(){
 int depth = 0;      //this is used at runtime
 
 void update_ftrace(bool is_ret, word_t addr, word_t pc, const char * name, int d){
-    Log("\nis_ret: %d, addr: 0x%lx, pc: 0x%lx, name: %s, depth: %d\n", is_ret, addr, pc, name, d);
+    //Log("\nis_ret: %d, addr: 0x%lx, pc: 0x%lx, name: %s, depth: %d\n", is_ret, addr, pc, name, d);
     int cnt = ftrace.cnt;
     ftrace.trace[cnt].depth   = d - is_ret;   //if not call(ret), depth-=1
     ftrace.trace[cnt].is_ret = is_ret;
