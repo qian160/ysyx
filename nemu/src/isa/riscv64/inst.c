@@ -63,7 +63,11 @@ void show_bits_fmt(word_t b){
 
 #ifdef CONFIG_SHOW_DECODE_INFORMATION
 
-void show_decode(Decode *D, word_t src1, word_t src2, int dest, int type){
+void show_decode(Decode *D){
+word_t src1   = D->decInfo.src1;
+word_t src2   = D->decInfo.src2;
+uint32_t dest = D->decInfo.rd;
+int type      = D->decInfo.type;
 printf(ANSI_FMT(" ---------------------------------------------------------------------------\n", ANSI_FG_YELLOW));
   puts(ANSI_FMT("| Information about the just execuated instruction: \t\t\t    |", ANSI_FG_GREEN));
   char buf[30];
@@ -196,7 +200,7 @@ static int decode_exec(Decode *D) {
   decode_operand(D, &dest, &src1, &src2, concat(TYPE_, type)); \
   __VA_ARGS__ ; \
   if(src2 != 0)Log("\nsrc1 = 0x%lx, src2 = 0x%lx, divu res = 0x%lx\n", src1, src2, src1 / src2);\
-  IFDEF(CONFIG_SHOW_DECODE_INFORMATION, show_decode(D, src1, src2, dest, TYPE_##type));\
+  IFDEF(CONFIG_SHOW_DECODE_INFORMATION, show_decode(D));\
   \
   IFDEF(CONFIG_FTRACE_ENABLE, _ftrace(D));\
 }
