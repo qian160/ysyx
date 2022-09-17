@@ -149,7 +149,7 @@ static void decode_operand(Decode * D, word_t *dest, word_t *src1, word_t *src2,
   //  ret -> jalr ra, x0, 0
   destR(rd);
   switch (type) {
-    case TYPE_R: src1I(rs1Val);       src2I(rs2Val);    break;
+    case TYPE_R: src1I(rs1Val);       src2I(rs2Val);    Log("divu: 0x%lx\n", rs1Val / rs2Val); break;
     case TYPE_S: src1I(storeAddr);    src2R(rs2);       break;
     case TYPE_J: src1I(pc_Plus4);     src2I(JAL_TARGET);  D->decInfo.target = JAL_TARGET; D->decInfo.is_ret = 0;/*(rd == 0);*/ break;
     case TYPE_I: {
@@ -268,8 +268,7 @@ static int decode_exec(Decode *D) {
   INSTPAT("0000001 ????? ????? 010 ????? 0110011", mulhsu,   R, R(dest) = BITS((__int128_t)src1 * (__uint128_t)src2, 127, 64));
   INSTPAT("0000001 ????? ????? 011 ????? 0110011", mulhu,    R, R(dest) = BITS((__uint128_t)src1 * (__uint128_t)src2, 127, 64));
   INSTPAT("0000001 ????? ????? 100 ????? 0110011", div,      R, R(dest) = (sword_t)src1 / (sword_t)src2);
-  INSTPAT("0000001 ????? ????? 101 ????? 0110011", divu,     R, R(dest) = src1 / src2 ; Log("is div, 0x%lx\n", src1 / src2));
-  Log("not divu\n");
+  INSTPAT("0000001 ????? ????? 101 ????? 0110011", divu,     R, R(dest) = src1 / src2);
   INSTPAT("0000001 ????? ????? 110 ????? 0110011", rem,      R, R(dest) = (sword_t)src1 / (sword_t)src2);
   INSTPAT("0000001 ????? ????? 111 ????? 0110011", remu,     R, R(dest) = src1 / src2);
   //RV64I
