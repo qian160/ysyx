@@ -6,7 +6,7 @@ uint64_t init_time = 0;
 
 void __am_timer_init() {
   
-  printf("init time = 0x%lx\n", init_time);
+  //printf("init time = 0x%lx\n", init_time);
   return;
 }
 
