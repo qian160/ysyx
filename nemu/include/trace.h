@@ -44,7 +44,7 @@ typedef struct {
 }Ftrace_entry;
 
 typedef struct {
-    Ftrace_entry trace[1024];
+    Ftrace_entry trace[1 << 16];
     unsigned int cnt;
 }Ftrace;
 
