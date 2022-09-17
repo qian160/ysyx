@@ -39,7 +39,7 @@ typedef struct {
     unsigned int depth;
     word_t address;
     bool is_ret : 1;
-    char name[16];
+    char name[64];
     word_t pc;
 }Ftrace_entry;
 
