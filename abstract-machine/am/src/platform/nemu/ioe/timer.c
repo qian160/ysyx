@@ -1,12 +1,10 @@
 #include <am.h>
 #include <nemu.h>
-#include <stdio.h>    //for temp debug use
 
 uint64_t init_time = 0;
 
 void __am_timer_init() {
   init_time = io_read(AM_TIMER_UPTIME).us;
-  printf("%lx\n", init_time);
 }
 
 void __am_timer_uptime(AM_TIMER_UPTIME_T *uptime) {
