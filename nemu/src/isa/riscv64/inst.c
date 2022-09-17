@@ -198,8 +198,9 @@ static int decode_exec(Decode *D) {
 //a match is found, do what it supposed to do.
 #define INSTPAT_MATCH(D, name, type, ... /* body */ ) { \
   decode_operand(D, &dest, &src1, &src2, concat(TYPE_, type)); \
+  if(src2 != 0)Log("\nbefore: src1 = 0x%lx, src2 = 0x%lx, divu res = 0x%lx, R(dest) = 0x%lx\n", src1, src2, src1 / src2, R(dest));\
   __VA_ARGS__ ; \
-  if(src2 != 0)Log("\nsrc1 = 0x%lx, src2 = 0x%lx, divu res = 0x%lx\n", src1, src2, src1 / src2);\
+  if(src2 != 0)Log("\nafter:  src1 = 0x%lx, src2 = 0x%lx, divu res = 0x%lx, R(dest) = 0x%lx\n", src1, src2, src1 / src2, R(dest));\
   IFDEF(CONFIG_SHOW_DECODE_INFORMATION, show_decode(D));\
   \
   IFDEF(CONFIG_FTRACE_ENABLE, _ftrace(D));\
