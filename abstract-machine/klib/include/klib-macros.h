@@ -15,6 +15,11 @@
 #define putstr(s) \
   ({ for (const char *p = s; *p; p++) putch(*p); })
 
+/*
+  1. create a struct
+  2. call io_read with reg and the struct
+  3. put the struct at the end to be accessd
+*/
 #define io_read(reg) \
   ({ reg##_T __io_param; \
     ioe_read(reg, &__io_param); \

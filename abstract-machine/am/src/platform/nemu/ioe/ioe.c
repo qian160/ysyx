@@ -4,6 +4,7 @@
 void __am_timer_init();
 void __am_gpu_init();
 void __am_audio_init();
+
 void __am_input_keybrd(AM_INPUT_KEYBRD_T *);
 void __am_timer_rtc(AM_TIMER_RTC_T *);
 void __am_timer_uptime(AM_TIMER_UPTIME_T *);
@@ -54,6 +55,6 @@ bool ioe_init() {
   __am_audio_init();
   return true;
 }
-
+//这个reg其实是一个功能编号
 void ioe_read (int reg, void *buf) { ((handler_t)lut[reg])(buf); }
 void ioe_write(int reg, void *buf) { ((handler_t)lut[reg])(buf); }

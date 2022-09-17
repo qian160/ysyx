@@ -1,8 +1,11 @@
 #ifndef __AMDEV_H__
 #define __AMDEV_H__
-
 // **MAY SUBJECT TO CHANGE IN THE FUTURE**
 
+/*  what it does:
+    1. allocate device number
+    2. define a struct with va_arg as its member
+*/
 #define AM_DEVREG(id, reg, perm, ...) \
   enum { AM_##reg = (id) }; \
   typedef struct { __VA_ARGS__; } AM_##reg##_T;

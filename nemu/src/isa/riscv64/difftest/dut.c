@@ -8,10 +8,7 @@ bool isa_difftest_checkregs(CPU_state *ref_r, vaddr_t pc) {
     if(cpu.gpr[i] ^ ref_r->gpr[i]) return false;
   }
   //printf("\n\ncpu.pc: 0x%lx \t ref.pc: 0x%lx\n", cpu.pc, ref_r->pc);
-  if((cpu.pc  ^ ref_r -> pc) && ref_r->pc != 0)  return false;
-  printf("dut.pc = 0x%lx\nref.pc = 0x%lx\n", cpu.pc, ref_r->pc);
-  //ref_r -> pc will sometimes become 0, which is wierd... and I can't find the reason now
-  //ref_diffteist_regcpy(&cpu, DIFFTEST_TO_REF);
+  if(cpu.pc  ^ ref_r -> pc)  return false;
   return true;
 }
 

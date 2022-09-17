@@ -73,23 +73,31 @@ char *itoa(int number, int base)  //10, 16
     arr[i] = '\0';
     return arr;
 }
-/*
+
 int printf(const char *fmt, ...) {
-  panic("Not implemented");
+  va_list ap;
+  va_start(ap, fmt);
+  char buf[1024];
+  int n = vsprintf(buf, fmt, ap);
+  va_end(ap);
+  for(int i = 0; i < n; i++){
+    putch(buf[i]);
+  }
+  return n;
 }
-*/
+
 //v: use va_list as argument instead of ... its behavior is same as sprintf
 
 int vsprintf(char *out, const char *fmt, va_list ap) {
   //support %s %d %c %x 
   char *str = out;
-while(*fmt){
-  if(*fmt != '%'){
+  while(*fmt){
+    if(*fmt != '%'){
       *str = *fmt++;
       str++;
       continue;
-  }
-  fmt++;    //fmt now points to the char after %, which could be the width or fmt
+    }
+    fmt++;    //fmt now points to the char after %, which could be the width or fmt
 
   //check if it's a number
   //char * format_begin = fmt;

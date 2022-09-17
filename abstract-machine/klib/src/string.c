@@ -9,9 +9,6 @@
       onto stack, and this macro sets ap to point at the address above ptr, which is the last non-variable argument
 
 */
-#ifdef __NATIVE_USE_KLIB__ 
-  extern int printf(const char *s, ...);
-#endif
 
 size_t strlen(const char *s) {
   size_t len = 0;
