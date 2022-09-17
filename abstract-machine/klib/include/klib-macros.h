@@ -17,7 +17,7 @@
 
 /*
   1. create a struct
-  2. call io_read with reg and the struct
+  2. call 'io_read' with reg and the struct, this will use reg as an index and jump to a device's handler function
   3. put the struct at the end to be accessd
 */
 #define io_read(reg) \
