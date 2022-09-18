@@ -20,7 +20,7 @@ void __am_timer_init() {
   uint32_t lo = inl(RTC_ADDR);
   //init_time = read_timer();
   init_time = ((uint64_t)hi << 32) | (uint64_t)lo;
-  printf("init_hi = %x, init_lo = %x\n", hi, lo);
+  printf("init_hi = %x, init_lo = %x, uptime = %d\n", hi, lo, );
 }
 
 void __am_timer_uptime(AM_TIMER_UPTIME_T *uptime) {

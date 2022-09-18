@@ -1,5 +1,4 @@
 !*/
-!/nemu/*
 !/nexus-am/*
 !/nanos-lite/*
 !/navy-apps/*
@@ -11,4 +10,3 @@
 /npc/*
 /nvboard
 /fceux-am
-/am-kernels
