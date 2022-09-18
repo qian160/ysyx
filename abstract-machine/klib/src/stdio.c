@@ -101,10 +101,8 @@ int vsprintf(char *out, const char *fmt, va_list ap) {
         n++;
       }
       char *np = itoa(n, 10);
-      putstr(np);
       n += strlen(np);
       strcpy(str, np);
-      putstr(out);
       str += strlen(np);
       break;
     }
