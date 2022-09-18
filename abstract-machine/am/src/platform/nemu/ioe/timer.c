@@ -1,6 +1,5 @@
 #include <am.h>
 #include <nemu.h>
-#include <stdio.h>
 //#include "../../../riscv/riscv.h"
 
 static uint64_t init_time = 0;
@@ -20,7 +19,6 @@ void __am_timer_init() {
   uint32_t lo = inl(RTC_ADDR);
   //init_time = read_timer();
   init_time = ((uint64_t)hi << 32) | (uint64_t)lo;
-  printf("init_hi = %x, init_lo = %x\n", hi, lo);
 }
 
 void __am_timer_uptime(AM_TIMER_UPTIME_T *uptime) {
@@ -28,7 +26,6 @@ void __am_timer_uptime(AM_TIMER_UPTIME_T *uptime) {
   uint32_t now_lo = inl(RTC_ADDR);
   uint64_t now = ((uint64_t)now_hi << 32) | (uint64_t)now_lo;
   uptime->us = now - init_time;
-  printf("now_hi = %x, now_lo = %x\n", now_hi, now_lo);
 }
 
 void __am_timer_rtc(AM_TIMER_RTC_T *rtc) {
