@@ -72,14 +72,13 @@ int printf(const char *fmt, ...) {
 
 int vsprintf(char *out, const char *fmt, va_list ap) {
   //support %s %d %c %x 
-  int n = 0;
-  int num = 0;
+  int len = 0;
   char *str = out;
   while(*fmt){
     if(*fmt != '%'){  //string
       *str = *fmt++;
-      n++;
-      str++;
+      len ++;
+      str ++;
       continue;
     }
     fmt++;    //fmt now points to the char after %, which could be the width or fmt
@@ -90,46 +89,46 @@ int vsprintf(char *out, const char *fmt, va_list ap) {
       int len = strlen(t);
       for(int i = 0; i < len; i++) {
         *str++ = *t++;
-        n++;
+        len ++;
       }
       break;
     }
     case 'd' : {
-      num = va_arg(ap, int);
+      int num = va_arg(ap, int);
       if (num < 0) {
         num = ~num + 0x1;
         *str++ = '-';
-        n ++;
+        len ++;
       }
       char *np = itoa(num, 10);
-      n += strlen(np);
+      len += strlen(np);
       strcpy(str, np);
       str += strlen(np);
       break;
     }
     case 'u': {
       uint32_t num = va_arg(ap, int);
-      char *n = itoa(num, 10);
-      strcpy(str, n);
-      n   += strlen(n);
-      str += strlen(n);
+      char * np = itoa(num, 10);
+      strcpy(str, np);
+      len   += strlen(np);
+      str += strlen(np);
       break;
     }
     case 'c': {
       char c = (char)va_arg(ap, int);
       *str++ = c;
-      n++;
+      len ++;
       break;
     }
     case 'p':
     case 'x': {
       uint32_t num = va_arg(ap, uint32_t);
-      char *n = itoa(num, 16);
+      char *np = itoa(num, 16);
       *str++ = '0';
       *str++ = 'x';
-      strcpy(str, n);
-      n   += strlen(n) + 2;
-      str += strlen(n);
+      strcpy(str, np);
+      len += strlen(np) + 2;
+      str += strlen(np);
       break;
     }
     default :
@@ -138,7 +137,7 @@ int vsprintf(char *out, const char *fmt, va_list ap) {
     }
   }
   *str='\0';
-  return n;
+  return len;
 }
 
 //this function won't add spaces between 2 calls, it just append
