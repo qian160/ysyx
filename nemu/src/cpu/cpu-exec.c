@@ -116,7 +116,7 @@ void cpu_exec(uint64_t n) {
   }
 
   uint64_t timer_start = get_time();
-  printf("111\n")
+  printf("111\n");
   execute(n);
   show_ftrace();
 
