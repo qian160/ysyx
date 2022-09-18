@@ -76,9 +76,8 @@ int vsprintf(char *out, const char *fmt, va_list ap) {
   char *str = out;
   while(*fmt){
     if(*fmt != '%'){  //string
-      *str = *fmt++;
+      *str++ = *fmt++;
       len ++;
-      str ++;
       continue;
     }
     fmt++;    //fmt now points to the char after %, which could be the width or fmt
@@ -132,6 +131,7 @@ int vsprintf(char *out, const char *fmt, va_list ap) {
       break;
     }
     default :
+    putch(*--fmt);
       assert(0);
       break;
     }
