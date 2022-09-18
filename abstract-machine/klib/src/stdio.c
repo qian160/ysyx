@@ -71,6 +71,7 @@ int printf(const char *fmt, ...) {
 //v: use va_list as argument instead of ... its behavior is same as sprintf
 
 int vsprintf(char *out, const char *fmt, va_list ap) {
+  //num 
   //support %s %d %c %x 
   int len = 0;
   char *str = out;
@@ -130,6 +131,7 @@ int vsprintf(char *out, const char *fmt, va_list ap) {
         break;
       }
       default :
+
         assert(0);
         break;
       }
