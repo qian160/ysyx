@@ -75,8 +75,9 @@ int vsprintf(char *out, const char *fmt, va_list ap) {
   int n = 0;
   char *str = out;
   while(*fmt){
-    if(*fmt != '%'){
+    if(*fmt != '%'){  //string
       *str = *fmt++;
+      n++;
       str++;
       continue;
     }
