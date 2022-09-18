@@ -9,6 +9,8 @@ static inline uint64_t read_timer(){
   return hi | lo;
 }
 
+static uint64_t t = 0;
+
 void __am_timer_init() {
   //inl will be compiled to lw, recall the implementation of lw in nemu(inst.c)
   //it will call paddr_read. And then this function will discover that the address is a device, 
@@ -21,10 +23,12 @@ void __am_timer_init() {
 }
 
 void __am_timer_uptime(AM_TIMER_UPTIME_T *uptime) {
-  int32_t now_hi = inl(RTC_ADDR + 4);
-  uint32_t now_lo = inl(RTC_ADDR);
-  uint64_t now = ((uint64_t)now_hi << 32) | (uint64_t)now_lo;
-  uptime -> us = now - init_time;
+  //int32_t now_hi = inl(RTC_ADDR + 4);
+  //uint32_t now_lo = inl(RTC_ADDR);
+  //uint64_t now = ((uint64_t)now_hi << 32) | (uint64_t)now_lo;
+  //uptime -> us = now - init_time;
+  uptime -> us = t;
+  t  += 100;
 }
 
 void __am_timer_rtc(AM_TIMER_RTC_T *rtc) {
