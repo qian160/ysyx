@@ -36,7 +36,6 @@ char *strcpy(char *dst, const char *src) {
   *dst = '\0';
 
   // the dst is returned by standard `strcpy()`
-  printf("using  klib\n");
   return ptr;
 
 }
