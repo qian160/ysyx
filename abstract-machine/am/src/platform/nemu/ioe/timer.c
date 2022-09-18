@@ -1,5 +1,6 @@
 #include <am.h>
 #include <nemu.h>
+#include <stdio.h>
 //#include "../../../riscv/riscv.h"
 
 static uint64_t init_time = 0;
