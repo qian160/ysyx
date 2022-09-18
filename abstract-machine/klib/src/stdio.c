@@ -97,7 +97,7 @@ int vsprintf(char *out, const char *fmt, va_list ap) {
       int num = va_arg(ap, int);
       if (num < 0) {
         num = ~num + 0x1;
-        *str++ = '-';
+        *str += '-';
         len ++;
       }
       char *np = itoa(num, 10);
