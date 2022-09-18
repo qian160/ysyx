@@ -104,6 +104,7 @@ int vsprintf(char *out, const char *fmt, va_list ap) {
       putstr(np);
       n += strlen(np);
       strcpy(str, np);
+      putstr(out);
       str += strlen(np);
       break;
     }
