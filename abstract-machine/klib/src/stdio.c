@@ -73,6 +73,7 @@ int printf(const char *fmt, ...) {
 int vsprintf(char *out, const char *fmt, va_list ap) {
   //support %s %d %c %x 
   int n = 0;
+  int num = 0;
   char *str = out;
   while(*fmt){
     if(*fmt != '%'){  //string
@@ -94,13 +95,13 @@ int vsprintf(char *out, const char *fmt, va_list ap) {
       break;
     }
     case 'd' : {
-      int dec_num = va_arg(ap, int);
-      if (dec_num < 0) {
-        dec_num = ~dec_num + 0x1;
+      num = va_arg(ap, int);
+      if (num < 0) {
+        num = ~num + 0x1;
         *str++ = '-';
         n ++;
       }
-      char *np = itoa(n, 10);
+      char *np = itoa(num, 10);
       n += strlen(np);
       strcpy(str, np);
       str += strlen(np);
