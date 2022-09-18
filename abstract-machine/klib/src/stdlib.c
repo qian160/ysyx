@@ -43,9 +43,12 @@ void *malloc(size_t size) { //size: bytes
 #if !(defined(__ISA_NATIVE__) && defined(__NATIVE_USE_KLIB__))
   //panic("Not implemented");
 #endif
+/*
   void * addr __attribute__((unused)) = heap.start;
   heap.start += size << 3;
   return addr;
+  */
+  return NULL;
 }
 
 void free(void *ptr) {
