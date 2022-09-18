@@ -13,6 +13,7 @@ static const uint32_t img [] = {             //offset
   0x00108093,  // addi x1, x1, 1
   0x00108093,  // addi x1, x1, 1
   0x0102b503,  // ld  a0,16(t0)
+  0x00000513,
   0x00100073,  // ebreak (used as nemu_trap)
   0xdeadbeef,  // some data
 
