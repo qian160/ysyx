@@ -75,10 +75,6 @@ char *itoa(int number, int base)  //10, 16
 }
 
 int printf(const char *fmt, ...) {
-  putch('1');
-  putch('1');
-  putch('1');
-  putch('1');
   va_list ap;
   va_start(ap, fmt);
   char buf[1024];
