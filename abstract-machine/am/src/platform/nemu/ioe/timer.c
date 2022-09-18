@@ -13,7 +13,7 @@ void __am_timer_init() {
   uint32_t lo = inl(RTC_ADDR);
 
   init_time = ((uint64_t)hi << 32) | lo;
-  printf("init_hi = %x, init_lo = %x\n", hi, lo);
+  //printf("init_hi = %x, init_lo = %x\n", hi, lo);
   return;
 }
 
@@ -22,7 +22,7 @@ void __am_timer_uptime(AM_TIMER_UPTIME_T *uptime) {
   uint32_t now_lo = inl(RTC_ADDR);
   uint64_t now = ((uint64_t)now_hi << 32) | now_lo;
   uptime->us = now - init_time;
-  printf("now_hi = %x, now_lo = %x\n", now_hi, now_lo);
+  //printf("now_hi = %x, now_lo = %x\n", now_hi, now_lo);
   return;
 }
 
