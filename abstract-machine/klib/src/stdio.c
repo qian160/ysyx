@@ -81,7 +81,8 @@ int vsprintf(char *out, const char *fmt, va_list ap) {
       continue;
     }
     fmt++;    //fmt now points to the char after %, which could be the width or fmt
-
+  putch(*fmt);
+  putch('\n');
   switch (*fmt++) {
     case 's' : {
       char * t = va_arg(ap, char*);
@@ -131,7 +132,7 @@ int vsprintf(char *out, const char *fmt, va_list ap) {
       break;
     }
     default :
-    putch(*--fmt);
+      putch(*--fmt);
       assert(0);
       break;
     }
