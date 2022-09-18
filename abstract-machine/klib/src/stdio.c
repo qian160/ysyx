@@ -3,24 +3,6 @@
 #include <klib-macros.h>
 #include <stdarg.h>
 #if !defined(__ISA_NATIVE__) || defined(__NATIVE_USE_KLIB__)
-/*
-int atoi(const char *s){
-  if(!s) return 0;
-  while(*s == ' ')  s++;    //skip spaces
-  char neg = 0;
-  if(*s == '-'){
-    neg = 1;
-    s++;
-  } 
-  int res = 0;
-  while(*s && *s != ' '){
-    res *= 10;
-    res += *s - '0';
-    s++;
-  }
-  return neg? -res: res;
-}
-*/
 
 bool is_num(char c){
   return c >= '0' && c <= '9';
@@ -75,6 +57,7 @@ char *itoa(int number, int base)  //10, 16
 }
 
 int printf(const char *fmt, ...) {
+  putch('1');
   va_list ap;
   va_start(ap, fmt);
   char buf[1024];
@@ -83,6 +66,7 @@ int printf(const char *fmt, ...) {
   for(int i = 0; i < n; i++){
     putch(buf[i]);
   }
+  putch('2');
   return n;
 }
 
