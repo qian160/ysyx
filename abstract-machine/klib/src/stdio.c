@@ -86,8 +86,8 @@ int vsprintf(char *out, const char *fmt, va_list ap) {
   switch (*fmt++) {
     case 's' : {
       char * t = va_arg(ap, char*);
-      int l = strlen(t);
-      for(int i = 0; i < l; i++) {
+      int length = strlen(t);
+      for(int i = 0; i < length; i++) {
         *str++ = *t++;
         len ++;
       }
@@ -97,7 +97,7 @@ int vsprintf(char *out, const char *fmt, va_list ap) {
       int num = va_arg(ap, int);
       if (num < 0) {
         num = ~num + 0x1;
-        *str += '-';
+        *str++ = '-';
         len ++;
       }
       char *np = itoa(num, 10);
@@ -108,9 +108,9 @@ int vsprintf(char *out, const char *fmt, va_list ap) {
     }
     case 'u': {
       uint32_t num = va_arg(ap, int);
-      char * np = itoa(num, 10);
+      char *np = itoa(num, 10);
       strcpy(str, np);
-      len   += strlen(np);
+      len += strlen(np);
       str += strlen(np);
       break;
     }
@@ -123,12 +123,12 @@ int vsprintf(char *out, const char *fmt, va_list ap) {
     case 'p':
     case 'x': {
       uint32_t num = va_arg(ap, uint32_t);
-      char *np = itoa(num, 16);
+      char *n = itoa(num, 16);
       *str++ = '0';
       *str++ = 'x';
-      strcpy(str, np);
-      len += strlen(np) + 2;
-      str += strlen(np);
+      strcpy(str, n);
+      len += strlen(n) + 2;
+      str += strlen(n);
       break;
     }
     default :
