@@ -57,7 +57,6 @@ char *itoa(int number, int base)  //10, 16
 }
 
 int printf(const char *fmt, ...) {
-  putch('1');
   va_list ap;
   va_start(ap, fmt);
   char buf[1024];
@@ -66,7 +65,6 @@ int printf(const char *fmt, ...) {
   for(int i = 0; i < n; i++){
     putch(buf[i]);
   }
-  putch('2');
   return n;
 }
 
@@ -83,17 +81,6 @@ int vsprintf(char *out, const char *fmt, va_list ap) {
       continue;
     }
     fmt++;    //fmt now points to the char after %, which could be the width or fmt
-
-  //check if it's a number
-  //char * format_begin = fmt;
-  //char * format_end = fmt; 
-  /*
-  while (is_num(*fmt)) {
-    format_end ++;
-    fmt ++;
-  }
-  */
-  //int format_len = get_format_length(format_begin, format_end);
 
   switch (*fmt++) {
     case 's' : {
@@ -112,13 +99,7 @@ int vsprintf(char *out, const char *fmt, va_list ap) {
         *str++ = '-';
         n++;
       }
-      //uint32_t num = (uint32_t)n;
       char *np = itoa(n, 10);
-      //int i = num_2_10str(num_str, num);
-      //if ( i < format_len) {
-      //  memset(str, ' ', format_len - i);
-      //  str += format_len - i;
-      //}
       n += strlen(np);
       strcpy(str, np);
       str += strlen(np);
@@ -127,11 +108,6 @@ int vsprintf(char *out, const char *fmt, va_list ap) {
     case 'u': {
       uint32_t num = va_arg(ap, int);
       char *n = itoa(num, 10);
-      //int i = num_2_10str(num_str, num);
-      //if ( i < format_len) {
-      //  memset(str, ' ', format_len - i);
-      //  str += format_len - i;
-      //}
       strcpy(str, n);
       n   += strlen(n);
       str += strlen(n);
@@ -147,11 +123,6 @@ int vsprintf(char *out, const char *fmt, va_list ap) {
     case 'x': {
       uint32_t num = va_arg(ap, uint32_t);
       char *n = itoa(num, 16);
-      //int i = num_2_16str(num_str, num);
-      //if ( (i + 2) < format_len) {
-      //  memset(str, ' ', format_len - i - 2 );
-      //  str += format_len - i -2 ;
-      //}
       *str++ = '0';
       *str++ = 'x';
       strcpy(str, n);
@@ -160,7 +131,6 @@ int vsprintf(char *out, const char *fmt, va_list ap) {
       break;
     }
     default :
-      // printf("%c\n", --fmt);
       assert(0);
       break;
     }
@@ -176,39 +146,8 @@ int sprintf(char *out, const char *fmt, ...) {
   int ret = vsprintf(out, fmt, ap);
   va_end(ap);
   return ret;
-
-  /* the code below is my implementation,  but it doesn't work in nemu...
-  //strcpy and strcat ?
-  *out = '\0';      //reset the buf
-  int n = 0;    //number of bytes put into out
-  va_list l;
-  va_start(l, fmt);
-  int d;
-  char c __attribute__((unused)), *s;
-  char temp[1];
-
-  while(*fmt){
-    switch (*fmt++)
-    {
-      case 's':
-        s = va_arg(l, char *);
-        out = strcat(out, s);
-        break;
-      case 'd':
-        d = va_arg(l, int);
-        char * decNum = itoa(d, 10);
-        out = strcat(out, decNum);
-        break;
-      case '%': break;    //need to be improved
-      default: 
-        temp[0] = *(fmt - 1);
-        strcat(out, temp);
-    }
-  }
-  va_end(l);
-  return n;
-  */
 }
+
 int snprintf(char *out, size_t n, const char *fmt, ...) {
   panic("Not implemented");
 }
