@@ -36,7 +36,6 @@ char *strcpy(char *dst, const char *src) {
   *dst = '\0';
 
   // the dst is returned by standard `strcpy()`
-  printf("using  klib\n");
   return ptr;
 
 }
@@ -189,7 +188,6 @@ int memcmp(const void *s1, const void *s2, size_t n) {
         q++;
     }
     return 0;
-
 }
 
 #endif
