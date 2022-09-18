@@ -94,13 +94,14 @@ int vsprintf(char *out, const char *fmt, va_list ap) {
       break;
     }
     case 'd' : {
-      long int n = va_arg(ap, int);
+      int n = va_arg(ap, int);
       if (n < 0) {
         n = - n;
         *str++ = '-';
         n++;
       }
       char *np = itoa(n, 10);
+      putstr(np);
       n += strlen(np);
       strcpy(str, np);
       str += strlen(np);
