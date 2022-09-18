@@ -13,7 +13,7 @@ void __am_timer_init() {
   outl(RTC_ADDR, lo);
   outl(RTC_ADDR + 4, hi);
 
-  printf("init time = 0x%lx\n", init_time);
+  //printf("init time = 0x%lx\n", init_time);
   return;
 }
 
