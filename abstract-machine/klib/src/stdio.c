@@ -71,7 +71,7 @@ int printf(const char *fmt, ...) {
 //v: use va_list as argument instead of ... its behavior is same as sprintf
 
 int vsprintf(char *out, const char *fmt, va_list ap) {
-  //num 
+  //need to add %n support
   //support %s %d %c %x 
   int len = 0;
   char *str = out;
@@ -82,10 +82,23 @@ int vsprintf(char *out, const char *fmt, va_list ap) {
       continue;
     }
     fmt++;    //fmt now points to the char after %, which could be the width or fmt
+    int space = 0;
+
+    while(is_num(*fmt)){
+      space = (space * 10) + (*fmt) - '0';
+      fmt++;
+    }
+
     switch (*fmt++) {
       case 's' : {
         char * t = va_arg(ap, char*);
         int l = strlen(t);
+        if( l < space){
+          for(int j = l; j < space; j++){
+            *str++ = ' ';
+            len++;
+          }
+        }
         for(int i = 0; i < l; i++) {
           *str++ = *t++;
           len ++;
@@ -100,7 +113,14 @@ int vsprintf(char *out, const char *fmt, va_list ap) {
           len ++;
         }
         char *np = itoa(num, 10);
+        int l = strlen(np);
         len += strlen(np);
+        if( l < space){
+          for(int j = l; j < space; j++){
+            *str++ = ' ';
+            len++;
+          }
+        }
         strcpy(str, np);
         str += strlen(np);
         break;
