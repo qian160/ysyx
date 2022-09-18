@@ -81,62 +81,60 @@ int vsprintf(char *out, const char *fmt, va_list ap) {
       continue;
     }
     fmt++;    //fmt now points to the char after %, which could be the width or fmt
-  putch(*fmt);
-  putch('\n');
-  switch (*fmt++) {
-    case 's' : {
-      char * t = va_arg(ap, char*);
-      int length = strlen(t);
-      for(int i = 0; i < length; i++) {
-        *str++ = *t++;
-        len ++;
+    switch (*fmt++) {
+      case 's' : {
+        char * t = va_arg(ap, char*);
+        putstr(t);
+        int l = strlen(t);
+        for(int i = 0; i < l; i++) {
+          *str++ = *t++;
+          len ++;
+        }
+        break;
       }
-      break;
-    }
-    case 'd' : {
-      int num = va_arg(ap, int);
-      if (num < 0) {
-        num = ~num + 0x1;
-        *str++ = '-';
-        len ++;
+      case 'd' : {
+        int num = va_arg(ap, int);
+        if (num < 0) {
+          num = -num;//~num + 0x1;
+          *str++ = '-';
+          len ++;
+        }
+        char *np = itoa(num, 10);
+        len += strlen(np);
+        strcpy(str, np);
+        str += strlen(np);
+        break;
       }
-      char *np = itoa(num, 10);
-      len += strlen(np);
-      strcpy(str, np);
-      str += strlen(np);
-      break;
+      case 'u': {
+        uint32_t num = va_arg(ap, int);
+        char *np = itoa(num, 10);
+        strcpy(str, np);
+        len += strlen(np);
+        str += strlen(np);
+        break;
+      }
+      case 'c': {
+        char c = (char)va_arg(ap, int);
+        *str++ = c;
+        len ++;
+        break;
+      }
+      case 'p':
+      case 'x': {
+        uint32_t num = va_arg(ap, uint32_t);
+        char *n = itoa(num, 16);
+        *str++ = '0';
+        *str++ = 'x';
+        strcpy(str, n);
+        len += strlen(n) + 2;
+        str += strlen(n);
+        break;
+      }
+      default :
+        assert(0);
+        break;
+      }
     }
-    case 'u': {
-      uint32_t num = va_arg(ap, int);
-      char *np = itoa(num, 10);
-      strcpy(str, np);
-      len += strlen(np);
-      str += strlen(np);
-      break;
-    }
-    case 'c': {
-      char c = (char)va_arg(ap, int);
-      *str++ = c;
-      len ++;
-      break;
-    }
-    case 'p':
-    case 'x': {
-      uint32_t num = va_arg(ap, uint32_t);
-      char *n = itoa(num, 16);
-      *str++ = '0';
-      *str++ = 'x';
-      strcpy(str, n);
-      len += strlen(n) + 2;
-      str += strlen(n);
-      break;
-    }
-    default :
-      putch(*--fmt);
-      assert(0);
-      break;
-    }
-  }
   *str='\0';
   return len;
 }
