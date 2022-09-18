@@ -74,6 +74,7 @@ int printf(const char *fmt, ...) {
 
 int vsprintf(char *out, const char *fmt, va_list ap) {
   //support %s %d %c %x 
+  int n = 0;
   char *str = out;
   while(*fmt){
     if(*fmt != '%'){
@@ -100,6 +101,7 @@ int vsprintf(char *out, const char *fmt, va_list ap) {
       int len = strlen(t);
       for(int i = 0; i < len; i++) {
         *str++ = *t++;
+        n++;
       }
       break;
     }
@@ -108,6 +110,7 @@ int vsprintf(char *out, const char *fmt, va_list ap) {
       if (n < 0) {
         n = - n;
         *str++ = '-';
+        n++;
       }
       //uint32_t num = (uint32_t)n;
       char *np = itoa(n, 10);
@@ -116,6 +119,7 @@ int vsprintf(char *out, const char *fmt, va_list ap) {
       //  memset(str, ' ', format_len - i);
       //  str += format_len - i;
       //}
+      n += strlen(np);
       strcpy(str, np);
       str += strlen(np);
       break;
@@ -129,12 +133,14 @@ int vsprintf(char *out, const char *fmt, va_list ap) {
       //  str += format_len - i;
       //}
       strcpy(str, n);
+      n   += strlen(n);
       str += strlen(n);
       break;
     }
     case 'c': {
       char c = (char)va_arg(ap, int);
       *str++ = c;
+      n++;
       break;
     }
     case 'p':
@@ -149,6 +155,7 @@ int vsprintf(char *out, const char *fmt, va_list ap) {
       *str++ = '0';
       *str++ = 'x';
       strcpy(str, n);
+      n   += strlen(n) + 2;
       str += strlen(n);
       break;
     }
@@ -159,7 +166,7 @@ int vsprintf(char *out, const char *fmt, va_list ap) {
     }
   }
   *str='\0';
-  return 0;
+  return n;
 }
 
 //this function won't add spaces between 2 calls, it just append
