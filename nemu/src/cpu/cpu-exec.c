@@ -9,7 +9,7 @@
  * This is useful when you use the `si' command.
  * You can modify this value as you want.
  */
-#include "../../src/isa/riscv64/local-include/reg.h"
+//#include "../../src/isa/riscv64/local-include/reg.h"
 #include "../include/trace.h"
 
 #define MAX_INST_TO_PRINT 10

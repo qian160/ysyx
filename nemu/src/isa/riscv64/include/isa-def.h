@@ -10,7 +10,7 @@ typedef struct {
 
 // decode
 typedef struct {
-  unsigned char funct3  : 3;
+  unsigned char funct3/*  : 3*/;
   bool is_jalr : 1;
   bool is_lui  : 1;
   bool is_load : 1;
@@ -19,8 +19,8 @@ typedef struct {
   //word_t link_addr; not necessarily, always pc + 4
   word_t target;
   word_t src1, src2;
-  unsigned int rd : 5;
-  unsigned int type : 4;
+  unsigned char rd/* : 5*/;
+  unsigned char type/* : 4*/;
 
   //add more signals
 } riscv64_ISADecodeInfo;
