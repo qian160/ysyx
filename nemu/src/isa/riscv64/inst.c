@@ -144,8 +144,9 @@ static void decode_operand(Decode * D, word_t *dest, word_t *src1, word_t *src2,
   //Log("\nimmJ = 0x%lx\nimmI = 0x%lx\nimmB = 0x%lx\nimmS = 0x%lx\n", immJ(inst), immI(inst), immB(inst), immS(inst));
 
   D->decInfo.rd   = rd;
+  D->decInfo.target = 0;
   D->decInfo.type = type;
-  //IFDEF(CONFIG_FTRACE_ENABLE, D->decInfo.is_ret = 0;  D->decInfo.target = 0;);
+  D->decInfo.is_ret = 0;
   //  ret -> jalr ra, x0, 0
   switch (type) {
     case TYPE_R: src1I(R(rs1));       src2I(R(rs2));    break;
