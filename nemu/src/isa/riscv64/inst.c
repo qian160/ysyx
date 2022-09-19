@@ -14,11 +14,11 @@ enum {
   TYPE_N, // none
 };
 
-#define SRC1R(n) do { *SRC1 = R(n); } while (0)
-#define SRC2R(n) do { *SRC2 = R(n); } while (0)
+#define src1R(n) do { *src1 = R(n); } while (0)
+#define src2R(n) do { *src2 = R(n); } while (0)
 #define destR(n) do { *dest = n; } while (0)
-#define SRC1I(i) do { *SRC1 = i; } while (0)
-#define SRC2I(i) do { *SRC2 = i; } while (0)
+#define src1I(i) do { *src1 = i; } while (0)
+#define src2I(i) do { *src2 = i; } while (0)
 #define destI(i) do { *dest = i; } while (0)
 
 #define funct3(inst) (BITS(inst, 14, 12))
@@ -37,7 +37,6 @@ extern void _ftrace(Decode * D);
 #define R(i) gpr(i)
 #define Mr vaddr_read   //memory read
 #define Mw vaddr_write  //memory write
-
 
 static const char tp[] __attribute__((unused))= "IUSJRB";    //use type as index
 
@@ -64,8 +63,8 @@ void show_bits_fmt(word_t b){
 #ifdef CONFIG_SHOW_DECODE_INFORMATION
 
 void show_decode(Decode *D){
-word_t SRC1   = D->decInfo.SRC1;
-word_t SRC2   = D->decInfo.SRC2;
+word_t src1   = D->decInfo.src1;
+word_t src2   = D->decInfo.src2;
 uint32_t dest = D->decInfo.rd;
 int type      = D->decInfo.type;
 printf(ANSI_FMT(" ---------------------------------------------------------------------------\n", ANSI_FG_YELLOW));
@@ -73,25 +72,25 @@ printf(ANSI_FMT(" --------------------------------------------------------------
   char buf[30];
   disassemble(buf, sizeof(buf), D -> pc, (uint8_t *)(&D -> inst), 4);
   printf(ANSI_FMT("| type-%c:  %32s \t\t\t\t    | \n| old PC = 0x%-60lx   |\n", ANSI_FG_GREEN),tp[type], buf, D -> pc);
-  printf(ANSI_FMT("| SRC1 = 0x%-64lx | \n", ANSI_FG_YELLOW), SRC1);   
-  show_bits_fmt(SRC1);
-  printf(ANSI_FMT("| SRC2 = 0x%-64lx | \n", ANSI_FG_YELLOW), SRC2);   
-  show_bits_fmt(SRC2);
+  printf(ANSI_FMT("| src1 = 0x%-64lx | \n", ANSI_FG_YELLOW), src1);   
+  show_bits_fmt(src1);
+  printf(ANSI_FMT("| src2 = 0x%-64lx | \n", ANSI_FG_YELLOW), src2);   
+  show_bits_fmt(src2);
   int fct3 = D -> decInfo.funct3;
   switch(type){  
     case(TYPE_I):case(TYPE_R):case(TYPE_U):
     if(D -> decInfo.is_load){
-      word_t address = SRC1 + SRC2;
-      word_t loadVal = Mr(SRC1 + SRC2, L_width(fct3));
+      word_t address = src1 + src2;
+      word_t loadVal = Mr(src1 + src2, L_width(fct3));
       printf(ANSI_FMT("| load a value 0x%-16lx from address: 0x%-24lx  | \n", ANSI_FG_YELLOW), loadVal, address);
       show_bits_fmt(loadVal);
       IFDEF(CONFIG_MTRACE_ENABLE, update_mringbuf(1, address, loadVal, dest));
     }
     else if(D->decInfo.is_jalr){
-      printf(ANSI_FMT("| jalr, set %s = 0x%-lx, new PC at 0x%lx. %s's bits are: \t\t|\n", ANSI_FG_YELLOW), reg_name(dest), SRC1, SRC2, reg_name(dest));
-      show_bits_fmt(SRC1);
+      printf(ANSI_FMT("| jalr, set %s = 0x%-lx, new PC at 0x%lx. %s's bits are: \t\t|\n", ANSI_FG_YELLOW), reg_name(dest), src1, src2, reg_name(dest));
+      show_bits_fmt(src1);
       /*IFDEF(CONFIG_FTRACE_ENABLE,
-        if(dest == 0) update_ftrace(0, SRC2, "dont know", depth);
+        if(dest == 0) update_ftrace(0, src2, "dont know", depth);
       );*/
     }
     else  {
@@ -100,24 +99,24 @@ printf(ANSI_FMT(" --------------------------------------------------------------
     }
     break;
     case(TYPE_B):
-      if( SRC1 == 0){
+      if( src1 == 0){
         printf(ANSI_FMT("| branch is not taken %-40s | \n",  ANSI_FG_YELLOW), " ");
       }
       else {
-        printf(ANSI_FMT("| branch is taken, new PC at 0x%-44lx | \n", ANSI_FG_YELLOW), SRC2);
-        //IFDEF(CONFIG_FTRACE_ENABLE, update_ftrace(1, SRC2, "dont know", depth));
+        printf(ANSI_FMT("| branch is taken, new PC at 0x%-44lx | \n", ANSI_FG_YELLOW), src2);
+        //IFDEF(CONFIG_FTRACE_ENABLE, update_ftrace(1, src2, "dont know", depth));
       }
       break;
     case(TYPE_J):
-      printf(ANSI_FMT("| jal, set %s = 0x%lx, new PC at 0x%-34lx | \n", ANSI_FG_YELLOW), reg_name(dest), SRC1, SRC2);
-      show_bits_fmt(SRC1);
-      //IFDEF(CONFIG_FTRACE_ENABLE, update_ftrace(1, SRC2, "dont know", depth));
+      printf(ANSI_FMT("| jal, set %s = 0x%lx, new PC at 0x%-34lx | \n", ANSI_FG_YELLOW), reg_name(dest), src1, src2);
+      show_bits_fmt(src1);
+      //IFDEF(CONFIG_FTRACE_ENABLE, update_ftrace(1, src2, "dont know", depth));
       break;
     case(TYPE_S):{
-      word_t storeVal = SRC2 & BITMASK(S_width(fct3) << 3);
-      printf(ANSI_FMT("| store a value 0x%-16lx to address 0x%-27lx | \n", ANSI_FG_YELLOW), storeVal, SRC1);
+      word_t storeVal = src2 & BITMASK(S_width(fct3) << 3);
+      printf(ANSI_FMT("| store a value 0x%-16lx to address 0x%-27lx | \n", ANSI_FG_YELLOW), storeVal, src1);
       show_bits_fmt(storeVal);
-      IFDEF(CONFIG_MTRACE_ENABLE, update_mringbuf(0, SRC1, storeVal, dest));
+      IFDEF(CONFIG_MTRACE_ENABLE, update_mringbuf(0, src1, storeVal, dest));
       break;
     }
     default:  break;
@@ -126,81 +125,79 @@ printf(ANSI_FMT(" --------------------------------------------------------------
 }
 #endif
 
-//SRC1 and SRC2 are the source operands which will join the future calculation. Use pointer to communicate with outside
-//question: how to make good use of dest, SRC1, SRC2
-static void decode_operand(Decode * D, unsigned char *dest, word_t *SRC1, word_t *SRC2, int type) {
-  //default op is add, xxx = SRC1 + SRC2. So just adjust SRC1 and SRC2
+//src1 and src2 are the source operands which will join the future calculation. Use pointer to communicate with outside
+//question: how to make good use of dest, src1, src2
+
+#define SRC1 D->decInfo.src1
+#define SRC2 D->decInfo.src2
+#define RD   D->decInfo.rd
+
+#define storeAddr       (immS(inst) + R(rs1))
+#define BRANCH_TARGET   (immB(inst) + pc)
+#define JAL_TARGET      ((word_t)immJ(inst) + (word_t)pc)
+#define JALR_TARGET     (immI(inst) + R(rs1))
+
+static void decode_operand(Decode * D, int type) {
+  //default op is add, xxx = src1 + src2. So just adjust src1 and src2
   uint32_t inst = D->inst;
   int rd  = BITS(inst, 11, 7);
+  D->decInfo.rd = rd;
   int rs1 = BITS(inst, 19, 15);
   int rs2 = BITS(inst, 24, 20);
-  //Branch : SRC1 = flag, SRC2 = address
-  //Jump   : SRC1 = link address, SRC2 = target address
-  word_t rs1Val = R(rs1);   //SRC2 should be the address
-  word_t rs2Val = R(rs2);
+  //Branch : src1 = flag, src2 = address
+  //Jump   : src1 = link address, src2 = target address
   word_t pc = D -> pc;
-  word_t pc_Plus4 = pc + 4;
-  word_t JAL_TARGET     = (word_t)immJ(inst) + (word_t)pc;
-  word_t JALR_TARGET    = immI(inst) + rs1Val;
   //Log("\nimmJ = 0x%lx\nimmI = 0x%lx\nimmB = 0x%lx\nimmS = 0x%lx\n", immJ(inst), immI(inst), immB(inst), immS(inst));
-  word_t BRANCH_TARGET  = immB(inst) + pc;
-  word_t storeAddr      = immS(inst) + rs1Val;
 
   D->decInfo.rd   = rd;
   D->decInfo.target = 0;
   D->decInfo.type = type;
-  D->decInfo.is_ret = 0;
+  D->decInfo.is_ret = 0;    //default
   //  ret -> jalr ra, x0, 0
-  destR(rd);
   switch (type) {
-    case TYPE_R: SRC1I(rs1Val);       SRC2I(rs2Val);    break;
-    case TYPE_S: SRC1I(storeAddr);    SRC2R(rs2);       break;
-    case TYPE_J: SRC1I(pc_Plus4);     SRC2I(JAL_TARGET);  D->decInfo.target = JAL_TARGET; D->decInfo.is_ret = 0;/*(rd == 0);*/ break;
+    case TYPE_R: SRC1 = R(rs1);       SRC2 = R(rs2);       break;
+    case TYPE_S: SRC1 = storeAddr;    SRC2 = R(rs2);       break;
+    case TYPE_J: SRC1 = pc + 4;       SRC2 = JAL_TARGET;   D->decInfo.target = JAL_TARGET; D->decInfo.is_ret = 0;/*(rd == 0 ?);*/ break;
     case TYPE_I: {
       if(D -> decInfo.is_jalr){ //jalr is I type, which is special
-          SRC1I(pc_Plus4);    SRC2I(JALR_TARGET);  D->decInfo.target = JALR_TARGET;   D->decInfo.is_ret = (rd == 0 && rs1 == 1);  break;
+          SRC1 = pc + 4;                     SRC2 = JALR_TARGET;  
+          D->decInfo.target = JALR_TARGET;   D->decInfo.is_ret = (rd == 0 && rs1 == 1);  break;
       }
       else{
-          SRC1R(rs1);         SRC2I(immI(inst));  break;
+          SRC1 = R(rs1);         SRC2 = immI(inst);  break;
       } 
     }
     case TYPE_U: {
       //to dest's upper 20 bits
       if(D -> decInfo.is_lui){
-        SRC1I(immU(inst));    break;
+        SRC1 = immU(inst);    break;    //SRC2 = 0
       }
       else{           //auipc rd, imm -> rd = pc + imm
-        SRC1I(immU(inst));   SRC2I(pc); break;
+        SRC1 = immU(inst);   SRC2 = pc; break;
       }
     }
     case TYPE_B: {
-      SRC2I(BRANCH_TARGET);
+      SRC2 = BRANCH_TARGET;
       D->decInfo.target = BRANCH_TARGET;
-        switch (D -> decInfo.funct3){  //use SRC1 as a flag, SRC2 = branch_target
-        case beq_funct3:  SRC1I(rs1Val == rs2Val);  D->decInfo.branch_taken = (rs1Val == rs2Val);  break;
-        case bne_funct3:  SRC1I(rs1Val ^  rs2Val);  D->decInfo.branch_taken = (rs1Val ^  rs2Val);  break;
-        case blt_funct3:  SRC1I((sword_t)rs1Val <  (sword_t)rs2Val);  D->decInfo.branch_taken = ((sword_t)rs1Val <  (sword_t)rs2Val); break;
-        case bge_funct3:  SRC1I((sword_t)rs1Val >= (sword_t)rs2Val);  D->decInfo.branch_taken = ((sword_t)rs1Val >= (sword_t)rs2Val); break;
-        case bltu_funct3: SRC1I(rs1Val <  rs2Val);  D->decInfo.branch_taken = (rs1Val <  rs2Val);   break;
-        case bgeu_funct3: SRC1I(rs1Val >= rs2Val);  D->decInfo.branch_taken = (rs1Val >= rs2Val);   break;
+        switch (D -> decInfo.funct3){  //use src1 as a flag, src2 = branch_target
+        case beq_funct3:  SRC1 = (R(rs1) == R(rs2));  D->decInfo.branch_taken = (R(rs1) == R(rs2));  break;
+        case bne_funct3:  SRC1 = (R(rs1) ^  R(rs2));  D->decInfo.branch_taken = (R(rs1) ^  R(rs2));  break;
+        case blt_funct3:  SRC1 = ((sword_t)R(rs1) <  (sword_t)R(rs2));  D->decInfo.branch_taken = ((sword_t)R(rs1) <  (sword_t)R(rs2)); break;
+        case bge_funct3:  SRC1 = ((sword_t)R(rs1) >= (sword_t)R(rs2));  D->decInfo.branch_taken = ((sword_t)R(rs1) >= (sword_t)R(rs2)); break;
+        case bltu_funct3: SRC1 = (R(rs1) <  R(rs2));  D->decInfo.branch_taken = (R(rs1) <  R(rs2));   break;
+        case bgeu_funct3: SRC1 = (R(rs1) >= R(rs2));  D->decInfo.branch_taken = (R(rs1) >= R(rs2));   break;
         }
     }
   }
-  D->decInfo.src1 = rs1Val;
-  D->decInfo.src2 = rs2Val;
 }
 
 #define INSTPAT_INST(D) ((D)->inst)
-#define RD   D -> decInfo.rd
-#define SRC1 D -> decInfo.src1
-#define SRC2 D -> decInfo.src2
 
 static int decode_exec(Decode *D) {
   D->dnpc = D->snpc;    //default
 
-//a match is found, do what it supposed to do.
 #define INSTPAT_MATCH(D, name, type, ... /* body */ ) { \
-  decode_operand(D, &RD, &SRC1, &SRC2, concat(TYPE_, type)); \
+  decode_operand(D, concat(TYPE_, type)); \
   __VA_ARGS__ ; \
   IFDEF(CONFIG_SHOW_DECODE_INFORMATION, show_decode(D));\
   \
@@ -222,7 +219,8 @@ static int decode_exec(Decode *D) {
   INSTPAT_START();
   //we can put frequently used inst at first, since these matches will be execuated in sequence
   //but it will make the code less readable, so just ignore that
-  //        funct7  rs2   rs1 funct3 rd   opcodeRD  //arithmetic                                              //if uRD, then access the regfile is needed
+  //        funct7  rs2   rs1 funct3 rd   opcode
+  //arithmetic                                              //if use R, then access the regfile is needed
   INSTPAT("0000000 ????? ????? 000 ????? 0110011", add,      R, R(RD) = SRC1 + SRC2);
   INSTPAT("??????? ????? ????? 000 ????? 0010011", addi,     I, R(RD) = SRC1 + SRC2);
   INSTPAT("0100000 ????? ????? 000 ????? 0110011", sub,      R, R(RD) = SRC1 - SRC2);
@@ -232,19 +230,21 @@ static int decode_exec(Decode *D) {
   INSTPAT("??????? ????? ????? 110 ????? 0010011", ori,      I, R(RD) = SRC1 | SRC2);
   INSTPAT("0000000 ????? ????? 111 ????? 0110011", and,      R, R(RD) = SRC1 & SRC2);
   INSTPAT("??????? ????? ????? 111 ????? 0010011", andi,     I, R(RD) = SRC1 & SRC2);
-  //compareRD  INSTPAT("0000000 ????? ????? 010 ????? 0110011", slt,      R, R(RD) = (sword_t)SRC1 < (sword_t)SRC2 ? 1 : 0);
+  //compare
+  INSTPAT("0000000 ????? ????? 010 ????? 0110011", slt,      R, R(RD) = (sword_t)SRC1 < (sword_t)SRC2 ? 1 : 0);
   INSTPAT("??????? ????? ????? 010 ????? 0010011", slti,     I, R(RD) = (sword_t)SRC1 < (sword_t)SRC2 ? 1 : 0);
   INSTPAT("0000000 ????? ????? 011 ????? 0110011", sltu,     R, R(RD) = SRC1 < SRC2 ? 1 : 0);
   INSTPAT("??????? ????? ????? 011 ????? 0010011", sltiu,    I, R(RD) = SRC1 < SRC2 ? 1 : 0);
-  //shifts. RV64 needs 6 bits' shamt, so it will take one-bit's poRDon of funct7 
+  //shifts. RV64 needs 6 bits' shamt, so it will take one-bit's position of funct7 
   INSTPAT("0000000 ????? ????? 001 ????? 0110011", sll,      R, R(RD) = SRC1 << BITS(SRC2, 5, 0));
   INSTPAT("000000? ????? ????? 001 ????? 0010011", slli,     I, R(RD) = SRC1 << BITS(SRC2, 5, 0));
   INSTPAT("0000000 ????? ????? 101 ????? 0110011", srl,      R, R(RD) = SRC1 >> BITS(SRC2, 5, 0));
-//INSTPAT("0000001 ????? ????? 101 ????? 0110011", divu,     R, R(RD) = (SRC1 / SRC2));
+//INSTPAT("0000001 ????? ????? 101 ????? 0110011", divu,     R, R(RD) = (src1 / src2));
   INSTPAT("000000? ????? ????? 101 ????? 0010011", srli,     I, R(RD) = SRC1 >> BITS(SRC2, 5, 0));
   INSTPAT("0100000 ????? ????? 101 ????? 0110011", sra,      R, R(RD) = (sword_t)SRC1 >> (sword_t)BITS(SRC2, 5, 0));
   INSTPAT("010000? ????? ????? 101 ????? 0010011", srai,     I, R(RD) = (sword_t)SRC1 >> (sword_t)BITS(SRC2, 5, 0));
-  //load: RD  INSTPAT("??????? ????? ????? 000 ????? 0000011", lb,       I, R(RD) = SEXT(Mr(SRC1 + SRC2, 1), 8));
+  //load: 
+  INSTPAT("??????? ????? ????? 000 ????? 0000011", lb,       I, R(RD) = SEXT(Mr(SRC1 + SRC2, 1), 8));
   INSTPAT("??????? ????? ????? 001 ????? 0000011", lh,       I, R(RD) = SEXT(Mr(SRC1 + SRC2, 2), 16));
   INSTPAT("??????? ????? ????? 010 ????? 0000011", lw,       I, R(RD) = SEXT(Mr(SRC1 + SRC2, 4), 32));
   INSTPAT("??????? ????? ????? 100 ????? 0000011", lbu,      I, R(RD) = Mr(SRC1 + SRC2, 1));
@@ -254,16 +254,13 @@ static int decode_exec(Decode *D) {
   INSTPAT("??????? ????? ????? 001 ????? 0100011", sh,       S, Mw(SRC1, 2, SRC2));
   INSTPAT("??????? ????? ????? 000 ????? 0100011", sb,       S, Mw(SRC1, 1, SRC2));
   //branches
-  INSTPAT("??????? ????? ????? 000 ????? 1100011", beq,      B, D -> dnpc = SRC1? SRC2 : D -> dnpc);    //use SRC1 as a flag
-  INSTPAT("??????? ????? ????? 001 ????? 1100011", bne,      B, D -> dnpc = SRC1? SRC2 : D -> dnpc);
-  INSTPAT("??????? ????? ????? 100 ????? 1100011", blt,      B, D -> dnpc = SRC1? SRC2 : D -> dnpc);
-  INSTPAT("??????? ????? ????? 101 ????? 1100011", bge,      B, D -> dnpc = SRC1? SRC2 : D -> dnpc);
-  INSTPAT("??????? ????? ????? 110 ????? 1100011", bltu,     B, D -> dnpc = SRC1? SRC2 : D -> dnpc);
-  INSTPAT("??????? ????? ????? 111 ????? 1100011", bgtu,     B, D -> dnpc = SRC1? SRC2 : D -> dnpc);
-  //U-type
-  INSTPAT("??????? ????? ????? ??? ????? 0010111", auipc,    U, R(RD) = SRC1 + SRC2);
-  INSTPAT("??????? ????? ????? ??? ????? 0110111", lui,      U, R(RD) = SRC1 + SRC2);
-  //JAL
+  INSTPAT("??????? ????? ????? 000 ????? 1100011", beq,      B, D -> dnpc = SRC1 ? SRC2 : D -> dnpc);    //use src1 as a flag
+  INSTPAT("??????? ????? ????? 001 ????? 1100011", bne,      B, D -> dnpc = SRC1 ? SRC2 : D -> dnpc);
+  INSTPAT("??????? ????? ????? 100 ????? 1100011", blt,      B, D -> dnpc = SRC1 ? SRC2 : D -> dnpc);
+  INSTPAT("??????? ????? ????? 101 ????? 1100011", bge,      B, D -> dnpc = SRC1 ? SRC2 : D -> dnpc);
+  INSTPAT("??????? ????? ????? 110 ????? 1100011", bltu,     B, D -> dnpc = SRC1 ? SRC2 : D -> dnpc);
+  INSTPAT("??????? ????? ????? 111 ????? 1100011", bgtu,     B, D -> dnpc = SRC1 ? SRC2 : D -> dnpc);
+  //jump
   INSTPAT("??????? ????? ????? ??? ????? 1101111", jal,      J, R(RD) = SRC1, D->dnpc = SRC2);
   INSTPAT("??????? ????? ????? 000 ????? 1100111", jalr,     I, R(RD) = SRC1, D->dnpc = SRC2);
   //M extension
@@ -285,15 +282,15 @@ static int decode_exec(Decode *D) {
   INSTPAT("??????? ????? ????? 011 ????? 0000011", ld,       I, R(RD) = Mr(SRC1 + SRC2, 8));
   INSTPAT("??????? ????? ????? 011 ????? 0100011", sd,       S, Mw(SRC1, 8, SRC2));    //addr, len, data
 
-  INSTPAT("??????? ????? ????? 000 ????? 0011011", addiw,    I, R(RD) = SEXT((int)SRC1 + (int)SRC2, 32));
+  INSTPAT("??????? ????? ????? 000 ????? 0011011", addiw,    I, R(RD) = SEXT((int)SRC1 +  (int)SRC2, 32));
   INSTPAT("0000000 ????? ????? 001 ????? 0011011", slliw,    I, R(RD) = SEXT((int)SRC1 << (int)SRC2, 32));
   INSTPAT("0000000 ????? ????? 101 ????? 0011011", srliw,    I, R(RD) = SEXT((uint32_t)SRC1 >> (uint32_t)SRC2, 32));
   INSTPAT("0100000 ????? ????? 101 ????? 0011011", sraiw,    I, R(RD) = SEXT((int)SRC1 >> (int)SRC2, 32));
   //RV64M
-  INSTPAT("0000001 ????? ????? 000 ????? 0111011", mulw,     R, R(RD) = (int32_t)SRC1 * (int32_t)SRC2);
-  INSTPAT("0000001 ????? ????? 100 ????? 0111011", divw,     R, R(RD) = (int32_t)SRC1 / (int32_t)SRC2);
+  INSTPAT("0000001 ????? ????? 000 ????? 0111011", mulw,     R, R(RD) = (int32_t) SRC1 * (int32_t) SRC2);
+  INSTPAT("0000001 ????? ????? 100 ????? 0111011", divw,     R, R(RD) = (int32_t) SRC1 / (int32_t) SRC2);
   INSTPAT("0000001 ????? ????? 101 ????? 0111011", divuw,    R, R(RD) = (uint32_t)SRC1 / (uint32_t)SRC2);
-  INSTPAT("0000001 ????? ????? 110 ????? 0111011", remw,     R, R(RD) = (int32_t)SRC1 % (int32_t)SRC2);
+  INSTPAT("0000001 ????? ????? 110 ????? 0111011", remw,     R, R(RD) = (int32_t) SRC1 % (int32_t) SRC2);
   INSTPAT("0000001 ????? ????? 111 ????? 0111011", remuw,    R, R(RD) = (uint32_t)SRC1 % (uint32_t)SRC2);
 
   INSTPAT("0000000 00001 00000 000 00000 1110011", ebreak  , N, NEMUTRAP(D->pc, R(10))); // R(10) is $a0
