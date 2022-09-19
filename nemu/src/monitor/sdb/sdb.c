@@ -8,7 +8,7 @@ void init_wp_pool();
 
 /* We use the `readline' library to provide more flexibility to read from stdin. */
 static char* rl_gets() {
-  
+  /*
   static char *line_read = NULL;
 
   if (line_read) {
@@ -17,8 +17,8 @@ static char* rl_gets() {
   }
 
   line_read = readline("(nemu) ");
-  
-  //char * line_read = readline(ANSI_FMT("(nemu)",ANSI_FG_PINK));
+  */
+  char * line_read = readline(ANSI_FMT("(nemu)",ANSI_FG_PINK));
   if (line_read && *line_read) {
     add_history(line_read);
   }
