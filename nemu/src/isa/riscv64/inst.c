@@ -264,6 +264,7 @@ static int decode_exec(Decode *D) {
       }
 
     case(ARITH_I):{
+      printf("hit\n");
       D -> decInfo.type = TYPE_I;
       word_t imm_I = immI(inst);
       switch(fct7){
