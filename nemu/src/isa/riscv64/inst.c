@@ -222,10 +222,9 @@ static int decode_exec(Decode *D) {
       auipc + addi : get the address of a section
   */
   INSTPAT_START();
-  //we can put frequently used inst at first, since these matches will be execuated in sequence
-  //but it will make the code less readable, so just ignore that
+  //guess: compute key, shift, mask at first, then use these 3 to index into something
   //        funct7  rs2   rs1 funct3 rd   opcode
-  //most frequently used
+  //put most frequently used insts at first
   INSTPAT("??????? ????? ????? 000 ????? 0010011", addi,     I, R(dest) = src1 + src2);
   INSTPAT("0000000 ????? ????? 000 ????? 0110011", add,      R, R(dest) = src1 + src2);
   INSTPAT("??????? ????? ????? 011 ????? 0000011", ld,       I, R(dest) = Mr(src1 + src2, 8));
@@ -283,7 +282,7 @@ static int decode_exec(Decode *D) {
   INSTPAT("0000000 ????? ????? 001 ????? 0011011", slliw,    I, R(dest) = SEXT((int)src1 << (int)src2, 32));
   INSTPAT("0000000 ????? ????? 101 ????? 0011011", srliw,    I, R(dest) = SEXT((uint32_t)src1 >> (uint32_t)src2, 32));
   INSTPAT("0100000 ????? ????? 101 ????? 0011011", sraiw,    I, R(dest) = SEXT((int)src1 >> (int)src2, 32));
-  
+
   INSTPAT("0000001 ????? ????? 000 ????? 0110011", mul,      R, R(dest) = (sword_t)src1 * (sword_t)src2);
   INSTPAT("0000001 ????? ????? 001 ????? 0110011", mulh,     R, R(dest) = BITS((__int128_t)src1 * (__int128_t)src2, 127, 64));
   INSTPAT("0000001 ????? ????? 010 ????? 0110011", mulhsu,   R, R(dest) = BITS((__int128_t)src1 * (__uint128_t)src2, 127, 64));
