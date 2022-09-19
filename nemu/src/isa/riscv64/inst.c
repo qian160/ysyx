@@ -269,7 +269,7 @@ static int decode_exec(Decode *D) {
       switch(fct7){
         case(0x0):
           switch(fct3){
-            case(0x0):  R(rd) = R(rs1)          +   imm_I;                  break;  //addi
+            case(0x0):  printf("\nrs1 = 0x%lx, imm = 0x%lx\n", R(rs1), immI(inst)); R(rd) = R(rs1)          +   imm_I;                  break;  //addi
             case(0x1):  R(rd) = R(rs1)          +   imm_I;                  break;  //slli
             case(0x2):  R(rd) = (sword_t)R(rs1) <   (sword_t)imm_I ? 1 : 0; break;  //slti
             case(0x3):  R(rd) = R(rs1)          <   imm_I ? 1 : 0;          break;  //sltiu
