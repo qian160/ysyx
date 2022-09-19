@@ -137,12 +137,11 @@ printf(ANSI_FMT(" --------------------------------------------------------------
 static void decode_operand(Decode * D, int type) {
   //default op is add, xxx = src1 + src2. So just adjust src1 and src2
   uint32_t inst = D->inst;
-  int rd  = BITS(inst, 11, 7);
   int rs1 = BITS(inst, 19, 15);
   int rs2 = BITS(inst, 24, 20);
   //Branch : src1 = flag, src2 = address
   //Jump   : src1 = link address, src2 = target address
-  D->decInfo.rd   = rd;
+  D->decInfo.rd   = BITS(inst, 11, 7);
   D->decInfo.type = type;  
   IFDEF(CONFIG_FTRACE_ENABLE, 
     D->decInfo.target = 0;
