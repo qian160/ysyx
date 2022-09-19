@@ -267,8 +267,9 @@ static int decode_exec(Decode *D) {
       D -> decInfo.type = TYPE_I;
       word_t imm_I = immI(inst);
       printf("inst = 0x%x, imm = 0x%lx\n", inst, imm_I);
+      printf("rs1 = 0x%lx\n", R(rs1));
       switch(fct7){
-        case(0x0):
+        case(0x00):
           switch(fct3){
             case(0x0):  R(rd) = R(rs1)          +   imm_I;                  break;  //addi
             case(0x1):  R(rd) = R(rs1)          <<  BITS(imm_I, 5, 0);      break;  //slli
