@@ -225,6 +225,7 @@ static int decode_exec(Decode *D) {
 
       auipc + addi : get the address of a section, or some label
   */
+  //every case should carefully end up with a break
 
   uint32_t inst = D -> inst;
   unsigned char rd  = BITS(inst, 11, 7);
@@ -235,7 +236,7 @@ static int decode_exec(Decode *D) {
   unsigned fct7 = funct7(inst);
 
   switch(opcode){
-    case ARITH_R:
+    case ARITH_R:{
       D -> decInfo.type = TYPE_R;
       switch(fct7){
         case(0x20):{
@@ -279,6 +280,7 @@ static int decode_exec(Decode *D) {
         }
       }
       break;
+    }
 
     case(ARITH_I):{
       D -> decInfo.type = TYPE_I;
