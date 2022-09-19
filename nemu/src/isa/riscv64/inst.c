@@ -196,18 +196,18 @@ static void decode_operand(Decode * D, int type) {
         }
     }
   }
-  //D->decInfo.src1 = *src1;
-  //D->decInfo.src2 = *src2;
 }
 
 static int decode_exec(Decode *D) {
-  word_t dest = 0, src1 = 0, src2 = 0;
   D->dnpc = D->snpc;    //default
 
 #define INSTPAT_INST(D) ((D)->inst)
 //a match is found, do what it supposed to do.
 #define INSTPAT_MATCH(D, name, type, ... /* body */ ) { \
   decode_operand(D, concat(TYPE_, type)); \
+  word_t src1 __attribute__((unused)) = D -> decInfo.src1;\
+  word_t src2 __attribute__((unused)) = D -> decInfo.src2;\
+  char dest __attribute__((unused)) = D -> decInfo.rd;\
   __VA_ARGS__ ; \
   IFDEF(CONFIG_SHOW_DECODE_INFORMATION, show_decode(D));\
   \
