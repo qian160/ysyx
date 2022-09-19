@@ -22,6 +22,7 @@ enum {
 #define destI(i) do { D -> decInfo.dest = i; } while (0)
 
 #define funct3(inst) (BITS(inst, 14, 12))
+#define funct7(inst) (BITS(inst, 31, 25))
 #define opcode(inst) (BITS(inst, 6, 0))
 static word_t immI(uint32_t i) { return SEXT(BITS(i, 31, 20), 12); }
 static word_t immU(uint32_t i) { return SEXT(BITS(i, 31, 12), 20) << 12; }
@@ -193,6 +194,8 @@ static void decode_operand(Decode * D, int type) {
   }
 }
 
+
+
 static int decode_exec(Decode *D) {
   D->dnpc = D->snpc;    //default
 
@@ -219,8 +222,110 @@ static int decode_exec(Decode *D) {
       jal offset:  -> jalr ra, offset. Use default ra register
       ret -> jalr x0, ra, 0
 
-      auipc + addi : get the address of a section
+      auipc + addi : get the address of a section, or some label
   */
+
+  uint32_t inst = D -> inst;
+  unsigned char rd  = BITS(inst, 11, 7);
+  unsigned char rs1 = BITS(inst, 19, 15);
+  unsigned char rs2 = BITS(inst, 24, 20);
+  unsigned char opcode = opcode(inst);
+  unsigned fct3 = funct3(inst);
+  unsigned fct7 = funct7(inst);
+
+  switch(opcode){
+    case ARITH_R:
+    D -> decInfo.type = TYPE_R;
+      switch(fct7){
+        case(0x20):{
+          switch(fct3){
+            case(0x0):{   //sub
+              R(rd) = R(rs1) - R(rs2); //D -> decInfo.src1 = R(rs1);
+            }
+            case(0x5):{   //sra
+              R(rd) = (sword_t)R(rs1) >> (sword_t)BITS(R(rs2), 5, 0);
+            }
+            break;
+          }
+        }
+        case(0x0):{
+          switch(fct3){
+            case(0x0):  R(rd) = R(rs1)          +   R(rs2);                     break;  //add
+            case(0x1):  R(rd) = R(rs1)          <<  BITS(R(rs2), 5, 0);         break;  //sll
+            case(0x2):  R(rd) = (sword_t)R(rs1) <   (sword_t)R(rs2) ? 1 : 0;    break;  //slt
+            case(0x3):  R(rd) = R(rs1)          <   R(rs2)? 1 : 0;              break;  //sltu
+            case(0x4):  R(rd) = R(rs1)          ^   R(rs2);                     break;  //xor
+            case(0x5):  R(rd) = R(rs1)          >>  BITS(R(rs2), 5, 0);         break;  //srl
+            case(0x6):  R(rd) = R(rs1)          |   R(rs2);                     break;  //or
+            case(0x7):  R(rd) = R(rs1)          &   R(rs2);                     break;  //and
+          }
+        }
+      }
+
+    case(ARITH_I):{
+      D -> decInfo.type = TYPE_I;
+      word_t imm_I = immI(inst);
+      switch(fct7){
+        case(0x0):
+          switch(fct3){
+            case(0x0):  R(rd) = R(rs1)          +   imm_I;                  break;  //addi
+            case(0x1):  R(rd) = R(rs1)          +   imm_I;                  break;  //slli
+            case(0x2):  R(rd) = (sword_t)R(rs1) <   (sword_t)imm_I ? 1 : 0; break;  //slti
+            case(0x3):  R(rd) = R(rs1)          <   imm_I ? 1 : 0;          break;  //sltiu
+            case(0x4):  R(rd) = R(rs1)          ^   imm_I;                  break;  //xori
+            case(0x5):  R(rd) = R(rs1)          >>  BITS(imm_I, 5, 0);      break;  //srli
+            case(0x6):  R(rd) = R(rs1)          |   imm_I;                  break;  //ori
+            case(0x7):  R(rd) = R(rs1)          &   imm_I;                  break;  //addi
+          }
+        case(0x20): R(rd) = (sword_t)R(rs1) >> (sword_t)BITS(R(rs2), 5, 0); break;  //srai
+      }
+
+    }
+
+    case(LOAD):{
+      D -> decInfo.type = TYPE_I;
+      word_t imm_I = immI(inst);
+      switch(fct3){
+        case(0x0):  R(rd) = SEXT(Mr(R(rs1) + imm_I, 1), 8);  break;  //lb
+        case(0x1):  R(rd) = SEXT(Mr(R(rs1) + imm_I, 2), 16); break;  //lh
+        case(0x2):  R(rd) = SEXT(Mr(R(rs1) + imm_I, 4), 32); break;  //lw
+        case(0x3):  R(rd) = Mr(R(rs1) + imm_I, 8);           break;  //ld
+
+        case(0x4):  R(rd) = Mr(R(rs1) + imm_I, 1);           break;  //lbu
+        case(0x5):  R(rd) = Mr(R(rs1) + imm_I, 2);           break;  //lhu
+        case(0x6):  R(rd) = Mr(R(rs1) + imm_I, 4);           break;  //lwu
+      }
+    }
+
+    case(STORE):{
+      D -> decInfo.type = TYPE_S;
+      word_t imm_S = immS(inst);
+      switch(fct3){
+        case(0x0):  Mw(R(rs2) + imm_S, 1, R(rs1));  break;
+        case(0x1):  Mw(R(rs2) + imm_S, 2, R(rs1));  break;
+        case(0x2):  Mw(R(rs2) + imm_S, 4, R(rs1));  break;
+        case(0x3):  Mw(R(rs2) + imm_S, 8, R(rs1));  break;
+      }
+    }
+
+    case(BRANCH):{
+      D -> decInfo.type = TYPE_B;
+      word_t target = D->pc + immB(inst);
+      switch(fct3){
+        case(0x0):  D -> dnpc =          R(rs1) ==          R(rs2) ? target : D -> dnpc;  break;
+        case(0x1):  D -> dnpc =          R(rs1) !=          R(rs2) ? target : D -> dnpc;  break;
+        case(0x4):  D -> dnpc = (sword_t)R(rs1) <  (sword_t)R(rs2) ? target : D -> dnpc;  break;
+        case(0x5):  D -> dnpc = (sword_t)R(rs1) >= (sword_t)R(rs2) ? target : D -> dnpc;  break;
+        case(0x6):  D -> dnpc =          R(rs1) <           R(rs2) ? target : D -> dnpc;  break;
+        case(0x7):  D -> dnpc =          R(rs1) >=          R(rs2) ? target : D -> dnpc;  break;
+      }
+    }
+
+    case(JAL):  D->decInfo.type = TYPE_J;  R(rd) = linkAddr; D -> dnpc = D -> pc + immJ(inst);   break;
+    case(JALR): D->decInfo.type = TYPE_I;  R(rd) = linkAddr; D -> dnpc = R(rs1) + immI(inst);    break;
+    case(EBREAK): NEMUTRAP(D->pc, R(10)); break;  //r(10) is a0
+  }
+/*
   INSTPAT_START();
   //guess: compute key, shift, mask at first, then use these 3 to index into something
   //        funct7  rs2   rs1 funct3 rd   opcode
@@ -302,7 +407,7 @@ static int decode_exec(Decode *D) {
   INSTPAT("0000000 00001 00000 000 00000 1110011", ebreak  , N, NEMUTRAP(D->pc, R(10))); // R(10) is $a0
   INSTPAT("??????? ????? ????? ??? ????? ???????", invalid , N, INV(D->pc));
   INSTPAT_END();
-
+*/
   R(0) = 0; // reset $zero to 0
   return 0;
 }
