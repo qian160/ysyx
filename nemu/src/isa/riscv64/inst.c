@@ -275,6 +275,7 @@ static int decode_exec(Decode *D) {
             case(0x2):  R(rd) = BITS((__int128_t)R(rs1) * (__uint128_t)R(rs2), 127, 64);  break;     //mulhsu, signed * unsigned
             default: panic("bad inst\n");
           }
+          break;
         }
         break;
       }
