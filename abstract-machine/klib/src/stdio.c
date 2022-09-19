@@ -11,7 +11,6 @@ bool is_num(char c){
 void strrev(char *arr, int start, int end)
 {
     char temp;
-
     if (start >= end)
         return;
 

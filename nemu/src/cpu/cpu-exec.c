@@ -9,7 +9,7 @@
  * This is useful when you use the `si' command.
  * You can modify this value as you want.
  */
-//#include "../../src/isa/riscv64/local-include/reg.h"
+#include "../../src/isa/riscv64/local-include/reg.h"
 #include "../include/trace.h"
 
 #define MAX_INST_TO_PRINT 10
@@ -117,6 +117,7 @@ void cpu_exec(uint64_t n) {
 
   uint64_t timer_start = get_time();
   execute(n);
+  IFDEF(CONFIG_FTRACE_ENABLE, show_ftrace());
 
   IFDEF(CONFIG_FTRACE_ENABLE, show_ftrace());   //debug use
 

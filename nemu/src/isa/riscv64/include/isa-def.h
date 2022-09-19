@@ -17,11 +17,10 @@ typedef struct {
   //bool branch_taken : 1;
   bool is_ret : 1;
   //word_t link_addr; not necessarily, always pc + 4
-  //word_t target;
+  word_t target;
   word_t src1, src2;
   unsigned char rd/* : 5*/;
   unsigned char type/* : 4*/;
-
   //add more signals
 } riscv64_ISADecodeInfo;
 
