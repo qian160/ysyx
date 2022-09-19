@@ -41,6 +41,9 @@ extern void _ftrace(Decode * D);
 
 static const char tp[] __attribute__((unused))= "IUSJRB";    //use type as index
 
+
+#ifdef CONFIG_SHOW_DECODE_INFORMATION
+
 void show_bits(word_t b){
   int cnt = 65;
   const long long mask = 1l << 63;
@@ -60,8 +63,6 @@ void show_bits_fmt(word_t b){
   putchar('\n');
   return;
 }
-
-#ifdef CONFIG_SHOW_DECODE_INFORMATION
 
 void show_decode(Decode *D){
 word_t src1   = D->decInfo.src1;
