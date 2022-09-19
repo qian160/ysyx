@@ -264,7 +264,6 @@ static int decode_exec(Decode *D) {
       }
 
     case(ARITH_I):{
-      printf("hit\n");
       D -> decInfo.type = TYPE_I;
       word_t imm_I = immI(inst);
       switch(fct7){
@@ -281,7 +280,7 @@ static int decode_exec(Decode *D) {
           }
         case(0x20): R(rd) = (sword_t)R(rs1) >> (sword_t)BITS(R(rs2), 5, 0); break;  //srai
       }
-
+      break;
     }
 
     case(LOAD):{
