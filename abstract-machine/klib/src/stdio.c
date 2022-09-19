@@ -2,100 +2,171 @@
 #include <klib.h>
 #include <klib-macros.h>
 #include <stdarg.h>
-#include <stdio.h>
-
 #if !defined(__ISA_NATIVE__) || defined(__NATIVE_USE_KLIB__)
 
-char* itoa(int num, char* buf)
+bool is_num(char c){
+  return c >= '0' && c <= '9';
+}
+
+void strrev(char *arr, int start, int end)
 {
-  int i = 0;
-  int len = 0;
-  int flag = 0;
-  char tmp;
-  if (num == 0) {
-    buf[i++] = '0';
-  }
-  if (num < 0) {
-    num *= -1;
-    flag = 1;
-  }
-  while (num) {
-    buf[i++] = num % 10 + '0';
-    num = num /10;
-  }
-  if (flag) {
-    buf[i++] = '-';
-  }
-  buf[i] = '\0';
-  len = i;
-  for (i = 0; i < len / 2; i++) {
-    tmp = buf[i];
-    buf[i] = buf[len-i-1];
-    buf[len-i-1] = tmp;
-  }
-  return buf;
+    char temp;
+
+    if (start >= end)
+        return;
+
+    temp = *(arr + start);
+    *(arr + start) = *(arr + end);
+    *(arr + end) = temp;
+
+    start++;
+    end--;
+    strrev(arr, start, end);
+}
+
+char *itoa(int number, int base)  //10, 16
+{
+    char * arr = (char *)malloc(32);
+    int i = 0, r, negative = 0;
+
+    if (number == 0)
+    {
+        arr[i] = '0';
+        arr[i + 1] = '\0';
+        return arr;
+    }
+    if (number < 0)
+    {
+        number *= -1;
+        negative = 1;
+    }
+    while (number != 0)
+    {
+        r = number % base;
+        arr[i++] = (r > 9) ? (r - 10) + 'a' : r + '0';
+        number /= base;
+    }
+    if (negative)
+    {
+        arr[i] = '-';
+        i++;
+    }
+    strrev(arr, 0, i - 1);
+    arr[i] = '\0';
+    return arr;
 }
 
 int printf(const char *fmt, ...) {
-  char buf[2048];
-  va_list vl_src;
-  va_start(vl_src, fmt);
-  // 可变参数的转发
-  int count = vsprintf(buf, fmt, vl_src);
-  putstr(buf);
-  va_end(vl_src);
-  return count;
-}
-
-int vsprintf(char *out, const char *fmt, va_list vl) {
-  int count = 0;
-  int i = 0;
-  while (*fmt != '\0') {
-    if (*fmt != '%') {
-      out[i++] = *fmt++;
-      count++;
-      //puts("hit");
-    }
-    else {
-      ++fmt;
-      if (*fmt == 's') {
-        char* src = va_arg(vl, char*);
-        while (*src != '\0') {
-          out[i++] = *src++;
-          count++;
-        }
-        ++fmt;
-        //puts("shit hit s");
-      }
-      else if (*fmt == 'd') {
-        char buf[33];
-        itoa(va_arg(vl, int), buf);
-        int index = 0;
-        while (buf[index] != '\0') {
-          out[i++] = buf[index++];
-          count++;
-        }
-        ++fmt;
-        //puts("shit hit d");
-      }
-      else {
-        out[i++] = '%';
-        count += 1;
-      }
-    }
+  va_list ap;
+  va_start(ap, fmt);
+  char buf[1024];
+  int n = vsprintf(buf, fmt, ap);
+  va_end(ap);
+  for(int i = 0; i < n; i++){
+    putch(buf[i]);
   }
-  out[i] = '\0';
-  if (count == 0) return -1;
-  return count;
+  return n;
 }
 
+//v: use va_list as argument instead of ... its behavior is same as sprintf
+
+int vsprintf(char *out, const char *fmt, va_list ap) {
+  //need to add %n support
+  //support %s %d %c %x 
+  int len = 0;
+  char *str = out;
+  while(*fmt){
+    if(*fmt != '%'){  //string
+      *str++ = *fmt++;
+      len ++;
+      continue;
+    }
+    fmt++;    //fmt now points to the char after %, which could be the width or fmt
+    int space = 0;
+
+    while(is_num(*fmt)){
+      space = (space * 10) + (*fmt) - '0';
+      fmt++;
+    }
+
+    switch (*fmt++) {
+      case 's' : {
+        char * t = va_arg(ap, char*);
+        int l = strlen(t);
+        if( l < space){
+          for(int j = l; j < space; j++){
+            *str++ = ' ';
+            len++;
+          }
+        }
+        for(int i = 0; i < l; i++) {
+          *str++ = *t++;
+          len ++;
+        }
+        break;
+      }
+      case 'd' : {
+        int num = va_arg(ap, int);
+        if (num < 0) {
+          num = -num;//~num + 0x1;
+          *str++ = '-';
+          len ++;
+        }
+        char *np = itoa(num, 10);
+        int l = strlen(np);
+        len += strlen(np);
+        if( l < space){
+          for(int j = l; j < space; j++){
+            *str++ = ' ';
+            len++;
+          }
+        }
+        strcpy(str, np);
+        str += strlen(np);
+        break;
+      }
+      case 'u': {
+        uint32_t num = va_arg(ap, int);
+        char *np = itoa(num, 10);
+        strcpy(str, np);
+        len += strlen(np);
+        str += strlen(np);
+        break;
+      }
+      case 'c': {
+        char c = (char)va_arg(ap, int);
+        *str++ = c;
+        len ++;
+        break;
+      }
+      case 'p':
+      case 'x': {
+        uint32_t num = va_arg(ap, uint32_t);
+        char *n = itoa(num, 16);
+        *str++ = '0';
+        *str++ = 'x';
+        strcpy(str, n);
+        len += strlen(n) + 2;
+        str += strlen(n);
+        break;
+      }
+      default :
+
+        assert(0);
+        break;
+      }
+    }
+  *str='\0';
+  return len;
+}
+
+//this function won't add spaces between 2 calls, it just append
 int sprintf(char *out, const char *fmt, ...) {
-  va_list vl;
-  va_start(vl, fmt);
-  int count = vsprintf(out, fmt, vl);
-  va_end(vl);
-  if (count == 0) return -1;
-  return count;
+  va_list ap;
+  va_start(ap, fmt);
+  int ret = vsprintf(out, fmt, ap);
+  va_end(ap);
+  return ret;
 }
 
 int snprintf(char *out, size_t n, const char *fmt, ...) {

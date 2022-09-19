@@ -21,6 +21,7 @@ int abs(int x) {
 
 //neg???
 int atoi(const char* nptr) {
+  panic("emm\n");
   int x = 0;
   bool neg = 0;
   while (*nptr == ' ') { nptr ++; }
