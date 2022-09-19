@@ -262,6 +262,7 @@ static int decode_exec(Decode *D) {
           break;
         }
         case(0x01):{    //M extension
+        printf("hit");
           switch(fct3){
             case(0x3):  R(rd) = R(rs1) * R(rs2);  break;    //mulu
             case(0x5):  R(rd) = R(rs1) / R(rs2);  break;    //divu
