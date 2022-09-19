@@ -200,8 +200,8 @@ static void decode_operand(Decode * D, word_t *dest, word_t *src1, word_t *src2,
         }
     }
   }
-  D->decInfo.src1 = *src1;
-  D->decInfo.src2 = *src2;
+  //D->decInfo.src1 = *src1;
+  //D->decInfo.src2 = *src2;
 }
 
 static int decode_exec(Decode *D) {
