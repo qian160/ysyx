@@ -29,6 +29,7 @@
         "sdl_thread.h": "c",
         "amdev.h": "c",
         "amtest.h": "c",
-        "decode.h": "c"
+        "decode.h": "c",
+        "cmd.h": "c"
     }
 }
