@@ -136,10 +136,7 @@ static void decode_operand(Decode * D, word_t *dest, word_t *src1, word_t *src2,
   int rs2 = BITS(inst, 24, 20);
   //Branch : src1 = flag, src2 = address
   //Jump   : src1 = link address, src2 = target address
-  word_t rs1Val = R(rs1);   //src2 should be the address
-  word_t rs2Val = R(rs2);
   //Log("\nimmJ = 0x%lx\nimmI = 0x%lx\nimmB = 0x%lx\nimmS = 0x%lx\n", immJ(inst), immI(inst), immB(inst), immS(inst));
-  word_t storeAddr      = immS(inst) + rs1Val;
 
   D->decInfo.rd   = rd;
   D->decInfo.target = 0;
@@ -148,8 +145,11 @@ static void decode_operand(Decode * D, word_t *dest, word_t *src1, word_t *src2,
   //  ret -> jalr ra, x0, 0
   destR(rd);
   switch (type) {
-    case TYPE_R: src1I(rs1Val);       src2I(rs2Val);    break;
-    case TYPE_S: src1I(storeAddr);    src2R(rs2);       break;
+    case TYPE_R: src1I(R(rs1));       src2I(R(rs2));    break;
+    case TYPE_S: 
+      src1I(immS(inst) + R(rs1));
+      src2R(rs2);
+      break;
     case TYPE_J:  
         src1I(D -> pc + 4);     
         word_t JAL_TARGET     = (word_t)immJ(inst) + (word_t)D -> pc;
@@ -158,7 +158,7 @@ static void decode_operand(Decode * D, word_t *dest, word_t *src1, word_t *src2,
         D->decInfo.is_ret = 0;/*(rd == 0);*/ break;
     case TYPE_I: {
       if(D -> decInfo.is_jalr){ //jalr is I type, which is special
-          word_t JALR_TARGET    = immI(inst) + rs1Val;
+          word_t JALR_TARGET    = immI(inst) + R(rs1);
           src1I(D -> pc + 4);    
           src2I(JALR_TARGET);  D->decInfo.target = JALR_TARGET;   
           D->decInfo.is_ret = (rd == 0 && rs1 == 1);  break;
@@ -169,24 +169,24 @@ static void decode_operand(Decode * D, word_t *dest, word_t *src1, word_t *src2,
     }
     case TYPE_U: {
       //to dest's upper 20 bits
-      if(D -> decInfo.is_lui){
-        src1I(immU(inst));    break;
-      }
+      if(D -> decInfo.is_lui)
+        src1I(immU(inst));
       else{           //auipc rd, imm -> rd = pc + imm
-        src1I(immU(inst));   src2I(D -> pc); break;
-      }
+        src1I(immU(inst));   src2I(D -> pc);
+      } 
+      break;
     }
     case TYPE_B: {
       word_t BRANCH_TARGET  = immB(inst) + D -> pc;
       src2I(BRANCH_TARGET);
       D->decInfo.target = BRANCH_TARGET;
         switch (D -> decInfo.funct3){  //use src1 as a flag, src2 = branch_target
-        case beq_funct3:  src1I(rs1Val == rs2Val);  D->decInfo.branch_taken = (rs1Val == rs2Val);  break;
-        case bne_funct3:  src1I(rs1Val ^  rs2Val);  D->decInfo.branch_taken = (rs1Val ^  rs2Val);  break;
-        case blt_funct3:  src1I((sword_t)rs1Val <  (sword_t)rs2Val);  D->decInfo.branch_taken = ((sword_t)rs1Val <  (sword_t)rs2Val); break;
-        case bge_funct3:  src1I((sword_t)rs1Val >= (sword_t)rs2Val);  D->decInfo.branch_taken = ((sword_t)rs1Val >= (sword_t)rs2Val); break;
-        case bltu_funct3: src1I(rs1Val <  rs2Val);  D->decInfo.branch_taken = (rs1Val <  rs2Val);   break;
-        case bgeu_funct3: src1I(rs1Val >= rs2Val);  D->decInfo.branch_taken = (rs1Val >= rs2Val);   break;
+        case beq_funct3:  src1I(R(rs1) == R(rs2));  D->decInfo.branch_taken = (R(rs1) == R(rs2));  break;
+        case bne_funct3:  src1I(R(rs1) ^  R(rs2));  D->decInfo.branch_taken = (R(rs1) ^  R(rs2));  break;
+        case blt_funct3:  src1I((sword_t)R(rs1) <  (sword_t)R(rs2));  D->decInfo.branch_taken = ((sword_t)R(rs1) <  (sword_t)R(rs2)); break;
+        case bge_funct3:  src1I((sword_t)R(rs1) >= (sword_t)R(rs2));  D->decInfo.branch_taken = ((sword_t)R(rs1) >= (sword_t)R(rs2)); break;
+        case bltu_funct3: src1I(R(rs1) <  R(rs2));  D->decInfo.branch_taken = (R(rs1) <  R(rs2));   break;
+        case bgeu_funct3: src1I(R(rs1) >= R(rs2));  D->decInfo.branch_taken = (R(rs1) >= R(rs2));   break;
         }
     }
   }
