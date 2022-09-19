@@ -264,7 +264,7 @@ static int decode_exec(Decode *D) {
         case(0x01):{    //M extension
           switch(fct3){
             case(0x3):  R(rd) = R(rs1) * R(rs2);  break;    //mulu
-            case(0x5):  R(rd) = R(rs1) / R(rs2);  break;    //divu
+            case(0x5):  printf("rs1 = 0x%lx, rs2 = 0x%lx, res = 0x%ls\n", R(rs1), R(rs2), R(rs1) / R(rs2));R(rd) = R(rs1) / R(rs2);  break;    //divu
             case(0x7):  R(rd) = R(rs1) % R(rs2);  break;    //remu
 
             case(0x0):  R(rd) = (sword_t)R(rs1) * (sword_t)R(rs2);  break;    //mul
