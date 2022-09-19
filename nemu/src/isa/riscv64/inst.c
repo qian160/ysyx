@@ -266,7 +266,7 @@ static int decode_exec(Decode *D) {
     case(ARITH_I):{
       D -> decInfo.type = TYPE_I;
       word_t imm_I = immI(inst);
-      printf("inst = 0x%x, imm = 0x%lx\n", inst, imm_I);
+      printf("rd = %d, inst = 0x%x, imm = 0x%lx\n", rd, inst, imm_I);
       printf("rs1 = 0x%lx\n", R(rs1));
       switch(fct7){
         case(0x00):
