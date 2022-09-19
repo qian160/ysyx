@@ -169,8 +169,6 @@ static void decode_operand(Decode * D, int type) {
       }
       else{
           src1R(rs1);         src2I(immI(inst));
-          Log("src1 = 0x%lx, src2 = 0x%lx\n", D->decInfo.src1, D->decInfo.src2);
-          Log("0x%lx, 0x%lx\n", R(rs1), immI(inst));
       }  
       break;
     }
@@ -181,6 +179,7 @@ static void decode_operand(Decode * D, int type) {
       }
       else{           //auipc rd, imm -> rd = pc + imm
         src1I(immU(inst));   src2I(D -> pc);
+        Log("\nsrc1 = 0x%lx, src2 = 0x%lx\n", immU(inst), D->pc);
       } 
       break;
     }
