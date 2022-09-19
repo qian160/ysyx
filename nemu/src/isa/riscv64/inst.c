@@ -14,12 +14,12 @@ enum {
   TYPE_N, // none
 };
 
-#define src1R(n) do { *src1 = R(n); } while (0)
-#define src2R(n) do { *src2 = R(n); } while (0)
-#define destR(n) do { *dest = n; } while (0)
-#define src1I(i) do { *src1 = i; } while (0)
-#define src2I(i) do { *src2 = i; } while (0)
-#define destI(i) do { *dest = i; } while (0)
+#define src1R(n) do { D -> decInfo.src1 = R(n); } while (0)
+#define src2R(n) do { D -> decInfo.src2 = R(n); } while (0)
+#define destR(n) do { D -> decInfo.dest = n; } while (0)
+#define src1I(i) do { D -> decInfo.src1 = i; } while (0)
+#define src2I(i) do { D -> decInfo.src2 = i; } while (0)
+#define destI(i) do { D -> decInfo.dest = i; } while (0)
 
 #define funct3(inst) (BITS(inst, 14, 12))
 #define opcode(inst) (BITS(inst, 6, 0))
@@ -144,11 +144,9 @@ static void decode_operand(Decode * D, word_t *dest, word_t *src1, word_t *src2,
   //Log("\nimmJ = 0x%lx\nimmI = 0x%lx\nimmB = 0x%lx\nimmS = 0x%lx\n", immJ(inst), immI(inst), immB(inst), immS(inst));
 
   D->decInfo.rd   = rd;
-  D->decInfo.target = 0;
   D->decInfo.type = type;
-  D->decInfo.is_ret = 0;
+  IFDEF(CONFIG_FTRACE_ENABLE, D->decInfo.is_ret = 0;  D->decInfo.target = 0;);
   //  ret -> jalr ra, x0, 0
-  destR(rd);
   switch (type) {
     case TYPE_R: src1I(R(rs1));       src2I(R(rs2));    break;
     case TYPE_S: 
