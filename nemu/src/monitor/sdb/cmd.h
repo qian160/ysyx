@@ -215,8 +215,8 @@ static int cmd_d(char * e){
         int space_len = 1;
         memset(p, ' ', space_len);
         p += space_len;
-        //name
-        disassemble(p, buf + sizeof(buf) - p, pc, (uint8_t *)&inst, 4);
+        //this depends on TRACE
+        //disassemble(p, buf + sizeof(buf) - p, pc, (uint8_t *)&inst, 4);
         //full inst is ready
         puts(buf);
         pc += 4;        
