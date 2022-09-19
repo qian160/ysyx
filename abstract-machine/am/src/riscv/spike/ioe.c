@@ -23,5 +23,8 @@ bool ioe_init() {
   return true;
 }
 
-void ioe_read (int reg, void *buf) { ((handler_t)lut[reg])(buf); }
-void ioe_write(int reg, void *buf) { ((handler_t)lut[reg])(buf); }
+//what's the difference between read & write? they use the same function
+//how to recognize if a call is r/w?
+//the argument buf is a struct, which contains a field to indicate r/w
+void ioe_read (int reg, void *buf) { ((handler_t)lut[reg])(buf); return;}
+void ioe_write(int reg, void *buf) { ((handler_t)lut[reg])(buf); return;}

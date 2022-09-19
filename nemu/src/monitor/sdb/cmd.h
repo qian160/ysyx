@@ -8,7 +8,7 @@
 
 #define NR_CMD ARRLEN(cmd_table)
 
-void examine_memory(int n, word_t p){
+static void examine_memory(int n, word_t p){
   //if we directly derefference the pointer, we are in fact examing our real computer's address!!!
     printf(ANSI_FMT(" 0x%lx: ",ANSI_FG_MAGENTA), p);
     char cnt = 0;
@@ -215,7 +215,7 @@ static int cmd_d(char * e){
         int space_len = 1;
         memset(p, ' ', space_len);
         p += space_len;
-        //name
+        //this depends on TRACE
         //disassemble(p, buf + sizeof(buf) - p, pc, (uint8_t *)&inst, 4);
         //full inst is ready
         puts(buf);

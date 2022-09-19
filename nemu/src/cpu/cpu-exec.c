@@ -119,6 +119,8 @@ void cpu_exec(uint64_t n) {
   execute(n);
   IFDEF(CONFIG_FTRACE_ENABLE, show_ftrace());
 
+  IFDEF(CONFIG_FTRACE_ENABLE, show_ftrace());   //debug use
+
   uint64_t timer_end = get_time();
   g_timer += timer_end - timer_start;
 

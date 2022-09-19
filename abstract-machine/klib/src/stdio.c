@@ -11,7 +11,6 @@ bool is_num(char c){
 void strrev(char *arr, int start, int end)
 {
     char temp;
-
     if (start >= end)
         return;
 
@@ -71,71 +70,91 @@ int printf(const char *fmt, ...) {
 //v: use va_list as argument instead of ... its behavior is same as sprintf
 
 int vsprintf(char *out, const char *fmt, va_list ap) {
+  //need to add %n support
   //support %s %d %c %x 
   int len = 0;
   char *str = out;
   while(*fmt){
     if(*fmt != '%'){  //string
-      *str = *fmt++;
+      *str++ = *fmt++;
       len ++;
-      str ++;
       continue;
     }
     fmt++;    //fmt now points to the char after %, which could be the width or fmt
+    int space = 0;
 
-  switch (*fmt++) {
-    case 's' : {
-      char * t = va_arg(ap, char*);
-      int length = strlen(t);
-      for(int i = 0; i < length; i++) {
-        *str++ = *t++;
-        len ++;
+    while(is_num(*fmt)){
+      space = (space * 10) + (*fmt) - '0';
+      fmt++;
+    }
+
+    switch (*fmt++) {
+      case 's' : {
+        char * t = va_arg(ap, char*);
+        int l = strlen(t);
+        if( l < space){
+          for(int j = l; j < space; j++){
+            *str++ = ' ';
+            len++;
+          }
+        }
+        for(int i = 0; i < l; i++) {
+          *str++ = *t++;
+          len ++;
+        }
+        break;
       }
-      break;
-    }
-    case 'd' : {
-      int num = va_arg(ap, int);
-      if (num < 0) {
-        num = ~num + 0x1;
-        *str++ = '-';
-        len ++;
+      case 'd' : {
+        int num = va_arg(ap, int);
+        if (num < 0) {
+          num = -num;//~num + 0x1;
+          *str++ = '-';
+          len ++;
+        }
+        char *np = itoa(num, 10);
+        int l = strlen(np);
+        len += strlen(np);
+        if( l < space){
+          for(int j = l; j < space; j++){
+            *str++ = ' ';
+            len++;
+          }
+        }
+        strcpy(str, np);
+        str += strlen(np);
+        break;
       }
-      char *np = itoa(num, 10);
-      len += strlen(np);
-      strcpy(str, np);
-      str += strlen(np);
-      break;
+      case 'u': {
+        uint32_t num = va_arg(ap, int);
+        char *np = itoa(num, 10);
+        strcpy(str, np);
+        len += strlen(np);
+        str += strlen(np);
+        break;
+      }
+      case 'c': {
+        char c = (char)va_arg(ap, int);
+        *str++ = c;
+        len ++;
+        break;
+      }
+      case 'p':
+      case 'x': {
+        uint32_t num = va_arg(ap, uint32_t);
+        char *n = itoa(num, 16);
+        *str++ = '0';
+        *str++ = 'x';
+        strcpy(str, n);
+        len += strlen(n) + 2;
+        str += strlen(n);
+        break;
+      }
+      default :
+
+        assert(0);
+        break;
+      }
     }
-    case 'u': {
-      uint32_t num = va_arg(ap, int);
-      char *np = itoa(num, 10);
-      strcpy(str, np);
-      len += strlen(np);
-      str += strlen(np);
-      break;
-    }
-    case 'c': {
-      char c = (char)va_arg(ap, int);
-      *str++ = c;
-      len ++;
-      break;
-    }
-    case 'p':
-    case 'x': {
-      uint32_t num = va_arg(ap, uint32_t);
-      char *n = itoa(num, 16);
-      *str++ = '0';
-      *str++ = 'x';
-      strcpy(str, n);
-      len += strlen(n) + 2;
-      str += strlen(n);
-      break;
-    }
-    default :
-      assert(0);
-      break;
-    }
-  }
   *str='\0';
   return len;
 }

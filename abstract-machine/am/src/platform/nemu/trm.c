@@ -10,6 +10,7 @@ Area heap = RANGE(&_heap_start, PMEM_END);
 #endif
 static const char mainargs[] = MAINARGS;
 
+//in AM, the behavior of putchar is to send data to the serial. And the serial will then use the stdio function to print
 void putch(char ch) {
   outb(SERIAL_PORT, ch);
 }

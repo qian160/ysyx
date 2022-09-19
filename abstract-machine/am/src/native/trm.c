@@ -8,9 +8,9 @@ void __am_exit_platform(int code);
 void trm_init() {
   __am_platform_dummy();
 }
-
+//we are in the native environment, just use the powerful stdlib
 void putch(char ch) {
-  putchar(ch);
+  putchar(ch);    //store a byte to 0x800003f8, which is the serial base
 }
 
 void halt(int code) {

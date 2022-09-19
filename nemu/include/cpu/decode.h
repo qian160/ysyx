@@ -3,6 +3,21 @@
 
 #include <isa.h>
 
+//opcode
+#define ARITH_R   0b0110011
+#define ARITH_I   0b0010011
+#define LOAD      0b0000011
+#define STORE     0b0100011
+#define BRANCH    0b1100011
+#define JAL       0b1101111
+#define JALR      0b1100111
+#define LUI       0b0110111
+#define AUIPC     0b0010111
+#define EBREAK    0b1110011
+
+#define ARITH_64_R  0b0111011
+#define ARITH_64_I  0b0011011
+
 typedef struct Decode {
   vaddr_t pc;
   vaddr_t snpc; // static(also default) next pc, that is pc + 4. It is performed automically in inst_fetch

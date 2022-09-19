@@ -63,10 +63,8 @@ char *strncpy(char *dst, const char *src, size_t n) {
 }
 
 char *strcat(char *dst, const char *src) {
-  if(!dst || !src){
-    printf("null\n");
-    return NULL;
-  }                                                                                 
+  assert(dst);
+  assert(src);
   // make ptr point to the end of the dst string
   char* ptr = dst + strlen(dst);
 

@@ -37,17 +37,11 @@ void sdb_mainloop() {   //get command
   }
   for (char *str; (str = rl_gets()) != NULL; ) {
     char *str_end = str + strlen(str);
-    /*
-    for(int i = 0 ; i< strlen(str) ; i++)
-      if(isalnum(str[i])) str[i] |= 0x20;    //convert to a b c ...z .大小写都能用
-    */
-      /* extract the first token as the command */
+    /* extract the first token as the command */
     char *cmd = strtok(str, " ");
     if (cmd == NULL) { continue; }
 
-    /* treat the remaining string as the arguments,
-     * which may need further parsing
-     */
+    /* treat the remaining string as the arguments, */
 
     char *args = cmd + strlen(cmd) + 1;
     if (args >= str_end) {
@@ -70,7 +64,11 @@ void sdb_mainloop() {   //get command
 
     if (i == NR_CMD) { printf("Unknown command '%s'\n", cmd); }
 #ifdef CONFIG_AUTO_DISASM_NEXT
+<<<<<<< HEAD
   if(strcmp(CONFIG_AUTO_DISASM_NEXT, "0")!= 0){
+=======
+  if(CONFIG_DISASM_NUMBER != 0){
+>>>>>>> 1919810
     if(cmd[0] != 'q' && cmd[0] != 'd')
     {
       int n = atoi(CONFIG_AUTO_DISASM_NEXT);

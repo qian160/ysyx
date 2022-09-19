@@ -21,6 +21,7 @@ int abs(int x) {
 
 //neg???
 int atoi(const char* nptr) {
+  panic("emm\n");
   int x = 0;
   bool neg = 0;
   while (*nptr == ' ') { nptr ++; }
@@ -36,16 +37,28 @@ int atoi(const char* nptr) {
   return x;
 }
 
+static char *hbrk = NULL;
+
 void *malloc(size_t size) { //size: bytes
   // On native, malloc() will be called during initializaion of C runtime.
   // Therefore do not call panic() here, else it will yield a dead recursion:
   //   panic() -> putchar() -> (glibc) -> malloc() -> panic()
 #if !(defined(__ISA_NATIVE__) && defined(__NATIVE_USE_KLIB__))
-  //panic("Not implemented");
+  if (hbrk == NULL) {
+    hbrk = heap.start;
+  }
+  size  = (size_t)ROUNDUP(size, 8);
+  char *old = hbrk;
+  hbrk += size;
+  assert((uintptr_t)heap.start <= (uintptr_t)hbrk && (uintptr_t)hbrk < (uintptr_t)heap.end);
+  return old;
 #endif
+/*
   void * addr __attribute__((unused)) = heap.start;
   heap.start += size << 3;
   return addr;
+  */
+  return NULL;
 }
 
 void free(void *ptr) {
