@@ -166,7 +166,7 @@ static void decode_operand(Decode * D, word_t *dest, word_t *src1, word_t *src2,
 
     case TYPE_I: {
       if(D -> decInfo.is_jalr){ //jalr is I type, which is special
-          src1I(D -> pc + 4);    
+          src1I(D -> pc + 4);
           src2I(JALR_TARGET);
 
           IFDEF(CONFIG_FTRACE_ENABLE, 
