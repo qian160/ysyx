@@ -14,12 +14,12 @@ enum {
   TYPE_N, // none
 };
 
-#define src1R(n) do { *src1 = R(n); } while (0)
-#define src2R(n) do { *src2 = R(n); } while (0)
-#define destR(n) do { *dest = n; } while (0)
-#define src1I(i) do { *src1 = i; } while (0)
-#define src2I(i) do { *src2 = i; } while (0)
-#define destI(i) do { *dest = i; } while (0)
+#define src1R(n) do { D -> decInfo.src1 = R(n); } while (0)
+#define src2R(n) do { D -> decInfo.src2 = R(n); } while (0)
+#define destR(n) do { D -> decInfo.dest = n; } while (0)
+#define src1I(i) do { D -> decInfo.src1 = i; } while (0)
+#define src2I(i) do { D -> decInfo.src2 = i; } while (0)
+#define destI(i) do { D -> decInfo.dest = i; } while (0)
 
 #define funct3(inst) (BITS(inst, 14, 12))
 #define opcode(inst) (BITS(inst, 6, 0))
@@ -134,7 +134,7 @@ printf(ANSI_FMT(" --------------------------------------------------------------
 #define linkAddr        D -> pc + 4
 //src1 and src2 are the source operands which will join the future calculation. Use pointer to communicate with outside
 //question: how to make good use of dest, src1, src2
-static void decode_operand(Decode * D, word_t *dest, word_t *src1, word_t *src2, int type) {
+static void decode_operand(Decode * D, int type) {
   //default op is add, xxx = src1 + src2. So just adjust src1 and src2
   uint32_t inst = D->inst;
   int rd  = BITS(inst, 11, 7);
@@ -149,7 +149,6 @@ static void decode_operand(Decode * D, word_t *dest, word_t *src1, word_t *src2,
     D->decInfo.is_ret = 0;
   );
   //  ret -> jalr ra, x0, 0
-  destR(rd);
   switch (type) {
     case TYPE_R: src1I(R(rs1));       src2I(R(rs2));    break;
     case TYPE_S: src1I(storeAddr);    src2R(rs2);       break;
@@ -196,8 +195,8 @@ static void decode_operand(Decode * D, word_t *dest, word_t *src1, word_t *src2,
         }
     }
   }
-  D->decInfo.src1 = *src1;
-  D->decInfo.src2 = *src2;
+  //D->decInfo.src1 = *src1;
+  //D->decInfo.src2 = *src2;
 }
 
 static int decode_exec(Decode *D) {
@@ -207,7 +206,7 @@ static int decode_exec(Decode *D) {
 #define INSTPAT_INST(D) ((D)->inst)
 //a match is found, do what it supposed to do.
 #define INSTPAT_MATCH(D, name, type, ... /* body */ ) { \
-  decode_operand(D, &dest, &src1, &src2, concat(TYPE_, type)); \
+  decode_operand(D, concat(TYPE_, type)); \
   __VA_ARGS__ ; \
   IFDEF(CONFIG_SHOW_DECODE_INFORMATION, show_decode(D));\
   \
