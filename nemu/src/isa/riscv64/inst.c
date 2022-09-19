@@ -14,12 +14,12 @@ enum {
   TYPE_N, // none
 };
 
-#define src1R(n) do { /*D -> decInfo.*/*src1 = R(n); } while (0)
-#define src2R(n) do { /*D -> decInfo.*/*src2 = R(n); } while (0)
-#define destR(n) do { /*D -> decInfo.*/*dest = n; } while (0)
-#define src1I(i) do { /*D -> decInfo.*/*src1 = i; } while (0)
-#define src2I(i) do { /*D -> decInfo.*/*src2 = i; } while (0)
-#define destI(i) do { /*D -> decInfo.*/*dest = i; } while (0)
+#define src1R(n) do { *src1 = R(n); } while (0)
+#define src2R(n) do { *src2 = R(n); } while (0)
+#define destR(n) do { *dest = n; } while (0)
+#define src1I(i) do { *src1 = i; } while (0)
+#define src2I(i) do { *src2 = i; } while (0)
+#define destI(i) do { *dest = i; } while (0)
 
 #define funct3(inst) (BITS(inst, 14, 12))
 #define opcode(inst) (BITS(inst, 6, 0))
@@ -126,11 +126,6 @@ printf(ANSI_FMT(" --------------------------------------------------------------
 }
 #endif
 
-#define storeAddr     immS(inst) + R(rs1)
-#define JAL_TARGET    (word_t)immJ(inst) + (word_t)D -> pc;
-#define JALR_TARGET   immI(inst) + R(rs1)
-#define BRANCH_TARGET immB(inst) + D -> pc;
-
 //src1 and src2 are the source operands which will join the future calculation. Use pointer to communicate with outside
 //question: how to make good use of dest, src1, src2
 static void decode_operand(Decode * D, word_t *dest, word_t *src1, word_t *src2, int type) {
@@ -141,62 +136,53 @@ static void decode_operand(Decode * D, word_t *dest, word_t *src1, word_t *src2,
   int rs2 = BITS(inst, 24, 20);
   //Branch : src1 = flag, src2 = address
   //Jump   : src1 = link address, src2 = target address
+  word_t rs1Val = R(rs1);   //src2 should be the address
+  word_t rs2Val = R(rs2);
+  word_t pc = D -> pc;
+  word_t pc_Plus4 = pc + 4;
+  word_t JAL_TARGET     = (word_t)immJ(inst) + (word_t)pc;
+  word_t JALR_TARGET    = immI(inst) + rs1Val;
   //Log("\nimmJ = 0x%lx\nimmI = 0x%lx\nimmB = 0x%lx\nimmS = 0x%lx\n", immJ(inst), immI(inst), immB(inst), immS(inst));
+  word_t BRANCH_TARGET  = immB(inst) + pc;
+  word_t storeAddr      = immS(inst) + rs1Val;
 
   D->decInfo.rd   = rd;
   D->decInfo.target = 0;
   D->decInfo.type = type;
   D->decInfo.is_ret = 0;
   //  ret -> jalr ra, x0, 0
+  destR(rd);
   switch (type) {
-    case TYPE_R: src1I(R(rs1));       src2I(R(rs2));    break;
-    case TYPE_S: 
-      src1I(storeAddr);
-      src2R(rs2);
-      break;
-    case TYPE_J:  
-        src1I(D -> pc + 4);     
-        src2I(JAL_TARGET);
-
-        IFDEF(CONFIG_FTRACE_ENABLE, 
-          D->decInfo.target = JAL_TARGET; 
-          D->decInfo.is_ret = 0;        /*(rd == 0 ?);*/ 
-        ); 
-        break;
-
+    case TYPE_R: src1I(rs1Val);       src2I(rs2Val);    break;
+    case TYPE_S: src1I(storeAddr);    src2R(rs2);       break;
+    case TYPE_J: src1I(pc_Plus4);     src2I(JAL_TARGET);  D->decInfo.target = JAL_TARGET; D->decInfo.is_ret = 0;/*(rd == 0);*/ break;
     case TYPE_I: {
       if(D -> decInfo.is_jalr){ //jalr is I type, which is special
-          src1I(D -> pc + 4);
-          src2I(JALR_TARGET);
-
-          IFDEF(CONFIG_FTRACE_ENABLE, 
-            D->decInfo.target = JALR_TARGET;
-            D->decInfo.is_ret = (rd == 0 && rs1 == 1);  
-          );
-          break;
+          src1I(pc_Plus4);    src2I(JALR_TARGET);  D->decInfo.target = JALR_TARGET;   D->decInfo.is_ret = (rd == 0 && rs1 == 1);  break;
       }
       else{
           src1R(rs1);         src2I(immI(inst));  break;
       } 
     }
     case TYPE_U: {
-      if(D -> decInfo.is_lui)      //to dest's upper 20 bits
-        src1I(immU(inst));
+      //to dest's upper 20 bits
+      if(D -> decInfo.is_lui){
+        src1I(immU(inst));    break;
+      }
       else{           //auipc rd, imm -> rd = pc + imm
-        src1I(immU(inst));   src2I(D -> pc);
-      } 
-      break;
+        src1I(immU(inst));   src2I(pc); break;
+      }
     }
     case TYPE_B: {
       src2I(BRANCH_TARGET);
-      //D->decInfo.target = BRANCH_TARGET;    //SEEMS NO USE TO FTRACE
+      D->decInfo.target = BRANCH_TARGET;
         switch (D -> decInfo.funct3){  //use src1 as a flag, src2 = branch_target
-        case beq_funct3:  src1I(R(rs1) == R(rs2));  D->decInfo.branch_taken = (R(rs1) == R(rs2));  break;
-        case bne_funct3:  src1I(R(rs1) ^  R(rs2));  D->decInfo.branch_taken = (R(rs1) ^  R(rs2));  break;
-        case blt_funct3:  src1I((sword_t)R(rs1) <  (sword_t)R(rs2));  D->decInfo.branch_taken = ((sword_t)R(rs1) <  (sword_t)R(rs2)); break;
-        case bge_funct3:  src1I((sword_t)R(rs1) >= (sword_t)R(rs2));  D->decInfo.branch_taken = ((sword_t)R(rs1) >= (sword_t)R(rs2)); break;
-        case bltu_funct3: src1I(R(rs1) <  R(rs2));  D->decInfo.branch_taken = (R(rs1) <  R(rs2));   break;
-        case bgeu_funct3: src1I(R(rs1) >= R(rs2));  D->decInfo.branch_taken = (R(rs1) >= R(rs2));   break;
+        case beq_funct3:  src1I(rs1Val == rs2Val);  D->decInfo.branch_taken = (rs1Val == rs2Val);  break;
+        case bne_funct3:  src1I(rs1Val ^  rs2Val);  D->decInfo.branch_taken = (rs1Val ^  rs2Val);  break;
+        case blt_funct3:  src1I((sword_t)rs1Val <  (sword_t)rs2Val);  D->decInfo.branch_taken = ((sword_t)rs1Val <  (sword_t)rs2Val); break;
+        case bge_funct3:  src1I((sword_t)rs1Val >= (sword_t)rs2Val);  D->decInfo.branch_taken = ((sword_t)rs1Val >= (sword_t)rs2Val); break;
+        case bltu_funct3: src1I(rs1Val <  rs2Val);  D->decInfo.branch_taken = (rs1Val <  rs2Val);   break;
+        case bgeu_funct3: src1I(rs1Val >= rs2Val);  D->decInfo.branch_taken = (rs1Val >= rs2Val);   break;
         }
     }
   }
