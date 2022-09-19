@@ -260,6 +260,7 @@ static int decode_exec(Decode *D) {
             case(0x6):  R(rd) = R(rs1)          |   R(rs2);                     break;  //or
             case(0x7):  R(rd) = R(rs1)          &   R(rs2);                     break;  //and
           }
+          break;
         }
       }
 
@@ -280,6 +281,7 @@ static int decode_exec(Decode *D) {
         case(0x6):  R(rd) = R(rs1)          |   imm_I;                  break;  //ori
         case(0x7):  R(rd) = R(rs1)          &   imm_I;                  break;  //addi
       }
+      break;
     }
 
     case(LOAD):{
