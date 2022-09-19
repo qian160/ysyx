@@ -168,7 +168,8 @@ static void decode_operand(Decode * D, int type) {
           );
       }
       else{
-          src1R(rs1);         src2I(immI(inst));  
+          src1R(rs1);         src2I(immI(inst));
+          Log("src1 = 0x%lx, src2 = 0x%lx\n", D->decInfo.src1, D->decInfo.src2);
       }  
       break;
     }
