@@ -247,6 +247,7 @@ static int decode_exec(Decode *D) {
               R(rd) = (sword_t)R(rs1) >> (sword_t)BITS(R(rs2), 5, 0); break;
             default: panic("bad inst\n");
           }
+          break;
         }
         case(0x0):{
           switch(fct3){
@@ -282,6 +283,43 @@ static int decode_exec(Decode *D) {
       break;
     }
 
+    case(ARITH_64_R):{
+      switch(fct7){
+        case(0x00):{
+          switch(fct3){
+            case(0x00):   R(rd) = SEXT((int)R(rs1) + (int)R(rs2), 32);    break;      //addw
+            case(0x01):   R(rd) = SEXT(R(rs1) << BITS(R(rs2), 4, 0), 32); break;      //sllw
+            case(0x05):   R(rd) = SEXT(R(rs1) << BITS(R(rs2), 4, 0), 32); break;      //srlw
+            default:    panic("bad inst\n");
+          }
+          break;
+        }
+
+        case(0x20):{
+          switch(fct3){
+            case(0x00):   R(rd) = SEXT((int)R(rs1) -  (int)R(rs2), 32);             break;  //subw
+            case(0x05):   R(rd) = SEXT((int)R(rs1) >> BITS((int)R(rs2), 5, 0), 32); break;  //sraw
+            default:    panic("bad inst\n");
+          }
+          break;
+        }
+
+        case(0x01):{          //rv64m
+          switch(fct3){
+            case(0x00): R(rd) = (int32_t) R(rs1) * (int32_t) R(rs2);  break;      //mulw
+            case(0x04): R(rd) = (int32_t) R(rs1) / (int32_t) R(rs2);  break;      //divw
+            case(0x05): R(rd) = (uint32_t)R(rs1) / (uint32_t)R(rs2);  break;      //divuw
+            case(0x06): R(rd) = (int32_t) R(rs1) % (int32_t) R(rs2);  break;      //remw
+            case(0x07): R(rd) = (uint32_t)R(rs1) % (uint32_t)R(rs2);  break;      //remuw
+            default:    panic("bad inst\n");
+          }
+          break;
+        }
+
+      }
+      break;
+    }
+
     case(ARITH_I):{
       D -> decInfo.type = TYPE_I;
       word_t imm_I = immI(inst);
@@ -302,6 +340,21 @@ static int decode_exec(Decode *D) {
       }
       break;
     }
+
+    case(ARITH_64_I):{
+      switch(fct3){
+        case(0x00): R(rd) = SEXT((int)R(rs1) + (int)R(rs2), 32);                  break;//addiw
+        case(0x01): R(rd) = SEXT((int)R(rs1) << BITS(immI(inst), 4, 0), 32);      break;//slliw
+        case(0x05):
+          switch(fct7){
+            case(0x00): R(rd) = SEXT(R(rs1) << BITS(immI(inst), 4, 0), 32);       break;//srliw
+            case(0x20): R(rd) = SEXT((int)R(rs1) << BITS(immI(inst), 4, 0), 32);  break;//sraiw
+          }
+          break;
+      }
+      break;
+    }
+
 
     case(LOAD):{
       D -> decInfo.type = TYPE_I;
