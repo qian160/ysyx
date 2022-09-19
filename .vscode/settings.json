@@ -22,6 +22,10 @@
         "tuple": "cpp",
         "time.h": "c",
         "nemu.h": "c",
-        "riscv.h": "c"
+        "riscv.h": "c",
+        "sdl.h": "c",
+        "sdl_main.h": "c",
+        "sdl_stdinc.h": "c",
+        "sdl_thread.h": "c"
     }
 }
