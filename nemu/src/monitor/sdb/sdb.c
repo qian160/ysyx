@@ -8,7 +8,7 @@ void init_wp_pool();
 
 /* We use the `readline' library to provide more flexibility to read from stdin. */
 static char* rl_gets() {
-  /*
+  
   static char *line_read = NULL;
 
   if (line_read) {
@@ -17,8 +17,8 @@ static char* rl_gets() {
   }
 
   line_read = readline("(nemu) ");
-  */
-  char * line_read = readline(ANSI_FMT("(nemu)",ANSI_FG_PINK));
+  
+  //char * line_read = readline(ANSI_FMT("(nemu)",ANSI_FG_PINK));
   if (line_read && *line_read) {
     add_history(line_read);
   }
@@ -37,17 +37,11 @@ void sdb_mainloop() {   //get command
   }
   for (char *str; (str = rl_gets()) != NULL; ) {
     char *str_end = str + strlen(str);
-    /*
-    for(int i = 0 ; i< strlen(str) ; i++)
-      if(isalnum(str[i])) str[i] |= 0x20;    //convert to a b c ...z .大小写都能用
-    */
-      /* extract the first token as the command */
+    /* extract the first token as the command */
     char *cmd = strtok(str, " ");
     if (cmd == NULL) { continue; }
 
-    /* treat the remaining string as the arguments,
-     * which may need further parsing
-     */
+    /* treat the remaining string as the arguments, */
 
     char *args = cmd + strlen(cmd) + 1;
     if (args >= str_end) {
