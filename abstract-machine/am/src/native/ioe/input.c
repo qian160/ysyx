@@ -16,6 +16,7 @@ static int keymap[256] = {
 static int event_thread(void *args) {
   SDL_Event event;
   while (1) {
+    printf("1\n");
     SDL_WaitEvent(&event);
     switch (event.type) {
       case SDL_QUIT: halt(0);
