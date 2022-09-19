@@ -277,8 +277,8 @@ static int decode_exec(Decode *D) {
           }
           break;
         }
-        break;
       }
+      break;
 
     case(ARITH_I):{
       D -> decInfo.type = TYPE_I;
