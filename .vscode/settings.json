@@ -21,9 +21,6 @@
         "map.h": "c",
         "tuple": "cpp",
         "time.h": "c",
-<<<<<<< HEAD
-        "nemu.h": "c"
-=======
         "nemu.h": "c",
         "riscv.h": "c",
         "sdl.h": "c",
@@ -34,6 +31,5 @@
         "amtest.h": "c",
         "decode.h": "c",
         "cmd.h": "c"
->>>>>>> 1919810
     }
 }
