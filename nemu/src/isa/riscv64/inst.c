@@ -322,8 +322,10 @@ static int decode_exec(Decode *D) {
       }
     }
 
-    case(JAL):  D->decInfo.type = TYPE_J;  R(rd) = linkAddr; D -> dnpc = D -> pc + immJ(inst);   break;
-    case(JALR): D->decInfo.type = TYPE_I;  R(rd) = linkAddr; D -> dnpc = R(rs1) + immI(inst);    break;
+    case(JAL):    D->decInfo.type = TYPE_J;    R(rd) = linkAddr; D -> dnpc = D -> pc + immJ(inst);   break;
+    case(JALR):   D->decInfo.type = TYPE_I;    R(rd) = linkAddr; D -> dnpc = R(rs1) + immI(inst);    break;
+    case(AUIPC):  D->decInfo.type = TYPE_U;    R(rd) = D -> pc + immU(inst);
+    case(LUI):    D->decInfo.type = TYPE_U;    R(rd) = immU(inst);
     case(EBREAK): NEMUTRAP(D->pc, R(10)); break;  //r(10) is a0
   }
 /*
