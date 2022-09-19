@@ -155,8 +155,8 @@ static void decode_operand(Decode * D, int type) {
     case TYPE_J: 
       src1I(linkAddr);
       src2I(JAL_TARGET);
-      D->decInfo.target = JAL_TARGET; 
-      D->decInfo.is_ret = 0;/*(rd == 0 ? );*/ 
+      //D->decInfo.target = JAL_TARGET; 
+      //D->decInfo.is_ret = 0;/*(rd == 0 ? );*/ 
       break;
     case TYPE_I: {
       if(D -> decInfo.is_jalr){ //jalr is I type, which is special
@@ -186,12 +186,12 @@ static void decode_operand(Decode * D, int type) {
       src2I(BRANCH_TARGET);
       //D->decInfo.target = BRANCH_TARGET;
         switch (D -> decInfo.funct3){  //use src1 as a flag, src2 = branch_target
-        case beq_funct3:  src1I(R(rs1) == R(rs2));  D->decInfo.branch_taken = (R(rs1) == R(rs2));  break;
-        case bne_funct3:  src1I(R(rs1) ^  R(rs2));  D->decInfo.branch_taken = (R(rs1) ^  R(rs2));  break;
-        case blt_funct3:  src1I((sword_t)R(rs1) <  (sword_t)R(rs2));  D->decInfo.branch_taken = ((sword_t)R(rs1) <  (sword_t)R(rs2)); break;
-        case bge_funct3:  src1I((sword_t)R(rs1) >= (sword_t)R(rs2));  D->decInfo.branch_taken = ((sword_t)R(rs1) >= (sword_t)R(rs2)); break;
-        case bltu_funct3: src1I(R(rs1) <  R(rs2));  D->decInfo.branch_taken = (R(rs1) <  R(rs2));   break;
-        case bgeu_funct3: src1I(R(rs1) >= R(rs2));  D->decInfo.branch_taken = (R(rs1) >= R(rs2));   break;
+        case beq_funct3:  src1I(R(rs1) == R(rs2));                    /*D->decInfo.branch_taken = (R(rs1) == R(rs2));*/  break;
+        case bne_funct3:  src1I(R(rs1) ^  R(rs2));                    /*D->decInfo.branch_taken = (R(rs1) ^  R(rs2));*/  break;
+        case blt_funct3:  src1I((sword_t)R(rs1) <  (sword_t)R(rs2));  /*D->decInfo.branch_taken = ((sword_t)R(rs1) <  (sword_t)R(rs2));*/ break;
+        case bge_funct3:  src1I((sword_t)R(rs1) >= (sword_t)R(rs2));  /*D->decInfo.branch_taken = ((sword_t)R(rs1) >= (sword_t)R(rs2));*/ break;
+        case bltu_funct3: src1I(R(rs1) <  R(rs2));                    /*D->decInfo.branch_taken = (R(rs1) <  R(rs2));*/   break;
+        case bgeu_funct3: src1I(R(rs1) >= R(rs2));                    /*D->decInfo.branch_taken = (R(rs1) >= R(rs2));*/   break;
         }
     }
   }
