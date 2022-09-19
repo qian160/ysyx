@@ -143,9 +143,11 @@ static void decode_operand(Decode * D, word_t *dest, word_t *src1, word_t *src2,
   //Branch : src1 = flag, src2 = address
   //Jump   : src1 = link address, src2 = target address
   D->decInfo.rd   = rd;
-  D->decInfo.target = 0;
-  D->decInfo.type = type;
-  D->decInfo.is_ret = 0;
+  D->decInfo.type = type;  
+  IFDEF(CONFIG_FTRACE_ENABLE, 
+    D->decInfo.target = 0;
+    D->decInfo.is_ret = 0;
+  );
   //  ret -> jalr ra, x0, 0
   destR(rd);
   switch (type) {
