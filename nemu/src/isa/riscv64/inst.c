@@ -296,6 +296,7 @@ static int decode_exec(Decode *D) {
         case(0x5):  R(rd) = Mr(R(rs1) + imm_I, 2);           break;  //lhu
         case(0x6):  R(rd) = Mr(R(rs1) + imm_I, 4);           break;  //lwu
       }
+      break;
     }
 
     case(STORE):{
@@ -307,6 +308,7 @@ static int decode_exec(Decode *D) {
         case(0x2):  Mw(R(rs2) + imm_S, 4, R(rs1));  break;
         case(0x3):  Mw(R(rs2) + imm_S, 8, R(rs1));  break;
       }
+      break;
     }
 
     case(BRANCH):{
@@ -320,6 +322,7 @@ static int decode_exec(Decode *D) {
         case(0x6):  D -> dnpc =          R(rs1) <           R(rs2) ? target : D -> dnpc;  break;
         case(0x7):  D -> dnpc =          R(rs1) >=          R(rs2) ? target : D -> dnpc;  break;
       }
+      break;
     }
 
     case(JAL):    D->decInfo.type = TYPE_J;    R(rd) = linkAddr; D -> dnpc = D -> pc + immJ(inst);   break;
