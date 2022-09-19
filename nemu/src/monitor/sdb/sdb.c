@@ -70,7 +70,7 @@ void sdb_mainloop() {   //get command
 
     if (i == NR_CMD) { printf("Unknown command '%s'\n", cmd); }
 #ifdef CONFIG_AUTO_DISASM_NEXT
-  if(strcmp(CONFIG_AUTO_DISASM_NEXT, "0")!= 0){
+  if(CONFIG_DISASM_NUMBER != 0){
     if(cmd[0] != 'q' && cmd[0] != 'd')
     {
       int n = atoi(CONFIG_AUTO_DISASM_NEXT);
