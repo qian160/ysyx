@@ -145,7 +145,7 @@ static void decode_operand(Decode * D, word_t *dest, word_t *src1, word_t *src2,
 
   D->decInfo.rd   = rd;
   D->decInfo.type = type;
-  IFDEF(CONFIG_FTRACE_ENABLE, D->decInfo.is_ret = 0;  D->decInfo.target = 0;);
+  //IFDEF(CONFIG_FTRACE_ENABLE, D->decInfo.is_ret = 0;  D->decInfo.target = 0;);
   //  ret -> jalr ra, x0, 0
   switch (type) {
     case TYPE_R: src1I(R(rs1));       src2I(R(rs2));    break;
