@@ -126,6 +126,11 @@ printf(ANSI_FMT(" --------------------------------------------------------------
 }
 #endif
 
+#define storeAddr     immS(inst) + R(rs1)
+#define JAL_TARGET    (word_t)immJ(inst) + (word_t)D -> pc;
+#define JALR_TARGET   immI(inst) + R(rs1)
+#define BRANCH_TARGET immB(inst) + D -> pc;
+
 //src1 and src2 are the source operands which will join the future calculation. Use pointer to communicate with outside
 //question: how to make good use of dest, src1, src2
 static void decode_operand(Decode * D, word_t *dest, word_t *src1, word_t *src2, int type) {
@@ -147,29 +152,36 @@ static void decode_operand(Decode * D, word_t *dest, word_t *src1, word_t *src2,
   switch (type) {
     case TYPE_R: src1I(R(rs1));       src2I(R(rs2));    break;
     case TYPE_S: 
-      src1I(immS(inst) + R(rs1));
+      src1I(storeAddr);
       src2R(rs2);
       break;
     case TYPE_J:  
         src1I(D -> pc + 4);     
-        word_t JAL_TARGET     = (word_t)immJ(inst) + (word_t)D -> pc;
-        src2I(JAL_TARGET);  
-        D->decInfo.target = JAL_TARGET; 
-        D->decInfo.is_ret = 0;/*(rd == 0);*/ break;
+        src2I(JAL_TARGET);
+
+        IFDEF(CONFIG_FTRACE_ENABLE, 
+          D->decInfo.target = JAL_TARGET; 
+          D->decInfo.is_ret = 0;        /*(rd == 0 ?);*/ 
+        ); 
+        break;
+
     case TYPE_I: {
       if(D -> decInfo.is_jalr){ //jalr is I type, which is special
-          word_t JALR_TARGET    = immI(inst) + R(rs1);
           src1I(D -> pc + 4);    
-          src2I(JALR_TARGET);  D->decInfo.target = JALR_TARGET;   
-          D->decInfo.is_ret = (rd == 0 && rs1 == 1);  break;
+          src2I(JALR_TARGET);
+
+          IFDEF(CONFIG_FTRACE_ENABLE, 
+            D->decInfo.target = JALR_TARGET;
+            D->decInfo.is_ret = (rd == 0 && rs1 == 1);  
+          );
+          break;
       }
       else{
           src1R(rs1);         src2I(immI(inst));  break;
       } 
     }
     case TYPE_U: {
-      //to dest's upper 20 bits
-      if(D -> decInfo.is_lui)
+      if(D -> decInfo.is_lui)      //to dest's upper 20 bits
         src1I(immU(inst));
       else{           //auipc rd, imm -> rd = pc + imm
         src1I(immU(inst));   src2I(D -> pc);
@@ -177,9 +189,8 @@ static void decode_operand(Decode * D, word_t *dest, word_t *src1, word_t *src2,
       break;
     }
     case TYPE_B: {
-      word_t BRANCH_TARGET  = immB(inst) + D -> pc;
       src2I(BRANCH_TARGET);
-      D->decInfo.target = BRANCH_TARGET;
+      //D->decInfo.target = BRANCH_TARGET;    //SEEMS NO USE TO FTRACE
         switch (D -> decInfo.funct3){  //use src1 as a flag, src2 = branch_target
         case beq_funct3:  src1I(R(rs1) == R(rs2));  D->decInfo.branch_taken = (R(rs1) == R(rs2));  break;
         case bne_funct3:  src1I(R(rs1) ^  R(rs2));  D->decInfo.branch_taken = (R(rs1) ^  R(rs2));  break;
