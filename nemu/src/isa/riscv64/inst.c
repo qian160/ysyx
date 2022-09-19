@@ -91,9 +91,6 @@ printf(ANSI_FMT(" --------------------------------------------------------------
     else if(D->decInfo.is_jalr){
       printf(ANSI_FMT("| jalr, set %s = 0x%-lx, new PC at 0x%lx. %s's bits are: \t\t|\n", ANSI_FG_YELLOW), reg_name(dest), src1, src2, reg_name(dest));
       show_bits_fmt(src1);
-      /*IFDEF(CONFIG_FTRACE_ENABLE,
-        if(dest == 0) update_ftrace(0, src2, "dont know", depth);
-      );*/
     }
     else  {
       printf(ANSI_FMT("| set %s = 0x%-60lx  | \n", ANSI_FG_YELLOW), reg_name(dest), R(dest)); 
@@ -106,13 +103,11 @@ printf(ANSI_FMT(" --------------------------------------------------------------
       }
       else {
         printf(ANSI_FMT("| branch is taken, new PC at 0x%-44lx | \n", ANSI_FG_YELLOW), src2);
-        //IFDEF(CONFIG_FTRACE_ENABLE, update_ftrace(1, src2, "dont know", depth));
       }
       break;
     case(TYPE_J):
       printf(ANSI_FMT("| jal, set %s = 0x%lx, new PC at 0x%-34lx | \n", ANSI_FG_YELLOW), reg_name(dest), src1, src2);
       show_bits_fmt(src1);
-      //IFDEF(CONFIG_FTRACE_ENABLE, update_ftrace(1, src2, "dont know", depth));
       break;
     case(TYPE_S):{
       word_t storeVal = src2 & BITMASK(S_width(fct3) << 3);
@@ -154,8 +149,10 @@ static void decode_operand(Decode * D, int type) {
     case TYPE_J: 
       src1I(linkAddr);
       src2I(JAL_TARGET);
-      //D->decInfo.target = JAL_TARGET; 
-      //D->decInfo.is_ret = 0;/*(rd == 0 ? );*/ 
+      IFDEF(CONFIG_FTRACE_ENABLE,
+        D->decInfo.target = JAL_TARGET; 
+        D->decInfo.is_ret = 0;/*(rd == 0 ? );*/ 
+      );
       break;
     case TYPE_I: {
       if(D -> decInfo.is_jalr){ //jalr is I type, which is special
