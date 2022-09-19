@@ -262,10 +262,9 @@ static int decode_exec(Decode *D) {
           break;
         }
         case(0x01):{    //M extension
-        printf("hit\n");
           switch(fct3){
             case(0x3):  R(rd) = R(rs1) * R(rs2);  break;    //mulu
-            case(0x5):  printf("hit\n");R(rd) = R(rs1) / R(rs2);  break;    //divu
+            case(0x5):  R(rd) = R(rs1) / R(rs2);  break;    //divu
             case(0x7):  R(rd) = R(rs1) % R(rs2);  break;    //remu
 
             case(0x0):  R(rd) = (sword_t)R(rs1) * (sword_t)R(rs2);  break;    //mul
@@ -277,6 +276,7 @@ static int decode_exec(Decode *D) {
             default: panic("bad inst\n");
           }
         }
+        break;
       }
 
     case(ARITH_I):{
