@@ -344,9 +344,8 @@ static int decode_exec(Decode *D) {
 
     case(ARITH_64_I):{
       D -> decInfo.type = TYPE_I;
-      Log("src1 = 0x%lx, src2 = 0x%lx\n", R(rs1), R(rs2));
       switch(fct3){
-        case(0x00): R(rd) = SEXT((int)R(rs1) + (int)R(rs2), 32);                  break;//addiw
+        case(0x00): R(rd) = SEXT((int)R(rs1) + immI(inst), 32);                  break;//addiw
         case(0x01): R(rd) = SEXT((int)R(rs1) << BITS(immI(inst), 4, 0), 32);      break;//slliw
         case(0x05):
           switch(fct7){
