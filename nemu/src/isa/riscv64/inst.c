@@ -240,13 +240,11 @@ static int decode_exec(Decode *D) {
       switch(fct7){
         case(0x20):{
           switch(fct3){
-            case(0x0):{   //sub
-              R(rd) = R(rs1) - R(rs2); //D -> decInfo.src1 = R(rs1);
-            }
-            case(0x5):{   //sra
-              R(rd) = (sword_t)R(rs1) >> (sword_t)BITS(R(rs2), 5, 0);
-            }
-            break;
+            case(0x0):   //sub
+              R(rd) = R(rs1) - R(rs2);  break;//D -> decInfo.src1 = R(rs1);
+            case(0x5):   //sra
+              R(rd) = (sword_t)R(rs1) >> (sword_t)BITS(R(rs2), 5, 0); break;
+            default: panic("bad inst\n");
           }
         }
         case(0x0):{
@@ -259,8 +257,24 @@ static int decode_exec(Decode *D) {
             case(0x5):  R(rd) = R(rs1)          >>  BITS(R(rs2), 5, 0);         break;  //srl
             case(0x6):  R(rd) = R(rs1)          |   R(rs2);                     break;  //or
             case(0x7):  R(rd) = R(rs1)          &   R(rs2);                     break;  //and
+            default:    panic("bad inst\n");
           }
           break;
+        }
+        case(0x01):{    //M extension
+          switch(fct3){
+            case(0x3):  R(rd) = R(rs1) * R(rs2);  break;    //mulu
+            case(0x5):  R(rd) = R(rs1) / R(rs2);  break;    //divu
+            case(0x7):  R(rd) = R(rs1) % R(rs2);  break;    //remu
+
+            case(0x0):  R(rd) = (sword_t)R(rs1) * (sword_t)R(rs2);  break;    //mul
+            case(0x4):  R(rd) = (sword_t)R(rs1) / (sword_t)R(rs2);  break;    //div
+            case(0x6):  R(rd) = (sword_t)R(rs1) % (sword_t)R(rs2);  break;    //rem
+
+            case(0x1):  R(rd) = BITS((__int128_t)R(rs1) * (__int128_t) R(rs2), 127, 64);   break;    //mulh
+            case(0x2):  R(rd) = BITS((__int128_t)R(rs1) * (__uint128_t)R(rs2), 127, 64);  break;     //mulhsu, signed * unsigned
+            default: panic("bad inst\n");
+          }
         }
       }
 
@@ -280,6 +294,7 @@ static int decode_exec(Decode *D) {
           }
         case(0x6):  R(rd) = R(rs1)          |   imm_I;                  break;  //ori
         case(0x7):  R(rd) = R(rs1)          &   imm_I;                  break;  //addi
+        default:    panic("bad inst\n");
       }
       break;
     }
@@ -296,6 +311,7 @@ static int decode_exec(Decode *D) {
         case(0x4):  R(rd) = Mr(R(rs1) + imm_I, 1);           break;  //lbu
         case(0x5):  R(rd) = Mr(R(rs1) + imm_I, 2);           break;  //lhu
         case(0x6):  R(rd) = Mr(R(rs1) + imm_I, 4);           break;  //lwu
+        default:    panic("bad inst\n");
       }
       break;
     }
@@ -308,6 +324,7 @@ static int decode_exec(Decode *D) {
         case(0x1):  Mw(R(rs1) + imm_S, 2, R(rs2));  break;
         case(0x2):  Mw(R(rs1) + imm_S, 4, R(rs2));  break;
         case(0x3):  Mw(R(rs1) + imm_S, 8, R(rs2));  break;
+        default:    panic("bad inst\n");
       }
       break;
     }
@@ -322,6 +339,7 @@ static int decode_exec(Decode *D) {
         case(0x5):  D -> dnpc = (sword_t)R(rs1) >= (sword_t)R(rs2) ? target : D -> dnpc;  break;
         case(0x6):  D -> dnpc =          R(rs1) <           R(rs2) ? target : D -> dnpc;  break;
         case(0x7):  D -> dnpc =          R(rs1) >=          R(rs2) ? target : D -> dnpc;  break;
+        default:    panic("bad inst\n");
       }
       break;
     }
@@ -331,6 +349,7 @@ static int decode_exec(Decode *D) {
     case(AUIPC):  D->decInfo.type = TYPE_U;    R(rd) = D -> pc + immU(inst);break;
     case(LUI):    D->decInfo.type = TYPE_U;    R(rd) = immU(inst);break;
     case(EBREAK): NEMUTRAP(D->pc, R(10)); break;  //r(10) is a0
+    default: panic("bad inst\n");
   }
 /*
   INSTPAT_START();
