@@ -179,7 +179,6 @@ static void decode_operand(Decode * D, int type) {
       }
       else{           //auipc rd, imm -> rd = pc + imm
         src1I(immU(inst));   src2I(D -> pc);
-        Log("\nsrc1 = 0x%lx, src2 = 0x%lx\n", immU(inst), D->pc);
       } 
       break;
     }
@@ -207,7 +206,7 @@ static int decode_exec(Decode *D) {
   decode_operand(D, concat(TYPE_, type)); \
   word_t src1 __attribute__((unused)) = D -> decInfo.src1;\
   word_t src2 __attribute__((unused)) = D -> decInfo.src2;\
-  char dest __attribute__((unused)) = D -> decInfo.rd;\
+  char dest   __attribute__((unused)) = D -> decInfo.rd;\
   __VA_ARGS__ ; \
   IFDEF(CONFIG_SHOW_DECODE_INFORMATION, show_decode(D));\
   \
