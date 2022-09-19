@@ -127,11 +127,11 @@ printf(ANSI_FMT(" --------------------------------------------------------------
 }
 #endif
 
-#define JAL_TARGET      immJ(inst) + D -> pc
-#define BRANCH_TARGET   immB(inst) + D -> pc
-#define JALR_TARGET     immI(inst) + R(rs1)
-#define storeAddr       immS(inst) + R(rs1)
-#define linkAddr        D -> pc + 4
+#define JAL_TARGET      (immJ(inst) + D -> pc)
+#define BRANCH_TARGET   (immB(inst) + D -> pc)
+#define JALR_TARGET     (immI(inst) + R(rs1))
+#define storeAddr       (immS(inst) + R(rs1))
+#define linkAddr        (D -> pc + 4)
 //src1 and src2 are the source operands which will join the future calculation. Use pointer to communicate with outside
 //question: how to make good use of dest, src1, src2
 static void decode_operand(Decode * D, int type) {
