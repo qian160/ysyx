@@ -151,7 +151,12 @@ static void decode_operand(Decode * D, word_t *dest, word_t *src1, word_t *src2,
   switch (type) {
     case TYPE_R: src1I(R(rs1));       src2I(R(rs2));    break;
     case TYPE_S: src1I(storeAddr);    src2R(rs2);       break;
-    case TYPE_J: src1I(linkAddr);     src2I(JAL_TARGET);  D->decInfo.target = JAL_TARGET; D->decInfo.is_ret = 0;/*(rd == 0);*/ break;
+    case TYPE_J: 
+      src1I(linkAddr);
+      src2I(JAL_TARGET);
+      D->decInfo.target = JAL_TARGET; 
+      D->decInfo.is_ret = 0;/*(rd == 0 ? );*/ 
+      break;
     case TYPE_I: {
       if(D -> decInfo.is_jalr){ //jalr is I type, which is special
           src1I(linkAddr);
@@ -167,15 +172,16 @@ static void decode_operand(Decode * D, word_t *dest, word_t *src1, word_t *src2,
     case TYPE_U: {
       //to dest's upper 20 bits
       if(D -> decInfo.is_lui){
-        src1I(immU(inst));    break;
+        src1I(immU(inst));   
       }
       else{           //auipc rd, imm -> rd = pc + imm
-        src1I(immU(inst));   src2I(D -> pc); break;
-      }
+        src1I(immU(inst));   src2I(D -> pc);
+      } 
+      break;
     }
     case TYPE_B: {
       src2I(BRANCH_TARGET);
-      D->decInfo.target = BRANCH_TARGET;
+      //D->decInfo.target = BRANCH_TARGET;
         switch (D -> decInfo.funct3){  //use src1 as a flag, src2 = branch_target
         case beq_funct3:  src1I(R(rs1) == R(rs2));  D->decInfo.branch_taken = (R(rs1) == R(rs2));  break;
         case bne_funct3:  src1I(R(rs1) ^  R(rs2));  D->decInfo.branch_taken = (R(rs1) ^  R(rs2));  break;
