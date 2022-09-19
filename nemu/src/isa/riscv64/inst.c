@@ -266,23 +266,20 @@ static int decode_exec(Decode *D) {
     case(ARITH_I):{
       D -> decInfo.type = TYPE_I;
       word_t imm_I = immI(inst);
-      printf("rd = %d, inst = 0x%x, imm = 0x%lx\n", rd, inst, imm_I);
-      printf("rs1 = 0x%lx\n", R(rs1));
-      switch(fct7){
-        case(0x00):
-          switch(fct3){
-            case(0x0):  R(rd) = R(rs1)          +   imm_I;                  break;  //addi
-            case(0x1):  R(rd) = R(rs1)          <<  BITS(imm_I, 5, 0);      break;  //slli
-            case(0x2):  R(rd) = (sword_t)R(rs1) <   (sword_t)imm_I ? 1 : 0; break;  //slti
-            case(0x3):  R(rd) = R(rs1)          <   imm_I ? 1 : 0;          break;  //sltiu
-            case(0x4):  R(rd) = R(rs1)          ^   imm_I;                  break;  //xori
-            case(0x5):  R(rd) = R(rs1)          >>  BITS(imm_I, 5, 0);      break;  //srli
-            case(0x6):  R(rd) = R(rs1)          |   imm_I;                  break;  //ori
-            case(0x7):  R(rd) = R(rs1)          &   imm_I;                  break;  //addi
+      switch(fct3){
+        case(0x0):  R(rd) = R(rs1)          +   imm_I;                  break;  //addi
+        case(0x1):  R(rd) = R(rs1)          <<  BITS(imm_I, 5, 0);      break;  //slli
+        case(0x2):  R(rd) = (sword_t)R(rs1) <   (sword_t)imm_I ? 1 : 0; break;  //slti
+        case(0x3):  R(rd) = R(rs1)          <   imm_I ? 1 : 0;          break;  //sltiu
+        case(0x4):  R(rd) = R(rs1)          ^   imm_I;                  break;  //xori
+        case(0x5):
+          switch(fct7){
+            case(0x00): R(rd) =          R(rs1) >>  BITS(imm_I, 5, 0);          break;  //srli
+            case(0x20): R(rd) = (sword_t)R(rs1) >> (sword_t)BITS(R(rs2), 5, 0); break;  //srai
           }
-        case(0x20): R(rd) = (sword_t)R(rs1) >> (sword_t)BITS(R(rs2), 5, 0); break;  //srai
+        case(0x6):  R(rd) = R(rs1)          |   imm_I;                  break;  //ori
+        case(0x7):  R(rd) = R(rs1)          &   imm_I;                  break;  //addi
       }
-      break;
     }
 
     case(LOAD):{
