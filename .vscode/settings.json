@@ -27,6 +27,7 @@
         "sdl_main.h": "c",
         "sdl_stdinc.h": "c",
         "sdl_thread.h": "c",
-        "amdev.h": "c"
+        "amdev.h": "c",
+        "amtest.h": "c"
     }
 }
