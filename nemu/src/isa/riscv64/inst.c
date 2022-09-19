@@ -303,10 +303,10 @@ static int decode_exec(Decode *D) {
       D -> decInfo.type = TYPE_S;
       word_t imm_S = immS(inst);
       switch(fct3){
-        case(0x0):  Mw(R(rs2) + imm_S, 1, R(rs1));  break;
-        case(0x1):  Mw(R(rs2) + imm_S, 2, R(rs1));  break;
-        case(0x2):  Mw(R(rs2) + imm_S, 4, R(rs1));  break;
-        case(0x3):  Mw(R(rs2) + imm_S, 8, R(rs1));  break;
+        case(0x0):  Mw(R(rs1) + imm_S, 1, R(rs2));  break;
+        case(0x1):  Mw(R(rs1) + imm_S, 2, R(rs2));  break;
+        case(0x2):  Mw(R(rs1) + imm_S, 4, R(rs2));  break;
+        case(0x3):  Mw(R(rs1) + imm_S, 8, R(rs2));  break;
       }
       break;
     }
