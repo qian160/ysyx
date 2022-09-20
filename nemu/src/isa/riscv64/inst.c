@@ -125,33 +125,6 @@ printf(ANSI_FMT(" --------------------------------------------------------------
 static int decode_exec(Decode *D) {
   D->dnpc = D->snpc;    //default
 
-#define INSTPAT_INST(D) ((D)->inst)
-//a match is found, do what it supposed to do.
-#define INSTPAT_MATCH(D, name, type, ... /* body */ ) { \
-  decode_operand(D, concat(TYPE_, type)); \
-  word_t src1 __attribute__((unused)) = D -> decInfo.src1;\
-  word_t src2 __attribute__((unused)) = D -> decInfo.src2;\
-  char dest   __attribute__((unused)) = D -> decInfo.rd;\
-  __VA_ARGS__ ; \
-  IFDEF(CONFIG_SHOW_DECODE_INFORMATION, show_decode(D));\
-  \
-  IFDEF(CONFIG_FTRACE_ENABLE, _ftrace(D));\
-}
-
-  //check one by one
-  //note that when we say inst(0), we are counting from the right side(LSB), but str(0) below starts at left side
-  //each pattern has its unique mask, key and shift
-  /*
-    some frequently used psedo inst:
-      li rd, imm:  -> addi rd, x0, 0  load immediate
-      j offset:    -> jal x0, offset (write to x0 will make no influence). j 0 may be useful
-      jal offset:  -> jalr ra, offset. Use default ra register
-      ret -> jalr x0, ra, 0
-
-      auipc + addi : get the address of a section, or some label
-  */
-  //every case should carefully end up with a break
-
   uint32_t inst = D -> inst;
   unsigned char rd  = BITS(inst, 11, 7);
   unsigned char rs1 = BITS(inst, 19, 15);
@@ -347,11 +320,6 @@ static int decode_exec(Decode *D) {
 int isa_exec_once(Decode *D) {
   uint32_t inst = inst_fetch(&D -> snpc, 4);  //snpc will be updated in fetch ( +4 )
   D->inst = inst;
-   //set some decode flags here
-  D -> decInfo.is_jalr  = opcode(inst) == jalr_opcode; 
-  D -> decInfo.is_lui   = BITS(inst, 5, 5);    //just a possibility
-  D -> decInfo.funct3   = funct3(inst);
-  D -> decInfo.is_load  = opcode(inst) == load_opcode;
-
+   //set some decode flags here ?
   return decode_exec(D);
 }
