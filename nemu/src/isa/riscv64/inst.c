@@ -281,7 +281,7 @@ static int decode_exec(Decode *D) {
             case(0x20): 
             Log("\nrs1 = 0x%lx, imm = 0x%lx, shamt = 0x%lx, res = 0x%lx\n", R(rs1), immI(inst), BITS(immI(inst), 5, 0), SEXT((int)R(rs1) << BITS(immI(inst), 4, 0), 32));
 
-            R(rd) = SEXT((int)R(rs1) << BITS(immI(inst), 4, 0), 32);  break;//sraiw
+            R(rd) = SEXT((int)R(rs1) >> BITS(immI(inst), 4, 0), 32);  break;//sraiw
           }
           break;
         }
