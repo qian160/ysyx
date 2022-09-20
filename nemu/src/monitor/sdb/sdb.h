@@ -28,6 +28,6 @@ void free_wp(int num);
 void show_free();
 
 word_t vaddr_ifetch(vaddr_t addr, int len);
-void disassemble(char *str, int size, uint64_t pc, uint8_t *code, int nbyte);
+extern void disassemble(char *str, int size, uint64_t pc, uint8_t *code, int nbyte);
 
 #endif
