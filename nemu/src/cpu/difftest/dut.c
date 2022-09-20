@@ -77,8 +77,8 @@ void init_difftest(char *ref_so_file, long img_size, int port) {
   ref_difftest_regcpy(&cpu, DIFFTEST_TO_REF);
 }
 
-static void checkregs(CPU_state *ref, vaddr_t pc) {
-  if (!isa_difftest_checkregs(ref, pc)) {
+static void checkregs(vaddr_t pc, CPU_state *ref, vaddr_t dnpc) {
+  if (!isa_difftest_checkregs(pc, ref, dnpc)) {
     Log("difftest failed!\n");
     nemu_state.state = NEMU_ABORT;
     nemu_state.halt_pc = pc;
@@ -86,13 +86,13 @@ static void checkregs(CPU_state *ref, vaddr_t pc) {
   }
 }
 
-void difftest_step(vaddr_t pc, vaddr_t npc) {
+void difftest_step(vaddr_t pc, vaddr_t dnpc) {
   CPU_state ref_r;
   if (skip_dut_nr_inst > 0) {
     ref_difftest_regcpy(&ref_r, DIFFTEST_TO_DUT);
-    if (ref_r.pc == npc) {
+    if (ref_r.pc == dnpc) {
       skip_dut_nr_inst = 0;
-      checkregs(&ref_r, npc);
+      checkregs(pc, &ref_r, dnpc);
       return;
     }
     skip_dut_nr_inst --;
@@ -111,7 +111,7 @@ void difftest_step(vaddr_t pc, vaddr_t npc) {
   ref_difftest_exec(1);
   ref_difftest_regcpy(&ref_r, DIFFTEST_TO_DUT);
 
-  checkregs(&ref_r, pc);
+  checkregs(pc, &ref_r, dnpc);
 }
 #else
 void init_difftest(char *ref_so_file, long img_size, int port) { }
