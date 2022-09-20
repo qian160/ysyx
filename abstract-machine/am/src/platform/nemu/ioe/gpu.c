@@ -19,19 +19,18 @@ void __am_gpu_config(AM_GPU_CONFIG_T *cfg) {
     .vmemsz = 0
   };
 }
-//who calls this function? I guess it may be io_write...
+//user calls this function through io_write
 void __am_gpu_fbdraw(AM_GPU_FBDRAW_T *ctl) {
   if (ctl->sync) {
     outl(SYNC_ADDR, 1);
   }
-  printf("test...\n");
   uint32_t* fb = (uint32_t *)(uintptr_t)FB_ADDR;
   uint32_t* pixels = ctl->pixels;
   //width of screen
   int W = inw(VGACTL_ADDR + 2);
   // 矩形块一次复制的大小
-  int copy_size = sizeof(uint32_t) * ctl->w;
-  for (int i = 0; i < ctl->h; ++i) {
+  int copy_size = sizeof(uint32_t) * ctl -> w;
+  for (int i = 0; i < ctl -> h; i++) {
     memcpy(&fb[ctl->x + (ctl->y + i) * W], pixels, copy_size);
     pixels += ctl->w;
   }
