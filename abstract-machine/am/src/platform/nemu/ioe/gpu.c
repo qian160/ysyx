@@ -28,10 +28,8 @@ void __am_gpu_fbdraw(AM_GPU_FBDRAW_T *ctl) {
   uint32_t* pixels = ctl->pixels;
   //width of screen
   int W = inw(VGACTL_ADDR + 2);
-  // 矩形块一次复制的大小
-  int copy_size = sizeof(uint32_t) * ctl -> w;
   for (int i = 0; i < ctl -> h; i++) {
-    memcpy(&fb[ctl->x + (ctl->y + i) * W], pixels, copy_size);
+    memcpy(&fb[ctl->x + (ctl->y + i) * W], pixels, sizeof(uint32_t) * ctl -> w);
     pixels += ctl->w;
   }
 }
