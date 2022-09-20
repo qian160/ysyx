@@ -277,7 +277,7 @@ static int decode_exec(Decode *D) {
         case(0x05):{
           Log("hit\n");
           switch(fct7){
-            case(0x00): R(rd) = SEXT(R(rs1) >> BITS(immI(inst), 4, 0), 32);  break;//srliw
+            case(0x00): R(rd) = SEXT((uint32_t)R(rs1) >> (uint32_t)BITS(immI(inst), 4, 0), 32);  break;//srliw
             case(0x20): 
             Log("\nsrc1 = 0x%lx, imm = 0x%lx, shamt = 0x%lx, res = 0x%lx\n", R(rs1), immI(inst), BITS(immI(inst), 4, 0), SEXT((int)R(rs1) >> BITS(immI(inst), 4, 0), 32));
             R(rd) = SEXT((int)R(rs1) >> BITS(immI(inst), 4, 0), 32);  break;//sraiw
