@@ -27,9 +27,10 @@ void __am_gpu_fbdraw(AM_GPU_FBDRAW_T *ctl) {
   if (ctl->sync) {
     outl(SYNC_ADDR, 114514);    //write to SYNC reg will call update
   }
+  //write to vga frame buffer
   uint32_t* fb = (uint32_t *)(uintptr_t)FB_ADDR;
   uint32_t* pixels = ctl->pixels;
-  //size of the screen
+
   int W = inw(VGACTL_ADDR + 2);
 
   for (int i = 0; i < ctl->h; ++i) {
