@@ -296,7 +296,7 @@ static int decode_exec(Decode *D) {
       word_t target = D->pc + immB(inst);
       switch(fct3){
         case(0x0):  D -> dnpc =          R(rs1) ==          R(rs2) ? target : D -> dnpc;  break;
-        case(0x1):  D -> dnpc =          R(rs1) !=          R(rs2) ? target : D -> dnpc;  break;
+        case(0x1):  D -> dnpc =          R(rs1) ^           R(rs2) ? target : D -> dnpc;  break;
         case(0x4):  D -> dnpc = (sword_t)R(rs1) <  (sword_t)R(rs2) ? target : D -> dnpc;  break;
         case(0x5):  D -> dnpc = (sword_t)R(rs1) >= (sword_t)R(rs2) ? target : D -> dnpc;  break;
         case(0x6):  D -> dnpc =          R(rs1) <           R(rs2) ? target : D -> dnpc;  break;
