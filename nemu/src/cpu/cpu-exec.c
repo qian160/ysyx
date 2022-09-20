@@ -19,7 +19,7 @@ static uint64_t g_timer = 0; // unit: us
 static bool g_print_step = false;
 
 void device_update();
-extern void disassemble(char *str, int size, uint64_t pc, uint8_t *code, int nbyte);
+void disassemble(char *str, int size, uint64_t pc, uint8_t *code, int nbyte);
 
 static void trace_and_difftest(Decode *_this, vaddr_t dnpc) {
 #ifdef CONFIG_ITRACE_COND

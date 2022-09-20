@@ -6,6 +6,7 @@
 #include "sdb.h"
 #include <utils.h>
 #include "../../isa/riscv64/local-include/reg.h"
+
 extern void disassemble(char *str, int size, uint64_t pc, uint8_t *code, int nbyte);
 
 #define NR_CMD ARRLEN(cmd_table)
@@ -218,7 +219,7 @@ static int cmd_d(char * e){
         memset(p, ' ', space_len);
         p += space_len;
         //this depends on TRACE
-        disassemble(p, buf + sizeof(buf) - p, pc, (uint8_t *)&inst, 4);
+        IFDEF(CONFIG_TRACE, disassemble(p, buf + sizeof(buf) - p, pc, (uint8_t *)&inst, 4));
         //full inst is ready
         puts(buf);
         pc += 4;        
