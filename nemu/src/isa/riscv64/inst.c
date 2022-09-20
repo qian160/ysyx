@@ -213,8 +213,8 @@ static int decode_exec(Decode *D) {
       switch(fct7){
         case(0x00):{
           switch(fct3){
-            case(0x00):   R(rd) = SEXT((int)R(rs1) + (int)R(rs2), 32);    break;      //addw
-            case(0x01):   R(rd) = SEXT(R(rs1) << BITS(R(rs2), 4, 0), 32); break;      //sllw
+            case(0x00):   R(rd) = SEXT((int32_t) R(rs1) +  (int32_t) R(rs2), 32);             break;      //addw
+            case(0x01):   R(rd) = SEXT((uint32_t)R(rs1) << (uint32_t)BITS(R(rs2), 4, 0), 32); break;      //sllw
             case(0x05):   R(rd) = SEXT((uint32_t)R(rs1) >> (uint32_t)BITS(R(rs2), 4, 0), 32); break;      //srlw
             default:    panic("bad inst\n");
           }
