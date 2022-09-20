@@ -37,7 +37,7 @@ vaddr_t isa_raise_intr(word_t NO, vaddr_t epc);
 word_t isa_query_intr();
 
 // difftest
-bool isa_difftest_checkregs(CPU_state *ref_r, vaddr_t pc);
+bool isa_difftest_checkregs(vaddr_t pc, CPU_state *ref_r, vaddr_t dnpc);
 void isa_difftest_attach();
 
 #endif

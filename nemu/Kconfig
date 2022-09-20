@@ -15,10 +15,6 @@ menu "My config"
     endmenu
 
     config AUTO_DISASM_NEXT
-<<<<<<< HEAD
-	string "Numbers to disasm"
-	default "1"
-=======
 	bool "Automatically disasm next insttructions after execuation"
 	default "y"
 
@@ -26,7 +22,6 @@ menu "My config"
 	string "Numbers to disasm"
 	default "1"
 	depends on AUTO_DISASM_NEXT
->>>>>>> 1919810
 
     config SHOW_DECODE_INFORMATION
     bool "Show decode information after decoding"
