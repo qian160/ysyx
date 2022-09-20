@@ -11,7 +11,7 @@ void __am_gpu_init() {
   int w = inw(VGACTL_ADDR + 2);  // TODO: get the correct width
   int h = inw(VGACTL_ADDR);      // TODO: get the correct height
   uint32_t *fb = (uint32_t *)(uintptr_t)FB_ADDR;
-  for (i = 0; i < w * h; i ++) fb[i] = rand() * rand();
+  for (i = 0; i < w * h; i ++) fb[i] = rand() * rand() * rand();
   outl(SYNC_ADDR, 1);
 }
 
