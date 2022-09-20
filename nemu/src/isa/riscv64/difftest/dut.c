@@ -5,7 +5,7 @@
 bool isa_difftest_checkregs(vaddr_t pc, CPU_state *ref_r, vaddr_t dnpc) {
   for(int i = 0; i < 32; i++){
     if(cpu.gpr[i] ^ ref_r->gpr[i]) {
-      Log_Color(RED, "pc = 0x%lx, \ndnpc = 0x%lx:  \n%s should be 0x%lx, but get 0x%lx\n", pc, cpu.pc, reg_name(i), ref_r->gpr[i], cpu.gpr[i]);
+      Log_Color(RED, "\npc = 0x%lx, \ndnpc = 0x%lx:  \n%s should be 0x%lx, but get 0x%lx\n", pc, cpu.pc, reg_name(i), ref_r->gpr[i], cpu.gpr[i]);
       return false;
     }
   }
