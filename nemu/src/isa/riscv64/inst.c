@@ -258,8 +258,8 @@ static int decode_exec(Decode *D) {
         case(0x5):{
           switch(fct7){
             case(0x00): 
-            R(rd) =          R(rs1) >>  BITS(imm_I, 5, 0);          break;  //srli
-            case(0x20): R(rd) = (sword_t)R(rs1) >> (sword_t)BITS(R(rs2), 5, 0); break;  //srai
+            R(rd) =          R(rs1) >>  BITS(imm_I, 5, 0);                          break;  //srli
+            case(0x20): R(rd) = (sword_t)R(rs1) >> (sword_t)BITS(immI(inst), 5, 0); break;  //srai
           }
           break;
         }
