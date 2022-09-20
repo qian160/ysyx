@@ -305,12 +305,12 @@ static int decode_exec(Decode *D) {
       }
       break;
     }
-
+    //movsx max mov-c to-lower-case load-store
     case(JAL):    D->decInfo.type = TYPE_J;    R(rd) = linkAddr; D -> dnpc = D -> pc + immJ(inst);   break;
     case(JALR):   D->decInfo.type = TYPE_I;    R(rd) = linkAddr; D -> dnpc = R(rs1) + immI(inst);    break;
-    case(AUIPC):  D->decInfo.type = TYPE_U;    R(rd) = D -> pc + immU(inst);break;
-    case(LUI):    D->decInfo.type = TYPE_U;    R(rd) = immU(inst);break;
-    case(EBREAK): NEMUTRAP(D->pc, R(10)); break;  //r(10) is a0
+    case(AUIPC):  D->decInfo.type = TYPE_U;    R(rd) = D -> pc + immU(inst);                         break;
+    case(LUI):    D->decInfo.type = TYPE_U;    R(rd) = immU(inst);                                   break;
+    case(EBREAK): NEMUTRAP(D->pc, R(10));                                                            break;  //r(10) is a0
     default: panic("bad inst\n");
   }
   R(0) = 0; // reset $zero to 0
