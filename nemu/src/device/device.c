@@ -15,6 +15,31 @@ void init_disk();
 void init_sdcard();
 void init_alarm();
 
+/*
+------------------------------------------------------------------------------------------------------------------
+  io_r/w(reg):   in fact this is like a function call table
+    it firstly create a struct and use it to call a handler in lut-
+  ioe_rw(reg, &buf)  (buf is the struct we just created)
+    if read, the result will be write to buf and we can access it just like:
+        int foo = io_read(bar).xxx;
+    if write, we need to offer the arguments of the function
+    reg is an abstruction of some device here, we can't see the device, but perform its functionality
+    call io_r/w will perform a function at index 'reg' in a lut
+
+  map_r/w
+    not directly called by us. It's also the magic of abstraction
+    Firstly we will meet a load or store inst, then nemu finds 
+    that address not in pmem, so tyring mmio space(map_r/w).
+    These are all done by nemu, which won't be notice from the machine's view
+
+    in machine's view, we just read the device's address, and get the data as if it was in pmem
+
+    read happens after invoke_callup
+    and write happens before that
+------------------------------------------------------------------------------------------------------------------
+
+*/
+
 void send_key(uint8_t, bool);
 void vga_update_screen();
 
