@@ -125,6 +125,33 @@ printf(ANSI_FMT(" --------------------------------------------------------------
 static int decode_exec(Decode *D) {
   D->dnpc = D->snpc;    //default
 
+#define INSTPAT_INST(D) ((D)->inst)
+//a match is found, do what it supposed to do.
+#define INSTPAT_MATCH(D, name, type, ... /* body */ ) { \
+  decode_operand(D, concat(TYPE_, type)); \
+  word_t src1 __attribute__((unused)) = D -> decInfo.src1;\
+  word_t src2 __attribute__((unused)) = D -> decInfo.src2;\
+  char dest   __attribute__((unused)) = D -> decInfo.rd;\
+  __VA_ARGS__ ; \
+  IFDEF(CONFIG_SHOW_DECODE_INFORMATION, show_decode(D));\
+  \
+  IFDEF(CONFIG_FTRACE_ENABLE, _ftrace(D));\
+}
+
+  //check one by one
+  //note that when we say inst(0), we are counting from the right side(LSB), but str(0) below starts at left side
+  //each pattern has its unique mask, key and shift
+  /*
+    some frequently used psedo inst:
+      li rd, imm:  -> addi rd, x0, 0  load immediate
+      j offset:    -> jal x0, offset (write to x0 will make no influence). j 0 may be useful
+      jal offset:  -> jalr ra, offset. Use default ra register
+      ret -> jalr x0, ra, 0
+
+      auipc + addi : get the address of a section, or some label
+  */
+  //every case should carefully end up with a break
+
   uint32_t inst = D -> inst;
   unsigned char rd  = BITS(inst, 11, 7);
   unsigned char rs1 = BITS(inst, 19, 15);
@@ -296,7 +323,7 @@ static int decode_exec(Decode *D) {
       word_t target = D->pc + immB(inst);
       switch(fct3){
         case(0x0):  D -> dnpc =          R(rs1) ==          R(rs2) ? target : D -> dnpc;  break;
-        case(0x1):  D -> dnpc =          R(rs1) ^           R(rs2) ? target : D -> dnpc;  break;
+        case(0x1):  D -> dnpc =          R(rs1) !=          R(rs2) ? target : D -> dnpc;  break;
         case(0x4):  D -> dnpc = (sword_t)R(rs1) <  (sword_t)R(rs2) ? target : D -> dnpc;  break;
         case(0x5):  D -> dnpc = (sword_t)R(rs1) >= (sword_t)R(rs2) ? target : D -> dnpc;  break;
         case(0x6):  D -> dnpc =          R(rs1) <           R(rs2) ? target : D -> dnpc;  break;
@@ -305,12 +332,12 @@ static int decode_exec(Decode *D) {
       }
       break;
     }
-    //movsx max mov-c to-lower-case load-store
+
     case(JAL):    D->decInfo.type = TYPE_J;    R(rd) = linkAddr; D -> dnpc = D -> pc + immJ(inst);   break;
     case(JALR):   D->decInfo.type = TYPE_I;    R(rd) = linkAddr; D -> dnpc = R(rs1) + immI(inst);    break;
-    case(AUIPC):  D->decInfo.type = TYPE_U;    R(rd) = D -> pc + immU(inst);                         break;
-    case(LUI):    D->decInfo.type = TYPE_U;    R(rd) = immU(inst);                                   break;
-    case(EBREAK): NEMUTRAP(D->pc, R(10));                                                            break;  //r(10) is a0
+    case(AUIPC):  D->decInfo.type = TYPE_U;    R(rd) = D -> pc + immU(inst);break;
+    case(LUI):    D->decInfo.type = TYPE_U;    R(rd) = immU(inst);break;
+    case(EBREAK): NEMUTRAP(D->pc, R(10)); break;  //r(10) is a0
     default: panic("bad inst\n");
   }
   R(0) = 0; // reset $zero to 0
@@ -320,6 +347,11 @@ static int decode_exec(Decode *D) {
 int isa_exec_once(Decode *D) {
   uint32_t inst = inst_fetch(&D -> snpc, 4);  //snpc will be updated in fetch ( +4 )
   D->inst = inst;
-   //set some decode flags here ?
+   //set some decode flags here
+  D -> decInfo.is_jalr  = opcode(inst) == jalr_opcode; 
+  D -> decInfo.is_lui   = BITS(inst, 5, 5);    //just a possibility
+  D -> decInfo.funct3   = funct3(inst);
+  D -> decInfo.is_load  = opcode(inst) == load_opcode;
+
   return decode_exec(D);
 }

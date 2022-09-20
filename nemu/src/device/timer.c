@@ -4,7 +4,6 @@
 
 static uint32_t *rtc_port_base = NULL;
 
-//the argument is generated in a lut
 static void rtc_io_handler(uint32_t offset, int len, bool is_write) {
   //printf("%s %s %d\n 111\n", __FILE__, __func__, __LINE__);
   assert(offset == 0 || offset == 4);
