@@ -256,7 +256,7 @@ static int decode_exec(Decode *D) {
         case(0x3):  R(rd) = R(rs1)          <   imm_I ? 1 : 0;          break;  //sltiu
         case(0x4):  R(rd) = R(rs1)          ^   imm_I;                  break;  //xori
         case(0x5):{
-          switch(fct7){
+          switch(fct7 & 0b1111110){   //not fct7 in fact, shamt takes 1-bit position of fct7
             case(0x00): 
             Log("\nrs1 = 0x%lx, imm = 0x%lx, shamt = 0x%lx, ans = 0x%lx", R(rs1), immI(inst), BITS(immI(inst), 5, 0), R(rs1) >>  BITS(imm_I, 5, 0));
             R(rd) =          R(rs1) >>  BITS(imm_I, 5, 0);              break;  //srli
