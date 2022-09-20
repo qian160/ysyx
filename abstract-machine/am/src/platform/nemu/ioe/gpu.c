@@ -1,6 +1,6 @@
 #include <am.h>
 #include <nemu.h>
-#include <klib.h>
+#include <string.h>
 #define SYNC_ADDR (VGACTL_ADDR + 4)
 
 //if we disable the vga, the function below will fail because of illegal address
@@ -31,6 +31,7 @@ void __am_gpu_fbdraw(AM_GPU_FBDRAW_T *ctl) {
   uint32_t* pixels = ctl->pixels;
   //width of screen
   int W = inw(VGACTL_ADDR + 2);
+  //#pragma omp for
   for (int i = 0; i < ctl -> h; i++) {
     memcpy(&fb[ctl->x + (ctl->y + i) * W], pixels, sizeof(uint32_t) * ctl -> w);
     pixels += ctl->w;
