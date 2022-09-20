@@ -27,6 +27,7 @@ void __am_gpu_fbdraw(AM_GPU_FBDRAW_T *ctl) {
   if (ctl->sync) {
     outl(SYNC_ADDR, 114514);    //write to SYNC reg will call update
   }
+  /*
   //write to vga frame buffer
   uint32_t* fb = (uint32_t *)(uintptr_t)FB_ADDR;
   uint32_t* pixels = ctl->pixels;
@@ -37,7 +38,7 @@ void __am_gpu_fbdraw(AM_GPU_FBDRAW_T *ctl) {
     memcpy(&fb[ctl->x + (ctl->y + i) * W], pixels, sizeof(uint32_t) * ctl->w);
     pixels += ctl->w;
   }
-
+*/
 }
 
 void __am_gpu_status(AM_GPU_STATUS_T *status) {
