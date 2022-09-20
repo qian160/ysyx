@@ -215,7 +215,7 @@ static int decode_exec(Decode *D) {
           switch(fct3){
             case(0x00):   R(rd) = SEXT((int)R(rs1) + (int)R(rs2), 32);    break;      //addw
             case(0x01):   R(rd) = SEXT(R(rs1) << BITS(R(rs2), 4, 0), 32); break;      //sllw
-            case(0x05):   R(rd) = SEXT(R(rs1) << BITS(R(rs2), 4, 0), 32); break;      //srlw
+            case(0x05):   R(rd) = SEXT(R(rs1) >> BITS(R(rs2), 4, 0), 32); break;      //srlw
             default:    panic("bad inst\n");
           }
           break;
@@ -277,7 +277,7 @@ static int decode_exec(Decode *D) {
         case(0x01): R(rd) = SEXT((int)R(rs1) << BITS(immI(inst), 4, 0), 32);      break;//slliw
         case(0x05):{
           switch(fct7){
-            case(0x00): R(rd) = SEXT(R(rs1) << BITS(immI(inst), 4, 0), 32);       break;//srliw
+            case(0x00): R(rd) = SEXT(R(rs1) >> BITS(immI(inst), 4, 0), 32);       break;//srliw
             case(0x20): R(rd) = SEXT((int)R(rs1) >> BITS(immI(inst), 4, 0), 32);  break;//sraiw
           }
           break;
