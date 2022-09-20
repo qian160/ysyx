@@ -55,7 +55,12 @@ static inline void update_screen() {
 #endif
 #endif
 
-void vga_update_screen() {
+void vga_update_screen() {    //called by device_update
+  uint32_t sync = vgactl_port_base[1];
+  if(sync){
+    update_screen();
+    vgactl_port_base[1] = 0;
+  }
   // TODO: call `update_screen()` when the sync register is non-zero,
   // then zero out the sync register
 }
@@ -66,7 +71,7 @@ void init_vga() {
 #ifdef CONFIG_HAS_PORT_IO
   add_pio_map ("vgactl", CONFIG_VGA_CTL_PORT, vgactl_port_base, 8, NULL);
 #else
-  add_mmio_map("vgactl", CONFIG_VGA_CTL_MMIO, vgactl_port_base, 8, NULL);
+  add_mmio_map("vgactl", CONFIG_VGA_CTL_MMIO, vgactl_port_base, 8, NULL); //no callback, just r/w
 #endif
 
   vmem = new_space(screen_size());

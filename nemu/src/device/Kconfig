@@ -79,6 +79,10 @@ config VGA_CTL_MMIO
   hex "MMIO address of the VGA controller"
   default 0xa0000100
 
+config VGA_SYNC_MMIO
+  hex "MMIO address of the VGA SYNC register"
+  default 0xa0000104	#in fact CTL'S high 4 bytes
+
 config VGA_SHOW_SCREEN
   bool "Enable SDL SCREEN"
   default y
