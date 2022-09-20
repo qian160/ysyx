@@ -7,10 +7,9 @@ void __am_gpu_init() {
   int i;
   int w = inw(VGACTL_ADDR + 2);  // TODO: get the correct width
   int h = inw(VGACTL_ADDR);      // TODO: get the correct height
-  printf("w = %d, h = %d\n", w, h);
   uint32_t *fb = (uint32_t *)(uintptr_t)FB_ADDR;
   for (i = 0; i < w * h; i ++) fb[i] = i;
-  outl(SYNC_ADDR, 1);   //write non-zero value to this address will update the screen
+  //outl(SYNC_ADDR, 1);   //write non-zero value to this address will update the screen
 }
 
 void __am_gpu_config(AM_GPU_CONFIG_T *cfg) {
