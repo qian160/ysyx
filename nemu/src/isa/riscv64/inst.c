@@ -270,6 +270,7 @@ static int decode_exec(Decode *D) {
     }
 
     case(ARITH_64_I):{
+      Log("hit\n");
       D -> decInfo.type = TYPE_I;
       switch(fct3){
         case(0x00): R(rd) = SEXT((int)R(rs1) + immI(inst), 32);                   break;//addiw
