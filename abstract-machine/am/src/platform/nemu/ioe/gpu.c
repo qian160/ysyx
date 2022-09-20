@@ -30,6 +30,7 @@ void __am_gpu_init() {
   fb[11] = 0x1e221d;
   fb[12] = 0x221dff;
   fb[13] = 0x1dff1e;
+  outl(SYNC_ADDR, 1);
 }
 
 void __am_gpu_config(AM_GPU_CONFIG_T *cfg) {
