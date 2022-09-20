@@ -255,13 +255,15 @@ static int decode_exec(Decode *D) {
         case(0x2):  R(rd) = (sword_t)R(rs1) <   (sword_t)imm_I ? 1 : 0; break;  //slti
         case(0x3):  R(rd) = R(rs1)          <   imm_I ? 1 : 0;          break;  //sltiu
         case(0x4):  R(rd) = R(rs1)          ^   imm_I;                  break;  //xori
-        case(0x5):
+        case(0x5):{
           switch(fct7){
             case(0x00): 
             Log("rs1 = 0x%lx, imm = 0x%lx, res = 0x%lx", R(rs1), immI(inst), R(rs1) >> BITS(immI(inst), 5, 0) );
             R(rd) =          R(rs1) >>  BITS(imm_I, 5, 0);          break;  //srli
             case(0x20): R(rd) = (sword_t)R(rs1) >> (sword_t)BITS(R(rs2), 5, 0); break;  //srai
           }
+          break;
+        }
         case(0x6):  R(rd) = R(rs1)          |   imm_I;                  break;  //ori
         case(0x7):  R(rd) = R(rs1)          &   imm_I;                  break;  //addi
         default:    panic("bad inst\n");
