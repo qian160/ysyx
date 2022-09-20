@@ -16,20 +16,20 @@ void __am_gpu_init() {
   outl(SYNC_ADDR, 1);
   */
   uint32_t *fb = (uint32_t *)(uintptr_t)FB_ADDR;
-  fb[0] = 0x20221d;
-  fb[1] = 0x221dff;
-  fb[2] = 0x1dff20;
-  fb[3] = 0xff2022;
-  fb[4] = 0x20221c;
-  fb[5] = 0x1cff20;
-  fb[6] = 0xff2022;
-  fb[7] = 0x1f221d;
-  fb[8] = 0x231dff;
-  fb[9] = 0x1dff1f;
-  fb[10] = 0xff1f23;
-  fb[11] = 0x1e221d;
-  fb[12] = 0x221dff;
-  fb[13] = 0x1dff1e;
+  fb[0] = 0x20221d00;
+  fb[1] = 0x221dff00;
+  fb[2] = 0x1dff2000;
+  fb[3] = 0xff202200;
+  fb[4] = 0x20221c00;
+  fb[5] = 0x1cff2000;
+  fb[6] = 0xff202200;
+  fb[7] = 0x1f221d00;
+  fb[8] = 0x231dff00;
+  fb[9] = 0x1dff1f00;
+  fb[10] = 0xff1f2300;
+  fb[11] = 0x1e221d00;
+  fb[12] = 0x221dff00;
+  fb[13] = 0x1dff1e00;
   outl(SYNC_ADDR, 1);
 }
 
