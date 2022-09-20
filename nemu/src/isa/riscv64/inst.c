@@ -273,18 +273,18 @@ static int decode_exec(Decode *D) {
     case(ARITH_64_I):{
       D -> decInfo.type = TYPE_I;
       switch(fct3){
-        case(0x00): R(rd) = SEXT((int)R(rs1) + immI(inst), 32);                  break;//addiw
+        case(0x00): R(rd) = SEXT((int)R(rs1) + immI(inst), 32);                   break;//addiw
         case(0x01): R(rd) = SEXT((int)R(rs1) << BITS(immI(inst), 4, 0), 32);      break;//slliw
-        case(0x05):
+        case(0x05):{
           switch(fct7){
             case(0x00): R(rd) = SEXT(R(rs1) << BITS(immI(inst), 4, 0), 32);       break;//srliw
             case(0x20): R(rd) = SEXT((int)R(rs1) << BITS(immI(inst), 4, 0), 32);  break;//sraiw
           }
           break;
+        }
       }
       break;
     }
-
 
     case(LOAD):{
       D -> decInfo.type = TYPE_I;
