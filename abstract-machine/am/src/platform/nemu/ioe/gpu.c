@@ -11,7 +11,7 @@ void __am_gpu_init() {
   int w = inw(VGACTL_ADDR + 2);  // TODO: get the correct width
   int h = inw(VGACTL_ADDR);      // TODO: get the correct height
   uint32_t *fb = (uint32_t *)(uintptr_t)FB_ADDR;
-  for (i = 0; i < w * h; i ++) fb[i] = rand();
+  for (i = 0; i < w * h; i ++) fb[i] = rand() * rand();
   outl(SYNC_ADDR, 1);
 }
 
@@ -27,6 +27,7 @@ void __am_gpu_fbdraw(AM_GPU_FBDRAW_T *ctl) {
   if (ctl->sync) {
     outl(SYNC_ADDR, 114514);    //write to SYNC reg will call update
   }
+  //this consumes lots of computations......
   /*
   //write to vga frame buffer
   uint32_t* fb = (uint32_t *)(uintptr_t)FB_ADDR;
@@ -38,7 +39,7 @@ void __am_gpu_fbdraw(AM_GPU_FBDRAW_T *ctl) {
     memcpy(&fb[ctl->x + (ctl->y + i) * W], pixels, sizeof(uint32_t) * ctl->w);
     pixels += ctl->w;
   }
-*/
+  */
 }
 
 void __am_gpu_status(AM_GPU_STATUS_T *status) {
