@@ -6,7 +6,7 @@
 #include "sdb.h"
 #include <utils.h>
 #include "../../isa/riscv64/local-include/reg.h"
-void disassemble(char *str, int size, uint64_t pc, uint8_t *code, int nbyte);
+extern void disassemble(char *str, int size, uint64_t pc, uint8_t *code, int nbyte);
 
 #define NR_CMD ARRLEN(cmd_table)
 
