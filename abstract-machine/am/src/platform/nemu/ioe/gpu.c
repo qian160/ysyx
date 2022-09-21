@@ -66,7 +66,6 @@ void __am_gpu_fbdraw(AM_GPU_FBDRAW_T *ctl) {
   }
   //TODO: improve the performance
   //this seems to be consuming lots of computations......
-  //write to vga frame buffer
   uint32_t* fb __attribute__((unused))     = (uint32_t *)(uintptr_t)FB_ADDR;
   uint32_t* pixels __attribute__((unused)) = ctl->pixels;
 
@@ -75,10 +74,9 @@ void __am_gpu_fbdraw(AM_GPU_FBDRAW_T *ctl) {
   //choose the fastest one. This may improve performance in some cases
   void (*whichFunc)(void * dst, const void *src, size_t n) = ctl -> w % 4 == 0 ? pixelcpy16 : ctl -> w % 2 == 0 ? pixelcpy8 : pixelcpy4;
 
-  //draw row by row
+  //draw row by row. write to vga frame buffer
   for (int row = 0; row < ctl -> h; row++) {
     whichFunc(&fb[ctl -> x + (ctl -> y + row) * W], pixels, ctl -> w);
-    //pixelcpy4(&fb[ctl -> x + (ctl -> y + row) * W], pixels, ctl -> w);
     pixels += ctl -> w;
   }
 }
