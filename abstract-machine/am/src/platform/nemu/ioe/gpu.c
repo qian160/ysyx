@@ -21,9 +21,9 @@ static inline void pixelcpy(uint32_t *dst, const uint32_t *src, size_t n) {
     return;
 }
 
-static inline void pixelcpy16(__uint128_t *dst, const __uint128_t *src, size_t n) {
-  __uint128_t *pszDest = dst;
-    const __uint128_t *pszSource = src;
+static inline void pixelcpy8(uint64_t *dst, const uint64_t *src, size_t n) {
+  uint64_t *pszDest = dst;
+    const uint64_t *pszSource = src;
     if((pszDest!= NULL) && (pszSource!= NULL))
     {
         while(n--)
@@ -73,7 +73,7 @@ void __am_gpu_fbdraw(AM_GPU_FBDRAW_T *ctl) {
     //we write a "pixelcpy" function here for specifical use, it performs better than memcpy
 
     //pixelcpy(&fb[ctl -> x + (ctl -> y + row) * W], pixels, ctl -> w);
-    pixelcpy16((__uint128_t *)&fb[ctl -> x + (ctl -> y + row) * W], (__uint128_t*)pixels, ctl -> w / 4);
+    pixelcpy8((uint64_t *)&fb[ctl -> x + (ctl -> y + row) * W], (uint64_t*)pixels, ctl -> w / 2);
     pixels += (ctl -> w) * 4;   //go to next row
   }
 }
