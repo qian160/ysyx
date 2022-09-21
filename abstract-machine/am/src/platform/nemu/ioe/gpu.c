@@ -104,6 +104,7 @@ void __am_gpu_fbdraw(AM_GPU_FBDRAW_T *ctl) {
     }
     */
     whichFunc(&fb[ctl -> x + (ctl -> y + row) * W], pixels, ctl -> w);
+    pixels += ctl -> w;
   }
 }
 
