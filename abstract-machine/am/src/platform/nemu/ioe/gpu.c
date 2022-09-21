@@ -2,6 +2,7 @@
 #include <nemu.h>
 #include <klib.h>
 #include <stdio.h>
+#include "/home/s081/Downloads/ysyx-workbench/nemu/include/generated/autoconf.h"
 //#include<iostream>
 //using namespace std;
 
