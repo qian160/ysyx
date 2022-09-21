@@ -41,9 +41,9 @@ void __am_gpu_fbdraw(AM_GPU_FBDRAW_T *ctl) {
   //if(ctl -> h == 0 || ctl -> w == 0)  return;
   
   for (int row = 0; row < ctl -> h; row++) {
-    strncpy((char *)&fb[ctl -> x + (ctl -> y + row) * W], (char *)pixels, sizeof(uint32_t) * ctl -> w * (sizeof(uint32_t) / sizeof(char)));
-    //memcpy(&fb[ctl -> x + (ctl -> y + row) * W], pixels, sizeof(uint32_t) * ctl -> w);
-    pixels += ctl->w;   //go to next row
+    //strncpy((char *)&fb[ctl -> x + (ctl -> y + row) * W], (char *)pixels, sizeof(uint32_t) * ctl -> w * (sizeof(uint32_t) / sizeof(char)));
+    memcpy(&fb[ctl -> x + (ctl -> y + row) * W], pixels, sizeof(uint32_t) * ctl -> w);
+    pixels += ctl -> w;   //go to next row
   }
   
 }
