@@ -54,8 +54,8 @@ char *strncpy(char *dst, const char *src, size_t n) {
   while (*src && n--)
     *dst++ = *src++;
 
-  // null terminate dst string 
-//  *dst = '\0';
+  //null terminate dst string 
+  *dst = '\0';
 
   // the dst is returned by standard `strncpy()`
   return ptr;
