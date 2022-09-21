@@ -7,7 +7,7 @@
 
 #define SYNC_ADDR (VGACTL_ADDR + 4)
 
-void pixelcpy(uint32_t *dst, const uint32_t *src, size_t n) {
+static inline void pixelcpy(uint32_t *dst, const uint32_t *src, size_t n) {
   uint32_t *pszDest = dst;
     const uint32_t *pszSource = src;
     if((pszDest!= NULL) && (pszSource!= NULL))
@@ -57,6 +57,7 @@ void __am_gpu_fbdraw(AM_GPU_FBDRAW_T *ctl) {
   for (int row = 0; row < ctl -> h; row++) {
     printf("");
     //memcpy(&fb[ctl -> x + (ctl -> y + row) * W], pixels, sizeof(uint32_t) * ctl -> w);
+    //we write a "pixelcpy" function here for specifical usage, it works better than memcpy
     pixelcpy(&fb[ctl -> x + (ctl -> y + row) * W], pixels, ctl -> w);
     pixels += ctl -> w;   //go to next row
   }
