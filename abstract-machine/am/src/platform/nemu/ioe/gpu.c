@@ -15,7 +15,6 @@ void __am_gpu_init() {
 #ifdef CONFIG_HAS_VGA
   W = inw(VGACTL_ADDR + 2);
   H = inw(VGACTL_ADDR);
-  printf("1\n");
 #endif
 }
 
@@ -38,12 +37,13 @@ void __am_gpu_fbdraw(AM_GPU_FBDRAW_T *ctl) {
   uint32_t* fb __attribute__((unused))     = (uint32_t *)(uintptr_t)FB_ADDR;
   uint32_t* pixels __attribute__((unused)) = ctl->pixels;
 
+  //draw row by row
   //int W = inw(VGACTL_ADDR + 2);
   //if(ctl -> h == 0 || ctl -> w == 0)  return;
   /*
-  for (int i = 0; i < ctl -> h; ++i) {
-    memcpy(&fb[ctl -> x + (ctl -> y + i) * W], pixels, sizeof(uint32_t) * ctl -> w);
-    pixels += ctl->w;
+  for (int row = 0; row < ctl -> h; row++) {
+    memcpy(&fb[ctl -> x + (ctl -> y + row) * W], pixels, sizeof(uint32_t) * ctl -> w);
+    pixels += ctl->w;   //go to next row
   }
   */
 }
