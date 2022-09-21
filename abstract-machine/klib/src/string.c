@@ -51,7 +51,7 @@ char *strncpy(char *dst, const char *src, size_t n) {
   // into the array pointed by dst
   if(strlen(dst) < n)
     return dst;
-  while (*(char *)src && n--)
+  while (*src && n--)
     *dst++ = *src++;
 
   // null terminate dst string 
