@@ -13,10 +13,7 @@ static inline void pixelcpy4(void *dst, const void *src, size_t n) {
     if((pszDest!= NULL) && (pszSource!= NULL))
     {
         while(n--)
-        {
-            //Copy byte by byte
             *(pszDest++)= *(pszSource++);
-        }
     }
     return;
 }
@@ -28,10 +25,7 @@ static inline void pixelcpy8(void *dst, const void *src, size_t n) {
     if((pszDest!= NULL) && (pszSource!= NULL))
     {
         while(n--)
-        {
-            //Copy byte by byte
             *(pszDest++)= *(pszSource++);
-        }
     }
     return;
 }
@@ -43,10 +37,7 @@ static inline void pixelcpy16(void *dst, const void *src, size_t n) {
     if((pszDest!= NULL) && (pszSource!= NULL))
     {
         while(n--)
-        {
-            //Copy byte by byte
             *(pszDest++)= *(pszSource++);
-        }
     }
     return;
 }
