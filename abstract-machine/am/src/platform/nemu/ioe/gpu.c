@@ -28,7 +28,7 @@ void __am_gpu_config(AM_GPU_CONFIG_T *cfg) {
 }
 
 void __am_gpu_fbdraw(AM_GPU_FBDRAW_T *ctl) {
-  /*
+
   if (ctl->sync) {
     outl(SYNC_ADDR, 114514);    //write to SYNC reg will call update
   }
@@ -45,7 +45,7 @@ void __am_gpu_fbdraw(AM_GPU_FBDRAW_T *ctl) {
     memcpy(&fb[ctl->x + (ctl->y + i) * W], pixels, sizeof(uint32_t) * ctl->w);
     pixels += ctl->w;
   }
-  */
+  
 }
 
 void __am_gpu_status(AM_GPU_STATUS_T *status) {
