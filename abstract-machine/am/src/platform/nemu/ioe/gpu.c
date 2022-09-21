@@ -39,8 +39,9 @@ void __am_gpu_fbdraw(AM_GPU_FBDRAW_T *ctl) {
   uint32_t* fb = (uint32_t *)(uintptr_t)FB_ADDR;
   uint32_t* pixels = ctl->pixels;
 
-  int W = inw(VGACTL_ADDR + 2);
-
+  //int W = inw(VGACTL_ADDR + 2);
+  int W = 400;
+  if(ctl -> h == 0 || ctl -> w == 0)  return;
   for (int i = 0; i < ctl -> h; ++i) {
     memcpy(&fb[ctl -> x + (ctl -> y + i) * W], pixels, sizeof(uint32_t) * ctl -> w);
     pixels += ctl->w;
