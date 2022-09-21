@@ -2,8 +2,6 @@
 #include <nemu.h>
 #include <klib.h>
 #include <stdio.h>
-//#include<iostream>
-//using namespace std;
 
 #define SYNC_ADDR (VGACTL_ADDR + 4)
 
