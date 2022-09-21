@@ -86,12 +86,12 @@ void __am_gpu_fbdraw(AM_GPU_FBDRAW_T *ctl) {
     //we write a "pixelcpy" function here for specifical use, it performs better than memcpy
     if(ctl -> w % 4 == 0){
       pixelcpy16((__uint128_t *)&fb[ctl -> x + (ctl -> y + row) * W], (__uint128_t*)pixels, ctl -> w / 4);
-      pixels += (ctl -> w) * 4;
+      pixels += (ctl -> w);
     }
     else if (ctl -> w % 2 == 0)
     {
       pixelcpy8((uint64_t *)&fb[ctl -> x + (ctl -> y + row) * W], (uint64_t*)pixels, ctl -> w / 2);
-      pixels += (ctl -> w) * 2;
+      pixels += (ctl -> w);
     }
     else{
       pixelcpy(&fb[ctl -> x + (ctl -> y + row) * W], pixels, ctl -> w);
