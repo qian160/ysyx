@@ -7,7 +7,7 @@
 
 #define SYNC_ADDR (VGACTL_ADDR + 4)
 static int PIXELS[300 * 400];
-/*
+
 void load_bmp()
 {
     FILE* f = fopen("/home/s081/code/114514.bmp", "rb");
@@ -46,7 +46,7 @@ void load_bmp()
     fclose(f);
     return;
 }
-*/
+
 void __am_gpu_init() {
 
   //TODO: add a photo
