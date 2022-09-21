@@ -7,16 +7,37 @@
 
 #define SYNC_ADDR (VGACTL_ADDR + 4)
 
-static inline void pixelcpy(uint32_t *dst, const uint32_t *src, size_t n) {
-  uint32_t *pszDest = dst;
-    const uint32_t *pszSource = src;
+static inline void pixelcpy4(void *dst, const void *src, size_t n) {
+  uint32_t *pszDest = (uint32_t *)dst;
+    const uint32_t *pszSource = (uint32_t *)src;
     if((pszDest!= NULL) && (pszSource!= NULL))
     {
         while(n--)
-        {
-            //Copy byte by byte
             *(pszDest++)= *(pszSource++);
-        }
+    }
+    return;
+}
+
+static inline void pixelcpy8(void *dst, const void *src, size_t n) {
+  uint64_t *pszDest = (uint64_t *)dst;
+  n = n >> 1;
+    const uint64_t *pszSource = (uint64_t *)src;
+    if((pszDest!= NULL) && (pszSource!= NULL))
+    {
+        while(n--)
+            *(pszDest++)= *(pszSource++);
+    }
+    return;
+}
+
+static inline void pixelcpy16(void *dst, const void *src, size_t n) {
+  __uint128_t *pszDest = (__uint128_t *)dst;
+  n = n >> 2;
+    const __uint128_t *pszSource = (__uint128_t *)src;
+    if((pszDest!= NULL) && (pszSource!= NULL))
+    {
+        while(n--)
+            *(pszDest++)= *(pszSource++);
     }
     return;
 }
@@ -40,26 +61,23 @@ void __am_gpu_config(AM_GPU_CONFIG_T *cfg) {
 }
 
 void __am_gpu_fbdraw(AM_GPU_FBDRAW_T *ctl) {
-
   if (ctl->sync) {
     outl(SYNC_ADDR, 114514);    //write to SYNC reg will call update
   }
   //TODO: improve the performance
   //this seems to be consuming lots of computations......
-  //write to vga frame buffer
   uint32_t* fb __attribute__((unused))     = (uint32_t *)(uintptr_t)FB_ADDR;
   uint32_t* pixels __attribute__((unused)) = ctl->pixels;
 
-  //draw row by row
-  //int W = inw(VGACTL_ADDR + 2);
-  //if(ctl -> h == 0 || ctl -> w == 0)  return;
-  //char * s1 = (char *)fb, *s2 = (char *)pixels;
+  if(ctl -> h == 0 || ctl -> w == 0)  return;
+
+  //choose the fastest one. This may improve performance in some cases
+  void (*whichFunc)(void * dst, const void *src, size_t n) = ctl -> w % 4 == 0 ? pixelcpy16 : ctl -> w % 2 == 0 ? pixelcpy8 : pixelcpy4;
+
+  //draw row by row. write to vga frame buffer
   for (int row = 0; row < ctl -> h; row++) {
-    printf("");
-    //memcpy(&fb[ctl -> x + (ctl -> y + row) * W], pixels, sizeof(uint32_t) * ctl -> w);
-    //we write a "pixelcpy" function here for specifical usage, it works better than memcpy
-    pixelcpy(&fb[ctl -> x + (ctl -> y + row) * W], pixels, ctl -> w);
-    pixels += ctl -> w;   //go to next row
+    whichFunc(&fb[ctl -> x + (ctl -> y + row) * W], pixels, ctl -> w);
+    pixels += ctl -> w;
   }
 }
 
