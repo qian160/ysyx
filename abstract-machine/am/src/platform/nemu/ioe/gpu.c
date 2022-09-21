@@ -70,7 +70,6 @@ void __am_gpu_config(AM_GPU_CONFIG_T *cfg) {
 }
 
 void __am_gpu_fbdraw(AM_GPU_FBDRAW_T *ctl) {
-
   if (ctl->sync) {
     outl(SYNC_ADDR, 114514);    //write to SYNC reg will call update
   }
@@ -80,13 +79,12 @@ void __am_gpu_fbdraw(AM_GPU_FBDRAW_T *ctl) {
   uint32_t* fb __attribute__((unused))     = (uint32_t *)(uintptr_t)FB_ADDR;
   uint32_t* pixels __attribute__((unused)) = ctl->pixels;
 
-  //draw row by row
-  //int W = inw(VGACTL_ADDR + 2);
   if(ctl -> h == 0 || ctl -> w == 0)  return;
 
-  //choose the fastest one
+  //choose the fastest one. This may improve performance in some cases
   void (*whichFunc)(void * dst, const void *src, size_t n) = ctl -> w % 4 == 0 ? pixelcpy16 : ctl -> w % 2 == 0 ? pixelcpy8 : pixelcpy4;
 
+  //draw row by row
   for (int row = 0; row < ctl -> h; row++) {
     whichFunc(&fb[ctl -> x + (ctl -> y + row) * W], pixels, ctl -> w);
     //pixelcpy4(&fb[ctl -> x + (ctl -> y + row) * W], pixels, ctl -> w);
