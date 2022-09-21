@@ -54,11 +54,12 @@ void __am_gpu_status(AM_GPU_STATUS_T *stat) {
   stat->ready = true;
 }
 
+//io_write's lut function, reg num = AM_GPU_FBDRAW
 void __am_gpu_fbdraw(AM_GPU_FBDRAW_T *ctl) {
   
   int x = ctl->x, y = ctl->y, w = ctl->w, h = ctl->h;
-  if (w == 0 || h == 0) return;
-  feclearexcept(-1);
+  if (w == 0 || h == 0) return; //nothing need to be drawn
+  //feclearexcept(-1);
   SDL_Surface *s = SDL_CreateRGBSurfaceFrom(ctl->pixels, w, h, 32, w * sizeof(uint32_t),
       RMASK, GMASK, BMASK, AMASK);
   SDL_Rect rect = { .x = x, .y = y };
