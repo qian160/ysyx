@@ -48,7 +48,7 @@ char *strncpy(char *dst, const char *src, size_t n) {
   char* ptr = dst;
   // copy first `num` characters of C-string pointed by src
   // into the array pointed by dst
-  printf("len = %d\n", strlen(dst));
+  printf("len = %d\n", strlen(src));
   if(strlen(dst) < n)
     return dst;
   while (*src && n--)
