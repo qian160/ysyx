@@ -85,10 +85,11 @@ void __am_gpu_fbdraw(AM_GPU_FBDRAW_T *ctl) {
   //if(ctl -> h == 0 || ctl -> w == 0)  return;
 
   //choose the fastest one
-  void (*whichFunc)(void * dst, const void *src, size_t n) = ctl -> w % 4 == 0 ? pixelcpy16 : ctl -> w % 2 == 0 ? pixelcpy8 : pixelcpy4;
+  //void (*whichFunc)(void * dst, const void *src, size_t n) = ctl -> w % 4 == 0 ? pixelcpy16 : ctl -> w % 2 == 0 ? pixelcpy8 : pixelcpy4;
 
   for (int row = 0; row < ctl -> h; row++) {
-    whichFunc(&fb[ctl -> x + (ctl -> y + row) * W], pixels, ctl -> w);
+    //whichFunc(&fb[ctl -> x + (ctl -> y + row) * W], pixels, ctl -> w);
+    pixelcpy4(&fb[ctl -> x + (ctl -> y + row) * W], pixels, ctl -> w);
     pixels += ctl -> w;
   }
 }
