@@ -39,9 +39,9 @@ void __am_gpu_fbdraw(AM_GPU_FBDRAW_T *ctl) {
   //draw row by row
   //int W = inw(VGACTL_ADDR + 2);
   //if(ctl -> h == 0 || ctl -> w == 0)  return;
-
+  //char * s1 = (char *)fb, *s2 = (char *)pixels;
   for (int row = 0; row < ctl -> h; row++) {
-    strncpy((char *)&fb[ctl -> x + (ctl -> y + row) * W], (char *)pixels, sizeof(uint32_t) * ctl -> w * (sizeof(uint32_t) / sizeof(char)));
+    strncpy((char *)(&fb[ctl -> x + (ctl -> y + row) * W]), (char *)pixels, sizeof(uint32_t) * ctl -> w * (sizeof(uint32_t) / sizeof(char)));
     //memcpy(&fb[ctl -> x + (ctl -> y + row) * W], pixels, sizeof(uint32_t) * ctl -> w);
     pixels += ctl -> w;   //go to next row
   }
