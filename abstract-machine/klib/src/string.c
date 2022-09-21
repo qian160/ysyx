@@ -44,14 +44,17 @@ char *strncpy(char *dst, const char *src, size_t n) {
   // return if no memory is allocated to the dst
   if (dst == NULL )
     return NULL;
+  printf("1\n");
   // take a pointer pointing to the beginning of the dst string
   char* ptr = dst;
   // copy first `num` characters of C-string pointed by src
   // into the array pointed by dst
   if(strlen(dst) < n)
     return dst;
+  printf("1\n");
   while (*src && n--)
     *dst++ = *src++;
+  printf("1\n");
 
   //null terminate dst string 
   *dst = '\0';
