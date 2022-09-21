@@ -21,6 +21,19 @@ static inline void pixelcpy(uint32_t *dst, const uint32_t *src, size_t n) {
     return;
 }
 
+static inline void pixelcpy16(__uint128_t *dst, const __uint128_t *src, size_t n) {
+  __uint128_t *pszDest = dst;
+    const __uint128_t *pszSource = src;
+    if((pszDest!= NULL) && (pszSource!= NULL))
+    {
+        while(n--)
+        {
+            //Copy byte by byte
+            *(pszDest++)= *(pszSource++);
+        }
+    }
+    return;
+}
 static int  W __attribute__((unused)) = 0, 
             H __attribute__((unused)) = 0;
 
@@ -53,13 +66,15 @@ void __am_gpu_fbdraw(AM_GPU_FBDRAW_T *ctl) {
   //draw row by row
   //int W = inw(VGACTL_ADDR + 2);
   //if(ctl -> h == 0 || ctl -> w == 0)  return;
-  //char * s1 = (char *)fb, *s2 = (char *)pixels;
+  //__uint128_t * p1 = (__uint128_t *)fb, *p2 = (__uint128_t *)pixels;
   for (int row = 0; row < ctl -> h; row++) {
     printf("");
     //memcpy(&fb[ctl -> x + (ctl -> y + row) * W], pixels, sizeof(uint32_t) * ctl -> w);
-    //we write a "pixelcpy" function here for specifical usage, it works better than memcpy
-    pixelcpy(&fb[ctl -> x + (ctl -> y + row) * W], pixels, ctl -> w);
-    pixels += ctl -> w;   //go to next row
+    //we write a "pixelcpy" function here for specifical use, it performs better than memcpy
+
+    //pixelcpy(&fb[ctl -> x + (ctl -> y + row) * W], pixels, ctl -> w);
+    pixelcpy16((__uint128_t *)&fb[ctl -> x + (ctl -> y + row) * W], (__uint128_t*)pixels, ctl -> w / 4);
+    pixels += (ctl -> w) * 4;   //go to next row
   }
 }
 
