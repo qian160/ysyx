@@ -7,6 +7,20 @@
 
 #define SYNC_ADDR (VGACTL_ADDR + 4)
 
+void pixelcpy(uint32_t *dst, const uint32_t *src, size_t n) {
+  uint32_t *pszDest = dst;
+    const uint32_t *pszSource = src;
+    if((pszDest!= NULL) && (pszSource!= NULL))
+    {
+        while(n--)
+        {
+            //Copy byte by byte
+            *(pszDest++)= *(pszSource++);
+        }
+    }
+    return;
+}
+
 static int  W __attribute__((unused)) = 0, 
             H __attribute__((unused)) = 0;
 
@@ -41,8 +55,9 @@ void __am_gpu_fbdraw(AM_GPU_FBDRAW_T *ctl) {
   //if(ctl -> h == 0 || ctl -> w == 0)  return;
   //char * s1 = (char *)fb, *s2 = (char *)pixels;
   for (int row = 0; row < ctl -> h; row++) {
-    strncpy((char *)(&fb[ctl -> x + (ctl -> y + row) * W]), (char *)pixels, sizeof(uint32_t) * ctl -> w * (sizeof(uint32_t) / sizeof(char)));
+    printf("");
     //memcpy(&fb[ctl -> x + (ctl -> y + row) * W], pixels, sizeof(uint32_t) * ctl -> w);
+    pixelcpy(&fb[ctl -> x + (ctl -> y + row) * W], pixels, ctl -> w);
     pixels += ctl -> w;   //go to next row
   }
 }
