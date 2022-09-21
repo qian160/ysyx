@@ -34,6 +34,21 @@ static inline void pixelcpy8(uint64_t *dst, const uint64_t *src, size_t n) {
     }
     return;
 }
+
+static inline void pixelcpy16(__uint128_t *dst, const __uint128_t *src, size_t n) {
+  __uint128_t *pszDest = dst;
+    const __uint128_t *pszSource = src;
+    if((pszDest!= NULL) && (pszSource!= NULL))
+    {
+        while(n--)
+        {
+            //Copy byte by byte
+            *(pszDest++)= *(pszSource++);
+        }
+    }
+    return;
+}
+
 static int  W __attribute__((unused)) = 0, 
             H __attribute__((unused)) = 0;
 
