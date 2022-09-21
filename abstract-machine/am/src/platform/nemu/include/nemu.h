@@ -2,6 +2,7 @@
 #define NEMU_H__
 
 #include <klib-macros.h>
+#include "/home/s081/Downloads/ysyx-workbench/nemu/include/generated/autoconf.h"
 
 #include ISA_H // the macro `ISA_H` is defined in CFLAGS
                // it will be expanded as "x86/x86.h", "mips/mips32.h", ...
