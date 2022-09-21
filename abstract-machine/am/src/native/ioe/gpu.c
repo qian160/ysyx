@@ -55,6 +55,7 @@ void __am_gpu_status(AM_GPU_STATUS_T *stat) {
 }
 
 void __am_gpu_fbdraw(AM_GPU_FBDRAW_T *ctl) {
+  
   int x = ctl->x, y = ctl->y, w = ctl->w, h = ctl->h;
   if (w == 0 || h == 0) return;
   feclearexcept(-1);

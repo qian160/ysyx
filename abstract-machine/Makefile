@@ -61,7 +61,7 @@ LIBS     := $(sort $(LIBS) am klib) # lazy evaluation ("=") causes infinite recu
 LINKAGE   = $(OBJS) \
   $(addsuffix -$(ARCH).a, $(join \
     $(addsuffix /build/, $(addprefix $(AM_HOME)/, $(LIBS))), \
-    $(LIBS) ))
+    $(LIBS) )) 
 
 ## 3. General Compilation Flags
 
@@ -85,10 +85,8 @@ CFLAGS   += -O2 -MMD -g -Wall -Werror $(INCFLAGS) \
             -DARCH_H=\"arch/$(ARCH).h\" \
             -fno-asynchronous-unwind-tables -fno-builtin -fno-stack-protector \
             -Wno-main -U_FORTIFY_SOURCE \
-	    -lc
 
-#CXXFLAGS +=  $(CFLAGS) -ffreestanding -fno-rtti -fno-exceptions
-CXXFLAGS +=  $(CFLAGS) -fno-rtti -fno-exceptions
+CXXFLAGS +=  $(CFLAGS) -ffreestanding -fno-rtti -fno-exceptions
 ASFLAGS  += -MMD $(INCFLAGS)
 
 ## 4. Arch-Specific Configurations
