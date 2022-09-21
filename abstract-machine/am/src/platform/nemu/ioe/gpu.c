@@ -85,15 +85,18 @@ void __am_gpu_fbdraw(AM_GPU_FBDRAW_T *ctl) {
   for (int row = 0; row < ctl -> h; row++) {
     //we write a "pixelcpy" function here for specifical use, it performs better than memcpy
     if(ctl -> w % 4 == 0){
+      printf("case1\n");
       pixelcpy16((__uint128_t *)&fb[ctl -> x + (ctl -> y + row) * W], (__uint128_t*)pixels, ctl -> w / 4);
       pixels += (ctl -> w) * 4;
     }
     else if (ctl -> w % 2 == 0)
     {
+      printf("case2\n");
       pixelcpy8((uint64_t *)&fb[ctl -> x + (ctl -> y + row) * W], (uint64_t*)pixels, ctl -> w / 2);
       pixels += (ctl -> w) * 2;
     }
     else{
+      printf("case3\n");
       pixelcpy(&fb[ctl -> x + (ctl -> y + row) * W], pixels, ctl -> w);
       pixels += (ctl -> w);
     }
