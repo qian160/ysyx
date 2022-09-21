@@ -7,16 +7,15 @@
 
 #define SYNC_ADDR (VGACTL_ADDR + 4)
 
+static int  W __attribute__((unused)) = 0, 
+            H __attribute__((unused)) = 0;
+
 void __am_gpu_init() {
-/*
-  //TODO: add a photo. failed. cant use fopen or something else here
-  int i;
-  int w = inw(VGACTL_ADDR + 2);  // TODO: get the correct width
-  int h = inw(VGACTL_ADDR);      // TODO: get the correct height
-  uint32_t *fb = (uint32_t *)(uintptr_t)FB_ADDR;
-  for (i = 0; i < w * h; i ++) fb[i] = i;
-  outl(SYNC_ADDR, 1);
-*/
+#ifdef CONFIG_HAS_VGA
+  W = inw(VGACTL_ADDR + 2);
+  H = inw(VGACTL_ADDR);
+  printf("1\n");
+#endif
 }
 
 void __am_gpu_config(AM_GPU_CONFIG_T *cfg) {
@@ -33,8 +32,7 @@ void __am_gpu_fbdraw(AM_GPU_FBDRAW_T *ctl) {
     outl(SYNC_ADDR, 114514);    //write to SYNC reg will call update
   }
   //TODO: improve the performance
-  
-  //this consumes lots of computations......
+  //this seems to be consuming lots of computations......
   //write to vga frame buffer
   uint32_t* fb = (uint32_t *)(uintptr_t)FB_ADDR;
   uint32_t* pixels = ctl->pixels;
@@ -46,7 +44,6 @@ void __am_gpu_fbdraw(AM_GPU_FBDRAW_T *ctl) {
     memcpy(&fb[ctl -> x + (ctl -> y + i) * W], pixels, sizeof(uint32_t) * ctl -> w);
     pixels += ctl->w;
   }
-  
 }
 
 void __am_gpu_status(AM_GPU_STATUS_T *status) {
