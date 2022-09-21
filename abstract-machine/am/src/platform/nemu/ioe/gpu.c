@@ -7,9 +7,9 @@
 
 #define SYNC_ADDR (VGACTL_ADDR + 4)
 
-static inline void pixelcpy(uint32_t *dst, const uint32_t *src, size_t n) {
-  uint32_t *pszDest = dst;
-    const uint32_t *pszSource = src;
+static inline void pixelcpy4(void *dst, const void *src, size_t n) {
+  uint32_t *pszDest = (uint32_t *)dst;
+    const uint32_t *pszSource = (uint32_t *)src;
     if((pszDest!= NULL) && (pszSource!= NULL))
     {
         while(n--)
@@ -21,9 +21,10 @@ static inline void pixelcpy(uint32_t *dst, const uint32_t *src, size_t n) {
     return;
 }
 
-static inline void pixelcpy8(uint64_t *dst, const uint64_t *src, size_t n) {
-  uint64_t *pszDest = dst;
-    const uint64_t *pszSource = src;
+static inline void pixelcpy8(void *dst, const void *src, size_t n) {
+  uint64_t *pszDest = (uint64_t *)dst;
+  n = n >> 1;
+    const uint64_t *pszSource = (uint64_t *)src;
     if((pszDest!= NULL) && (pszSource!= NULL))
     {
         while(n--)
@@ -35,9 +36,10 @@ static inline void pixelcpy8(uint64_t *dst, const uint64_t *src, size_t n) {
     return;
 }
 
-static inline void pixelcpy16(__uint128_t *dst, const __uint128_t *src, size_t n) {
-  __uint128_t *pszDest = dst;
-    const __uint128_t *pszSource = src;
+static inline void pixelcpy16(void *dst, const void *src, size_t n) {
+  __uint128_t *pszDest = (__uint128_t *)dst;
+  n = n >> 2;
+    const __uint128_t *pszSource = (__uint128_t *)src;
     if((pszDest!= NULL) && (pszSource!= NULL))
     {
         while(n--)
@@ -81,9 +83,12 @@ void __am_gpu_fbdraw(AM_GPU_FBDRAW_T *ctl) {
   //draw row by row
   //int W = inw(VGACTL_ADDR + 2);
   //if(ctl -> h == 0 || ctl -> w == 0)  return;
-  //__uint128_t * p1 = (__uint128_t *)fb, *p2 = (__uint128_t *)pixels;
+
+  void (*whichFunc)(void * dst, const void *src, size_t n) = ctl -> w % 4 == 0 ? pixelcpy16 : ctl -> w % 2 == 0 ? pixelcpy8 : pixelcpy4;
+
   for (int row = 0; row < ctl -> h; row++) {
     //we write a "pixelcpy" function here for specifical use, it performs better than memcpy
+    /*
     if(ctl -> w % 4 == 0){
       pixelcpy16((__uint128_t *)&fb[ctl -> x + (ctl -> y + row) * W], (__uint128_t*)pixels, ctl -> w / 4);
       pixels += (ctl -> w);
@@ -94,10 +99,11 @@ void __am_gpu_fbdraw(AM_GPU_FBDRAW_T *ctl) {
       pixels += (ctl -> w);
     }
     else{
-      pixelcpy(&fb[ctl -> x + (ctl -> y + row) * W], pixels, ctl -> w);
+      pixelcpy4(&fb[ctl -> x + (ctl -> y + row) * W], pixels, ctl -> w);
       pixels += (ctl -> w);
     }
-    
+    */
+    whichFunc(&fb[ctl -> x + (ctl -> y + row) * W], pixels, ctl -> w);
   }
 }
 
