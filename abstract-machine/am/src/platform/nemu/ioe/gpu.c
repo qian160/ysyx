@@ -83,13 +83,21 @@ void __am_gpu_fbdraw(AM_GPU_FBDRAW_T *ctl) {
   //if(ctl -> h == 0 || ctl -> w == 0)  return;
   //__uint128_t * p1 = (__uint128_t *)fb, *p2 = (__uint128_t *)pixels;
   for (int row = 0; row < ctl -> h; row++) {
-    printf("");
-    //memcpy(&fb[ctl -> x + (ctl -> y + row) * W], pixels, sizeof(uint32_t) * ctl -> w);
     //we write a "pixelcpy" function here for specifical use, it performs better than memcpy
-
-    //pixelcpy(&fb[ctl -> x + (ctl -> y + row) * W], pixels, ctl -> w);
-    pixelcpy8((uint64_t *)&fb[ctl -> x + (ctl -> y + row) * W], (uint64_t*)pixels, ctl -> w / 2);
-    pixels += (ctl -> w) * 4;   //go to next row
+    if(ctl -> w % 4 == 0){
+      pixelcpy16((__uint128_t *)&fb[ctl -> x + (ctl -> y + row) * W], (__uint128_t*)pixels, ctl -> w / 4);
+      pixels += (ctl -> w) * 4;
+    }
+    else if (ctl -> w % 2 == 0)
+    {
+      pixelcpy8((uint64_t *)&fb[ctl -> x + (ctl -> y + row) * W], (uint64_t*)pixels, ctl -> w / 2);
+      pixels += (ctl -> w) * 2;
+    }
+    else{
+      pixelcpy(&fb[ctl -> x + (ctl -> y + row) * W], pixels, ctl -> w);
+      pixels += (ctl -> w);
+    }
+    
   }
 }
 
