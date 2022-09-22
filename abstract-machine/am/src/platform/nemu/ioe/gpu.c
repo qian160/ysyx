@@ -60,7 +60,7 @@ void __am_gpu_config(AM_GPU_CONFIG_T *cfg) {
 
 void __am_gpu_fbdraw(AM_GPU_FBDRAW_T *ctl) {
   if (ctl->sync) {
-    outl(SYNC_ADDR, 114514);    //write to SYNC reg will call update
+    outl(SYNC_ADDR, 1);    //write to SYNC reg will call update
   }
   //TODO: improve the performance
   //this seems to be consuming lots of computations......
