@@ -123,10 +123,10 @@ printf(ANSI_FMT(" --------------------------------------------------------------
 
 static int decode_exec(Decode *D) {
   D->dnpc = D->snpc;    //default
-
+/*
 #define INSTPAT_INST(D) ((D)->inst)
 //a match is found, do what it supposed to do.
-#define INSTPAT_MATCH(D, name, type, ... /* body */ ) { \
+#define INSTPAT_MATCH(D, name, type, ... /* body  ) { \
   decode_operand(D, concat(TYPE_, type)); \
   word_t src1 __attribute__((unused)) = D -> decInfo.src1;\
   word_t src2 __attribute__((unused)) = D -> decInfo.src2;\
@@ -136,7 +136,7 @@ static int decode_exec(Decode *D) {
   \
   IFDEF(CONFIG_FTRACE_ENABLE, _ftrace(D));\
 }
-
+*/
   //check one by one
   //note that when we say inst(0), we are counting from the right side(LSB), but str(0) below starts at left side
   //each pattern has its unique mask, key and shift
@@ -150,6 +150,7 @@ static int decode_exec(Decode *D) {
       auipc + addi : get the address of a section, or some label
   */
   //every case should carefully end up with a break
+  //do what it is only supposed to do. For exanple, we don't need to calculate the jump address before every case(Although in Verilog we may do this)
 
   uint32_t inst = D -> inst;
   unsigned char rd  = BITS(inst, 11, 7);
