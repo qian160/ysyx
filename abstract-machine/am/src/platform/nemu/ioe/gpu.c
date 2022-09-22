@@ -70,11 +70,11 @@ void __am_gpu_fbdraw(AM_GPU_FBDRAW_T *ctl) {
   if(ctl -> h == 0 || ctl -> w == 0)  return;
 
   //choose the fastest one. This may improve performance in some cases
-  void (*whichFunc)(void * dst, const void *src, size_t n) = ctl -> w % 4 == 0 ? pixelcpy16 : ctl -> w % 2 == 0 ? pixelcpy8 : pixelcpy4;
+  void (*bestFunc)(void * dst, const void *src, size_t n) = ctl -> w % 4 == 0 ? pixelcpy16 : ctl -> w % 2 == 0 ? pixelcpy8 : pixelcpy4;
 
   //draw row by row. write to vga frame buffer
   for (int row = 0; row < ctl -> h; row++) {
-    whichFunc(&fb[ctl -> x + (ctl -> y + row) * W], pixels, ctl -> w);
+    bestFunc(&fb[ctl -> x + (ctl -> y + row) * W], pixels, ctl -> w);
     pixels += ctl -> w;
   }
 }

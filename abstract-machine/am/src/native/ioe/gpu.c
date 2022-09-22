@@ -27,7 +27,7 @@ static Uint32 texture_sync(Uint32 interval, void *param) {
   return interval;
 }
 
-void __am_gpu_init() {
+void __am_gpu_init() {    //use ioe_write to frame buffer
   SDL_Init(SDL_INIT_VIDEO | SDL_INIT_TIMER);
   window = SDL_CreateWindow("Native Application",
       SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED,
@@ -57,7 +57,7 @@ void __am_gpu_status(AM_GPU_STATUS_T *stat) {
 //io_write's lut function, reg num = AM_GPU_FBDRAW
 void __am_gpu_fbdraw(AM_GPU_FBDRAW_T *ctl) {
   
-  int x = ctl->x, y = ctl->y, w = ctl->w, h = ctl->h;
+  int x = ctl -> x, y = ctl -> y, w = ctl -> w, h = ctl -> h;
   if (w == 0 || h == 0) return;
   feclearexcept(-1);
   SDL_Surface *s = SDL_CreateRGBSurfaceFrom(ctl->pixels, w, h, 32, w * sizeof(uint32_t),
