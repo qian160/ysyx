@@ -27,7 +27,7 @@ static Uint32 texture_sync(Uint32 interval, void *param) {
   return interval;
 }
 
-void __am_gpu_init() {
+void __am_gpu_init() {    //use ioe_write to frame buffer
   SDL_Init(SDL_INIT_VIDEO | SDL_INIT_TIMER);
   window = SDL_CreateWindow("Native Application",
       SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED,

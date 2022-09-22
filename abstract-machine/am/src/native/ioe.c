@@ -27,6 +27,7 @@ void __am_disk_blkio(AM_DISK_BLKIO_T *io);
 static void __am_uart_config(AM_UART_CONFIG_T *cfg)   { cfg->present = false; }
 static void __am_net_config (AM_NET_CONFIG_T *cfg)    { cfg->present = false; }
 
+//these luts and ioe_r/w are rxposed to user programs. But not device addr
 typedef void (*handler_t)(void *buf);
 static void *lut[128] = {
   [AM_TIMER_CONFIG] = __am_timer_config,
