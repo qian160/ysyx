@@ -126,7 +126,7 @@ static int decode_exec(Decode *D) {
 /*
 #define INSTPAT_INST(D) ((D)->inst)
 //a match is found, do what it supposed to do.
-#define INSTPAT_MATCH(D, name, type, ... /* body  ) { \
+#define INSTPAT_MATCH(D, name, type, ... , body  ) { \
   decode_operand(D, concat(TYPE_, type)); \
   word_t src1 __attribute__((unused)) = D -> decInfo.src1;\
   word_t src2 __attribute__((unused)) = D -> decInfo.src2;\
