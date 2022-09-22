@@ -35,7 +35,6 @@ extern void _ftrace(Decode * D);
 
 static const char tp[] __attribute__((unused))= "IUSJRB";    //use type as index
 
-
 #ifdef CONFIG_SHOW_DECODE_INFORMATION
 
 void show_bits(word_t b){
@@ -348,10 +347,12 @@ int isa_exec_once(Decode *D) {
   uint32_t inst = inst_fetch(&D -> snpc, 4);  //snpc will be updated in fetch ( +4 )
   D->inst = inst;
    //set some decode flags here
+  /*
   D -> decInfo.is_jalr  = opcode(inst) == jalr_opcode; 
   D -> decInfo.is_lui   = BITS(inst, 5, 5);    //just a possibility
   D -> decInfo.funct3   = funct3(inst);
   D -> decInfo.is_load  = opcode(inst) == load_opcode;
+  */
 
   return decode_exec(D);
 }
