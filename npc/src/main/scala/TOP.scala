@@ -25,16 +25,18 @@ object D{       //debug
     val italics     = "\u001b[3m"
     val underline   = "\u001b[4m"
 
-    def RedString(str: String) = red + str + normal
-    def YellowString(str: String) = yellow + str + normal
-    def PinkString(str: String) = pink + str + normal
-    def MagentaString(str: String) = magenta + str + normal
-    def GreenString(str: String) = green + str + normal
+    def RedStr(str: String) = red + str + normal
+    def YellowStr(str: String) = yellow + str + normal
+    def PinkStr(str: String) = pink + str + normal
+    def MagentaStr(str: String) = magenta + str + normal
+    def GreenStr(str: String) = green + str + normal
 }
 
 class TOP extends Module{
     val io = IO(new Bundle{
-        val o = Output(UInt(64.W))  //to avoid dce
+        val o       = Output(UInt(64.W)) //to avoid dce
+        val pc      = Output(UInt(64.W))
+        val inst    = Output(UInt(32.W))
     })
 
     val IF      =   Module(new IF)
@@ -44,8 +46,11 @@ class TOP extends Module{
     val WB      =   Module(new WB)
     val Regfile =   Module(new Regfile)
 
-    ID.io.inst      :=  IF.io.inst
-    ID.io.pc        :=  IF.io.pc
+    IF.io.pc_i      :=  io.pc
+    IF.io.inst_i    :=  io.inst
+
+    ID.io.inst      :=  IF.io.inst_o
+    ID.io.pc        :=  IF.io.pc_o
     ID.io.regSrc    :=  Regfile.io.readRes
 
     Regfile.io.readRfOp     :=  ID.io.readRfOp
@@ -58,20 +63,24 @@ class TOP extends Module{
     WB.io.writeRfOp_i   :=  MEM.io.writeRfOp_o
 
     io.o    :=  WB.io.writeRfOp_o.wdata
+    io.pc   :=  DontCare    //let cpp do this, not scala
+    io.inst :=  DontCare
 
 }
 
 object Gen {
+import D._
     def main(args:Array[String]) : Unit = {
-        println(D.yellow + "generate verilog..." + D.normal)
+        println(YellowStr("generate verilog..."))
         println(getVerilogString(new TOP))
         (new chisel3.stage.ChiselStage).emitVerilog(new TOP, args)      //--target-dir , --no-dce
     }
 }
 
 class Test extends AnyFlatSpec with ChiselScalatestTester{
+import D._
     val Rnd = new Random()
-    "test" should "pass" in{
-        test(new TOP){ dut => println(D.PinkString("hello world")) }
+    "simple hello world test" should "pass" in{
+        test(new TOP){ dut => println(PinkStr("hello world")) }
     }
 }

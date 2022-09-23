@@ -11,6 +11,8 @@ class ID extends Module{
         val readRfOp    =   Output(new readRfOp)
         val decInfo     =   Output(new decInfo)
     })
+    //to make test easier, we use cpp to load inst not verilog or chisel
+    dontTouch(io.inst)  //don't elimate this
 
     val inst     = io.inst
     val imm_I    = SEXT(inst(31,20), 64)
