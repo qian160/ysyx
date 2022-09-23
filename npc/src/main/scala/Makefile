@@ -1,6 +1,6 @@
 .PHONY : run test clean
 
-SBT_ARGS = --target-dir $(shell pwd)/test/verilog
+SBT_ARGS = --target-dir $(shell pwd)/test/verilog --no-dce
 MAIN = Gen
 gen:	#generate verilog code
 	sbt "runMain $(MAIN) $(SBT_ARGS)"

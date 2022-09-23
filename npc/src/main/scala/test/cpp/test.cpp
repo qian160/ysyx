@@ -1,6 +1,8 @@
 #include<verilated.h>
 #include<VTOP.h>
+//#include"VTOP__Dpi.h"
 #include<iostream>
+#include<svdpi.h>
 #include<fstream>
 #include<verilated_vcd_c.h>
 
@@ -13,6 +15,8 @@ VTOP * top = new VTOP("top");
 VerilatedVcdC * tfp = new VerilatedVcdC;
 vluint64_t TIME = 0;
 uint32_t mem[0x800];	//seems that it can't be too large....
+
+void exit(){exit(0);}
 
 uint32_t readl(uint64_t addr)
 {
@@ -64,10 +68,10 @@ void step()
 
 int main(int argc, char **argv)
 {
+	string test_path = "/home/s081/Downloads/ysyx-workbench/am-kernels/tests/cpu-tests";
 	Verilated::commandArgs(argc, argv);
 	uint32_t n = init() << 1;
-	while(n--)
-	{
+	while(!Verilated::gotFinish()){
 		step();
 	}
 

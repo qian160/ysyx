@@ -24,13 +24,11 @@ void VTOP___024root__trace_chg_sub_0(VTOP___024root* vlSelf, VerilatedVcd* trace
     uint32_t* const oldp VL_ATTR_UNUSED = tracep->oldp(vlSymsp->__Vm_baseCode + 1);
     // Body
     if (VL_UNLIKELY(vlSelf->__Vm_traceActivity[1U])) {
-        tracep->chgQData(oldp+0,(vlSelf->TOP__DOT__ID_io_decInfo_src1),64);
+        tracep->chgQData(oldp+0,(vlSelf->TOP__DOT__Regfile_io_readRes_rs1Val),64);
         tracep->chgQData(oldp+2,(vlSelf->TOP__DOT__ID_io_decInfo_src2),64);
-        tracep->chgCData(oldp+4,(((1U == (IData)(vlSelf->TOP__DOT__ID__DOT__decRes_0))
-                                   ? 1U : 0U)),5);
+        tracep->chgCData(oldp+4,((1U == (IData)(vlSelf->TOP__DOT__ID__DOT__decRes_0))),5);
         tracep->chgCData(oldp+5,(vlSelf->TOP__DOT__ID_io_decInfo_aluop),5);
-        tracep->chgBit(oldp+6,(((1U == (IData)(vlSelf->TOP__DOT__ID__DOT__decRes_0))
-                                 ? 1U : 0U)));
+        tracep->chgBit(oldp+6,((1U == (IData)(vlSelf->TOP__DOT__ID__DOT__decRes_0))));
         tracep->chgQData(oldp+7,((((QData)((IData)(
                                                    vlSelf->TOP__DOT__EX__DOT__aluRes[1U])) 
                                    << 0x20U) | (QData)((IData)(
@@ -83,20 +81,7 @@ void VTOP___024root__trace_chg_sub_0(VTOP___024root* vlSelf, VerilatedVcd* trace
     tracep->chgQData(oldp+90,(((0x1eU == (0x1fU & (vlSelf->io_inst_o 
                                                    >> 0xfU)))
                                 ? vlSelf->TOP__DOT__Regfile__DOT__registers_30
-                                : ((0x1dU == (0x1fU 
-                                              & (vlSelf->io_inst_o 
-                                                 >> 0xfU)))
-                                    ? vlSelf->TOP__DOT__Regfile__DOT__registers_29
-                                    : ((0x1cU == (0x1fU 
-                                                  & (vlSelf->io_inst_o 
-                                                     >> 0xfU)))
-                                        ? vlSelf->TOP__DOT__Regfile__DOT__registers_28
-                                        : ((0x1bU == 
-                                            (0x1fU 
-                                             & (vlSelf->io_inst_o 
-                                                >> 0xfU)))
-                                            ? vlSelf->TOP__DOT__Regfile__DOT__registers_27
-                                            : vlSelf->TOP__DOT__Regfile__DOT___GEN_88))))),64);
+                                : vlSelf->TOP__DOT__Regfile__DOT___GEN_91)),64);
     tracep->chgCData(oldp+92,((0x1fU & (vlSelf->io_inst_o 
                                         >> 0xfU))),5);
     tracep->chgCData(oldp+93,((0x1fU & (vlSelf->io_inst_o 

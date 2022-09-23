@@ -44,7 +44,10 @@ class ID extends Module{
             io.decInfo.src1 :=  rs1Val
             io.decInfo.src2 :=  imm_I
             io.decInfo.wen  :=  true.B
-        }
+        }/*
+        is(InstType.R){
+            sys.exit(0)
+        }*/
     }
 
 }

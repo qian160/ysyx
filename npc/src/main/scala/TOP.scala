@@ -6,31 +6,7 @@ import scala.util.Random        //debug
 import chiseltest._             //test
 import chisel3.util._
 import chisel3.experimental._
-
-
-object D{       //debug
-    //usage: println(D.xx + "foo" + D.ed)
-    val red     = "\u001b[1;31m" //1: background color(none)
-    val green   = "\u001b[1;32m"
-    val yellow  = "\u001b[1;33m"
-    val blue    = "\u001b[1;34m"
-    val magenta = "\u001b[1;35m"
-    val cyan    = "\u001b[1;36m"
-    val white   = "\u001b[1;37m"
-    val pink    = "\u001b[1;38m"
-
-    val normal      = "\u001b[0m"
-    val bold        = "\u001b[1m"
-    val dark        = "\u001b[2m"
-    val italics     = "\u001b[3m"
-    val underline   = "\u001b[4m"
-
-    def RedStr(str: String) = red + str + normal
-    def YellowStr(str: String) = yellow + str + normal
-    def PinkStr(str: String) = pink + str + normal
-    def MagentaStr(str: String) = magenta + str + normal
-    def GreenStr(str: String) = green + str + normal
-}
+import D._
 
 class TOP extends Module{
     //to make tests easier, we expose the inst fetch ports in top, which can be used by verilator and chiseltest
@@ -63,7 +39,7 @@ class TOP extends Module{
     Regfile.io.readRfOp     :=  ID.io.readRfOp
     Regfile.io.writeRfOp    :=  WB.io.writeRfOp_o
 
-    EX.io.decInfo   :=  ID.io.decInfo
+    EX.io.decInfo       :=  ID.io.decInfo
 
     MEM.io.writeRfOp_i  :=  EX.io.writeRfOp
 
@@ -78,38 +54,42 @@ class TOP extends Module{
 }
 
 object Gen {
-import D._
     def main(args:Array[String]) : Unit = {
         println(YellowStr("generate verilog..."))
-        println(getVerilogString(new TOP))
-        (new chisel3.stage.ChiselStage).emitVerilog(new TOP, args)      //--target-dir , --no-dce
+        println(getVerilogString(new t))
+        (new chisel3.stage.ChiselStage).emitVerilog(new t, args)      //--target-dir , --no-dce
     }
 }
 
 class Test extends AnyFlatSpec with ChiselScalatestTester{
-import D._
     val Rnd = new Random()
     "test" should "pass" in{
         test(new TOP){ dut => 
             val inst_rom = Array(
-                0xfff00513,
-                0x00150513,
-                0x00150513,
-                0x00150513,
-                0x00150513,
-                0x00150513,
-                0x00100073,
-                0x00150513,
-                0x00150513,
-                0x00150513,
-                0x00150513,
+                "hfff00513".U,
+                "h00150513".U,
+                "h00150513".U,
+                "h00150513".U,
+                "h00150513".U,
+                "h00150513".U,
+                "h00100073".U,
+                "h00150513".U,
+                "h00150513".U,
+                "h00150513".U,
+                "h00150513".U,
             )
             println(PinkStr("hello world")) 
             dut.io.inst_i.poke("hfff00513".U)
 
-            val wdata = dut.io.o.peek().toString()
-            inst_rom foreach( (inst) => println(f"$inst%8x"))
-            println(s"wdata = $wdata")
+            inst_rom foreach( (inst) => {
+//                println(f"$inst%8x")
+                dut.io.inst_i.poke(inst)
+                val wdata = dut.io.o.peek().toString()
+                dut.clock.step()
+                println(s"wdata = $wdata")
+            })
+            
         }
     }
+
 }

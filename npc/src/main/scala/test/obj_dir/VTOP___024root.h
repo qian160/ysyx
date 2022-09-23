@@ -25,8 +25,8 @@ VL_MODULE(VTOP___024root) {
     VL_OUT64(io_o,63,0);
     VL_OUT64(io_src1,63,0);
     VL_OUT64(io_src2,63,0);
-    QData/*63:0*/ TOP__DOT__ID_io_decInfo_src1;
     QData/*63:0*/ TOP__DOT__ID_io_decInfo_src2;
+    QData/*63:0*/ TOP__DOT__Regfile_io_readRes_rs1Val;
     QData/*63:0*/ TOP__DOT__Regfile__DOT__registers_0;
     QData/*63:0*/ TOP__DOT__Regfile__DOT__registers_1;
     QData/*63:0*/ TOP__DOT__Regfile__DOT__registers_2;
@@ -58,7 +58,7 @@ VL_MODULE(VTOP___024root) {
     QData/*63:0*/ TOP__DOT__Regfile__DOT__registers_28;
     QData/*63:0*/ TOP__DOT__Regfile__DOT__registers_29;
     QData/*63:0*/ TOP__DOT__Regfile__DOT__registers_30;
-    QData/*63:0*/ TOP__DOT__Regfile__DOT___GEN_88;
+    QData/*63:0*/ TOP__DOT__Regfile__DOT___GEN_91;
     VlUnpacked<CData/*0:0*/, 3> __Vm_traceActivity;
 
     // INTERNAL VARIABLES
