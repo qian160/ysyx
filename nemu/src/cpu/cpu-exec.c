@@ -21,7 +21,7 @@ static bool g_print_step = false;
 void device_update();
 void disassemble(char *str, int size, uint64_t pc, uint8_t *code, int nbyte);
 
-static void trace_and_difftest(Decode *_this, vaddr_t dnpc) {
+static inline void trace_and_difftest(Decode *_this, vaddr_t dnpc) {
 #ifdef CONFIG_ITRACE_COND
   //if (ITRACE_COND) { log_write("%s\n", _this->logbuf); }
 #endif
@@ -136,21 +136,6 @@ void cpu_exec(uint64_t n) {
           IFDEF(CONFIG_ITRACE_ENABLE, show_itrace());
           IFDEF(CONFIG_MTRACE_ENABLE, show_mtrace());
           IFDEF(CONFIG_FTRACE_ENABLE, show_ftrace());
-    
-/*
-    case NEMU_END: 
-      Log("nemu: %s at pc = " FMT_WORD,
-          (nemu_state.halt_ret == 0 ? ANSI_FMT("HIT GOOD TRAP", ANSI_FG_GREEN) :
-            ANSI_FMT("HIT BAD TRAP", ANSI_FG_RED)),
-          nemu_state.halt_pc);
-//          break;
-    case NEMU_ABORT:
-    //at first I want to use red, but it makes your eyes uncomfortabe
-      Log("nemu: %s at pc = " FMT_WORD,
-          ANSI_FMT("ABORT", ANSI_FG_RED), nemu_state.halt_pc);
-*/
-
-      // fall through
     case NEMU_QUIT: statistic();
   }
 }
