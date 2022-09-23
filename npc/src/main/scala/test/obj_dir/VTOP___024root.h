@@ -23,6 +23,8 @@ VL_MODULE(VTOP___024root) {
     VL_IN64(io_pc_i,63,0);
     VL_OUT64(io_pc_o,63,0);
     VL_OUT64(io_o,63,0);
+    VL_OUT64(io_src1,63,0);
+    VL_OUT64(io_src2,63,0);
     QData/*63:0*/ TOP__DOT__ID_io_decInfo_src1;
     QData/*63:0*/ TOP__DOT__ID_io_decInfo_src2;
     QData/*63:0*/ TOP__DOT__Regfile__DOT__registers_0;

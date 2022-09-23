@@ -29,7 +29,9 @@ class ID extends Module{
     val rs2Val   = io.regSrc.rs2Val
 
     //default
-    io.decInfo          := 0.U.asTypeOf(new decInfo)
+    io.decInfo.src1     := rs1Val
+    io.decInfo.src2     := rs2Val
+    io.decInfo.wen      := false.B
     io.decInfo.rd       := inst(11, 7)
     io.decInfo.aluop    := decOpt
     io.decInfo.instType := instType

@@ -1156,6 +1156,8 @@ VL_INLINE_OPT void VTOP___024root___combo__TOP__1(VTOP___024root* vlSelf) {
         vlSelf->TOP__DOT__ID_io_decInfo_src2 = 0ULL;
         vlSelf->TOP__DOT__ID_io_decInfo_src1 = 0ULL;
     }
+    vlSelf->io_src2 = vlSelf->TOP__DOT__ID_io_decInfo_src2;
+    vlSelf->io_src1 = vlSelf->TOP__DOT__ID_io_decInfo_src1;
     TOP__DOT__EX__DOT___aluRes_T_38 = ((IData)(vlSelf->TOP__DOT__ID_io_decInfo_src1) 
                                        - (IData)(vlSelf->TOP__DOT__ID_io_decInfo_src2));
     VL_EXTEND_WQ(95,64, __Vtemp_h3f33b5c0__0, vlSelf->TOP__DOT__ID_io_decInfo_src1);

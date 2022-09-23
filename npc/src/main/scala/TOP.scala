@@ -42,6 +42,8 @@ class TOP extends Module{
         val pc_o      = Output(UInt(64.W))
         val inst_o    = Output(UInt(32.W))
         val o         = Output(UInt(64.W)) //to avoid dce
+        val src1      = Output(UInt(64.W))
+        val src2      = Output(UInt(64.W))
     })
 
     val IF      =   Module(new IF)
@@ -70,6 +72,9 @@ class TOP extends Module{
     io.o    :=  WB.io.writeRfOp_o.wdata
     io.inst_o   :=  io.inst_i
     io.pc_o     :=  io.pc_i
+
+    io.src1 :=  ID.io.decInfo.src1
+    io.src2 :=  ID.io.decInfo.src2
 }
 
 object Gen {
@@ -86,6 +91,9 @@ import D._
     val Rnd = new Random()
     "test" should "pass" in{
         test(new TOP){ dut => 
+            val inst_rom = Array(
+                0x114514
+            )
             println(PinkStr("hello world")) 
             dut.io.inst_i.poke("hfff00513".U)
 
