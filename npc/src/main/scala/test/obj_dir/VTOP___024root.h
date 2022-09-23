@@ -14,8 +14,17 @@ VL_MODULE(VTOP___024root) {
     // DESIGN SPECIFIC STATE
     VL_IN8(clock,0,0);
     VL_IN8(reset,0,0);
+    CData/*4:0*/ TOP__DOT__ID_io_decInfo_aluop;
+    CData/*3:0*/ TOP__DOT__ID__DOT__decRes_0;
     CData/*0:0*/ __Vclklast__TOP__clock;
+    VL_IN(io_inst_i,31,0);
+    VL_OUT(io_inst_o,31,0);
+    VlWide<4>/*126:0*/ TOP__DOT__EX__DOT__aluRes;
+    VL_IN64(io_pc_i,63,0);
+    VL_OUT64(io_pc_o,63,0);
     VL_OUT64(io_o,63,0);
+    QData/*63:0*/ TOP__DOT__ID_io_decInfo_src1;
+    QData/*63:0*/ TOP__DOT__ID_io_decInfo_src2;
     QData/*63:0*/ TOP__DOT__Regfile__DOT__registers_0;
     QData/*63:0*/ TOP__DOT__Regfile__DOT__registers_1;
     QData/*63:0*/ TOP__DOT__Regfile__DOT__registers_2;
@@ -47,7 +56,8 @@ VL_MODULE(VTOP___024root) {
     QData/*63:0*/ TOP__DOT__Regfile__DOT__registers_28;
     QData/*63:0*/ TOP__DOT__Regfile__DOT__registers_29;
     QData/*63:0*/ TOP__DOT__Regfile__DOT__registers_30;
-    VlUnpacked<CData/*0:0*/, 2> __Vm_traceActivity;
+    QData/*63:0*/ TOP__DOT__Regfile__DOT___GEN_88;
+    VlUnpacked<CData/*0:0*/, 3> __Vm_traceActivity;
 
     // INTERNAL VARIABLES
     VTOP__Syms* const vlSymsp;

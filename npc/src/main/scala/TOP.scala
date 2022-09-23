@@ -33,10 +33,15 @@ object D{       //debug
 }
 
 class TOP extends Module{
+    //to make tests easier, we expose the inst fetch ports in top, which can be used by verilator and chiseltest
+    //now TOP seems to act as IF
     val io = IO(new Bundle{
-        val o       = Output(UInt(64.W)) //to avoid dce
-        val pc      = Output(UInt(64.W))
-        val inst    = Output(UInt(32.W))
+        val pc_i      = Input(UInt(64.W))
+        val inst_i    = Input(UInt(32.W))
+
+        val pc_o      = Output(UInt(64.W))
+        val inst_o    = Output(UInt(32.W))
+        val o         = Output(UInt(64.W)) //to avoid dce
     })
 
     val IF      =   Module(new IF)
@@ -46,8 +51,8 @@ class TOP extends Module{
     val WB      =   Module(new WB)
     val Regfile =   Module(new Regfile)
 
-    IF.io.pc_i      :=  io.pc
-    IF.io.inst_i    :=  io.inst
+    IF.io.pc_i      :=  io.pc_o
+    IF.io.inst_i    :=  io.inst_o
 
     ID.io.inst      :=  IF.io.inst_o
     ID.io.pc        :=  IF.io.pc_o
@@ -63,9 +68,8 @@ class TOP extends Module{
     WB.io.writeRfOp_i   :=  MEM.io.writeRfOp_o
 
     io.o    :=  WB.io.writeRfOp_o.wdata
-    io.pc   :=  DontCare    //let cpp do this, not scala
-    io.inst :=  DontCare
-
+    io.inst_o   :=  io.inst_i
+    io.pc_o     :=  io.pc_i
 }
 
 object Gen {
@@ -80,7 +84,14 @@ import D._
 class Test extends AnyFlatSpec with ChiselScalatestTester{
 import D._
     val Rnd = new Random()
-    "simple hello world test" should "pass" in{
-        test(new TOP){ dut => println(PinkStr("hello world")) }
+    "test" should "pass" in{
+        test(new TOP){ dut => 
+            println(PinkStr("hello world")) 
+            dut.io.inst_i.poke("hfff00513".U)
+
+            val wdata = dut.io.o.peek().toString()
+            val ref = -1.S(64.W)
+            println(s"wdata = $wdata, ref = $ref")
+        }
     }
 }

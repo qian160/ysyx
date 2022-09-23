@@ -1,5 +1,7 @@
 .PHONY: test gen clean sim gen
 
+#include test/Makefile
+
 TARGET_DIR = $(shell pwd)/test/verilog
 SBT_ARGS   = --target-dir $(TARGET_DIR)
 
