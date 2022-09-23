@@ -92,14 +92,24 @@ import D._
     "test" should "pass" in{
         test(new TOP){ dut => 
             val inst_rom = Array(
-                0x114514
+                0xfff00513,
+                0x00150513,
+                0x00150513,
+                0x00150513,
+                0x00150513,
+                0x00150513,
+                0x00100073,
+                0x00150513,
+                0x00150513,
+                0x00150513,
+                0x00150513,
             )
             println(PinkStr("hello world")) 
             dut.io.inst_i.poke("hfff00513".U)
 
             val wdata = dut.io.o.peek().toString()
-            val ref = -1.S(64.W)
-            println(s"wdata = $wdata, ref = $ref")
+            inst_rom foreach( (inst) => println(f"$inst%8x"))
+            println(s"wdata = $wdata")
         }
     }
 }
