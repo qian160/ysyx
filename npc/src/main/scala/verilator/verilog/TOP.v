@@ -19,8 +19,8 @@ module ID(
   output [4:0]  io_decInfo_aluop
 );
   wire  EXIT_exit; // @[ID.scala 42:22]
-  wire [11:0] _imm_I_T_1 = io_inst[31:20]; // @[HELPERS.scala 14:41]
-  wire [63:0] imm_I = {{52{_imm_I_T_1[11]}},_imm_I_T_1}; // @[HELPERS.scala 14:56]
+  wire [11:0] _imm_I_T_1 = io_inst[31:20]; // @[HELPERS.scala 15:41]
+  wire [63:0] imm_I = {{52{_imm_I_T_1[11]}},_imm_I_T_1}; // @[HELPERS.scala 15:56]
   wire [31:0] _decRes_T = io_inst & 32'hfe00707f; // @[Lookup.scala 31:38]
   wire  _decRes_T_1 = 32'h33 == _decRes_T; // @[Lookup.scala 31:38]
   wire  _decRes_T_3 = 32'h40000033 == _decRes_T; // @[Lookup.scala 31:38]
@@ -209,17 +209,17 @@ module ID(
   wire [4:0] _decRes_T_247 = _decRes_T_7 ? 5'h2 : _decRes_T_246; // @[Lookup.scala 34:39]
   wire [4:0] _decRes_T_248 = _decRes_T_5 ? 5'h7 : _decRes_T_247; // @[Lookup.scala 34:39]
   wire [4:0] _decRes_T_249 = _decRes_T_3 ? 5'h1 : _decRes_T_248; // @[Lookup.scala 34:39]
-  wire  _T_1 = 4'h1 == decRes_0; // @[ID.scala 47:21]
+  wire  _T = 4'h1 == decRes_0; // @[ID.scala 44:21]
   EXIT EXIT ( // @[ID.scala 42:22]
     .exit(EXIT_exit)
   );
   assign io_readRfOp_rs1 = io_inst[19:15]; // @[ID.scala 39:35]
   assign io_decInfo_rd = io_inst[11:7]; // @[ID.scala 35:32]
-  assign io_decInfo_src1 = io_regSrc_rs1Val; // @[ID.scala 47:21 32:25 49:29]
-  assign io_decInfo_src2 = 4'h1 == decRes_0 ? imm_I : io_regSrc_rs2Val; // @[ID.scala 47:21 33:25 50:29]
-  assign io_decInfo_wen = {{4'd0}, _T_1};
+  assign io_decInfo_src1 = io_regSrc_rs1Val; // @[ID.scala 44:21 32:25 46:29]
+  assign io_decInfo_src2 = 4'h1 == decRes_0 ? imm_I : io_regSrc_rs2Val; // @[ID.scala 44:21 33:25 47:29]
+  assign io_decInfo_wen = {{4'd0}, _T};
   assign io_decInfo_aluop = _decRes_T_1 ? 5'h0 : _decRes_T_249; // @[Lookup.scala 34:39]
-  assign EXIT_exit = 1'h0; // @[ID.scala 46:21]
+  assign EXIT_exit = io_inst == 32'h100073; // @[ID.scala 43:33]
 endmodule
 module EX(
   input  [4:0]  io_decInfo_rd,
@@ -243,18 +243,18 @@ module EX(
   wire [126:0] _aluRes_T_20 = _GEN_0 << io_decInfo_src2[5:0]; // @[EX.scala 27:26]
   wire [63:0] _aluRes_T_22 = io_decInfo_src1 >> io_decInfo_src2[5:0]; // @[EX.scala 28:26]
   wire [63:0] _aluRes_T_26 = $signed(io_decInfo_src1) >>> io_decInfo_src2[5:0]; // @[EX.scala 29:47]
-  wire [31:0] _aluRes_T_31 = io_decInfo_src1[31:0] + io_decInfo_src2[31:0]; // @[HELPERS.scala 14:41]
-  wire [63:0] _aluRes_T_33 = {{32{_aluRes_T_31[31]}},_aluRes_T_31}; // @[HELPERS.scala 14:56]
-  wire [31:0] _aluRes_T_38 = io_decInfo_src1[31:0] - io_decInfo_src2[31:0]; // @[HELPERS.scala 14:41]
-  wire [63:0] _aluRes_T_40 = {{32{_aluRes_T_38[31]}},_aluRes_T_38}; // @[HELPERS.scala 14:56]
-  wire [63:0] _aluRes_T_46 = io_decInfo_src1[31:0] * io_decInfo_src2[31:0]; // @[HELPERS.scala 14:56]
+  wire [31:0] _aluRes_T_31 = io_decInfo_src1[31:0] + io_decInfo_src2[31:0]; // @[HELPERS.scala 15:41]
+  wire [63:0] _aluRes_T_33 = {{32{_aluRes_T_31[31]}},_aluRes_T_31}; // @[HELPERS.scala 15:56]
+  wire [31:0] _aluRes_T_38 = io_decInfo_src1[31:0] - io_decInfo_src2[31:0]; // @[HELPERS.scala 15:41]
+  wire [63:0] _aluRes_T_40 = {{32{_aluRes_T_38[31]}},_aluRes_T_38}; // @[HELPERS.scala 15:56]
+  wire [63:0] _aluRes_T_46 = io_decInfo_src1[31:0] * io_decInfo_src2[31:0]; // @[HELPERS.scala 15:56]
   wire [94:0] _GEN_1 = {{31'd0}, io_decInfo_src1}; // @[EX.scala 34:31]
   wire [94:0] _aluRes_T_48 = _GEN_1 << io_decInfo_src2[4:0]; // @[EX.scala 34:31]
-  wire [31:0] _aluRes_T_50 = _aluRes_T_48[31:0]; // @[HELPERS.scala 14:41]
-  wire [63:0] _aluRes_T_52 = {{32{_aluRes_T_50[31]}},_aluRes_T_50}; // @[HELPERS.scala 14:56]
+  wire [31:0] _aluRes_T_50 = _aluRes_T_48[31:0]; // @[HELPERS.scala 15:41]
+  wire [63:0] _aluRes_T_52 = {{32{_aluRes_T_50[31]}},_aluRes_T_50}; // @[HELPERS.scala 15:56]
   wire [31:0] _aluRes_T_60 = io_decInfo_src1[31:0]; // @[EX.scala 36:37]
-  wire [31:0] _aluRes_T_64 = $signed(_aluRes_T_60) >>> io_decInfo_src2[4:0]; // @[HELPERS.scala 14:41]
-  wire [63:0] _aluRes_T_66 = {{32{_aluRes_T_64[31]}},_aluRes_T_64}; // @[HELPERS.scala 14:56]
+  wire [31:0] _aluRes_T_64 = $signed(_aluRes_T_60) >>> io_decInfo_src2[4:0]; // @[HELPERS.scala 15:41]
+  wire [63:0] _aluRes_T_66 = {{32{_aluRes_T_64[31]}},_aluRes_T_64}; // @[HELPERS.scala 15:56]
   wire [63:0] _aluRes_T_68 = 5'h0 == io_decInfo_aluop ? _aluRes_T_1 : _aluRes_T_1; // @[Mux.scala 81:58]
   wire [63:0] _aluRes_T_70 = 5'h1 == io_decInfo_aluop ? _aluRes_T_5 : _aluRes_T_68; // @[Mux.scala 81:58]
   wire [63:0] _aluRes_T_72 = 5'h2 == io_decInfo_aluop ? {{63'd0}, _aluRes_T_8} : _aluRes_T_70; // @[Mux.scala 81:58]

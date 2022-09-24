@@ -8,8 +8,12 @@
 #include "verilated.h"
 
 class VTOP__Syms;
+class VTOP___024unit;
+
 VL_MODULE(VTOP___024root) {
   public:
+    // CELLS
+    VTOP___024unit* __PVT____024unit;
 
     // DESIGN SPECIFIC STATE
     VL_IN8(clock,0,0);

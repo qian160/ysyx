@@ -9,10 +9,13 @@
 #define VERILATED_VTOP_H_  // guard
 
 #include "verilated.h"
+#include "svdpi.h"
 
 class VTOP__Syms;
 class VTOP___024root;
 class VerilatedVcdC;
+class VTOP___024unit;
+
 
 // This class is the main interface to the Verilated model
 class VTOP VL_NOT_FINAL {
@@ -38,6 +41,7 @@ class VTOP VL_NOT_FINAL {
     // CELLS
     // Public to allow access to /* verilator public */ items.
     // Otherwise the application code can consider these internals.
+    VTOP___024unit* const __PVT____024unit;
 
     // Root instance pointer to allow access to model internals,
     // including inlined /* verilator public_flat_* */ items.
@@ -73,6 +77,9 @@ class VTOP VL_NOT_FINAL {
     VerilatedContext* contextp() const;
     /// Retrieve name of this model instance (as passed to constructor).
     const char* name() const;
+
+    /// DPI Export functions
+    static void EXIT();
 } VL_ATTR_ALIGNED(VL_CACHE_LINE_BYTES);
 
 #endif  // guard

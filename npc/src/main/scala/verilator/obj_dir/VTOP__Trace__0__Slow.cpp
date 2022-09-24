@@ -92,9 +92,12 @@ VL_ATTR_COLD void VTOP___024root__trace_init_sub__TOP__0(VTOP___024root* vlSelf,
     tracep->declQuad(c+3,"io_decInfo_src2", false,-1, 63,0);
     tracep->declBus(c+5,"io_decInfo_wen", false,-1, 4,0);
     tracep->declBus(c+6,"io_decInfo_aluop", false,-1, 4,0);
-    tracep->declQuad(c+95,"imm_I", false,-1, 63,0);
+    tracep->declBit(c+95,"EXIT_exit", false,-1);
+    tracep->declQuad(c+96,"imm_I", false,-1, 63,0);
     tracep->declBus(c+14,"decRes_0", false,-1, 3,0);
-    tracep->popNamePrefix(1);
+    tracep->pushNamePrefix("EXIT ");
+    tracep->declBit(c+95,"exit", false,-1);
+    tracep->popNamePrefix(2);
     tracep->pushNamePrefix("IF ");
     tracep->declQuad(c+82,"io_pc_i", false,-1, 63,0);
     tracep->declBus(c+84,"io_inst_i", false,-1, 31,0);
@@ -259,7 +262,8 @@ VL_ATTR_COLD void VTOP___024root__trace_full_sub_0(VTOP___024root* vlSelf, Veril
                                          >> 0xfU))),5);
     tracep->fullCData(oldp+94,((0x1fU & (vlSelf->io_inst_o 
                                          >> 7U))),5);
-    tracep->fullQData(oldp+95,((((- (QData)((IData)(
+    tracep->fullBit(oldp+95,((0x100073U == vlSelf->io_inst_o)));
+    tracep->fullQData(oldp+96,((((- (QData)((IData)(
                                                     (vlSelf->io_inst_o 
                                                      >> 0x1fU)))) 
                                  << 0xcU) | (QData)((IData)(

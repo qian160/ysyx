@@ -40,10 +40,7 @@ class ID extends Module{
     io.readRfOp.rs2     := io.inst(24, 20)
 
     val EXIT = Module(new EXIT)
-    when(instType   =/=  InstType.I){
-        EXIT.io.exit    :=  true.B
-    }
-    EXIT.io.exit    := false.B
+    EXIT.io.exit    := Mux(inst === CONST.EBREAK, true.B, false.B)
     switch(instType){
         is(InstType.I){
             io.decInfo.src1 :=  rs1Val
