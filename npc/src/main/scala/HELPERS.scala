@@ -1,5 +1,6 @@
 import chisel3._
 import chisel3.util._
+import chisel3.util.HasBlackBoxResource
 import chisel3.util.HasBlackBoxInline
 
 object countLeadingZeros
@@ -14,13 +15,13 @@ object Util{
     def SEXT(a:UInt, to: Int): UInt = a.asSInt.pad(to).asUInt
     def ZEXT(a:UInt, to: Int): UInt = a.pad(to)
 }
-
+/*
 class EXIT extends BlackBox with HasBlackBoxInline {
     val io = IO(new Bundle {
         val exit = Input(Bool())
     })
-    setInline("exit.v",
-        """ module exit(
+    setInline("EXIT.v",
+        """ module EXIT(
         |       input    exit
         |   );
         |   always @* begin
@@ -29,6 +30,13 @@ class EXIT extends BlackBox with HasBlackBoxInline {
         |   endmodule
         |
         """.stripMargin)
+}
+*/
+class EXIT extends BlackBox with HasBlackBoxResource{
+    val io = IO(new Bundle{
+        val exit = Input(Bool())
+    })
+    addResource("EXIT.v")
 }
 
 object D{       //debug

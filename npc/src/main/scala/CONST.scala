@@ -166,7 +166,7 @@ object Insts { // idea from mini riscv
     def REMW   = BitPat("b0000001 ????? ????? 110 ????? 0111011")
     def REMUW  = BitPat("b0000001 ????? ????? 111 ????? 0111011")
 
-    def ebreak = BitPat("b??????? ????? ????? ??? ????? 1110011")
+    def EBREAK = BitPat("b0000000 00001 ????? ??? ????? 1110011")
 }
 
 
@@ -247,6 +247,8 @@ object DecTable {
         Insts.DIVUW   ->  List(InstType.R, AluOPT.ADD),
         Insts.REMW    ->  List(InstType.R, AluOPT.ADD),
         Insts.REMUW   ->  List(InstType.R, AluOPT.ADD),
+
+        Insts.EBREAK  ->  List(InstType.SYS, AluOPT.ADD)
 /*
         Insts.FENCE   ->  List(InstType.FENCE, AluOPT.ADD),
         Insts.FENCE_I ->  List(InstType.FENCE, AluOPT.ADD),

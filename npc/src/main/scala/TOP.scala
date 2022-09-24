@@ -56,40 +56,7 @@ class TOP extends Module{
 object Gen {
     def main(args:Array[String]) : Unit = {
         println(YellowStr("generate verilog..."))
-        println(getVerilogString(new t))
-        (new chisel3.stage.ChiselStage).emitVerilog(new t, args)      //--target-dir , --no-dce
+        println(getVerilogString(new TOP))
+        (new chisel3.stage.ChiselStage).emitVerilog(new TOP, args)      //--target-dir , --no-dce
     }
-}
-
-class Test extends AnyFlatSpec with ChiselScalatestTester{
-    val Rnd = new Random()
-    "test" should "pass" in{
-        test(new TOP){ dut => 
-            val inst_rom = Array(
-                "hfff00513".U,
-                "h00150513".U,
-                "h00150513".U,
-                "h00150513".U,
-                "h00150513".U,
-                "h00150513".U,
-                "h00100073".U,
-                "h00150513".U,
-                "h00150513".U,
-                "h00150513".U,
-                "h00150513".U,
-            )
-            println(PinkStr("hello world")) 
-            dut.io.inst_i.poke("hfff00513".U)
-
-            inst_rom foreach( (inst) => {
-//                println(f"$inst%8x")
-                dut.io.inst_i.poke(inst)
-                val wdata = dut.io.o.peek().toString()
-                dut.clock.step()
-                println(s"wdata = $wdata")
-            })
-            
-        }
-    }
-
 }

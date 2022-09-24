@@ -54,10 +54,10 @@ void step()
 		uint64_t src1 = top -> io_src1;
 		uint64_t src2 = top -> io_src2;
 
-		if(inst == EBREAK){
-			cout << "ebreak" << endl;
-			exit(0);
-		}
+//		if(inst == EBREAK){
+//			cout << "ebreak" << endl;
+//			exit(0);
+//		}
 
 		printf("inst = %08x, pc = 0x%lx, src1 = 0x%lx, src2 = 0x%lx\n", \
 			inst, pc, src1, src2);

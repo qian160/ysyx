@@ -1,6 +1,6 @@
 .PHONY : run gen clean
 
-VSRC   = ./verilog/TOP.v
+VSRC   = $(shell ls ./verilog | grep .v)
 CPPSRC = ./cpp/test.cpp
 FLAGS  = --cc --exe --build --trace
 
@@ -15,6 +15,7 @@ gen:
 	printf "$(COLOR_GREEN)[done]$(COLOR_NONE)\n"
 
 run:
+	echo $(VSRC)
 	@verilator $(VSRC) $(CPPSRC) $(FLAGS)
 	printf "$(COLOR_GREEN)[done]$(COLOR_NONE)\n"
 
