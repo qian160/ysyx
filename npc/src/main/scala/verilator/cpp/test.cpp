@@ -1,12 +1,7 @@
-#include<verilated.h>
-#include<VTOP.h>
-#include<iostream>
-#include<svdpi.h>
-#include<fstream>
-#include<verilated_vcd_c.h>
+#include"debug.h"
 
-#include<svdpi.h>
-#include<VTOP__Dpi.h>
+//#include<svdpi.h>
+//#include<VTOP__Dpi.h>
 
 #define EBREAK 0x100073
 using namespace std;
@@ -16,6 +11,7 @@ bool check_bound(uint64_t addr);
 VTOP * top = new VTOP("top");
 //VerilatedVcdC * tfp = new VerilatedVcdC;
 vluint64_t TIME = 0;
+static char * rom = (char *)0;
 
 uint32_t mem[0x800];	//seems that it can't be too large....
 
@@ -28,9 +24,12 @@ uint32_t readl(uint64_t addr)
 
 uint32_t init(){
 	ifstream in;
-	in.open("./asm/inst_rom");
+	if(!rom)
+		in.open("./asm/inst_rom");
+	else
+		in.open(test_path + rom);
 	if(in.fail()){
-		cout << "can't open inst_rom\n" << endl;
+		cout << "can't open " << rom << endl;
 		exit(114514);
 	}
 	int n = 0;
@@ -51,17 +50,16 @@ void step()
 	if(top -> clock){	//at rising edge
 		top->io_inst_i = readl(top -> io_pc_i);
 		top -> eval();
-
+		if(Verilated::gotFinish())
+		{
+			cout<<Yellow("ebreak\n");
+			return;
+		}
 		uint32_t inst = top -> io_inst_i;
 		uint64_t pc   = top -> io_pc_i;
 		uint64_t src1 = top -> io_src1;
 		uint64_t src2 = top -> io_src2;
-/*
-		if(inst == EBREAK){
-			cout << "ebreak" << endl;
-			exit(0);
-		}
-*/
+
 		printf("inst = %08x, pc = 0x%lx, src1 = 0x%lx, src2 = 0x%lx\n", \
 			inst, pc, src1, src2);
 		std::cout << "wdata = " << hex << top -> io_o << std::endl;
@@ -71,12 +69,15 @@ void step()
 
 int main(int argc, char **argv)
 {
-	string test_path = "/home/s081/Downloads/ysyx-workbench/am-kernels/tests/cpu-tests";
 	Verilated::commandArgs(argc, argv);
-	uint32_t n = init() << 1;
-	while(!Verilated::gotFinish()){
-		step();
+	if(argc < 2){
+		cout << "no image is given, use the default inst rom" << endl;
 	}
+	else
+		rom = argv[1];
 
+	uint32_t n = init() << 1;
+	while(!Verilated::gotFinish())
+		step();
 }
 

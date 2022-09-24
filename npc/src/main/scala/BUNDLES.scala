@@ -14,6 +14,8 @@ class writeRfOp extends Bundle{
 class readRes extends Bundle{
     val rs1Val = UInt(64.W)
     val rs2Val = UInt(64.W)
+
+    val a0     = UInt(64.W) //debug use
 }
 
 class decInfo extends Bundle{
@@ -23,4 +25,11 @@ class decInfo extends Bundle{
     val wen         = UInt(5.W)
     val aluop       = UInt(5.W)
     val instType    = UInt(4.W)
+}
+
+class Debug extends Bundle{
+    val exit    =   Bool()
+    val a0      =   UInt(64.W)
+    val pc      =   UInt(64.W)
+    val inst    =   UInt(32.W)
 }

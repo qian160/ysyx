@@ -17,7 +17,7 @@
 #ifndef VL_DPIDECL_EXIT_
 #define VL_DPIDECL_EXIT_
 void EXIT() {
-    // DPI export at verilog/EXIT.v:3:18
+    // DPI export at verilog/DEBUG.v:3:18
     return VTOP::EXIT();
 }
 #endif

@@ -9,6 +9,9 @@ class EX extends Module{
         val decInfo     = Input(new decInfo)
 
         val writeRfOp   = Output(new writeRfOp)
+
+        val debug_i     = Input(new Debug)
+        val debug_o     = Output(new Debug)
     })
 
     val src1 = io.decInfo.src1
@@ -50,5 +53,6 @@ class EX extends Module{
         }
     }
 */
+    io.debug_o  :=  io.debug_i
 
 }

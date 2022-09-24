@@ -3,7 +3,6 @@
 // See VTOP.h for the primary calling header
 
 #include "verilated.h"
-#include "verilated_dpi.h"
 
 #include "VTOP___024root.h"
 
@@ -48,9 +47,6 @@ VL_ATTR_COLD void VTOP___024root___settle__TOP__0(VTOP___024root* vlSelf) {
     // Body
     vlSelf->io_pc_o = vlSelf->io_pc_i;
     vlSelf->io_inst_o = vlSelf->io_inst_i;
-    if (VL_UNLIKELY((0x100073U == vlSelf->io_inst_o))) {
-        VL_FINISH_MT("verilog/EXIT.v", 11, "");
-    }
     TOP__DOT__ID__DOT___decRes_T_207 = ((0x17U == (0x7fU 
                                                    & vlSelf->io_inst_o))
                                          ? 0x19U : 
@@ -944,6 +940,16 @@ VL_ATTR_COLD void VTOP___024root___settle__TOP__0(VTOP___024root* vlSelf) {
                                               == (0xfe00707fU 
                                                   & vlSelf->io_inst_o))
                                               ? 0U : (IData)(TOP__DOT__ID__DOT___decRes_T_185))));
+    if (VL_UNLIKELY((6U == (IData)(vlSelf->TOP__DOT__ID__DOT__decRes_0)))) {
+        if ((0ULL != vlSelf->TOP__DOT__Regfile__DOT__registers_10)) {
+            VL_WRITEF("\n\n hit \033[1;31mbad\033[0m trap at pc = %x, inst = %8x\n",
+                      64,vlSelf->io_pc_o,32,vlSelf->io_inst_o);
+        } else {
+            VL_WRITEF("\n\n hit \033[1;32mgood\033[0m trap at pc = %x, inst = %8x\n",
+                      64,vlSelf->io_pc_o,32,vlSelf->io_inst_o);
+        }
+        VL_FINISH_MT("verilog/DEBUG.v", 16, "");
+    }
     vlSelf->TOP__DOT__ID_io_decInfo_src2 = ((1U == (IData)(vlSelf->TOP__DOT__ID__DOT__decRes_0))
                                              ? (((- (QData)((IData)(
                                                                     (vlSelf->io_inst_o 

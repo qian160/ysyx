@@ -3,7 +3,6 @@
 // See VTOP.h for the primary calling header
 
 #include "verilated.h"
-#include "verilated_dpi.h"
 
 #include "VTOP___024root.h"
 
@@ -40,7 +39,6 @@ VL_INLINE_OPT void VTOP___024root___sequent__TOP__0(VTOP___024root* vlSelf) {
         vlSelf->TOP__DOT__Regfile__DOT__registers_24 = 0ULL;
         vlSelf->TOP__DOT__Regfile__DOT__registers_12 = 0ULL;
         vlSelf->TOP__DOT__Regfile__DOT__registers_11 = 0ULL;
-        vlSelf->TOP__DOT__Regfile__DOT__registers_10 = 0ULL;
         vlSelf->TOP__DOT__Regfile__DOT__registers_9 = 0ULL;
         vlSelf->TOP__DOT__Regfile__DOT__registers_8 = 0ULL;
         vlSelf->TOP__DOT__Regfile__DOT__registers_7 = 0ULL;
@@ -52,6 +50,7 @@ VL_INLINE_OPT void VTOP___024root___sequent__TOP__0(VTOP___024root* vlSelf) {
         vlSelf->TOP__DOT__Regfile__DOT__registers_5 = 0ULL;
         vlSelf->TOP__DOT__Regfile__DOT__registers_6 = 0ULL;
         vlSelf->TOP__DOT__Regfile__DOT__registers_13 = 0ULL;
+        vlSelf->TOP__DOT__Regfile__DOT__registers_10 = 0ULL;
     } else if ((1U == (IData)(vlSelf->TOP__DOT__ID__DOT__decRes_0))) {
         if ((0x1eU == (0x1fU & (vlSelf->io_inst_o >> 7U)))) {
             vlSelf->TOP__DOT__Regfile__DOT__registers_30 
@@ -148,11 +147,6 @@ VL_INLINE_OPT void VTOP___024root___sequent__TOP__0(VTOP___024root* vlSelf) {
                 = (((QData)((IData)(vlSelf->TOP__DOT__EX__DOT__aluRes[1U])) 
                     << 0x20U) | (QData)((IData)(vlSelf->TOP__DOT__EX__DOT__aluRes[0U])));
         }
-        if ((0xaU == (0x1fU & (vlSelf->io_inst_o >> 7U)))) {
-            vlSelf->TOP__DOT__Regfile__DOT__registers_10 
-                = (((QData)((IData)(vlSelf->TOP__DOT__EX__DOT__aluRes[1U])) 
-                    << 0x20U) | (QData)((IData)(vlSelf->TOP__DOT__EX__DOT__aluRes[0U])));
-        }
         if ((9U == (0x1fU & (vlSelf->io_inst_o >> 7U)))) {
             vlSelf->TOP__DOT__Regfile__DOT__registers_9 
                 = (((QData)((IData)(vlSelf->TOP__DOT__EX__DOT__aluRes[1U])) 
@@ -208,6 +202,11 @@ VL_INLINE_OPT void VTOP___024root___sequent__TOP__0(VTOP___024root* vlSelf) {
                 = (((QData)((IData)(vlSelf->TOP__DOT__EX__DOT__aluRes[1U])) 
                     << 0x20U) | (QData)((IData)(vlSelf->TOP__DOT__EX__DOT__aluRes[0U])));
         }
+        if ((0xaU == (0x1fU & (vlSelf->io_inst_o >> 7U)))) {
+            vlSelf->TOP__DOT__Regfile__DOT__registers_10 
+                = (((QData)((IData)(vlSelf->TOP__DOT__EX__DOT__aluRes[1U])) 
+                    << 0x20U) | (QData)((IData)(vlSelf->TOP__DOT__EX__DOT__aluRes[0U])));
+        }
     } else {
         vlSelf->TOP__DOT__Regfile__DOT__registers_0 = 0ULL;
     }
@@ -253,9 +252,6 @@ VL_INLINE_OPT void VTOP___024root___combo__TOP__1(VTOP___024root* vlSelf) {
     VlWide<4>/*127:0*/ __Vtemp_h709a6ac4__0;
     // Body
     vlSelf->io_inst_o = vlSelf->io_inst_i;
-    if (VL_UNLIKELY((0x100073U == vlSelf->io_inst_o))) {
-        VL_FINISH_MT("verilog/EXIT.v", 11, "");
-    }
     TOP__DOT__ID__DOT___decRes_T_207 = ((0x17U == (0x7fU 
                                                    & vlSelf->io_inst_o))
                                          ? 0x19U : 
@@ -1149,6 +1145,16 @@ VL_INLINE_OPT void VTOP___024root___combo__TOP__1(VTOP___024root* vlSelf) {
                                               == (0xfe00707fU 
                                                   & vlSelf->io_inst_o))
                                               ? 0U : (IData)(TOP__DOT__ID__DOT___decRes_T_185))));
+    if (VL_UNLIKELY((6U == (IData)(vlSelf->TOP__DOT__ID__DOT__decRes_0)))) {
+        if ((0ULL != vlSelf->TOP__DOT__Regfile__DOT__registers_10)) {
+            VL_WRITEF("\n\n hit \033[1;31mbad\033[0m trap at pc = %x, inst = %8x\n",
+                      64,vlSelf->io_pc_o,32,vlSelf->io_inst_o);
+        } else {
+            VL_WRITEF("\n\n hit \033[1;32mgood\033[0m trap at pc = %x, inst = %8x\n",
+                      64,vlSelf->io_pc_o,32,vlSelf->io_inst_o);
+        }
+        VL_FINISH_MT("verilog/DEBUG.v", 16, "");
+    }
     vlSelf->TOP__DOT__ID_io_decInfo_src2 = ((1U == (IData)(vlSelf->TOP__DOT__ID__DOT__decRes_0))
                                              ? (((- (QData)((IData)(
                                                                     (vlSelf->io_inst_o 

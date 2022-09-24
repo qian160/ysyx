@@ -45,12 +45,17 @@ class TOP extends Module{
 
     WB.io.writeRfOp_i   :=  MEM.io.writeRfOp_o
 
-    io.o    :=  WB.io.writeRfOp_o.wdata
+    //TOP module's output, for debug use and also to avoid dce
+    io.o        :=  WB.io.writeRfOp_o.wdata
     io.inst_o   :=  io.inst_i
     io.pc_o     :=  io.pc_i
+    io.src1     :=  ID.io.decInfo.src1
+    io.src2     :=  ID.io.decInfo.src2
 
-    io.src1 :=  ID.io.decInfo.src1
-    io.src2 :=  ID.io.decInfo.src2
+    ID.io.debug_i   :=  IF.io.debug
+    EX.io.debug_i   :=  ID.io.debug_o
+    MEM.io.debug_i  :=  EX.io.debug_o
+    WB.io.debug     :=  MEM.io.debug_o
 }
 
 object Gen {

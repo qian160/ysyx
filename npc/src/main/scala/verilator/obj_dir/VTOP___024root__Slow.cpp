@@ -3,7 +3,6 @@
 // See VTOP.h for the primary calling header
 
 #include "verilated.h"
-#include "verilated_dpi.h"
 
 #include "VTOP__Syms.h"
 #include "VTOP___024root.h"

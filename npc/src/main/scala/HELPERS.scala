@@ -15,53 +15,6 @@ object Util{
     def SEXT(a:UInt, to: Int): UInt = a.asSInt.pad(to).asUInt
     def ZEXT(a:UInt, to: Int): UInt = a.pad(to)
 }
-/*
-class EXIT extends BlackBox with HasBlackBoxInline {
-    val io = IO(new Bundle {
-        val exit = Input(Bool())
-    })
-    setInline("EXIT.v",
-        """ module EXIT(
-        |       input    exit
-        |   );
-        |   always @* begin
-        |       if(exit)   $finish(0);
-        |   end
-        |   endmodule
-        |
-        """.stripMargin)
-}
-*/
-
-class EXIT extends BlackBox with HasBlackBoxInline {
-    val io = IO(new Bundle {
-        val exit = Input(Bool())
-    })
-    setInline("EXIT.v",
-        """ 
-        |   export "DPI-C" function EXIT;
-        |   function void EXIT;
-        |       $finish;
-        |   endfunction
-        |
-        |   module EXIT(
-        |       input    exit
-        |   );
-        |   always @* begin
-        |       if(exit)   $finish(0);
-        |   end
-        |   endmodule
-        """.stripMargin)
-}
-
-/*
-class EXIT extends BlackBox with HasBlackBoxResource{
-    val io = IO(new Bundle{
-        val exit = Input(Bool())
-    })
-    addResource("EXIT.v")
-}
-*/
 
 object D{       //debug
     //usage: println(D.xx + "foo" + D.ed)

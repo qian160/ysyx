@@ -12,5 +12,5 @@ void VTOP___024unit____Vdpiexp_EXIT_TOP____024unit(VTOP__Syms* __restrict vlSyms
     VL_DEBUG_IF(VL_DBG_MSGF("+        VTOP___024unit____Vdpiexp_EXIT_TOP____024unit\n"); );
     // Init
     // Body
-    VL_FINISH_MT("verilog/EXIT.v", 4, "");
+    VL_FINISH_MT("verilog/DEBUG.v", 4, "");
 }

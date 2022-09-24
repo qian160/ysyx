@@ -16,7 +16,7 @@ extern "C" {
 
 
     // DPI EXPORTS
-    // DPI export at verilog/EXIT.v:3:18
+    // DPI export at verilog/DEBUG.v:3:18
     extern void EXIT();
 
 #ifdef __cplusplus

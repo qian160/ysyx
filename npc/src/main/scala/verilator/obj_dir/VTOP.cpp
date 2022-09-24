@@ -4,7 +4,6 @@
 #include "VTOP.h"
 #include "VTOP__Syms.h"
 #include "verilated_vcd_c.h"
-#include "verilated_dpi.h"
 
 //============================================================
 // Constructors
@@ -20,7 +19,6 @@ VTOP::VTOP(VerilatedContext* _vcontextp__, const char* _vcname__)
     , io_o{vlSymsp->TOP.io_o}
     , io_src1{vlSymsp->TOP.io_src1}
     , io_src2{vlSymsp->TOP.io_src2}
-    , __PVT____024unit{vlSymsp->TOP.__PVT____024unit}
     , rootp{&(vlSymsp->TOP)}
 {
 }
