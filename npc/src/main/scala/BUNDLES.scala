@@ -33,3 +33,8 @@ class Debug extends Bundle{
     val pc      =   UInt(64.W)
     val inst    =   UInt(32.W)
 }
+
+class BranchOp extends Bundle{
+    val happen  =   Bool()
+    val newPC   =   UInt(64.W)
+}

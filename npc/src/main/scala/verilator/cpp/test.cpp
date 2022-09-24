@@ -49,34 +49,38 @@ static size_t load_img()
 	return size;
 }
 
-void init(){
-	top -> io_pc_i = 0x80000000u;	
-	top -> clock = 0;
-	return;
-}
-
 void step()
 {
-	top -> clock = (top -> clock + 1) % 2;
-	if(top -> io_pc_i != 0x80000000u) top -> eval();	//to avoid initial ebreak?
-	if(top -> clock){	//at rising edge
-		top->io_inst_i = readl(top -> io_pc_i);
-		top -> eval();
-		if(Verilated::gotFinish())
-		{
-			cout<<Yellow("ebreak\n");
-			return;
-		}
-		uint32_t inst = top -> io_inst_i;
-		uint64_t pc   = top -> io_pc_i;
-		uint64_t src1 = top -> io_src1;
-		uint64_t src2 = top -> io_src2;
+	//settle all the combinational logic before the edge comes
+	top -> clock = 0;
+	top -> eval();
+	//rising edge
+	top -> clock = 1;
+	top -> io_inst_i = readl(top -> io_pc_o);
+	top -> eval();
+	//falling edge
+	top -> clock = 0;
+	top -> eval();
 
-		printf("inst = %08x, pc = 0x%lx, src1 = 0x%lx, src2 = 0x%lx\n", \
-			inst, pc, src1, src2);
-		std::cout << "wdata = " << hex << top -> io_o << std::endl;
-		top -> io_pc_i += 4;
+	//if(top -> clock){	//at rising edge
+	if(Verilated::gotFinish())
+	{
+		cout<<Yellow("ebreak\n");
+		return;
 	}
+	printf("inst = %08x, pc = 0x%lx, src1 = 0x%lx, src2 = 0x%lx\n", \
+		top -> io_inst_o, top -> io_pc_o, top ->io_src1, top->io_src2);
+	std::cout << "wdata = " << hex << top -> io_o << std::endl;
+}
+
+void init(){
+	top -> clock = 0;
+	top -> reset = 1;
+	top -> eval();		//to remember state
+	top -> clock = 1;
+	top -> eval();		//0 -> 1, rising edge. do the reset
+	top -> reset = 0;
+	top -> clock = 0;
 }
 
 int main(int argc, char **argv)

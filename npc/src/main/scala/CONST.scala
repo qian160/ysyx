@@ -81,6 +81,13 @@ object AluOPT {
     val SD   = 3.U(3.W)
 }
 
+object Opcode {
+    val JAL     =   "h1101111".U
+    val JALR    =   "h1100111".U
+    val LUI     =   "h0110111".U
+    val AUIPC   =   "h0010111".U
+}
+
 
 
 object Insts { // idea from mini riscv
