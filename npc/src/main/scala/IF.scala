@@ -1,0 +1,28 @@
+import chisel3._
+import chisel3.util._
+
+class IF extends Module{
+    val io = IO(new Bundle{
+        val pc_i    = Input(UInt(64.W))
+        val inst_i  = Input(UInt(32.W))
+
+        val pc_o    = Output(UInt(64.W))
+        val inst_o  = Output(UInt(32.W))
+        val debug   = Output(new Debug)
+    })
+    
+//    val pc = RegInit(CONST.PC_INIT)
+//    pc  := pc + 4.U
+
+//    io.pc       := pc
+    dontTouch(io.pc_o)
+    dontTouch(io.inst_o)
+    io.pc_o     :=  io.pc_i
+    io.inst_o   :=  io.inst_i
+
+    io.debug.pc     :=  io.pc_i
+    io.debug.inst   :=  io.inst_i
+    io.debug.a0     :=  DontCare
+    io.debug.exit   :=  DontCare
+ //   io.inst := DontCare
+}

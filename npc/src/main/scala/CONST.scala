@@ -3,6 +3,7 @@ import chisel3.util._
 
 object CONST{
     val PC_INIT = "h80000000".U(64.W)
+    val EBREAK  = "h100073".U(32.W)
     //val PMEM_START  = 
 }
 
@@ -165,6 +166,8 @@ object Insts { // idea from mini riscv
     def DIVUW  = BitPat("b0000001 ????? ????? 101 ????? 0111011")
     def REMW   = BitPat("b0000001 ????? ????? 110 ????? 0111011")
     def REMUW  = BitPat("b0000001 ????? ????? 111 ????? 0111011")
+
+    def EBREAK = BitPat("b0000000 00001 ????? ??? ????? 1110011")
 }
 
 
@@ -245,6 +248,8 @@ object DecTable {
         Insts.DIVUW   ->  List(InstType.R, AluOPT.ADD),
         Insts.REMW    ->  List(InstType.R, AluOPT.ADD),
         Insts.REMUW   ->  List(InstType.R, AluOPT.ADD),
+
+        Insts.EBREAK  ->  List(InstType.SYS, AluOPT.ADD)
 /*
         Insts.FENCE   ->  List(InstType.FENCE, AluOPT.ADD),
         Insts.FENCE_I ->  List(InstType.FENCE, AluOPT.ADD),

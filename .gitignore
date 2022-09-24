@@ -2,11 +2,14 @@
 !/nexus-am/*
 !/nanos-lite/*
 !/navy-apps/*
+!*/test_run/*
+!*/target/*
+!*/project/*
+!*/obj_dir/*
 !/npc/*
 !Makefile
 !README.md
 !.gitignore
 !init.sh
-/npc/*
 /nvboard
 /fceux-am

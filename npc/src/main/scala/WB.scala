@@ -6,7 +6,15 @@ class WB extends Module{
         val writeRfOp_i =   Input(new writeRfOp)
 
         val writeRfOp_o =   Output(new writeRfOp)
+
+        val debug       =   Input(new Debug)
     })
 
     io.writeRfOp_o  :=  io.writeRfOp_i
+
+    val DEBUG = Module(new DEBUG)
+    DEBUG.io.pc     :=  io.debug.pc
+    DEBUG.io.exit   :=  io.debug.exit
+    DEBUG.io.inst   :=  io.debug.inst
+    DEBUG.io.a0     :=  io.debug.a0
 }

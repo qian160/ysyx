@@ -10,7 +10,12 @@ class ID extends Module{
 
         val readRfOp    =   Output(new readRfOp)
         val decInfo     =   Output(new decInfo)
+
+        val debug_i     =   Input(new Debug)
+        val debug_o     =   Output(new Debug)
     })
+    //to make test easier, we use cpp to load inst not verilog or chisel
+    dontTouch(io.inst)  //don't elimate this
 
     val inst     = io.inst
     val imm_I    = SEXT(inst(31,20), 64)
@@ -27,7 +32,9 @@ class ID extends Module{
     val rs2Val   = io.regSrc.rs2Val
 
     //default
-    io.decInfo          := 0.U.asTypeOf(new decInfo)
+    io.decInfo.src1     := rs1Val
+    io.decInfo.src2     := rs2Val
+    io.decInfo.wen      := false.B
     io.decInfo.rd       := inst(11, 7)
     io.decInfo.aluop    := decOpt
     io.decInfo.instType := instType
@@ -41,6 +48,21 @@ class ID extends Module{
             io.decInfo.src2 :=  imm_I
             io.decInfo.wen  :=  true.B
         }
+        /*
+        is(InstType.U){
+
+        }
+        is(InstType.R){
+
+        }
+        */
     }
+
+    io.debug_o      :=  io.debug_i
+    io.debug_o.a0   :=  io.regSrc.a0
+    io.debug_o.exit :=  (instType   === InstType.SYS)
+
+//    val EXIT = Module(new EXIT)
+//    EXIT.io.exit    := Mux(inst === CONST.EBREAK, true.B, false.B)
 
 }
