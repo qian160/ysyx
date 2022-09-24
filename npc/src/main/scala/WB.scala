@@ -12,6 +12,7 @@ class WB extends Module{
 
     io.writeRfOp_o  :=  io.writeRfOp_i
 
+    //debug
     val DEBUG = Module(new DEBUG)
     DEBUG.io.pc     :=  io.debug.pc
     DEBUG.io.exit   :=  io.debug.exit

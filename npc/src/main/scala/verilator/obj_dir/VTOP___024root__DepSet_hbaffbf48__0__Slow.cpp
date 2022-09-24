@@ -940,14 +940,9 @@ VL_ATTR_COLD void VTOP___024root___settle__TOP__0(VTOP___024root* vlSelf) {
                                               == (0xfe00707fU 
                                                   & vlSelf->io_inst_o))
                                               ? 0U : (IData)(TOP__DOT__ID__DOT___decRes_T_185))));
-    if (VL_UNLIKELY((6U == (IData)(vlSelf->TOP__DOT__ID__DOT__decRes_0)))) {
-        if ((0ULL != vlSelf->TOP__DOT__Regfile__DOT__registers_10)) {
-            VL_WRITEF("\n\n hit \033[1;31mbad\033[0m trap at pc = %x, inst = %8x\n",
-                      64,vlSelf->io_pc_o,32,vlSelf->io_inst_o);
-        } else {
-            VL_WRITEF("\n\n hit \033[1;32mgood\033[0m trap at pc = %x, inst = %8x\n",
-                      64,vlSelf->io_pc_o,32,vlSelf->io_inst_o);
-        }
+    if (VL_UNLIKELY((1U != (IData)(vlSelf->TOP__DOT__ID__DOT__decRes_0)))) {
+        VL_WRITEF("\n\n hit \033[1;32mgood\033[0m trap at pc = %x, inst = %8x\n",
+                  64,vlSelf->io_pc_o,32,vlSelf->io_inst_o);
         VL_FINISH_MT("verilog/DEBUG.v", 16, "");
     }
     vlSelf->TOP__DOT__ID_io_decInfo_src2 = ((1U == (IData)(vlSelf->TOP__DOT__ID__DOT__decRes_0))

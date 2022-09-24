@@ -1,52 +1,64 @@
 #include"debug.h"
-
-//#include<svdpi.h>
-//#include<VTOP__Dpi.h>
+using namespace std;
 
 #define EBREAK 0x100073
-using namespace std;
 
 bool check_bound(uint64_t addr);
 
 VTOP * top = new VTOP("top");
 //VerilatedVcdC * tfp = new VerilatedVcdC;
 vluint64_t TIME = 0;
-static char * rom = (char *)0;
+static char * img_file = (char *)0;
 
-uint32_t mem[0x800];	//seems that it can't be too large....
-
-void exit(){exit(0);}
+uint32_t mem[0x80000];	//seems that it can't be too large....
 
 uint32_t readl(uint64_t addr)
 {
 	return mem[(addr - 0x80000000) >> 2];
 }
 
-uint32_t init(){
-	ifstream in;
-	if(!rom)
+static size_t load_img()
+{
+	if(!img_file){
+		ifstream in;
 		in.open("./asm/inst_rom");
-	else
-		in.open(test_path + rom);
-	if(in.fail()){
-		cout << "can't open " << rom << endl;
-		exit(114514);
+		if(in.fail()){
+			cout << "can't open inst rom" << endl;
+			exit(114514);
+		}
+		int n = 0;
+		while(!in.eof())
+			in >> hex >> mem[n++];
+		in.close();
+		return 4096;
 	}
-	int n = 0;
-	while(!in.eof())
-		in >> hex >> mem[n++];
-	if(n)n--;
-	cout << n << " instructions found" << endl << endl;
-	top -> io_pc_i = 0x80000000;	
+	cout << img_file << endl;
+	FILE * fp = fopen(img_file, "rb");
+	assert(fp);
+
+	fseek(fp, 0, SEEK_END);
+	size_t size = ftell(fp);
+
+	cout << "the img file is " << img_file << ", size = " << size << endl;
+
+	fseek(fp, 0, SEEK_SET);
+	int ret = fread(mem, size, 1, fp);
+	assert(ret == 1);
+
+	fclose(fp);
+	return size;
+}
+
+void init(){
+	top -> io_pc_i = 0x80000000u;	
 	top -> clock = 0;
-	in.close();
-	return n;
+	return;
 }
 
 void step()
 {
 	top -> clock = (top -> clock + 1) % 2;
-	top -> eval();
+	if(top -> io_pc_i != 0x80000000u) top -> eval();	//to avoid initial ebreak?
 	if(top -> clock){	//at rising edge
 		top->io_inst_i = readl(top -> io_pc_i);
 		top -> eval();
@@ -74,10 +86,12 @@ int main(int argc, char **argv)
 		cout << "no image is given, use the default inst rom" << endl;
 	}
 	else
-		rom = argv[1];
-
-	uint32_t n = init() << 1;
+		img_file = strcat(test_path, strcat(argv[1], "-riscv64-npc.bin"));
+	size_t img_size = load_img();
+	init();
 	while(!Verilated::gotFinish())
+	{
 		step();
+	}
 }
 
