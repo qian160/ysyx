@@ -6,18 +6,18 @@ import AluOPT._
 
 class EX extends Module{
     val io = IO(new Bundle{
-        val decInfo     = Input(new decInfo)
+        val decInfo     = Input(new DecodeInfo)
 
-        val writeRfOp   = Output(new writeRfOp)
+        val writeRfOp   = Output(new WriteRfOp)
 
         val debug_i     = Input(new Debug)
         val debug_o     = Output(new Debug)
     })
 
-    val src1 = io.decInfo.src1
-    val src2 = io.decInfo.src2
+    val src1 = io.decInfo.aluOp.src1
+    val src2 = io.decInfo.aluOp.src2
 
-    val aluRes = MuxLookup(io.decInfo.aluop, src1 + src2, Seq(
+    val aluRes = MuxLookup(io.decInfo.aluOp.opt, src1 + src2, Seq(
         ADD     -> (src1 + src2),
         SUB     -> (src1 - src2),
         SLT     -> Mux(src1.asSInt < src2.asSInt, 1.U, 0.U),
@@ -42,9 +42,9 @@ class EX extends Module{
         )
     )
 
+    io.writeRfOp        :=  io.decInfo.writeRfOp
     io.writeRfOp.wdata  :=  aluRes
-    io.writeRfOp.wen    :=  io.decInfo.wen
-    io.writeRfOp.rd     :=  io.decInfo.rd
+
 /*
     switch(io.decInfo.instType){
         is(InstType.I){

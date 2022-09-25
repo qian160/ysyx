@@ -4,18 +4,19 @@ import chisel3.util._
 object CONST{
     val PC_INIT = "h80000000".U(64.W)
     val EBREAK  = "h100073".U(32.W)
+
     //val PMEM_START  = 
 }
 
 object InstType{
-    val R   = 0.U(4.W)
-    val I   = 1.U(4.W)
-    val U   = 2.U(4.W)
-    val B   = 3.U(4.W)
-    val J   = 4.U(4.W)
-    val S   = 5.U(4.W)
-    val SYS = 6.U(4.W)
-    val BAD = 7.U(4.W)
+    val R   = 0.U(5.W)
+    val I   = 1.U(5.W)
+    val U   = 2.U(5.W)
+    val B   = 3.U(5.W)
+    val J   = 4.U(5.W)
+    val S   = 5.U(5.W)
+    val SYS = 6.U(5.W)
+    val BAD = 7.U(5.W)
 }
 
 object AluOPT {
@@ -86,6 +87,9 @@ object Opcode {
     val JALR    =   "h1100111".U
     val LUI     =   "h0110111".U
     val AUIPC   =   "h0010111".U
+
+    val LOAD    =   "h0000011".U
+    val ARITH_I =   "h0010011".U
 }
 
 

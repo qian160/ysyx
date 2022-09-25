@@ -3,10 +3,10 @@ import chisel3.util._
 
 class Regfile extends Module{
     val io = IO(new Bundle{
-        val readRfOp       = Input(new readRfOp)   //readIndex
-        val writeRfOp      = Input(new writeRfOp)
+        val readRfOp       = Input(new ReadRfOp)   //readIndex
+        val writeRfOp      = Input(new WriteRfOp)
 
-        val readRes        = Output(new readRes)
+        val readRes        = Output(new ReadRes)
     })
     val registers    = RegInit(VecInit(Seq.fill(31)(0.U(64.W))))
     registers(0)    := 0.U

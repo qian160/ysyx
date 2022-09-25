@@ -3,9 +3,9 @@ import chisel3.util._
 
 class WB extends Module{
     val io = IO(new Bundle{
-        val writeRfOp_i =   Input(new writeRfOp)
+        val writeRfOp_i =   Input(new WriteRfOp)
 
-        val writeRfOp_o =   Output(new writeRfOp)
+        val writeRfOp_o =   Output(new WriteRfOp)
 
         val debug       =   Input(new Debug)
     })

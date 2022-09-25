@@ -12,13 +12,16 @@ class TOP extends Module{
     //to make tests easier, we expose the inst fetch ports in top, which can be used by verilator and chiseltest
     //now TOP acts like IF, and IF is useless, just passes the signal
     val io = IO(new Bundle{
-        val branchOp  = Input(new BranchOp)
+        //set by cpp
         val inst_i    = Input(UInt(32.W))   //at first, I use the inst_o port only, and try assigning values to it in cpp, but failed
-        val pc_o      = Output(UInt(64.W))
+
+        val pc_o      = Output(UInt(64.W))  //this port just let cpp know the value of pc, which is in IF, and we pass it to there
         val inst_o    = Output(UInt(32.W))  //set by cpp
         val o         = Output(UInt(64.W))  //to avoid dce
         val src1      = Output(UInt(64.W))
         val src2      = Output(UInt(64.W))
+        val instType  = Output(UInt(5.W))
+
     })
 
     val IF      =   Module(new IF)
@@ -27,22 +30,9 @@ class TOP extends Module{
     val MEM     =   Module(new MEM)
     val WB      =   Module(new WB)
     val Regfile =   Module(new Regfile)
-//----------------------IF--------------------------------
-    val nextPC  =  Wire(UInt(64.W))
 
-    val pc      =  Reg(UInt(64.W))
-
-    nextPC  :=  PriorityMux(Seq(
-        (reset.asBool(),        CONST.PC_INIT),
-        (io.branchOp.happen,    io.branchOp.newPC),
-        (true.B,                pc + 4.U)
-    ))
-
-    pc  :=  nextPC
-    io.pc_o :=  pc
-//--------------------------------------------------------
-    IF.io.pc_i      :=  io.pc_o
     IF.io.inst_i    :=  io.inst_o
+    IF.io.branchOp  :=  ID.io.decInfo.branchOp
 
     ID.io.inst      :=  IF.io.inst_o
     ID.io.pc        :=  IF.io.pc_o
@@ -59,23 +49,24 @@ class TOP extends Module{
 
     //TOP module's output, for debug use and also to avoid dce
     io.o        :=  WB.io.writeRfOp_o.wdata
-    io.inst_o   :=  DontCare
-    io.pc_o     :=  pc
-    io.src1     :=  ID.io.decInfo.src1
-    io.src2     :=  ID.io.decInfo.src2
+    io.src1     :=  ID.io.decInfo.aluOp.src1
+    io.src2     :=  ID.io.decInfo.aluOp.src2
     io.inst_o   :=  io.inst_i
+    io.pc_o     :=  IF.io.pc_o
+
+
 
     EX.io.debug_i   :=  ID.io.debug_o
     MEM.io.debug_i  :=  EX.io.debug_o
     WB.io.debug     :=  MEM.io.debug_o
 
-
+    io.instType :=  ID.io.instType
 }
 
 object Gen {
     def main(args:Array[String]) : Unit = {
         println(YellowStr("Generate Verilog..."))
-        println(getVerilogString(new TOP))
+        //println(getVerilogString(new TOP))
         (new chisel3.stage.ChiselStage).emitVerilog(new TOP, args)      //--target-dir , --no-dce
         println(GreenStr("Done"))
     }

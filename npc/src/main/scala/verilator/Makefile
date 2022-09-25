@@ -21,6 +21,6 @@ run:
 	@printf "$(COLOR_GREEN)[done]$(COLOR_NONE)\n"
 
 clean:
-	-rm  -rf obj_dir
+	-rm  -rf obj_dir wave.vcd
 	@printf "$(COLOR_GREEN)[done]$(COLOR_NONE)\n"
 

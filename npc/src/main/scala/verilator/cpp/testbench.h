@@ -77,7 +77,8 @@ void TestBench<Module>::tick(){
 		dut	->	eval();
 		uint64_t pc	  =	dut -> io_pc_o;
 
-		if(m_trace) m_trace	-> dump(10*m_tickcount-2);
+		if(m_trace) 
+			m_trace	-> dump(10*m_tickcount-2);
 
 		// Repeat for the positive edge of the clock
 		dut	->	clock = 1;
@@ -85,9 +86,11 @@ void TestBench<Module>::tick(){
 		dut	->	eval();
 		uint32_t inst = dut -> io_inst_i;
 
-		if(m_trace) m_trace	-> dump(10*m_tickcount);
-		printf("pc = 0x%8lx, inst = %08x, wdata = 0x%-16lx \n src1 = 0x%-16lx, src2 = 0x%-16lx\n\n",\
-			pc, inst, dut -> io_o, dut -> io_src1, dut -> io_src2
+		if(m_trace) 
+			m_trace	-> dump(10*m_tickcount);
+
+		printf("type = %d, pc = 0x%8lx, inst = %08x, wdata = 0x%-16lx \n src1 = 0x%-16lx, src2 = 0x%-16lx\n\n",\
+			dut -> io_instType, pc, inst, dut -> io_o, dut -> io_src1, dut -> io_src2
 		);
 		if(Verilated::gotFinish()){
 			return;
@@ -110,6 +113,8 @@ void TestBench<Module>::reset(){
 		dut -> clock = 1;
 		dut -> eval();
 		dut -> reset = 0;
+
+		cout << "pc = " << hex << dut -> io_pc_o << endl;
 }
 
 template<class Module>

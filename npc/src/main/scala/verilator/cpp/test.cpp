@@ -4,7 +4,7 @@ using namespace std;
 
 VTOP * top = new VTOP("top");
 vluint64_t TIME = 0;
-static char * img_file = (char *)0;
+static char * img_file = nullptr;
 
 int main(int argc, char **argv)
 {
@@ -15,6 +15,7 @@ int main(int argc, char **argv)
 		img_file = strcat(test_path, strcat(argv[1], "-riscv64-npc.bin"));
 	TestBench<VTOP> tb(img_file);
 	tb.reset();
+	tb.trace("./wave.vcd");
 	while(!Verilated::gotFinish())
 	{
 		tb.tick();
