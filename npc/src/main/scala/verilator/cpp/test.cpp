@@ -10,7 +10,7 @@ int main(int argc, char **argv)
 {
 	Verilated::commandArgs(argc, argv);
 	if(argc < 2)
-		cout << "no image is given, use the default inst rom" << endl;
+		cout << Yellow("no image is given, using the default inst rom\n") << endl;
 	else
 		img_file = strcat(test_path, strcat(argv[1], "-riscv64-npc.bin"));
 	TestBench<VTOP> tb(img_file);
