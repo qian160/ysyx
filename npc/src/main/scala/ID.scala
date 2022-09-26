@@ -3,11 +3,11 @@ import chisel3.util._
 import Util._
 
 class ID extends Module{
-    def imm_I(inst: UInt) = SEXT(inst(31,20), 64)
-    def imm_J(inst: UInt) = SEXT(Cat(inst(31), inst(19,12), inst(20), inst(30,21), 0.U(1.W)),64)
-    def imm_U(inst: UInt) = SEXT(inst(31,12), 64)
-    def imm_S(inst: UInt) = SEXT(Cat(inst(31,25), inst(11,7)), 64)
-    def imm_B(inst: UInt) = SEXT(Cat(inst(31), inst(7), inst(30,25), inst(11,8), 0.U(1.W)),64)
+    def imm_I(inst: UInt) = SEXT(inst(31,20), 12, 64)
+    def imm_J(inst: UInt) = SEXT(Cat(inst(31), inst(19,12), inst(20), inst(30,21), 0.U(1.W)),12, 64)
+    def imm_U(inst: UInt) = SEXT(inst(31,12), 20, 64)
+    def imm_S(inst: UInt) = SEXT(Cat(inst(31,25), inst(11,7)), 12, 64)
+    def imm_B(inst: UInt) = SEXT(Cat(inst(31), inst(7), inst(30,25), inst(11,8), 0.U(1.W)), 12, 64)
 
     val io = IO(new Bundle{
         val inst        =   Input(UInt(32.W))
@@ -63,8 +63,11 @@ class ID extends Module{
             io.decInfo.aluOp.src2   :=  Mux(is_jalr, 4.U(64.W), imm_I(inst))
             io.decInfo.branchOp.happen  :=  Mux(is_jalr, true.B, false.B)
             io.decInfo.branchOp.newPC   :=  rs1Val + imm_I(inst)
+            //load uses src1 and src2 to calculate the address
             io.decInfo.memOp.isLoad     :=  opcode === Opcode.LOAD
-            //io.decInfo.memOp.length     :=  
+            io.decInfo.memOp.length     :=  fct3 (1, 0)
+
+            io.decInfo.memOp.sign       :=  fct3(2)     //0 to 3 unsigned, signed when fct3 >= 4
 
         }
         is(InstType.R){
@@ -86,12 +89,15 @@ class ID extends Module{
             io.decInfo.branchOp.newPC   :=  pc + imm_J(inst)
             //link address
             io.decInfo.aluOp.src1       :=  pc
-            io.decInfo.aluOp.src2       :=  4.U(64.W)
-            
+            io.decInfo.aluOp.src2       :=  4.U(64.W)            
         }
         is(InstType.S){
-            //io.decInfo.
-            io.debug_o.exit :=  true.B
+            io.decInfo.memOp.isStore    :=  true.B
+            io.decInfo.memOp.length     :=  fct3
+            io.decInfo.memOp.sdata      :=  rs2Val
+            //use ALU to calculate the address
+            io.decInfo.aluOp.src1       :=  rs1Val
+            io.decInfo.aluOp.src2       :=  imm_S(inst)
         }
 
         is(InstType.SYS){

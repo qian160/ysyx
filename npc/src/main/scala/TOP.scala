@@ -13,14 +13,15 @@ class TOP extends Module{
     //now TOP acts like IF, and IF is useless, just passes the signal
     val io = IO(new Bundle{
         //set by cpp
-        val inst_i    = Input(UInt(32.W))   //at first, I use the inst_o port only, and try assigning values to it in cpp, but failed
-
-        val pc_o      = Output(UInt(64.W))  //this port just let cpp know the value of pc, which is in IF, and we pass it to there
+        val inst_i    = Input(UInt(32.W))   //interface between cpp and chisel
+        //debug-use signals, just add to the output port (top module's input can't be assigned by its sub-Module)
+        val pc_o      = Output(UInt(64.W))  //set by IF, this port just lets cpp know the value of pc, which is in IF, and we pass it to there
         val inst_o    = Output(UInt(32.W))  //set by cpp
         val o         = Output(UInt(64.W))  //to avoid dce
         val src1      = Output(UInt(64.W))
         val src2      = Output(UInt(64.W))
         val instType  = Output(UInt(5.W))
+        val branch      =   Output(Bool())
 
     })
 
@@ -44,6 +45,7 @@ class TOP extends Module{
     EX.io.decInfo       :=  ID.io.decInfo
 
     MEM.io.writeRfOp_i  :=  EX.io.writeRfOp
+    MEM.io.memOp        :=  EX.io.memOp
 
     WB.io.writeRfOp_i   :=  MEM.io.writeRfOp_o
 
@@ -53,14 +55,14 @@ class TOP extends Module{
     io.src2     :=  ID.io.decInfo.aluOp.src2
     io.inst_o   :=  io.inst_i
     io.pc_o     :=  IF.io.pc_o
-
+    io.instType :=  ID.io.instType
+    io.branch   :=  IF.io.branch
 
 
     EX.io.debug_i   :=  ID.io.debug_o
     MEM.io.debug_i  :=  EX.io.debug_o
     WB.io.debug     :=  MEM.io.debug_o
 
-    io.instType :=  ID.io.instType
 }
 
 object Gen {

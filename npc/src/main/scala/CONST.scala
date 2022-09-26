@@ -7,7 +7,18 @@ object CONST{
 
     //val PMEM_START  = 
 }
+/*
+object Fct3 {
+    val LB  = 0.U(3.W)        //byte
+    val LH  = 1.U(3.W)        //half word
+    val LW  = 2.U(3.W)        //word
+    val LD  = 3.U(3.W)        //double word
 
+    val LBU = 4.U(3.W)
+    val LHU = 5.U(3.W)
+    val LWU = 6.U(3.W)
+}
+*/
 object InstType{
     val R   = 0.U(5.W)
     val I   = 1.U(5.W)

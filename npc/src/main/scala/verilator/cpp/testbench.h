@@ -27,39 +27,39 @@ public:
 };
 
 
-//some functions' implementation
+//implementation
 template<class Module> 
 size_t TestBench<Module>::load_img(char * img_file){
-		if(!img_file){
-			//use the default inst rom
-			ifstream in;
-			in.open("./asm/inst_rom");
-			if(in.fail()){
-				cout << "can't open inst rom" << endl;
-				exit(114514);
-			}
-			int n = 0;
-			while(!in.eof()){
-				in >> hex >> inst_rom[n++];
-			}
-			in.close();
-			if(n) n--;		//cut '\n'
-			return n * sizeof(uint32_t);
+	if(!img_file){
+		//use the default inst rom
+		ifstream in;
+		in.open("./asm/inst_rom");
+		if(in.fail()){
+			cout << "can't open inst rom" << endl;
+			exit(114514);
 		}
-		FILE * fp = fopen(img_file, "rb");
-		assert(fp);
+		int n = 0;
+		while(!in.eof()){
+			in >> hex >> inst_rom[n++];
+		}
+		in.close();
+		if(n) n--;		//cut '\n'
+		return n * sizeof(uint32_t);
+	}
+	FILE * fp = fopen(img_file, "rb");
+	assert(fp);
 
-		fseek(fp, 0, SEEK_END);
-		size_t size = ftell(fp);
+	fseek(fp, 0, SEEK_END);
+	size_t size = ftell(fp);
 
-		cout << "the img file is " << img_file << ", size = " << size << endl;
+	cout << "the img file is " << img_file << ", size = " << size << endl << endl;
 
-		fseek(fp, 0, SEEK_SET);
-		int ret = fread(inst_rom, size, 1, fp);
-		assert(ret == 1);
+	fseek(fp, 0, SEEK_SET);
+	int ret = fread(inst_rom, size, 1, fp);
+	assert(ret == 1);
 
-		fclose(fp);
-		return size;
+	fclose(fp);
+	return size;
 }
 
 template<class Module> 
@@ -69,52 +69,52 @@ uint64_t TestBench<Module>::inst_fetch(uint64_t pc){
 
 template<class Module>
 void TestBench<Module>::tick(){
-			// Make sure the tickcount is greater than zero before we do this
-		m_tickcount++;
+		// Make sure the tickcount is greater than zero before we do this
+	m_tickcount++;
 
-		//set up all the combinational logic before the rising edge
-		dut	->	clock = 0;
-		dut	->	eval();
-		uint64_t pc	  =	dut -> io_pc_o;
+	//set up all the combinational logic before the rising edge
+	dut	->	clock = 0;
+	dut	->	eval();
+	uint64_t pc	  =	dut -> io_pc_o;
 
-		if(m_trace) 
-			m_trace	-> dump(10*m_tickcount-2);
+	if(m_trace) 
+		m_trace	-> dump(10*m_tickcount-2);
 
-		// Repeat for the positive edge of the clock
-		dut	->	clock = 1;
-		dut  ->	io_inst_i = inst_fetch(dut -> io_pc_o);
-		dut	->	eval();
-		uint32_t inst = dut -> io_inst_i;
+	// Repeat for the positive edge of the clock
+	dut	->	clock = 1;
+	dut ->	io_inst_i = inst_fetch(dut -> io_pc_o);
+	dut	->	eval();		//update pc
+	uint32_t inst = dut -> io_inst_i;
 
-		if(m_trace) 
-			m_trace	-> dump(10*m_tickcount);
+	if(m_trace) 
+		m_trace	-> dump(10*m_tickcount);
 
-		printf("type = %d, pc = 0x%8lx, inst = %08x, wdata = 0x%-16lx \n src1 = 0x%-16lx, src2 = 0x%-16lx\n\n",\
-			dut -> io_instType, pc, inst, dut -> io_o, dut -> io_src1, dut -> io_src2
-		);
-		if(Verilated::gotFinish()){
-			return;
-		}
-		// Now the negative edge
-		dut->clock = 0;
-		dut->eval();
-		if (m_trace) {
-			m_trace->dump(10*m_tickcount+5);
-			m_trace->flush();
-		}
+	printf("type = %d, pc = 0x%8lx, inst = %08x, wdata = 0x%-16lx \n src1 = 0x%-16lx, src2 = 0x%-16lx\n\n",\
+		dut -> io_instType, pc, inst, dut -> io_o, dut -> io_src1, dut -> io_src2);
+
+	if(Verilated::gotFinish()){
+		return;
+	}
+	// Now the negative edge
+	dut->clock = 0;
+	dut->eval();
+	if (m_trace) {
+		m_trace->dump(10*m_tickcount+5);
+		m_trace->flush();
+	}
 }
 
 template<class Module>
 void TestBench<Module>::reset(){
-		dut -> reset = 1;
-		dut -> clock = 0;
-		dut -> eval();
-		// Make sure any inheritance gets applied
-		dut -> clock = 1;
-		dut -> eval();
-		dut -> reset = 0;
+	dut -> reset = 1;
+	dut -> clock = 0;
+	dut -> eval();
+	// Make sure any inheritance gets applied
+	dut -> clock = 1;
+	dut -> eval();
+	dut -> reset = 0;
 
-		cout << "pc = " << hex << dut -> io_pc_o << endl;
+	cout << "pc: reset at 0x" << hex << dut -> io_pc_o << endl;
 }
 
 template<class Module>

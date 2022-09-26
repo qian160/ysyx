@@ -3,7 +3,6 @@
 
 #include<verilated.h>
 #include<VTOP.h>
-#include<svdpi.h>
 #include<verilated_vcd_c.h>
 
 

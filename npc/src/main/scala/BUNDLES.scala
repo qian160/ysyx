@@ -48,5 +48,7 @@ class MemOp extends Bundle{
     val isLoad  =   Bool()
     val isStore =   Bool()
     val sign    =   Bool()
-    val length  =   UInt(2.W)   //1 2 4 8
+    val length  =   UInt(2.W)   //1 2 4 8,  loadOp = Cat(sign, length)
+    val addr    =   UInt(64.W)
+    val sdata   =   UInt(64.W)
 }

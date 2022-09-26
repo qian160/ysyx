@@ -39,10 +39,10 @@ class DEBUG extends BlackBox with HasBlackBoxInline {
         |   always @* begin
         |       if(exit)   begin
         |           if(a0 != 64'h0) begin
-        |               $display("\n\n hit \033[1;31mbad\033[0m trap at pc = %x, inst = %8x", pc, inst);
+        |               $display("\n\n hit \033[1;31mbad\033[0m trap at pc = %x, inst = 0x%8x", pc, inst);
         |           end
         |           else begin
-        |               $display("\n\n hit \033[1;32mgood\033[0m trap at pc = %x, inst = %8x", pc, inst);
+        |               $display("\n\n hit \033[1;32mgood\033[0m trap at pc = %x, inst = 0x%8x", pc, inst);
         |           end
         |           $finish;
         |       end

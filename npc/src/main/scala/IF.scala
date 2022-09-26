@@ -8,12 +8,13 @@ class IF extends Module{
 
         val pc_o    = Output(UInt(64.W))
         val inst_o  = Output(UInt(32.W))
+        
+        val branch  =   Output(Bool())
     })
 
     val nextPC  =  Wire(UInt(64.W))
 
     val pc      =  Reg(UInt(64.W))
-
     nextPC  :=  PriorityMux(Seq(
         (reset.asBool(),        CONST.PC_INIT),
         (io.branchOp.happen,    io.branchOp.newPC),
@@ -21,11 +22,10 @@ class IF extends Module{
     ))
     pc  :=  nextPC
 
-    io.pc_o :=  pc
-
+    io.pc_o :=  nextPC
     dontTouch(io.pc_o)
     dontTouch(io.inst_o)
-    io.pc_o     :=  pc
     io.inst_o   :=  io.inst_i
+    io.branch   :=  io.branchOp.happen
  //   io.inst := DontCare
 }

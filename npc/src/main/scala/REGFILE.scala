@@ -18,6 +18,6 @@ class Regfile extends Module{
     //read
     io.readRes.rs1Val := registers(io.readRfOp.rs1)
     io.readRes.rs2Val := registers(io.readRfOp.rs1)
-
+    //debug
     io.readRes.a0     := registers(10)
 }
