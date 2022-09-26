@@ -6,19 +6,19 @@ import AluOPT._
 
 class EX extends Module{
     val io = IO(new Bundle{
-        val decInfo     = Input(new decInfo)
+        val decInfo     = Input(new DecodeInfo)
 
-        val writeRfOp   = Output(new writeRfOp)
+        val writeRfOp   = Output(new WriteRfOp)
+        val memOp       = Output(new MemOp)
 
-        val debug_i     = Input(new Debug)
-        val debug_o     = Output(new Debug)
+        val debug_i     = Input (new Debug_Bundle)
+        val debug_o     = Output(new Debug_Bundle)
     })
 
-    val src1 = io.decInfo.src1
-    val src2 = io.decInfo.src2
+    val src1 = io.decInfo.aluOp.src1
+    val src2 = io.decInfo.aluOp.src2
 
-    val aluRes = MuxLookup(io.decInfo.aluop, src1 + src2, Seq(
-        ADD     -> (src1 + src2),
+    val aluRes = MuxLookup(io.decInfo.aluOp.opt, src1 + src2, Seq(
         SUB     -> (src1 - src2),
         SLT     -> Mux(src1.asSInt < src2.asSInt, 1.U, 0.U),
         SLTU    -> Mux(src1 < src2, 1.U, 0.U),
@@ -31,20 +31,22 @@ class EX extends Module{
         SRL     -> (src1 >> src2(5,0)),
         SRA     -> (src1.asSInt >> src2(5,0)).asUInt,
 
-        ADDW    -> SEXT(src1(31,0) + src2(31,0), 64),
-        SUBW    -> SEXT(src1(31,0) - src2(31,0), 64),
-        MULW    -> SEXT(src1(31,0) * src2(31,0)(31,0), 64),
-        SLLW    -> SEXT((src1 << src2(4,0))(31,0), 64),
-        SRLW    -> SEXT((src1 << src2(4,0))(31,0), 64),
-        SRAW    -> SEXT((src1(31,0).asSInt >> src2(4,0)).asUInt, 64),
-
-        //the rest are asrc2out calculating the address, use the default add
+        ADDW    -> SEXT(src1(31,0) + src2(31,0), 32, 64),
+        SUBW    -> SEXT(src1(31,0) - src2(31,0), 32, 64),
+        MULW    -> SEXT(src1(31,0) * src2(31,0)(31,0), 32, 64),
+        SLLW    -> SEXT((src1 << src2(4,0))(31,0), 32, 64),
+        SRLW    -> SEXT((src1 << src2(4,0))(31,0), 32, 64),
+        SRAW    -> SEXT((src1(31,0).asSInt >> src2(4,0)).asUInt, 32, 64),
+        //by default we do add, not listed here. Mostly about calculating the address
         )
     )
 
+    io.writeRfOp        :=  io.decInfo.writeRfOp
     io.writeRfOp.wdata  :=  aluRes
-    io.writeRfOp.wen    :=  io.decInfo.wen
-    io.writeRfOp.rd     :=  io.decInfo.rd
+
+    io.memOp        :=  io.decInfo.memOp
+    io.memOp.addr   :=  aluRes
+
 /*
     switch(io.decInfo.instType){
         is(InstType.I){

@@ -3,26 +3,29 @@ import chisel3.util._
 
 class IF extends Module{
     val io = IO(new Bundle{
-        val pc_i    = Input(UInt(64.W))
-        val inst_i  = Input(UInt(32.W))
+        val branchOp  = Input(new BranchOp)
+        val inst_i  = Input(UInt(32.W))     //let cpp get the inst through TOP module
 
         val pc_o    = Output(UInt(64.W))
         val inst_o  = Output(UInt(32.W))
-        val debug   = Output(new Debug)
+        
+        val branch  =   Output(Bool())
     })
-    
-//    val pc = RegInit(CONST.PC_INIT)
-//    pc  := pc + 4.U
 
-//    io.pc       := pc
+    val nextPC  =  Wire(UInt(64.W))
+
+    val pc      =  Reg(UInt(64.W))
+    nextPC  :=  PriorityMux(Seq(
+        (reset.asBool(),        CONST.PC_INIT),
+        (io.branchOp.happen,    io.branchOp.newPC),
+        (true.B,                pc + 4.U)
+    ))
+    pc  :=  nextPC
+
+    io.pc_o :=  nextPC
     dontTouch(io.pc_o)
     dontTouch(io.inst_o)
-    io.pc_o     :=  io.pc_i
     io.inst_o   :=  io.inst_i
-
-    io.debug.pc     :=  io.pc_i
-    io.debug.inst   :=  io.inst_i
-    io.debug.a0     :=  DontCare
-    io.debug.exit   :=  DontCare
+    io.branch   :=  io.branchOp.happen
  //   io.inst := DontCare
 }

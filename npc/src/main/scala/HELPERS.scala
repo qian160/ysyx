@@ -12,8 +12,8 @@ object countLeadingZeros
 object Util{
     def neg(data:UInt):UInt = {~data + 1.U}
     //pad: add prefix 0s or 1s according to the data type
-    def SEXT(a:UInt, to: Int): UInt = a.asSInt.pad(to).asUInt
-    def ZEXT(a:UInt, to: Int): UInt = a.pad(to)
+    def SEXT(a:UInt, from: Int, to: Int): UInt = a(from - 1, 0).asSInt.pad(to).asUInt
+    def ZEXT(a:UInt, from: Int, to: Int): UInt = a(from - 1, 0).pad(to)
 }
 
 object D{       //debug

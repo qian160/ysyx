@@ -17,8 +17,9 @@ static const char mainargs[] = MAINARGS;
 void putch(char ch) {
 }
 
+__attribute__((noinline))
 void halt(int code) {
-  while (1);
+    __asm__ volatile("mv a0, %0; ebreak" : :"r"(code));
 }
 
 void _trm_init() {

@@ -3,10 +3,7 @@
 
 #include<verilated.h>
 #include<VTOP.h>
-#include<svdpi.h>
 #include<verilated_vcd_c.h>
-#include<svdpi.h>
-#include<VTOP__Dpi.h>
 
 
 using namespace std;
@@ -21,7 +18,7 @@ using namespace std;
 
 #define normal "\033[0m"
 
-string test_path = "/home/s081/Downloads/ysyx-workbench/am-kernels/tests/cpu-tests";
+char test_path[128] = "/home/s081/Downloads/ysyx-workbench/am-kernels/tests/cpu-tests/build/";
 string Red(string str){
 	return red + str + normal;
 }
@@ -45,4 +42,3 @@ string Pink(string str){
 string Magenta(string str){
 	return magenta + str + normal;
 }
-
