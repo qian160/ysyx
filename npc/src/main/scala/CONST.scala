@@ -2,10 +2,12 @@ import chisel3._
 import chisel3.util._
 
 object CONST{
-    val PC_INIT = "h80000000".U(64.W)
+    val PC_INIT = "h80000000".U
     val EBREAK  = "h100073".U(32.W)
+    val M_SIZE  = 0x8000000
 
-    //val PMEM_START  = 
+    val PMEM_START  = "h80000000".U
+    val PMEM_END    = "h87ffffff".U
 }
 
 object Fct3 {

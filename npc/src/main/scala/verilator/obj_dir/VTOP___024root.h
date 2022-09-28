@@ -27,22 +27,22 @@ VL_MODULE(VTOP___024root) {
         CData/*0:0*/ TOP__DOT__ID__DOT___io_decInfo_branchOp_happen_T_1;
         CData/*2:0*/ TOP__DOT__ID__DOT___GEN_61;
         CData/*0:0*/ __Vclklast__TOP__clock;
-        VL_IN(io_inst_i,31,0);
+        SData/*12:0*/ TOP__DOT__ID__DOT___io_decInfo_branchOp_newPC_T_11;
         VL_OUT(io_inst_o,31,0);
+        IData/*31:0*/ TOP__DOT__IF__DOT__inst_rom_io_inst_o_MPORT_data;
+        IData/*31:0*/ TOP__DOT__IF__DOT__pc;
+        IData/*31:0*/ TOP__DOT__IF__DOT__initvar;
         VlWide<3>/*75:0*/ TOP__DOT__ID__DOT___GEN_57;
         VlWide<4>/*126:0*/ TOP__DOT__EX__DOT__aluRes;
         VL_OUT64(io_pc_o,63,0);
         VL_OUT64(io_o,63,0);
         VL_OUT64(io_src1,63,0);
         VL_OUT64(io_src2,63,0);
-        QData/*63:0*/ TOP__DOT__IF_io_pc_o;
         QData/*63:0*/ TOP__DOT__ID_io_decInfo_aluOp_src1;
-        QData/*63:0*/ TOP__DOT__ID_io_decInfo_branchOp_newPC;
         QData/*63:0*/ TOP__DOT__MEM_io_writeRfOp_o_wdata;
         QData/*63:0*/ TOP__DOT__Regfile_io_readRes_rs2Val;
-        QData/*63:0*/ TOP__DOT__IF__DOT__pc;
-        QData/*63:0*/ TOP__DOT__IF__DOT___nextPC_T_2;
-        QData/*63:0*/ TOP__DOT__ID__DOT__pc;
+        QData/*63:0*/ TOP__DOT__IF__DOT___GEN_0;
+        QData/*63:0*/ TOP__DOT__ID__DOT__immI;
         QData/*63:0*/ TOP__DOT__ID__DOT___GEN_58;
         QData/*63:0*/ TOP__DOT__MEM__DOT__mask;
         QData/*63:0*/ TOP__DOT__MEM__DOT__loadval;
@@ -80,6 +80,7 @@ VL_MODULE(VTOP___024root) {
         QData/*63:0*/ TOP__DOT__Regfile__DOT__registers_31;
     };
     struct {
+        VlUnpacked<IData/*31:0*/, 32768> TOP__DOT__IF__DOT__inst_rom;
         VlUnpacked<CData/*7:0*/, 16> TOP__DOT__MEM__DOT__ram1;
         VlUnpacked<CData/*7:0*/, 16> TOP__DOT__MEM__DOT__ram2;
         VlUnpacked<CData/*7:0*/, 16> TOP__DOT__MEM__DOT__ram3;
@@ -88,7 +89,7 @@ VL_MODULE(VTOP___024root) {
         VlUnpacked<CData/*7:0*/, 16> TOP__DOT__MEM__DOT__ram6;
         VlUnpacked<CData/*7:0*/, 16> TOP__DOT__MEM__DOT__ram7;
         VlUnpacked<CData/*7:0*/, 16> TOP__DOT__MEM__DOT__ram8;
-        VlUnpacked<CData/*0:0*/, 3> __Vm_traceActivity;
+        VlUnpacked<CData/*0:0*/, 2> __Vm_traceActivity;
     };
 
     // INTERNAL VARIABLES

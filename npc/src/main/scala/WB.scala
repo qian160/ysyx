@@ -15,6 +15,9 @@ class WB extends Module{
     //debug
     val DEBUG = Module(new DEBUG)
 
+    val wdata = io.writeRfOp_i.wdata
+    printf("wdata = %x\n", wdata)       //this will be printed first....
+
     DEBUG.io.pc     :=  io.debug.pc
     DEBUG.io.exit   :=  io.debug.exit
     DEBUG.io.inst   :=  io.debug.inst

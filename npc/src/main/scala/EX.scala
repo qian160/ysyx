@@ -47,6 +47,8 @@ class EX extends Module{
     io.memOp        :=  io.decInfo.memOp
     io.memOp.addr   :=  aluRes
 
+    val rd = io.decInfo.writeRfOp.rd
+    printf("rd = %d, aluRes = 0x%x\n", rd, aluRes)
 /*
     switch(io.decInfo.instType){
         is(InstType.I){

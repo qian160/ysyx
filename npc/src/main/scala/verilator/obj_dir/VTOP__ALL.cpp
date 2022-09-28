@@ -3,6 +3,7 @@
 #include "VTOP.cpp"
 #include "VTOP___024root__DepSet_hbaffbf48__0.cpp"
 #include "VTOP__Trace__0.cpp"
+#include "VTOP__ConstPool_0.cpp"
 #include "VTOP___024root__Slow.cpp"
 #include "VTOP___024root__DepSet_hbaffbf48__0__Slow.cpp"
 #include "VTOP__Syms.cpp"

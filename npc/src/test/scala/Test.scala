@@ -13,13 +13,16 @@ import D._
 
 class simple extends Module{
     val io = IO(new Bundle{
-        val o1 = Output(UInt(64.W))
-        val o2 = Output(UInt(64.W))
+        val a   =   Input( UInt(8.W))
+        val b   =   Input( UInt(8.W))
+        //val n   =   Output(Vec(16, UInt(8.W)))
+        val sum =   Output(UInt(8.W))
+        val cnt =   Output(UInt(32.W))
     })
-    val ram = Mem(16, UInt(64.W))
-    loadMemoryFromFileInline(ram, "./ram")
-    io.o1   :=  ram(0)
-    io.o2   :=  ram(1)
+    val ram = SyncReadMem(5, UInt(16.W))        //sequential read
+    val cnt = Counter(32)
+    io.sum  :=  io.a + io.b
+    io.cnt  :=  cnt.value
 }
 
 class simple1 extends AnyFlatSpec{
@@ -31,37 +34,21 @@ class simple1 extends AnyFlatSpec{
 class Test extends AnyFlatSpec with ChiselScalatestTester{
     val Rnd = new Random()
     "test" should "pass" in{
-        test(new simple){ dut => 
-            val inst_rom = Array(
-                "hfff00513".U,
-                "h00150513".U,
-                "h00150513".U,
-                "h00150513".U,
-                "h00150513".U,
-                "h00150513".U,
-                "h00100073".U,
-                "h00150513".U,
-                "h00150513".U,
-                "h00150513".U,
-                "h00150513".U,
-            )
+        test(new simple){ dut => ()
 
-            println(PinkStr("hello world")) 
-            val v1 = dut.io.o1.peek().toString
-            val v2 = dut.io.o2.peek().toString
-            println(s"v1 = $v1, v2 = $v2")
-            //dut.io.inst_i.poke("hfff00513".U)
-/*
-            inst_rom foreach( (inst) => {
-//                println(f"$inst%8x")
-                dut.io.inst_i.poke(inst)
-                val wdata = dut.io.o.peek().toString()
-                dut.clock.step()
-                println(s"wdata = $wdata")
-            })
-            */
-            
         }
-    }
 
+    }
+}
+
+class ppt(dut: simple) extends PeekPokeTester(dut){
+    val rand = new Random
+    for(i <- 0 to 255){
+        poke(dut.io.a, rand.nextInt(256))
+        poke(dut.io.b, rand.nextInt(256))
+
+        step(1)
+        peek(dut.io.sum)
+
+    }
 }

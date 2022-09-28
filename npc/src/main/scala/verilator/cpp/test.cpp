@@ -13,7 +13,7 @@ int main(int argc, char **argv)
 		cout << Yellow("no image is given, using the default inst rom\n") << endl;
 	else
 		img_file = strcat(test_path, strcat(argv[1], "-riscv64-npc.bin"));
-	TestBench<VTOP> tb(img_file);
+	TestBench<VTOP> tb;
 	tb.reset();
 	tb.trace("./wave.vcd");
 	while(!Verilated::gotFinish())
