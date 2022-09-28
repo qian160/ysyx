@@ -17,18 +17,18 @@ class ID extends Module{
         val readRfOp    =   Output(new ReadRfOp)
         val decInfo     =   Output(new DecodeInfo)
 
-        val debug_o     =   Output(new Debug)
+        val debug_o     =   Output(new Debug_Bundle)
         val instType    =   Output(UInt(5.W))
+        val branch      =   Output(Bool())
     })
     //to make test easier, we use cpp to load inst, not verilog or chisel
     dontTouch(io.inst)  //don't elimate this
 
     val inst     = io.inst
-    val pc       = RegNext(io.pc)
+    val pc       = /*RegNext*/(io.pc)
 
     val decRes   = ListLookup(inst,DecTable.defaultDec,DecTable.decMap)     //returns list(instType,opt)
     val instType = decRes(DecTable.TYPE)    //R I S B J U SYS
-    io.instType :=  instType
     val op       = decRes(DecTable.OPT)     //sometimes useless,like InstType.B
 
     val rs1Val   = io.regVal.rs1Val
@@ -38,7 +38,10 @@ class ID extends Module{
     val fct3    =   inst(14, 12)
 
     //default
+    io.instType                 := instType
     io.decInfo                  := 0.U.asTypeOf(new DecodeInfo)
+    io.decInfo.aluOp.src1   :=  rs1Val
+    io.decInfo.aluOp.src2   :=  rs2Val
     io.decInfo.instType         := instType
     io.decInfo.writeRfOp.rd     := inst(11, 7)
     io.decInfo.aluOp.opt        := op
@@ -47,15 +50,19 @@ class ID extends Module{
     io.readRfOp.rs2     := io.inst(24, 20)
 
     io.debug_o.pc       :=  pc
-    io.debug_o.inst     :=  inst    
+    io.debug_o.inst     :=  inst
+    //io.debug_o.gpr      :=  io.regVal.gpr
     io.debug_o.a0       :=  io.regVal.a0
     io.debug_o.exit     :=  false.B
+
+    val immI = imm_I(inst)
+    dontTouch(immI)
 
     switch(instType){//R I U S B J
         is(InstType.BAD){
             io.debug_o.exit   :=  inst.andR     //not nop
         }
-        is(InstType.I){ //likely jalr, load
+        is(InstType.I){ //likely jalr, load, rv32i-arith, rv64i-arith
             io.decInfo.writeRfOp.wen    :=  true.B
             val is_jalr =   opcode  === Opcode.JALR
 
@@ -65,7 +72,7 @@ class ID extends Module{
             io.decInfo.branchOp.newPC   :=  rs1Val + imm_I(inst)
             //load uses src1 and src2 to calculate the address
             io.decInfo.memOp.isLoad     :=  opcode === Opcode.LOAD
-            io.decInfo.memOp.length     :=  fct3 (1, 0)
+            io.decInfo.memOp.length     :=  fct3(1, 0)
 
             io.decInfo.memOp.sign       :=  fct3(2)     //0 to 3 unsigned, signed when fct3 >= 4
 
@@ -74,9 +81,19 @@ class ID extends Module{
             io.decInfo.aluOp.src1       :=  rs1Val
             io.decInfo.aluOp.src2       :=  rs2Val
             io.decInfo.writeRfOp.wen    :=  true.B
+
+            //io.decInfo.aluOp.src1   :=  
         }
         is(InstType.B){
-            io.debug_o.exit :=  true.B
+            io.decInfo.branchOp.newPC   :=  pc + imm_B(inst)
+            io.decInfo.branchOp.happen  :=  MuxLookup(fct3, false.B, Seq(
+                Fct3.BEQ     ->  (rs1Val  === rs2Val),
+                Fct3.BNE     ->  (rs1Val   ^  rs2Val),
+                Fct3.BLT     ->  (rs1Val.asSInt   <  rs2Val.asSInt),
+                Fct3.BGE     ->  (rs1Val.asSInt   >  rs2Val.asSInt),
+                Fct3.BLTU    ->  (rs1Val  === rs2Val),
+                Fct3.BGEU    ->  (rs1Val  === rs2Val),
+            ))
         }
         is(InstType.U){     //lui auipc
             io.decInfo.aluOp.src1       :=  Mux(opcode === Opcode.LUI, 0.U, pc)
@@ -105,9 +122,19 @@ class ID extends Module{
         }
     }
 
+    //debug print info
+    val src1 = io.decInfo.aluOp.src1
+    val src2 = io.decInfo.aluOp.src2
+    val immB = imm_B(inst)
+    dontTouch(immB)
+
+    //printf(p"src1 = ${Hexadecimal(src1)}, src2 = ${Hexadecimal(src2)}\n")
+    printf("pc = %x, inst = %x, src1 = %x, src2 = %x\n\n",pc, inst, src1, src2)
+
+    io.branch   :=  io.decInfo.branchOp.happen
+
     //io.debug_o.exit     :=  inst === CONST.EBREAK
 
 //    val EXIT = Module(new EXIT)
-//    EXIT.io.exit    := Mux(inst === CONST.EBREAK, true.B, false.B)
 
 }

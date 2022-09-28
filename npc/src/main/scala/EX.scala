@@ -11,8 +11,8 @@ class EX extends Module{
         val writeRfOp   = Output(new WriteRfOp)
         val memOp       = Output(new MemOp)
 
-        val debug_i     = Input(new Debug)
-        val debug_o     = Output(new Debug)
+        val debug_i     = Input (new Debug_Bundle)
+        val debug_o     = Output(new Debug_Bundle)
     })
 
     val src1 = io.decInfo.aluOp.src1
@@ -47,6 +47,8 @@ class EX extends Module{
     io.memOp        :=  io.decInfo.memOp
     io.memOp.addr   :=  aluRes
 
+    val rd = io.decInfo.writeRfOp.rd
+    printf("rd = %d, aluRes = 0x%x\n", rd, aluRes)
 /*
     switch(io.decInfo.instType){
         is(InstType.I){

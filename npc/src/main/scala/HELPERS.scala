@@ -33,9 +33,9 @@ object D{       //debug
     val italics     = "\u001b[3m"
     val underline   = "\u001b[4m"
 
-    def RedStr(str: String) = red + str + normal
-    def YellowStr(str: String) = yellow + str + normal
-    def PinkStr(str: String) = pink + str + normal
-    def MagentaStr(str: String) = magenta + str + normal
-    def GreenStr(str: String) = green + str + normal
+    def Red(str: String) = red + str + normal
+    def Yellow(str: String) = yellow + str + normal
+    def Pink(str: String) = pink + str + normal
+    def Magenta(str: String) = magenta + str + normal
+    def Green(str: String) = green + str + normal
 }

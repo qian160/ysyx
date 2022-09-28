@@ -10,8 +10,8 @@ class MEM extends Module{
 
         val writeRfOp_o = Output(new WriteRfOp)
 
-        val debug_i     = Input(new Debug)
-        val debug_o     = Output(new Debug)
+        val debug_i     = Input (new Debug_Bundle)
+        val debug_o     = Output(new Debug_Bundle)
     })
 
     val ram1 = Mem(1 << 36, UInt(8.W))
@@ -27,15 +27,23 @@ class MEM extends Module{
     val isStore     = io.memOp.isStore
     val addr        = io.memOp.addr >> 3
     //Big Endian?
+    /*
     val mask    = MuxLookup(io.memOp.length, 0.U, Seq(
-        0.U ->  "h00000000000000ff".U,      //8,    2 ^ 3
-        1.U ->  "h000000000000ffff".U,      //16,   2 ^ 4  
-        2.U ->  "h00000000ffffffff".U,      //32    2 ^ 5
-        3.U ->  "hffffffffffffffff".U,      //64    2 ^ 6
-        //total: 2 ^ (length  + 3) valid bits   =>  (length << 2) & 0b11
+        0.U ->  "b00000001".U,      //8, one bit's mask controls one byte
+        1.U ->  "b00000011".U,      //16  
+        2.U ->  "b00001111".U,      //32
+        3.U ->  "b11111111".U,      //64
+    ))
+    */
+    val mask    = MuxLookup(io.memOp.length, 0.U, Seq(
+        0.U ->  "h00000000000000ff".U,      //8, one bit's mask controls one byte
+        1.U ->  "h000000000000ffff".U,      //16  
+        2.U ->  "h00000000ffffffff".U,      //32
+        3.U ->  "hffffffffffffffff".U,      //64
     ))
     //could be improved..
-    val loadval = Cat(ram1(addr), ram2(addr),ram3(addr), ram4(addr),ram5(addr), ram6(addr),ram7(addr), ram8(addr)) & mask
+    val dword   = Cat(ram1(addr), ram2(addr),ram3(addr), ram4(addr),ram5(addr), ram6(addr),ram7(addr), ram8(addr))
+    val loadval = dword & mask
     val loadVal = MuxLookup(io.memOp.length, 0.U, Seq(
         0.U   ->  Mux(io.memOp.sign, SEXT(loadval, 8,  64), loadval),
         1.U   ->  Mux(io.memOp.sign, SEXT(loadval, 16, 64), loadval),
@@ -45,18 +53,18 @@ class MEM extends Module{
 
     val sdata   =   io.memOp.sdata & mask
     when(io.memOp.isStore){
-        ram1.write(addr, mask(7,  0))
-        ram1.write(addr, mask(15, 8))
-        ram1.write(addr, mask(23, 16))
-        ram1.write(addr, mask(31, 24))
-        ram1.write(addr, mask(39, 32))
-        ram1.write(addr, mask(47, 40))
-        ram1.write(addr, mask(55, 48))
-        ram1.write(addr, mask(63, 56))
+        ram1.write(addr, sdata/*, mask(0)*/)
+        ram2.write(addr, sdata/*, mask(1)*/)
+        ram3.write(addr, sdata/*, mask(2)*/)
+        ram4.write(addr, sdata/*, mask(3)*/)
+        ram5.write(addr, sdata/*, mask(4)*/)
+        ram6.write(addr, sdata/*, mask(5)*/)
+        ram7.write(addr, sdata/*, mask(6)*/)
+        ram8.write(addr, sdata/*, mask(7)*/)
     }
     io.writeRfOp_o  :=  io.writeRfOp_i
     io.writeRfOp_o.wdata    :=  Mux(isLoad, loadVal, io.writeRfOp_i.wdata)
-
+    printf("memOP.addr = %x\n", io.memOp.addr)
 
     io.debug_o      :=  io.debug_i
 }

@@ -2,12 +2,14 @@ import chisel3._
 import chisel3.util._
 
 object CONST{
-    val PC_INIT = "h80000000".U(64.W)
+    val PC_INIT = "h80000000".U
     val EBREAK  = "h100073".U(32.W)
+    val M_SIZE  = 0x8000000
 
-    //val PMEM_START  = 
+    val PMEM_START  = "h80000000".U
+    val PMEM_END    = "h87ffffff".U
 }
-/*
+
 object Fct3 {
     val LB  = 0.U(3.W)        //byte
     val LH  = 1.U(3.W)        //half word
@@ -17,8 +19,15 @@ object Fct3 {
     val LBU = 4.U(3.W)
     val LHU = 5.U(3.W)
     val LWU = 6.U(3.W)
+
+    val BEQ     =   0.U(3.W)
+    val BNE     =   1.U(3.W)
+    val BLT     =   4.U(3.W)
+    val BGE     =   5.U(3.W)
+    val BLTU    =   6.U(3.W)
+    val BGEU    =   7.U(3.W)
 }
-*/
+
 object InstType{
     val R   = 0.U(5.W)
     val I   = 1.U(5.W)
@@ -94,16 +103,14 @@ object AluOPT {
 }
 
 object Opcode {
-    val JAL     =   "h1101111".U
-    val JALR    =   "h1100111".U
-    val LUI     =   "h0110111".U
-    val AUIPC   =   "h0010111".U
+    val JAL     =   "b1101111".U
+    val JALR    =   "b1100111".U
+    val LUI     =   "b0110111".U
+    val AUIPC   =   "b0010111".U
 
-    val LOAD    =   "h0000011".U
-    val ARITH_I =   "h0010011".U
+    val LOAD    =   "b0000011".U
+    val ARITH_I =   "b0010011".U
 }
-
-
 
 object Insts { // idea from mini riscv
 //  // Loads              funct7   rs1   rs2  fct3  rd   opcode

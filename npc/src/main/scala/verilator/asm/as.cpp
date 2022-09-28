@@ -11,7 +11,7 @@ int main(int argc, char ** argv)
 	ifstream in;
 	ofstream out;
 	in.open("./asm.txt");	
-	out.open("./inst_rom");
+	out.open("../../inst_rom");
 	if(in.fail() || out.fail()){
 		cout << "file open failed!\n";
 		exit(1);
