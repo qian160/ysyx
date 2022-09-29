@@ -291,6 +291,7 @@ static int decode_exec(Decode *D) {
     case(LOAD):{
       D -> decInfo.type = TYPE_I;
       word_t imm_I = immI(inst);
+      printf("dword = 0x%lx\n", Mr(R(rs1) + imm_I, 8));
       switch(fct3){
         case(0x0):  R(rd) = SEXT(Mr(R(rs1) + imm_I, 1), 8);   printf("lb:  [x%d] <=  0x%lx\n", rd, SEXT(Mr(R(rs1) + imm_I, 1), 8 ));   break;  //lb
         case(0x1):  R(rd) = SEXT(Mr(R(rs1) + imm_I, 2), 16);  printf("lh:  [x%d] <=  0x%lx\n", rd, SEXT(Mr(R(rs1) + imm_I, 2), 16));   break;  //lh

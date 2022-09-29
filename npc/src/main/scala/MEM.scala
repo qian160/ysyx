@@ -50,7 +50,6 @@ class MEM extends Module{
         2.U   ->  Mux(io.memOp.sign, SEXT(loadval, 32, 64), loadval),
         3.U   ->  loadval,
     ))
-    val sel = io.memOp.sel
 
     val sdata   =   io.memOp.sdata// & mask
     when(isStore){
