@@ -292,13 +292,13 @@ static int decode_exec(Decode *D) {
       D -> decInfo.type = TYPE_I;
       word_t imm_I = immI(inst);
       switch(fct3){
-        case(0x0):  R(rd) = SEXT(Mr(R(rs1) + imm_I, 1), 8);   printf("[x%d] <=  0x%lx\n", rd, SEXT(Mr(R(rs1) + imm_I, 1), 8 ));   break;  //lb
-        case(0x1):  R(rd) = SEXT(Mr(R(rs1) + imm_I, 2), 16);  printf("[x%d] <=  0x%lx\n", rd, SEXT(Mr(R(rs1) + imm_I, 2), 16));   break;  //lh
-        case(0x2):  R(rd) = SEXT(Mr(R(rs1) + imm_I, 4), 32);  printf("[x%d] <=  0x%lx\n", rd, SEXT(Mr(R(rs1) + imm_I, 4), 32));   break;  //lw
-        case(0x3):  R(rd) = Mr(R(rs1) + imm_I, 8);            printf("[x%d] <=  0x%lx\n", rd, Mr(R(rs1) + imm_I, 8));             break;  //ld
-        case(0x4):  R(rd) = Mr(R(rs1) + imm_I, 1);            printf("[x%d] <=  0x%lx\n", rd, Mr(R(rs1) + imm_I, 1));             break;  //lbu
-        case(0x5):  R(rd) = Mr(R(rs1) + imm_I, 2);            printf("[x%d] <=  0x%lx\n", rd, Mr(R(rs1) + imm_I, 2));             break;  //lhu
-        case(0x6):  R(rd) = Mr(R(rs1) + imm_I, 4);            printf("[x%d] <=  0x%lx\n", rd, Mr(R(rs1) + imm_I, 4));             break;  //lwu
+        case(0x0):  R(rd) = SEXT(Mr(R(rs1) + imm_I, 1), 8);   printf("lb:  [x%d] <=  0x%lx\n", rd, SEXT(Mr(R(rs1) + imm_I, 1), 8 ));   break;  //lb
+        case(0x1):  R(rd) = SEXT(Mr(R(rs1) + imm_I, 2), 16);  printf("lh:  [x%d] <=  0x%lx\n", rd, SEXT(Mr(R(rs1) + imm_I, 2), 16));   break;  //lh
+        case(0x2):  R(rd) = SEXT(Mr(R(rs1) + imm_I, 4), 32);  printf("lw:  [x%d] <=  0x%lx\n", rd, SEXT(Mr(R(rs1) + imm_I, 4), 32));   break;  //lw
+        case(0x3):  R(rd) = Mr(R(rs1) + imm_I, 8);            printf("ld:  [x%d] <=  0x%lx\n", rd, Mr(R(rs1) + imm_I, 8));             break;  //ld
+        case(0x4):  R(rd) = Mr(R(rs1) + imm_I, 1);            printf("lbu: [x%d] <=  0x%lx\n", rd, Mr(R(rs1) + imm_I, 1));             break;  //lbu
+        case(0x5):  R(rd) = Mr(R(rs1) + imm_I, 2);            printf("lhu: [x%d] <=  0x%lx\n", rd, Mr(R(rs1) + imm_I, 2));             break;  //lhu
+        case(0x6):  R(rd) = Mr(R(rs1) + imm_I, 4);            printf("lwu: [x%d] <=  0x%lx\n", rd, Mr(R(rs1) + imm_I, 4));             break;  //lwu
         default:    panic("bad inst\n");
       }
       break;
@@ -308,10 +308,10 @@ static int decode_exec(Decode *D) {
       D -> decInfo.type = TYPE_S;
       word_t imm_S = immS(inst);
       switch(fct3){
-        case(0x0):  Mw(R(rs1) + imm_S, 1, R(rs2));  printf("0x%lx   =>  pmem[0x%lx]\n", R(rs2), R(rs1) + imm_S );      break;
-        case(0x1):  Mw(R(rs1) + imm_S, 2, R(rs2));  printf("0x%lx   =>  pmem[0x%lx]\n", R(rs2), R(rs1) + imm_S );      break;
-        case(0x2):  Mw(R(rs1) + imm_S, 4, R(rs2));  printf("0x%lx   =>  pmem[0x%lx]\n", R(rs2), R(rs1) + imm_S );      break;
-        case(0x3):  Mw(R(rs1) + imm_S, 8, R(rs2));  printf("0x%lx   =>  pmem[0x%lx]\n", R(rs2), R(rs1) + imm_S );      break;
+        case(0x0):  Mw(R(rs1) + imm_S, 1, R(rs2));  printf("sb: 0x%lx   =>  pmem[0x%lx]\n", R(rs2), R(rs1) + imm_S );      break;
+        case(0x1):  Mw(R(rs1) + imm_S, 2, R(rs2));  printf("sh: 0x%lx   =>  pmem[0x%lx]\n", R(rs2), R(rs1) + imm_S );      break;
+        case(0x2):  Mw(R(rs1) + imm_S, 4, R(rs2));  printf("sw: 0x%lx   =>  pmem[0x%lx]\n", R(rs2), R(rs1) + imm_S );      break;
+        case(0x3):  Mw(R(rs1) + imm_S, 8, R(rs2));  printf("sd: 0x%lx   =>  pmem[0x%lx]\n", R(rs2), R(rs1) + imm_S );      break;
         default:    panic("bad inst\n");
       }
       break;
