@@ -1,10 +1,13 @@
 #include<iostream>
 #include<fstream>
+#include<string.h>
+#include<algorithm>
 
 #include<verilated.h>
 #include<VTOP.h>
 #include<verilated_vcd_c.h>
-
+using namespace std;
+#include"sdb.h"
 
 using namespace std;
 #define red 	"\033[1;31m"
@@ -18,27 +21,9 @@ using namespace std;
 
 #define normal "\033[0m"
 
-char test_path[128] = "/home/s081/Downloads/ysyx-workbench/am-kernels/tests/cpu-tests/build/";
-string Red(string str){
-	return red + str + normal;
-}
-
-string Yellow(string str){
-	return yellow + str + normal;
-}
-
-string Green(string str){
-	return green + str + normal;
-}
-
-string Cyan(string str){
-	return cyan + str + normal;
-}
-
-string Pink(string str){
-	return pink + str + normal;
-}
-
-string Magenta(string str){
-	return magenta + str + normal;
-}
+static inline string Red(string str){	 return red + str + normal;}
+static inline string Yellow(string str){ return yellow + str + normal;}
+static inline string Green(string str){	 return green + str + normal;}
+static inline string Cyan(string str){	 return cyan + str + normal;}
+static inline string Pink(string str){	 return pink + str + normal;}
+static inline string Magenta(string str){return magenta + str + normal;}

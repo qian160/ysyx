@@ -3,7 +3,7 @@ RESOURCES = ../../resources/	#Used by chisel BlackBox
 BLACKBOX = $(addprefix  $(RESOURCES), $(shell ls $RESOURCES))
 
 VSRC   = $(addprefix ./verilog/, $(shell ls ./verilog | grep .v))
-CPPSRC = ./cpp/test.cpp
+CPPSRC = $(addprefix ./cpp/, $(shell ls ./cpp | grep cpp))
 FLAGS  = --cc --exe --build --trace
 
 LLVM_FLAGS += $(shell llvm-config --ldflags)
