@@ -6,9 +6,12 @@ using namespace std;
 template<class Module> class TestBench {
 private:
 	//private, user don't need to know
+	
 	VerilatedVcdC	*m_trace;
-	vluint64_t		m_tickcount;
 	Module			*dut;
+	//shared_ptr<VerilatedVcdC>	m_trace;
+	//shared_ptr<Module>			dut;
+	vluint64_t		m_tickcount;
 public:
 	TestBench();
 	virtual ~TestBench();
@@ -72,8 +75,10 @@ TestBench<Module>::TestBench(){
 	// before calling any of the tracing functions within Verilator.
 	Verilated::traceEverOn(true);
 	dut = new Module;
-	m_trace	=	nullptr;
+	m_trace = nullptr;
 	m_tickcount = 0l;
+	//m_trace = make_shared<VerilatedVcdC>(nullptr);
+	//dut		= make_shared<Module>();
 	dut	->	clock = 0;
 }
 

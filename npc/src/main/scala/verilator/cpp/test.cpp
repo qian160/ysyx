@@ -25,6 +25,7 @@ int main(int argc, char **argv)
 		s.erase(0, s.find_first_not_of(" "));
 		int cmd_end = s.find(deli);
 		char cmd  = s[0];
+		if(!cmd) continue;
 		string args = s.substr(1, s.size());
 		int i = 0;
 		if(cmd_table.find(cmd)!= cmd_table.end())
