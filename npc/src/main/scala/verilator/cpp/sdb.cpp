@@ -18,7 +18,7 @@ int cmd_s(string steps){
         tb.tick();
     }
     else{
-        while(n--){
+        while(n-- && !Verilated::gotFinish()){
             tb.tick();
         }
     }

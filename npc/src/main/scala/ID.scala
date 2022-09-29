@@ -112,6 +112,15 @@ class ID extends Module{
             io.decInfo.memOp.isStore    :=  true.B
             io.decInfo.memOp.length     :=  fct3
             io.decInfo.memOp.sdata      :=  rs2Val
+            /*
+            io.decInfo.memOp.sel        :=  MuxLookup(fct3, 0.U, Seq(
+                0.U ->  "b00000001".U,      //2 ^ 1 - 1
+                1.U ->  "b00000011".U,      //2 ^ 2 - 1 
+                2.U ->  "b00001111".U,      //2 ^ 4 - 1
+                3.U ->  "b11111111".U,      //2 ^ 8 - 1
+            ))
+            */
+            io.decInfo.memOp.sel        :=  ((1.U << (1.U << fct3)) - 1.U) << ((rs1Val + imm_S(inst)) % 8.U)      //sel is decided by both width and addr
             //use ALU to calculate the address
             io.decInfo.aluOp.src1       :=  rs1Val
             io.decInfo.aluOp.src2       :=  imm_S(inst)
