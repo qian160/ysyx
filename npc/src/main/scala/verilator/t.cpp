@@ -1,15 +1,10 @@
-#include<map>
 #include<iostream>
-#include<string>
-
+#include<memory>
 using namespace std;
 
 int main()
 {
-	map<int, int> m = {
-		{4, 6},
-		{3, 5},
-	};
-
-	cout << m[3] << endl;
+	shared_ptr<int> p(new int(114514));
+	p = make_shared<int>(1919810);
+	cout << *p << endl;
 }

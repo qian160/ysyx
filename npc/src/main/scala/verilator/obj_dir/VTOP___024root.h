@@ -20,6 +20,7 @@ VL_MODULE(VTOP___024root) {
         VL_OUT8(io_branch,0,0);
         CData/*0:0*/ TOP__DOT__ID_io_decInfo_writeRfOp_wen;
         CData/*4:0*/ TOP__DOT__ID_io_decInfo_aluOp_opt;
+        CData/*0:0*/ TOP__DOT__ID_io_decInfo_branchOp_happen;
         CData/*0:0*/ TOP__DOT__ID_io_decInfo_memOp_isStore;
         CData/*0:0*/ TOP__DOT__ID_io_decInfo_memOp_sign;
         CData/*4:0*/ TOP__DOT__ID__DOT___decRes_T_187;
@@ -47,7 +48,6 @@ VL_MODULE(VTOP___024root) {
         QData/*63:0*/ TOP__DOT__Regfile_io_readRes_rs2Val;
         QData/*63:0*/ TOP__DOT__IF__DOT___GEN_0;
         QData/*63:0*/ TOP__DOT__ID__DOT__immI;
-        QData/*63:0*/ TOP__DOT__ID__DOT___GEN_64;
         QData/*63:0*/ TOP__DOT__MEM__DOT__loadval;
         QData/*63:0*/ TOP__DOT__Regfile__DOT__registers_0;
         QData/*63:0*/ TOP__DOT__Regfile__DOT__registers_1;

@@ -1247,76 +1247,65 @@ VL_ATTR_COLD void VTOP___024root___settle__TOP__0(VTOP___024root* vlSelf) {
         }
         VL_FINISH_MT("verilog/DEBUG.v", 16, "");
     }
-    if ((7U == (IData)(vlSelf->TOP__DOT__ID__DOT__decRes_0))) {
-        vlSelf->TOP__DOT__ID_io_decInfo_memOp_sdata = 0ULL;
-        vlSelf->TOP__DOT__ID__DOT___GEN_64 = 0ULL;
-    } else if ((1U == (IData)(vlSelf->TOP__DOT__ID__DOT__decRes_0))) {
-        vlSelf->TOP__DOT__ID_io_decInfo_memOp_sdata = 0ULL;
-        vlSelf->TOP__DOT__ID__DOT___GEN_64 = (QData)((IData)(
-                                                             (0x67U 
-                                                              == 
-                                                              (0x7fU 
-                                                               & vlSelf->TOP__DOT__IF__DOT__inst_rom_io_inst_o_MPORT_data))));
-    } else if ((0U == (IData)(vlSelf->TOP__DOT__ID__DOT__decRes_0))) {
-        vlSelf->TOP__DOT__ID_io_decInfo_memOp_sdata = 0ULL;
-        vlSelf->TOP__DOT__ID__DOT___GEN_64 = 0ULL;
-    } else if ((3U == (IData)(vlSelf->TOP__DOT__ID__DOT__decRes_0))) {
-        vlSelf->TOP__DOT__ID_io_decInfo_memOp_sdata = 0ULL;
-        vlSelf->TOP__DOT__ID__DOT___GEN_64 = ((7U == 
-                                               (7U 
-                                                & (vlSelf->TOP__DOT__IF__DOT__inst_rom_io_inst_o_MPORT_data 
-                                                   >> 0xcU)))
-                                               ? (QData)((IData)(TOP__DOT__ID__DOT___io_decInfo_branchOp_happen_T_1))
-                                               : ((6U 
-                                                   == 
+    vlSelf->TOP__DOT__ID_io_decInfo_memOp_sdata = (
                                                    (7U 
-                                                    & (vlSelf->TOP__DOT__IF__DOT__inst_rom_io_inst_o_MPORT_data 
-                                                       >> 0xcU)))
-                                                   ? (QData)((IData)(TOP__DOT__ID__DOT___io_decInfo_branchOp_happen_T_1))
-                                                   : 
-                                                  ((5U 
-                                                    == 
-                                                    (7U 
-                                                     & (vlSelf->TOP__DOT__IF__DOT__inst_rom_io_inst_o_MPORT_data 
-                                                        >> 0xcU)))
-                                                    ? (QData)((IData)(
-                                                                      VL_GTS_IQQ(64, vlSelf->TOP__DOT__Regfile_io_readRes_rs1Val, vlSelf->TOP__DOT__Regfile_io_readRes_rs2Val)))
+                                                    == (IData)(vlSelf->TOP__DOT__ID__DOT__decRes_0))
+                                                    ? 0ULL
                                                     : 
-                                                   ((4U 
-                                                     == 
-                                                     (7U 
-                                                      & (vlSelf->TOP__DOT__IF__DOT__inst_rom_io_inst_o_MPORT_data 
-                                                         >> 0xcU)))
-                                                     ? (QData)((IData)(
-                                                                       VL_LTS_IQQ(64, vlSelf->TOP__DOT__Regfile_io_readRes_rs1Val, vlSelf->TOP__DOT__Regfile_io_readRes_rs2Val)))
+                                                   ((1U 
+                                                     == (IData)(vlSelf->TOP__DOT__ID__DOT__decRes_0))
+                                                     ? 0ULL
                                                      : 
-                                                    ((1U 
+                                                    ((0U 
+                                                      == (IData)(vlSelf->TOP__DOT__ID__DOT__decRes_0))
+                                                      ? 0ULL
+                                                      : 
+                                                     ((3U 
+                                                       == (IData)(vlSelf->TOP__DOT__ID__DOT__decRes_0))
+                                                       ? 0ULL
+                                                       : 
+                                                      ((2U 
+                                                        == (IData)(vlSelf->TOP__DOT__ID__DOT__decRes_0))
+                                                        ? 0ULL
+                                                        : 
+                                                       ((4U 
+                                                         == (IData)(vlSelf->TOP__DOT__ID__DOT__decRes_0))
+                                                         ? 0ULL
+                                                         : 
+                                                        ((5U 
+                                                          == (IData)(vlSelf->TOP__DOT__ID__DOT__decRes_0))
+                                                          ? vlSelf->TOP__DOT__Regfile_io_readRes_rs2Val
+                                                          : 0ULL)))))));
+    vlSelf->TOP__DOT__ID_io_decInfo_branchOp_happen 
+        = ((7U != (IData)(vlSelf->TOP__DOT__ID__DOT__decRes_0)) 
+           & ((1U == (IData)(vlSelf->TOP__DOT__ID__DOT__decRes_0))
+               ? (0x67U == (0x7fU & vlSelf->TOP__DOT__IF__DOT__inst_rom_io_inst_o_MPORT_data))
+               : ((0U != (IData)(vlSelf->TOP__DOT__ID__DOT__decRes_0)) 
+                  & ((3U == (IData)(vlSelf->TOP__DOT__ID__DOT__decRes_0))
+                      ? ((7U == (7U & (vlSelf->TOP__DOT__IF__DOT__inst_rom_io_inst_o_MPORT_data 
+                                       >> 0xcU))) ? (IData)(TOP__DOT__ID__DOT___io_decInfo_branchOp_happen_T_1)
+                          : ((6U == (7U & (vlSelf->TOP__DOT__IF__DOT__inst_rom_io_inst_o_MPORT_data 
+                                           >> 0xcU)))
+                              ? (IData)(TOP__DOT__ID__DOT___io_decInfo_branchOp_happen_T_1)
+                              : ((5U == (7U & (vlSelf->TOP__DOT__IF__DOT__inst_rom_io_inst_o_MPORT_data 
+                                               >> 0xcU)))
+                                  ? VL_GTS_IQQ(64, vlSelf->TOP__DOT__Regfile_io_readRes_rs1Val, vlSelf->TOP__DOT__Regfile_io_readRes_rs2Val)
+                                  : ((4U == (7U & (vlSelf->TOP__DOT__IF__DOT__inst_rom_io_inst_o_MPORT_data 
+                                                   >> 0xcU)))
+                                      ? VL_LTS_IQQ(64, vlSelf->TOP__DOT__Regfile_io_readRes_rs1Val, vlSelf->TOP__DOT__Regfile_io_readRes_rs2Val)
+                                      : ((1U == (7U 
+                                                 & (vlSelf->TOP__DOT__IF__DOT__inst_rom_io_inst_o_MPORT_data 
+                                                    >> 0xcU)))
+                                          ? (vlSelf->TOP__DOT__Regfile_io_readRes_rs1Val 
+                                             != vlSelf->TOP__DOT__Regfile_io_readRes_rs2Val)
+                                          : (IData)(
+                                                    ((0U 
                                                       == 
-                                                      (7U 
-                                                       & (vlSelf->TOP__DOT__IF__DOT__inst_rom_io_inst_o_MPORT_data 
-                                                          >> 0xcU)))
-                                                      ? 
-                                                     (vlSelf->TOP__DOT__Regfile_io_readRes_rs1Val 
-                                                      ^ vlSelf->TOP__DOT__Regfile_io_readRes_rs2Val)
-                                                      : (QData)((IData)(
-                                                                        ((0U 
-                                                                          == 
-                                                                          (0x7000U 
-                                                                           & vlSelf->TOP__DOT__IF__DOT__inst_rom_io_inst_o_MPORT_data)) 
-                                                                         & (IData)(TOP__DOT__ID__DOT___io_decInfo_branchOp_happen_T_1)))))))));
-    } else {
-        vlSelf->TOP__DOT__ID_io_decInfo_memOp_sdata 
-            = ((2U == (IData)(vlSelf->TOP__DOT__ID__DOT__decRes_0))
-                ? 0ULL : ((4U == (IData)(vlSelf->TOP__DOT__ID__DOT__decRes_0))
-                           ? 0ULL : ((5U == (IData)(vlSelf->TOP__DOT__ID__DOT__decRes_0))
-                                      ? vlSelf->TOP__DOT__Regfile_io_readRes_rs2Val
-                                      : 0ULL)));
-        vlSelf->TOP__DOT__ID__DOT___GEN_64 = (QData)((IData)(
-                                                             ((2U 
-                                                               != (IData)(vlSelf->TOP__DOT__ID__DOT__decRes_0)) 
-                                                              & (4U 
-                                                                 == (IData)(vlSelf->TOP__DOT__ID__DOT__decRes_0)))));
-    }
+                                                      (0x7000U 
+                                                       & vlSelf->TOP__DOT__IF__DOT__inst_rom_io_inst_o_MPORT_data)) 
+                                                     & (IData)(TOP__DOT__ID__DOT___io_decInfo_branchOp_happen_T_1))))))))
+                      : ((2U != (IData)(vlSelf->TOP__DOT__ID__DOT__decRes_0)) 
+                         & (4U == (IData)(vlSelf->TOP__DOT__ID__DOT__decRes_0)))))));
     vlSelf->TOP__DOT__ID_io_decInfo_memOp_sign = ((7U 
                                                    != (IData)(vlSelf->TOP__DOT__ID__DOT__decRes_0)) 
                                                   & ((1U 
@@ -1446,10 +1435,10 @@ VL_ATTR_COLD void VTOP___024root___settle__TOP__0(VTOP___024root* vlSelf) {
         vlSelf->TOP__DOT__ID__DOT___GEN_63[1U] = __Vtemp_h2398d8f7__0[1U];
         vlSelf->TOP__DOT__ID__DOT___GEN_63[2U] = __Vtemp_h2398d8f7__0[2U];
     }
-    vlSelf->io_branch = (1U & (IData)(vlSelf->TOP__DOT__ID__DOT___GEN_64));
+    vlSelf->io_branch = vlSelf->TOP__DOT__ID_io_decInfo_branchOp_happen;
     vlSelf->TOP__DOT__IF__DOT___GEN_0 = ((IData)(vlSelf->reset)
                                           ? 0x80000000ULL
-                                          : ((1U & (IData)(vlSelf->TOP__DOT__ID__DOT___GEN_64))
+                                          : ((IData)(vlSelf->TOP__DOT__ID_io_decInfo_branchOp_happen)
                                               ? ((7U 
                                                   == (IData)(vlSelf->TOP__DOT__ID__DOT__decRes_0))
                                                   ? 0ULL
@@ -1942,6 +1931,7 @@ VL_ATTR_COLD void VTOP___024root___ctor_var_reset(VTOP___024root* vlSelf) {
     vlSelf->TOP__DOT__ID_io_decInfo_writeRfOp_wen = VL_RAND_RESET_I(1);
     vlSelf->TOP__DOT__ID_io_decInfo_aluOp_src1 = VL_RAND_RESET_Q(64);
     vlSelf->TOP__DOT__ID_io_decInfo_aluOp_opt = VL_RAND_RESET_I(5);
+    vlSelf->TOP__DOT__ID_io_decInfo_branchOp_happen = VL_RAND_RESET_I(1);
     vlSelf->TOP__DOT__ID_io_decInfo_memOp_isStore = VL_RAND_RESET_I(1);
     vlSelf->TOP__DOT__ID_io_decInfo_memOp_sign = VL_RAND_RESET_I(1);
     vlSelf->TOP__DOT__ID_io_decInfo_memOp_sdata = VL_RAND_RESET_Q(64);
@@ -1960,7 +1950,6 @@ VL_ATTR_COLD void VTOP___024root___ctor_var_reset(VTOP___024root* vlSelf) {
     vlSelf->TOP__DOT__ID__DOT__immI = VL_RAND_RESET_Q(64);
     vlSelf->TOP__DOT__ID__DOT___io_decInfo_branchOp_newPC_T_11 = VL_RAND_RESET_I(13);
     VL_RAND_RESET_W(76, vlSelf->TOP__DOT__ID__DOT___GEN_63);
-    vlSelf->TOP__DOT__ID__DOT___GEN_64 = VL_RAND_RESET_Q(64);
     vlSelf->TOP__DOT__ID__DOT___GEN_67 = VL_RAND_RESET_I(3);
     VL_RAND_RESET_W(127, vlSelf->TOP__DOT__EX__DOT__aluRes);
     for (int __Vi0=0; __Vi0<128; ++__Vi0) {

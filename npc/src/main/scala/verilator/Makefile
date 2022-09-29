@@ -1,10 +1,12 @@
-.PHONY : run gen clean compile load 
+.PHONY : run gen clean compile load test
 RESOURCES = ../../resources/	#Used by chisel BlackBox
 BLACKBOX = $(addprefix  $(RESOURCES), $(shell ls $RESOURCES))
 
 VSRC   = $(addprefix ./verilog/, $(shell ls ./verilog | grep .v))
 CPPSRC = $(addprefix ./cpp/, $(shell ls ./cpp | grep cpp))
-FLAGS  = --cc --exe --build --trace
+VFLAGS = --cc --exe --build --trace
+
+CPPFLAGS    = -I ./cpp
 
 LLVM_FLAGS += $(shell llvm-config --ldflags)
 LLVM_FLAGS += $(shell llvm-config --cxxflags)
@@ -14,7 +16,7 @@ COLOR_RED   = \033[1;31m
 COLOR_GREEN = \033[1;32m
 COLOR_NONE  = \033[0m
 
-#makefiles = $(shell find . -name "makefile")
+#include ./cpp/makefile
 
 gen:	#use our inst rom in asm
 	make -C ./asm gen
@@ -28,9 +30,11 @@ load:
 		printf "$(COLOR_RED)usage: make load img=xxx$(COLOR_NONE)\n"; \
 	fi
 run:compile
+	@echo usage make run [img=foo]
+	$(load)
 	@obj_dir/VTOP $(img)
 compile:
-	@verilator $(VSRC) $(CPPSRC) $(FLAGS) --top TOP
+	@verilator $(VSRC) $(CPPSRC) $(VFLAGS) --top TOP
 	@printf "$(COLOR_GREEN)[done]$(COLOR_NONE)\n"
 
 clean:
