@@ -1,5 +1,5 @@
 #include <verilated_vcd_c.h>
-
+using namespace std;
 //Verilog or chisel can't read binary file to get the instructions, so 
 //we have to add this feature to our cpp testbench, which lose the compability
 

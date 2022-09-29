@@ -6,15 +6,6 @@
 
 #include "VTOP___024root.h"
 
-VL_ATTR_COLD void VTOP___024root___settle__TOP__0(VTOP___024root* vlSelf) {
-    if (false && vlSelf) {}  // Prevent unused
-    VTOP__Syms* const __restrict vlSymsp VL_ATTR_UNUSED = vlSelf->vlSymsp;
-    VL_DEBUG_IF(VL_DBG_MSGF("+    VTOP___024root___settle__TOP__0\n"); );
-    // Body
-    vlSelf->TOP__DOT__ID__DOT___io_decInfo_branchOp_happen_T_1 = 1U;
-    vlSelf->io_pc_o = (QData)((IData)(vlSelf->TOP__DOT__IF__DOT__pc));
-}
-
 extern const VlWide<16>/*511:0*/ VTOP__ConstPool__CONST_h07e49054_0;
 
 VL_ATTR_COLD void VTOP___024root___initial__TOP__0(VTOP___024root* vlSelf) {
@@ -27,10 +18,10 @@ VL_ATTR_COLD void VTOP___024root___initial__TOP__0(VTOP___024root* vlSelf) {
                  , 0, ~0ULL);
 }
 
-VL_ATTR_COLD void VTOP___024root___settle__TOP__1(VTOP___024root* vlSelf) {
+VL_ATTR_COLD void VTOP___024root___settle__TOP__0(VTOP___024root* vlSelf) {
     if (false && vlSelf) {}  // Prevent unused
     VTOP__Syms* const __restrict vlSymsp VL_ATTR_UNUSED = vlSelf->vlSymsp;
-    VL_DEBUG_IF(VL_DBG_MSGF("+    VTOP___024root___settle__TOP__1\n"); );
+    VL_DEBUG_IF(VL_DBG_MSGF("+    VTOP___024root___settle__TOP__0\n"); );
     // Init
     CData/*4:0*/ TOP__DOT__ID__DOT___decRes_T_140;
     CData/*4:0*/ TOP__DOT__ID__DOT___decRes_T_155;
@@ -39,6 +30,7 @@ VL_ATTR_COLD void VTOP___024root___settle__TOP__1(VTOP___024root* vlSelf) {
     CData/*4:0*/ TOP__DOT__ID__DOT___decRes_T_207;
     CData/*4:0*/ TOP__DOT__ID__DOT___decRes_T_222;
     CData/*4:0*/ TOP__DOT__ID__DOT___decRes_T_237;
+    CData/*0:0*/ TOP__DOT__ID__DOT___io_decInfo_branchOp_happen_T_1;
     SData/*11:0*/ TOP__DOT__ID__DOT___io_decInfo_aluOp_src2_T_16;
     VlWide<4>/*127:0*/ TOP__DOT__EX__DOT___aluRes_T_10;
     IData/*31:0*/ TOP__DOT__EX__DOT___aluRes_T_30;
@@ -48,7 +40,8 @@ VL_ATTR_COLD void VTOP___024root___settle__TOP__1(VTOP___024root* vlSelf) {
     VlWide<4>/*126:0*/ TOP__DOT__EX__DOT___aluRes_T_91;
     QData/*63:0*/ TOP__DOT__Regfile__DOT___GEN_77;
     QData/*63:0*/ TOP__DOT__Regfile__DOT___GEN_90;
-    QData/*63:0*/ TOP__DOT__Regfile__DOT___GEN_94;
+    QData/*63:0*/ TOP__DOT__Regfile__DOT___GEN_109;
+    QData/*63:0*/ TOP__DOT__Regfile__DOT___GEN_122;
     VlWide<3>/*95:0*/ __Vtemp_h5f65369a__0;
     VlWide<3>/*95:0*/ __Vtemp_h3703b819__0;
     VlWide<3>/*95:0*/ __Vtemp_h5f65369a__1;
@@ -73,6 +66,7 @@ VL_ATTR_COLD void VTOP___024root___settle__TOP__1(VTOP___024root* vlSelf) {
     VlWide<4>/*127:0*/ __Vtemp_h9a75dcf3__0;
     VlWide<4>/*127:0*/ __Vtemp_h76bf409d__0;
     // Body
+    vlSelf->io_pc_o = (QData)((IData)(vlSelf->TOP__DOT__IF__DOT__pc));
     vlSelf->TOP__DOT__IF__DOT__inst_rom_io_inst_o_MPORT_data 
         = vlSelf->TOP__DOT__IF__DOT__inst_rom[(0x7fffU 
                                                & (vlSelf->TOP__DOT__IF__DOT__pc 
@@ -266,6 +260,92 @@ VL_ATTR_COLD void VTOP___024root___settle__TOP__1(VTOP___024root* vlSelf) {
                                                                  >> 0xfU)))
                                                              ? vlSelf->TOP__DOT__Regfile__DOT__registers_1
                                                              : vlSelf->TOP__DOT__Regfile__DOT__registers_0)))))))))))));
+    TOP__DOT__Regfile__DOT___GEN_109 = ((0xdU == (0x1fU 
+                                                  & (vlSelf->TOP__DOT__IF__DOT__inst_rom_io_inst_o_MPORT_data 
+                                                     >> 0x14U)))
+                                         ? vlSelf->TOP__DOT__Regfile__DOT__registers_13
+                                         : ((0xcU == 
+                                             (0x1fU 
+                                              & (vlSelf->TOP__DOT__IF__DOT__inst_rom_io_inst_o_MPORT_data 
+                                                 >> 0x14U)))
+                                             ? vlSelf->TOP__DOT__Regfile__DOT__registers_12
+                                             : ((0xbU 
+                                                 == 
+                                                 (0x1fU 
+                                                  & (vlSelf->TOP__DOT__IF__DOT__inst_rom_io_inst_o_MPORT_data 
+                                                     >> 0x14U)))
+                                                 ? vlSelf->TOP__DOT__Regfile__DOT__registers_11
+                                                 : 
+                                                ((0xaU 
+                                                  == 
+                                                  (0x1fU 
+                                                   & (vlSelf->TOP__DOT__IF__DOT__inst_rom_io_inst_o_MPORT_data 
+                                                      >> 0x14U)))
+                                                  ? vlSelf->TOP__DOT__Regfile__DOT__registers_10
+                                                  : 
+                                                 ((9U 
+                                                   == 
+                                                   (0x1fU 
+                                                    & (vlSelf->TOP__DOT__IF__DOT__inst_rom_io_inst_o_MPORT_data 
+                                                       >> 0x14U)))
+                                                   ? vlSelf->TOP__DOT__Regfile__DOT__registers_9
+                                                   : 
+                                                  ((8U 
+                                                    == 
+                                                    (0x1fU 
+                                                     & (vlSelf->TOP__DOT__IF__DOT__inst_rom_io_inst_o_MPORT_data 
+                                                        >> 0x14U)))
+                                                    ? vlSelf->TOP__DOT__Regfile__DOT__registers_8
+                                                    : 
+                                                   ((7U 
+                                                     == 
+                                                     (0x1fU 
+                                                      & (vlSelf->TOP__DOT__IF__DOT__inst_rom_io_inst_o_MPORT_data 
+                                                         >> 0x14U)))
+                                                     ? vlSelf->TOP__DOT__Regfile__DOT__registers_7
+                                                     : 
+                                                    ((6U 
+                                                      == 
+                                                      (0x1fU 
+                                                       & (vlSelf->TOP__DOT__IF__DOT__inst_rom_io_inst_o_MPORT_data 
+                                                          >> 0x14U)))
+                                                      ? vlSelf->TOP__DOT__Regfile__DOT__registers_6
+                                                      : 
+                                                     ((5U 
+                                                       == 
+                                                       (0x1fU 
+                                                        & (vlSelf->TOP__DOT__IF__DOT__inst_rom_io_inst_o_MPORT_data 
+                                                           >> 0x14U)))
+                                                       ? vlSelf->TOP__DOT__Regfile__DOT__registers_5
+                                                       : 
+                                                      ((4U 
+                                                        == 
+                                                        (0x1fU 
+                                                         & (vlSelf->TOP__DOT__IF__DOT__inst_rom_io_inst_o_MPORT_data 
+                                                            >> 0x14U)))
+                                                        ? vlSelf->TOP__DOT__Regfile__DOT__registers_4
+                                                        : 
+                                                       ((3U 
+                                                         == 
+                                                         (0x1fU 
+                                                          & (vlSelf->TOP__DOT__IF__DOT__inst_rom_io_inst_o_MPORT_data 
+                                                             >> 0x14U)))
+                                                         ? vlSelf->TOP__DOT__Regfile__DOT__registers_3
+                                                         : 
+                                                        ((2U 
+                                                          == 
+                                                          (0x1fU 
+                                                           & (vlSelf->TOP__DOT__IF__DOT__inst_rom_io_inst_o_MPORT_data 
+                                                              >> 0x14U)))
+                                                          ? vlSelf->TOP__DOT__Regfile__DOT__registers_2
+                                                          : 
+                                                         ((1U 
+                                                           == 
+                                                           (0x1fU 
+                                                            & (vlSelf->TOP__DOT__IF__DOT__inst_rom_io_inst_o_MPORT_data 
+                                                               >> 0x14U)))
+                                                           ? vlSelf->TOP__DOT__Regfile__DOT__registers_1
+                                                           : vlSelf->TOP__DOT__Regfile__DOT__registers_0)))))))))))));
     TOP__DOT__ID__DOT___decRes_T_140 = ((0x4000501bU 
                                          == (0xfe00707fU 
                                              & vlSelf->TOP__DOT__IF__DOT__inst_rom_io_inst_o_MPORT_data))
@@ -527,6 +607,92 @@ VL_ATTR_COLD void VTOP___024root___settle__TOP__1(VTOP___024root* vlSelf) {
                                                                  >> 0xfU)))
                                                              ? vlSelf->TOP__DOT__Regfile__DOT__registers_14
                                                              : TOP__DOT__Regfile__DOT___GEN_77)))))))))))));
+    TOP__DOT__Regfile__DOT___GEN_122 = ((0x1aU == (0x1fU 
+                                                   & (vlSelf->TOP__DOT__IF__DOT__inst_rom_io_inst_o_MPORT_data 
+                                                      >> 0x14U)))
+                                         ? vlSelf->TOP__DOT__Regfile__DOT__registers_26
+                                         : ((0x19U 
+                                             == (0x1fU 
+                                                 & (vlSelf->TOP__DOT__IF__DOT__inst_rom_io_inst_o_MPORT_data 
+                                                    >> 0x14U)))
+                                             ? vlSelf->TOP__DOT__Regfile__DOT__registers_25
+                                             : ((0x18U 
+                                                 == 
+                                                 (0x1fU 
+                                                  & (vlSelf->TOP__DOT__IF__DOT__inst_rom_io_inst_o_MPORT_data 
+                                                     >> 0x14U)))
+                                                 ? vlSelf->TOP__DOT__Regfile__DOT__registers_24
+                                                 : 
+                                                ((0x17U 
+                                                  == 
+                                                  (0x1fU 
+                                                   & (vlSelf->TOP__DOT__IF__DOT__inst_rom_io_inst_o_MPORT_data 
+                                                      >> 0x14U)))
+                                                  ? vlSelf->TOP__DOT__Regfile__DOT__registers_23
+                                                  : 
+                                                 ((0x16U 
+                                                   == 
+                                                   (0x1fU 
+                                                    & (vlSelf->TOP__DOT__IF__DOT__inst_rom_io_inst_o_MPORT_data 
+                                                       >> 0x14U)))
+                                                   ? vlSelf->TOP__DOT__Regfile__DOT__registers_22
+                                                   : 
+                                                  ((0x15U 
+                                                    == 
+                                                    (0x1fU 
+                                                     & (vlSelf->TOP__DOT__IF__DOT__inst_rom_io_inst_o_MPORT_data 
+                                                        >> 0x14U)))
+                                                    ? vlSelf->TOP__DOT__Regfile__DOT__registers_21
+                                                    : 
+                                                   ((0x14U 
+                                                     == 
+                                                     (0x1fU 
+                                                      & (vlSelf->TOP__DOT__IF__DOT__inst_rom_io_inst_o_MPORT_data 
+                                                         >> 0x14U)))
+                                                     ? vlSelf->TOP__DOT__Regfile__DOT__registers_20
+                                                     : 
+                                                    ((0x13U 
+                                                      == 
+                                                      (0x1fU 
+                                                       & (vlSelf->TOP__DOT__IF__DOT__inst_rom_io_inst_o_MPORT_data 
+                                                          >> 0x14U)))
+                                                      ? vlSelf->TOP__DOT__Regfile__DOT__registers_19
+                                                      : 
+                                                     ((0x12U 
+                                                       == 
+                                                       (0x1fU 
+                                                        & (vlSelf->TOP__DOT__IF__DOT__inst_rom_io_inst_o_MPORT_data 
+                                                           >> 0x14U)))
+                                                       ? vlSelf->TOP__DOT__Regfile__DOT__registers_18
+                                                       : 
+                                                      ((0x11U 
+                                                        == 
+                                                        (0x1fU 
+                                                         & (vlSelf->TOP__DOT__IF__DOT__inst_rom_io_inst_o_MPORT_data 
+                                                            >> 0x14U)))
+                                                        ? vlSelf->TOP__DOT__Regfile__DOT__registers_17
+                                                        : 
+                                                       ((0x10U 
+                                                         == 
+                                                         (0x1fU 
+                                                          & (vlSelf->TOP__DOT__IF__DOT__inst_rom_io_inst_o_MPORT_data 
+                                                             >> 0x14U)))
+                                                         ? vlSelf->TOP__DOT__Regfile__DOT__registers_16
+                                                         : 
+                                                        ((0xfU 
+                                                          == 
+                                                          (0x1fU 
+                                                           & (vlSelf->TOP__DOT__IF__DOT__inst_rom_io_inst_o_MPORT_data 
+                                                              >> 0x14U)))
+                                                          ? vlSelf->TOP__DOT__Regfile__DOT__registers_15
+                                                          : 
+                                                         ((0xeU 
+                                                           == 
+                                                           (0x1fU 
+                                                            & (vlSelf->TOP__DOT__IF__DOT__inst_rom_io_inst_o_MPORT_data 
+                                                               >> 0x14U)))
+                                                           ? vlSelf->TOP__DOT__Regfile__DOT__registers_14
+                                                           : TOP__DOT__Regfile__DOT___GEN_109)))))))))))));
     TOP__DOT__ID__DOT___decRes_T_155 = ((0x2007033U 
                                          == (0xfe00707fU 
                                              & vlSelf->TOP__DOT__IF__DOT__inst_rom_io_inst_o_MPORT_data))
@@ -700,29 +866,78 @@ VL_ATTR_COLD void VTOP___024root___settle__TOP__1(VTOP___024root* vlSelf) {
                                                                 & vlSelf->TOP__DOT__IF__DOT__inst_rom_io_inst_o_MPORT_data))
                                                                ? 0xbU
                                                                : (IData)(TOP__DOT__ID__DOT___decRes_T_222))))))))))))))));
-    TOP__DOT__Regfile__DOT___GEN_94 = ((0x1eU == (0x1fU 
-                                                  & (vlSelf->TOP__DOT__IF__DOT__inst_rom_io_inst_o_MPORT_data 
-                                                     >> 0xfU)))
-                                        ? vlSelf->TOP__DOT__Regfile__DOT__registers_30
-                                        : ((0x1dU == 
-                                            (0x1fU 
-                                             & (vlSelf->TOP__DOT__IF__DOT__inst_rom_io_inst_o_MPORT_data 
-                                                >> 0xfU)))
-                                            ? vlSelf->TOP__DOT__Regfile__DOT__registers_29
-                                            : ((0x1cU 
-                                                == 
-                                                (0x1fU 
-                                                 & (vlSelf->TOP__DOT__IF__DOT__inst_rom_io_inst_o_MPORT_data 
-                                                    >> 0xfU)))
-                                                ? vlSelf->TOP__DOT__Regfile__DOT__registers_28
-                                                : (
-                                                   (0x1bU 
+    vlSelf->TOP__DOT__Regfile_io_readRes_rs1Val = (
+                                                   (0x1fU 
                                                     == 
                                                     (0x1fU 
                                                      & (vlSelf->TOP__DOT__IF__DOT__inst_rom_io_inst_o_MPORT_data 
                                                         >> 0xfU)))
-                                                    ? vlSelf->TOP__DOT__Regfile__DOT__registers_27
-                                                    : TOP__DOT__Regfile__DOT___GEN_90))));
+                                                    ? vlSelf->TOP__DOT__Regfile__DOT__registers_31
+                                                    : 
+                                                   ((0x1eU 
+                                                     == 
+                                                     (0x1fU 
+                                                      & (vlSelf->TOP__DOT__IF__DOT__inst_rom_io_inst_o_MPORT_data 
+                                                         >> 0xfU)))
+                                                     ? vlSelf->TOP__DOT__Regfile__DOT__registers_30
+                                                     : 
+                                                    ((0x1dU 
+                                                      == 
+                                                      (0x1fU 
+                                                       & (vlSelf->TOP__DOT__IF__DOT__inst_rom_io_inst_o_MPORT_data 
+                                                          >> 0xfU)))
+                                                      ? vlSelf->TOP__DOT__Regfile__DOT__registers_29
+                                                      : 
+                                                     ((0x1cU 
+                                                       == 
+                                                       (0x1fU 
+                                                        & (vlSelf->TOP__DOT__IF__DOT__inst_rom_io_inst_o_MPORT_data 
+                                                           >> 0xfU)))
+                                                       ? vlSelf->TOP__DOT__Regfile__DOT__registers_28
+                                                       : 
+                                                      ((0x1bU 
+                                                        == 
+                                                        (0x1fU 
+                                                         & (vlSelf->TOP__DOT__IF__DOT__inst_rom_io_inst_o_MPORT_data 
+                                                            >> 0xfU)))
+                                                        ? vlSelf->TOP__DOT__Regfile__DOT__registers_27
+                                                        : TOP__DOT__Regfile__DOT___GEN_90)))));
+    vlSelf->TOP__DOT__Regfile_io_readRes_rs2Val = (
+                                                   (0x1fU 
+                                                    == 
+                                                    (0x1fU 
+                                                     & (vlSelf->TOP__DOT__IF__DOT__inst_rom_io_inst_o_MPORT_data 
+                                                        >> 0x14U)))
+                                                    ? vlSelf->TOP__DOT__Regfile__DOT__registers_31
+                                                    : 
+                                                   ((0x1eU 
+                                                     == 
+                                                     (0x1fU 
+                                                      & (vlSelf->TOP__DOT__IF__DOT__inst_rom_io_inst_o_MPORT_data 
+                                                         >> 0x14U)))
+                                                     ? vlSelf->TOP__DOT__Regfile__DOT__registers_30
+                                                     : 
+                                                    ((0x1dU 
+                                                      == 
+                                                      (0x1fU 
+                                                       & (vlSelf->TOP__DOT__IF__DOT__inst_rom_io_inst_o_MPORT_data 
+                                                          >> 0x14U)))
+                                                      ? vlSelf->TOP__DOT__Regfile__DOT__registers_29
+                                                      : 
+                                                     ((0x1cU 
+                                                       == 
+                                                       (0x1fU 
+                                                        & (vlSelf->TOP__DOT__IF__DOT__inst_rom_io_inst_o_MPORT_data 
+                                                           >> 0x14U)))
+                                                       ? vlSelf->TOP__DOT__Regfile__DOT__registers_28
+                                                       : 
+                                                      ((0x1bU 
+                                                        == 
+                                                        (0x1fU 
+                                                         & (vlSelf->TOP__DOT__IF__DOT__inst_rom_io_inst_o_MPORT_data 
+                                                            >> 0x14U)))
+                                                        ? vlSelf->TOP__DOT__Regfile__DOT__registers_27
+                                                        : TOP__DOT__Regfile__DOT___GEN_122)))));
     TOP__DOT__ID__DOT___decRes_T_170 = ((0x40005013U 
                                          == (0xfc00707fU 
                                              & vlSelf->TOP__DOT__IF__DOT__inst_rom_io_inst_o_MPORT_data))
@@ -888,14 +1103,9 @@ VL_ATTR_COLD void VTOP___024root___settle__TOP__1(VTOP___024root* vlSelf) {
                                                                & vlSelf->TOP__DOT__IF__DOT__inst_rom_io_inst_o_MPORT_data))
                                                               ? 3U
                                                               : (IData)(TOP__DOT__ID__DOT___decRes_T_237))))))))))))));
-    vlSelf->TOP__DOT__Regfile_io_readRes_rs2Val = (
-                                                   (0x1fU 
-                                                    == 
-                                                    (0x1fU 
-                                                     & (vlSelf->TOP__DOT__IF__DOT__inst_rom_io_inst_o_MPORT_data 
-                                                        >> 0xfU)))
-                                                    ? vlSelf->TOP__DOT__Regfile__DOT__registers_31
-                                                    : TOP__DOT__Regfile__DOT___GEN_94);
+    TOP__DOT__ID__DOT___io_decInfo_branchOp_happen_T_1 
+        = (vlSelf->TOP__DOT__Regfile_io_readRes_rs1Val 
+           == vlSelf->TOP__DOT__Regfile_io_readRes_rs2Val);
     TOP__DOT__ID__DOT___decRes_T_185 = ((0x2033U == 
                                          (0xfe00707fU 
                                           & vlSelf->TOP__DOT__IF__DOT__inst_rom_io_inst_o_MPORT_data))
@@ -1057,41 +1267,45 @@ VL_ATTR_COLD void VTOP___024root___settle__TOP__1(VTOP___024root* vlSelf) {
                                                      (7U 
                                                       & (vlSelf->TOP__DOT__IF__DOT__inst_rom_io_inst_o_MPORT_data 
                                                          >> 0xcU)))
-                                                     ? 1ULL
+                                                     ? (QData)((IData)(TOP__DOT__ID__DOT___io_decInfo_branchOp_happen_T_1))
                                                      : 
                                                     ((6U 
                                                       == 
                                                       (7U 
                                                        & (vlSelf->TOP__DOT__IF__DOT__inst_rom_io_inst_o_MPORT_data 
                                                           >> 0xcU)))
-                                                      ? 1ULL
+                                                      ? (QData)((IData)(TOP__DOT__ID__DOT___io_decInfo_branchOp_happen_T_1))
                                                       : 
                                                      ((5U 
                                                        == 
                                                        (7U 
                                                         & (vlSelf->TOP__DOT__IF__DOT__inst_rom_io_inst_o_MPORT_data 
                                                            >> 0xcU)))
-                                                       ? 0ULL
+                                                       ? (QData)((IData)(
+                                                                         VL_GTS_IQQ(64, vlSelf->TOP__DOT__Regfile_io_readRes_rs1Val, vlSelf->TOP__DOT__Regfile_io_readRes_rs2Val)))
                                                        : 
                                                       ((4U 
                                                         == 
                                                         (7U 
                                                          & (vlSelf->TOP__DOT__IF__DOT__inst_rom_io_inst_o_MPORT_data 
                                                             >> 0xcU)))
-                                                        ? 0ULL
+                                                        ? (QData)((IData)(
+                                                                          VL_LTS_IQQ(64, vlSelf->TOP__DOT__Regfile_io_readRes_rs1Val, vlSelf->TOP__DOT__Regfile_io_readRes_rs2Val)))
                                                         : 
                                                        ((1U 
                                                          == 
                                                          (7U 
                                                           & (vlSelf->TOP__DOT__IF__DOT__inst_rom_io_inst_o_MPORT_data 
                                                              >> 0xcU)))
-                                                         ? 0ULL
+                                                         ? 
+                                                        (vlSelf->TOP__DOT__Regfile_io_readRes_rs1Val 
+                                                         ^ vlSelf->TOP__DOT__Regfile_io_readRes_rs2Val)
                                                          : (QData)((IData)(
-                                                                           (0U 
-                                                                            == 
-                                                                            (7U 
-                                                                             & (vlSelf->TOP__DOT__IF__DOT__inst_rom_io_inst_o_MPORT_data 
-                                                                                >> 0xcU))))))))))
+                                                                           ((0U 
+                                                                             == 
+                                                                             (0x7000U 
+                                                                              & vlSelf->TOP__DOT__IF__DOT__inst_rom_io_inst_o_MPORT_data)) 
+                                                                            & (IData)(TOP__DOT__ID__DOT___io_decInfo_branchOp_happen_T_1)))))))))
                                                     : (QData)((IData)(
                                                                       ((2U 
                                                                         != (IData)(vlSelf->TOP__DOT__ID__DOT__decRes_0)) 
@@ -1104,10 +1318,12 @@ VL_ATTR_COLD void VTOP___024root___settle__TOP__1(VTOP___024root* vlSelf) {
                                                      & (vlSelf->TOP__DOT__IF__DOT__inst_rom_io_inst_o_MPORT_data 
                                                         >> 0xeU)));
     if ((7U == (IData)(vlSelf->TOP__DOT__ID__DOT__decRes_0))) {
+        vlSelf->TOP__DOT__ID_io_decInfo_memOp_sdata = 0ULL;
         vlSelf->TOP__DOT__ID__DOT___GEN_61 = 0U;
         vlSelf->TOP__DOT__ID_io_decInfo_aluOp_src1 
-            = vlSelf->TOP__DOT__Regfile_io_readRes_rs2Val;
+            = vlSelf->TOP__DOT__Regfile_io_readRes_rs1Val;
     } else if ((1U == (IData)(vlSelf->TOP__DOT__ID__DOT__decRes_0))) {
+        vlSelf->TOP__DOT__ID_io_decInfo_memOp_sdata = 0ULL;
         vlSelf->TOP__DOT__ID__DOT___GEN_61 = (7U & 
                                               (3U & 
                                                (vlSelf->TOP__DOT__IF__DOT__inst_rom_io_inst_o_MPORT_data 
@@ -1115,33 +1331,42 @@ VL_ATTR_COLD void VTOP___024root___settle__TOP__1(VTOP___024root* vlSelf) {
         vlSelf->TOP__DOT__ID_io_decInfo_aluOp_src1 
             = ((0x67U == (0x7fU & vlSelf->TOP__DOT__IF__DOT__inst_rom_io_inst_o_MPORT_data))
                 ? (QData)((IData)(vlSelf->TOP__DOT__IF__DOT__pc))
-                : vlSelf->TOP__DOT__Regfile_io_readRes_rs2Val);
+                : vlSelf->TOP__DOT__Regfile_io_readRes_rs1Val);
     } else if ((0U == (IData)(vlSelf->TOP__DOT__ID__DOT__decRes_0))) {
+        vlSelf->TOP__DOT__ID_io_decInfo_memOp_sdata = 0ULL;
         vlSelf->TOP__DOT__ID__DOT___GEN_61 = (7U & 0U);
         vlSelf->TOP__DOT__ID_io_decInfo_aluOp_src1 
-            = vlSelf->TOP__DOT__Regfile_io_readRes_rs2Val;
+            = vlSelf->TOP__DOT__Regfile_io_readRes_rs1Val;
     } else if ((3U == (IData)(vlSelf->TOP__DOT__ID__DOT__decRes_0))) {
+        vlSelf->TOP__DOT__ID_io_decInfo_memOp_sdata = 0ULL;
         vlSelf->TOP__DOT__ID__DOT___GEN_61 = (7U & 0U);
         vlSelf->TOP__DOT__ID_io_decInfo_aluOp_src1 
-            = vlSelf->TOP__DOT__Regfile_io_readRes_rs2Val;
+            = vlSelf->TOP__DOT__Regfile_io_readRes_rs1Val;
     } else if ((2U == (IData)(vlSelf->TOP__DOT__ID__DOT__decRes_0))) {
+        vlSelf->TOP__DOT__ID_io_decInfo_memOp_sdata = 0ULL;
         vlSelf->TOP__DOT__ID__DOT___GEN_61 = (7U & 0U);
         vlSelf->TOP__DOT__ID_io_decInfo_aluOp_src1 
             = ((0x37U == (0x7fU & vlSelf->TOP__DOT__IF__DOT__inst_rom_io_inst_o_MPORT_data))
                 ? 0ULL : (QData)((IData)(vlSelf->TOP__DOT__IF__DOT__pc)));
     } else if ((4U == (IData)(vlSelf->TOP__DOT__ID__DOT__decRes_0))) {
+        vlSelf->TOP__DOT__ID_io_decInfo_memOp_sdata = 0ULL;
         vlSelf->TOP__DOT__ID__DOT___GEN_61 = (7U & 0U);
         vlSelf->TOP__DOT__ID_io_decInfo_aluOp_src1 
             = (QData)((IData)(vlSelf->TOP__DOT__IF__DOT__pc));
     } else {
-        vlSelf->TOP__DOT__ID__DOT___GEN_61 = (7U & 
-                                              ((5U 
-                                                == (IData)(vlSelf->TOP__DOT__ID__DOT__decRes_0))
-                                                ? (vlSelf->TOP__DOT__IF__DOT__inst_rom_io_inst_o_MPORT_data 
-                                                   >> 0xcU)
-                                                : 0U));
+        if ((5U == (IData)(vlSelf->TOP__DOT__ID__DOT__decRes_0))) {
+            vlSelf->TOP__DOT__ID_io_decInfo_memOp_sdata 
+                = vlSelf->TOP__DOT__Regfile_io_readRes_rs2Val;
+            vlSelf->TOP__DOT__ID__DOT___GEN_61 = (7U 
+                                                  & (vlSelf->TOP__DOT__IF__DOT__inst_rom_io_inst_o_MPORT_data 
+                                                     >> 0xcU));
+        } else {
+            vlSelf->TOP__DOT__ID_io_decInfo_memOp_sdata = 0ULL;
+            vlSelf->TOP__DOT__ID__DOT___GEN_61 = (7U 
+                                                  & 0U);
+        }
         vlSelf->TOP__DOT__ID_io_decInfo_aluOp_src1 
-            = vlSelf->TOP__DOT__Regfile_io_readRes_rs2Val;
+            = vlSelf->TOP__DOT__Regfile_io_readRes_rs1Val;
     }
     VL_EXTEND_WQ(76,64, __Vtemp_h5f65369a__0, vlSelf->TOP__DOT__Regfile_io_readRes_rs2Val);
     VL_EXTEND_WQ(76,64, __Vtemp_h3703b819__0, ((0x67U 
@@ -1237,7 +1462,7 @@ VL_ATTR_COLD void VTOP___024root___settle__TOP__1(VTOP___024root* vlSelf) {
                                                  ((1U 
                                                    == (IData)(vlSelf->TOP__DOT__ID__DOT__decRes_0))
                                                    ? 
-                                                  (vlSelf->TOP__DOT__Regfile_io_readRes_rs2Val 
+                                                  (vlSelf->TOP__DOT__Regfile_io_readRes_rs1Val 
                                                    + vlSelf->TOP__DOT__ID__DOT__immI)
                                                    : 
                                                   ((0U 
@@ -1283,22 +1508,6 @@ VL_ATTR_COLD void VTOP___024root___settle__TOP__1(VTOP___024root* vlSelf) {
                                               : (QData)((IData)(
                                                                 ((IData)(4U) 
                                                                  + vlSelf->TOP__DOT__IF__DOT__pc)))));
-    vlSelf->TOP__DOT__MEM__DOT__mask = ((3U == (3U 
-                                                & (IData)(vlSelf->TOP__DOT__ID__DOT___GEN_61)))
-                                         ? 0xffffffffffffffffULL
-                                         : (QData)((IData)(
-                                                           ((2U 
-                                                             == 
-                                                             (3U 
-                                                              & (IData)(vlSelf->TOP__DOT__ID__DOT___GEN_61)))
-                                                             ? 0xffffffffU
-                                                             : 
-                                                            ((1U 
-                                                              == 
-                                                              (3U 
-                                                               & (IData)(vlSelf->TOP__DOT__ID__DOT___GEN_61)))
-                                                              ? 0xffffU
-                                                              : 0xffU)))));
     vlSelf->io_src1 = vlSelf->TOP__DOT__ID_io_decInfo_aluOp_src1;
     vlSelf->io_src2 = (((QData)((IData)(vlSelf->TOP__DOT__ID__DOT___GEN_57[1U])) 
                         << 0x20U) | (QData)((IData)(
@@ -1524,6 +1733,108 @@ VL_ATTR_COLD void VTOP___024root___settle__TOP__1(VTOP___024root* vlSelf) {
         vlSelf->TOP__DOT__EX__DOT__aluRes[2U] = TOP__DOT__EX__DOT___aluRes_T_91[2U];
         vlSelf->TOP__DOT__EX__DOT__aluRes[3U] = TOP__DOT__EX__DOT___aluRes_T_91[3U];
     }
+    vlSelf->TOP__DOT__MEM__DOT__ram1_MPORT_data = (0xffU 
+                                                   & ((1U 
+                                                       & ((0xffffU 
+                                                           & ((IData)(1U) 
+                                                              << 
+                                                              (0xfU 
+                                                               & ((IData)(1U) 
+                                                                  << 
+                                                                  (3U 
+                                                                   & (IData)(vlSelf->TOP__DOT__ID__DOT___GEN_61)))))) 
+                                                          - (IData)(1U)))
+                                                       ? (IData)(vlSelf->TOP__DOT__ID_io_decInfo_memOp_sdata)
+                                                       : 
+                                                      vlSelf->TOP__DOT__MEM__DOT__ram1
+                                                      [
+                                                      (0xfU 
+                                                       & (vlSelf->TOP__DOT__EX__DOT__aluRes[0U] 
+                                                          >> 3U))]));
+    vlSelf->TOP__DOT__MEM__DOT__ram2_MPORT_2_data = 
+        (0xffU & ((2U & ((0xffffU & ((IData)(1U) << 
+                                     (0xfU & ((IData)(1U) 
+                                              << (3U 
+                                                  & (IData)(vlSelf->TOP__DOT__ID__DOT___GEN_61)))))) 
+                         - (IData)(1U))) ? (IData)(
+                                                   (vlSelf->TOP__DOT__ID_io_decInfo_memOp_sdata 
+                                                    >> 8U))
+                   : vlSelf->TOP__DOT__MEM__DOT__ram2
+                  [(0xfU & (vlSelf->TOP__DOT__EX__DOT__aluRes[0U] 
+                            >> 3U))]));
+    vlSelf->TOP__DOT__MEM__DOT__ram3_MPORT_4_data = 
+        (0xffU & ((4U & ((0xffffU & ((IData)(1U) << 
+                                     (0xfU & ((IData)(1U) 
+                                              << (3U 
+                                                  & (IData)(vlSelf->TOP__DOT__ID__DOT___GEN_61)))))) 
+                         - (IData)(1U))) ? (IData)(
+                                                   (vlSelf->TOP__DOT__ID_io_decInfo_memOp_sdata 
+                                                    >> 0x10U))
+                   : vlSelf->TOP__DOT__MEM__DOT__ram3
+                  [(0xfU & (vlSelf->TOP__DOT__EX__DOT__aluRes[0U] 
+                            >> 3U))]));
+    vlSelf->TOP__DOT__MEM__DOT__ram4_MPORT_6_data = 
+        (0xffU & ((8U & ((0xffffU & ((IData)(1U) << 
+                                     (0xfU & ((IData)(1U) 
+                                              << (3U 
+                                                  & (IData)(vlSelf->TOP__DOT__ID__DOT___GEN_61)))))) 
+                         - (IData)(1U))) ? (IData)(
+                                                   (vlSelf->TOP__DOT__ID_io_decInfo_memOp_sdata 
+                                                    >> 0x18U))
+                   : vlSelf->TOP__DOT__MEM__DOT__ram4
+                  [(0xfU & (vlSelf->TOP__DOT__EX__DOT__aluRes[0U] 
+                            >> 3U))]));
+    vlSelf->TOP__DOT__MEM__DOT__ram5_MPORT_8_data = 
+        (0xffU & ((0x10U & ((0xffffU & ((IData)(1U) 
+                                        << (0xfU & 
+                                            ((IData)(1U) 
+                                             << (3U 
+                                                 & (IData)(vlSelf->TOP__DOT__ID__DOT___GEN_61)))))) 
+                            - (IData)(1U))) ? (IData)(
+                                                      (vlSelf->TOP__DOT__ID_io_decInfo_memOp_sdata 
+                                                       >> 0x20U))
+                   : vlSelf->TOP__DOT__MEM__DOT__ram5
+                  [(0xfU & (vlSelf->TOP__DOT__EX__DOT__aluRes[0U] 
+                            >> 3U))]));
+    vlSelf->TOP__DOT__MEM__DOT__ram6_MPORT_10_data 
+        = (0xffU & ((0x20U & ((0xffffU & ((IData)(1U) 
+                                          << (0xfU 
+                                              & ((IData)(1U) 
+                                                 << 
+                                                 (3U 
+                                                  & (IData)(vlSelf->TOP__DOT__ID__DOT___GEN_61)))))) 
+                              - (IData)(1U))) ? (IData)(
+                                                        (vlSelf->TOP__DOT__ID_io_decInfo_memOp_sdata 
+                                                         >> 0x28U))
+                     : vlSelf->TOP__DOT__MEM__DOT__ram6
+                    [(0xfU & (vlSelf->TOP__DOT__EX__DOT__aluRes[0U] 
+                              >> 3U))]));
+    vlSelf->TOP__DOT__MEM__DOT__ram7_MPORT_12_data 
+        = (0xffU & ((0x40U & ((0xffffU & ((IData)(1U) 
+                                          << (0xfU 
+                                              & ((IData)(1U) 
+                                                 << 
+                                                 (3U 
+                                                  & (IData)(vlSelf->TOP__DOT__ID__DOT___GEN_61)))))) 
+                              - (IData)(1U))) ? (IData)(
+                                                        (vlSelf->TOP__DOT__ID_io_decInfo_memOp_sdata 
+                                                         >> 0x30U))
+                     : vlSelf->TOP__DOT__MEM__DOT__ram7
+                    [(0xfU & (vlSelf->TOP__DOT__EX__DOT__aluRes[0U] 
+                              >> 3U))]));
+    vlSelf->TOP__DOT__MEM__DOT__ram8_MPORT_14_data 
+        = (0xffU & ((0x80U & ((0xffffU & ((IData)(1U) 
+                                          << (0xfU 
+                                              & ((IData)(1U) 
+                                                 << 
+                                                 (3U 
+                                                  & (IData)(vlSelf->TOP__DOT__ID__DOT___GEN_61)))))) 
+                              - (IData)(1U))) ? (IData)(
+                                                        (vlSelf->TOP__DOT__ID_io_decInfo_memOp_sdata 
+                                                         >> 0x38U))
+                     : vlSelf->TOP__DOT__MEM__DOT__ram8
+                    [(0xfU & (vlSelf->TOP__DOT__EX__DOT__aluRes[0U] 
+                              >> 3U))]));
     vlSelf->TOP__DOT__MEM__DOT__loadval = ((((QData)((IData)(
                                                              ((vlSelf->TOP__DOT__MEM__DOT__ram1
                                                                [
@@ -1573,7 +1884,23 @@ VL_ATTR_COLD void VTOP___024root___settle__TOP__1(VTOP___024root* vlSelf) {
                                                                      (0xfU 
                                                                       & (vlSelf->TOP__DOT__EX__DOT__aluRes[0U] 
                                                                          >> 3U))])))))) 
-                                           & vlSelf->TOP__DOT__MEM__DOT__mask);
+                                           & ((3U == 
+                                               (3U 
+                                                & (IData)(vlSelf->TOP__DOT__ID__DOT___GEN_61)))
+                                               ? 0xffffffffffffffffULL
+                                               : (QData)((IData)(
+                                                                 ((2U 
+                                                                   == 
+                                                                   (3U 
+                                                                    & (IData)(vlSelf->TOP__DOT__ID__DOT___GEN_61)))
+                                                                   ? 0xffffffffU
+                                                                   : 
+                                                                  ((1U 
+                                                                    == 
+                                                                    (3U 
+                                                                     & (IData)(vlSelf->TOP__DOT__ID__DOT___GEN_61)))
+                                                                    ? 0xffffU
+                                                                    : 0xffU))))));
     vlSelf->TOP__DOT__MEM_io_writeRfOp_o_wdata = ((
                                                    (7U 
                                                     != (IData)(vlSelf->TOP__DOT__ID__DOT__decRes_0)) 
@@ -1663,7 +1990,6 @@ VL_ATTR_COLD void VTOP___024root___eval_settle(VTOP___024root* vlSelf) {
     VTOP___024root___settle__TOP__0(vlSelf);
     vlSelf->__Vm_traceActivity[1U] = 1U;
     vlSelf->__Vm_traceActivity[0U] = 1U;
-    VTOP___024root___settle__TOP__1(vlSelf);
 }
 
 VL_ATTR_COLD void VTOP___024root___final(VTOP___024root* vlSelf) {
@@ -1691,7 +2017,9 @@ VL_ATTR_COLD void VTOP___024root___ctor_var_reset(VTOP___024root* vlSelf) {
     vlSelf->TOP__DOT__ID_io_decInfo_aluOp_opt = VL_RAND_RESET_I(5);
     vlSelf->TOP__DOT__ID_io_decInfo_memOp_isStore = VL_RAND_RESET_I(1);
     vlSelf->TOP__DOT__ID_io_decInfo_memOp_sign = VL_RAND_RESET_I(1);
+    vlSelf->TOP__DOT__ID_io_decInfo_memOp_sdata = VL_RAND_RESET_Q(64);
     vlSelf->TOP__DOT__MEM_io_writeRfOp_o_wdata = VL_RAND_RESET_Q(64);
+    vlSelf->TOP__DOT__Regfile_io_readRes_rs1Val = VL_RAND_RESET_Q(64);
     vlSelf->TOP__DOT__Regfile_io_readRes_rs2Val = VL_RAND_RESET_Q(64);
     for (int __Vi0=0; __Vi0<32768; ++__Vi0) {
         vlSelf->TOP__DOT__IF__DOT__inst_rom[__Vi0] = VL_RAND_RESET_I(32);
@@ -1704,7 +2032,6 @@ VL_ATTR_COLD void VTOP___024root___ctor_var_reset(VTOP___024root* vlSelf) {
     vlSelf->TOP__DOT__ID__DOT__decRes_0 = VL_RAND_RESET_I(5);
     vlSelf->TOP__DOT__ID__DOT__immI = VL_RAND_RESET_Q(64);
     vlSelf->TOP__DOT__ID__DOT___io_decInfo_branchOp_newPC_T_11 = VL_RAND_RESET_I(13);
-    vlSelf->TOP__DOT__ID__DOT___io_decInfo_branchOp_happen_T_1 = VL_RAND_RESET_I(1);
     VL_RAND_RESET_W(76, vlSelf->TOP__DOT__ID__DOT___GEN_57);
     vlSelf->TOP__DOT__ID__DOT___GEN_58 = VL_RAND_RESET_Q(64);
     vlSelf->TOP__DOT__ID__DOT___GEN_61 = VL_RAND_RESET_I(3);
@@ -1712,28 +2039,35 @@ VL_ATTR_COLD void VTOP___024root___ctor_var_reset(VTOP___024root* vlSelf) {
     for (int __Vi0=0; __Vi0<16; ++__Vi0) {
         vlSelf->TOP__DOT__MEM__DOT__ram1[__Vi0] = VL_RAND_RESET_I(8);
     }
+    vlSelf->TOP__DOT__MEM__DOT__ram1_MPORT_data = VL_RAND_RESET_I(8);
     for (int __Vi0=0; __Vi0<16; ++__Vi0) {
         vlSelf->TOP__DOT__MEM__DOT__ram2[__Vi0] = VL_RAND_RESET_I(8);
     }
+    vlSelf->TOP__DOT__MEM__DOT__ram2_MPORT_2_data = VL_RAND_RESET_I(8);
     for (int __Vi0=0; __Vi0<16; ++__Vi0) {
         vlSelf->TOP__DOT__MEM__DOT__ram3[__Vi0] = VL_RAND_RESET_I(8);
     }
+    vlSelf->TOP__DOT__MEM__DOT__ram3_MPORT_4_data = VL_RAND_RESET_I(8);
     for (int __Vi0=0; __Vi0<16; ++__Vi0) {
         vlSelf->TOP__DOT__MEM__DOT__ram4[__Vi0] = VL_RAND_RESET_I(8);
     }
+    vlSelf->TOP__DOT__MEM__DOT__ram4_MPORT_6_data = VL_RAND_RESET_I(8);
     for (int __Vi0=0; __Vi0<16; ++__Vi0) {
         vlSelf->TOP__DOT__MEM__DOT__ram5[__Vi0] = VL_RAND_RESET_I(8);
     }
+    vlSelf->TOP__DOT__MEM__DOT__ram5_MPORT_8_data = VL_RAND_RESET_I(8);
     for (int __Vi0=0; __Vi0<16; ++__Vi0) {
         vlSelf->TOP__DOT__MEM__DOT__ram6[__Vi0] = VL_RAND_RESET_I(8);
     }
+    vlSelf->TOP__DOT__MEM__DOT__ram6_MPORT_10_data = VL_RAND_RESET_I(8);
     for (int __Vi0=0; __Vi0<16; ++__Vi0) {
         vlSelf->TOP__DOT__MEM__DOT__ram7[__Vi0] = VL_RAND_RESET_I(8);
     }
+    vlSelf->TOP__DOT__MEM__DOT__ram7_MPORT_12_data = VL_RAND_RESET_I(8);
     for (int __Vi0=0; __Vi0<16; ++__Vi0) {
         vlSelf->TOP__DOT__MEM__DOT__ram8[__Vi0] = VL_RAND_RESET_I(8);
     }
-    vlSelf->TOP__DOT__MEM__DOT__mask = VL_RAND_RESET_Q(64);
+    vlSelf->TOP__DOT__MEM__DOT__ram8_MPORT_14_data = VL_RAND_RESET_I(8);
     vlSelf->TOP__DOT__MEM__DOT__loadval = VL_RAND_RESET_Q(64);
     vlSelf->TOP__DOT__Regfile__DOT__registers_0 = VL_RAND_RESET_Q(64);
     vlSelf->TOP__DOT__Regfile__DOT__registers_1 = VL_RAND_RESET_Q(64);

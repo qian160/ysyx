@@ -24,8 +24,15 @@ VL_MODULE(VTOP___024root) {
         CData/*0:0*/ TOP__DOT__ID_io_decInfo_memOp_sign;
         CData/*4:0*/ TOP__DOT__ID__DOT___decRes_T_187;
         CData/*4:0*/ TOP__DOT__ID__DOT__decRes_0;
-        CData/*0:0*/ TOP__DOT__ID__DOT___io_decInfo_branchOp_happen_T_1;
         CData/*2:0*/ TOP__DOT__ID__DOT___GEN_61;
+        CData/*7:0*/ TOP__DOT__MEM__DOT__ram1_MPORT_data;
+        CData/*7:0*/ TOP__DOT__MEM__DOT__ram2_MPORT_2_data;
+        CData/*7:0*/ TOP__DOT__MEM__DOT__ram3_MPORT_4_data;
+        CData/*7:0*/ TOP__DOT__MEM__DOT__ram4_MPORT_6_data;
+        CData/*7:0*/ TOP__DOT__MEM__DOT__ram5_MPORT_8_data;
+        CData/*7:0*/ TOP__DOT__MEM__DOT__ram6_MPORT_10_data;
+        CData/*7:0*/ TOP__DOT__MEM__DOT__ram7_MPORT_12_data;
+        CData/*7:0*/ TOP__DOT__MEM__DOT__ram8_MPORT_14_data;
         CData/*0:0*/ __Vclklast__TOP__clock;
         SData/*12:0*/ TOP__DOT__ID__DOT___io_decInfo_branchOp_newPC_T_11;
         VL_OUT(io_inst_o,31,0);
@@ -39,12 +46,13 @@ VL_MODULE(VTOP___024root) {
         VL_OUT64(io_src1,63,0);
         VL_OUT64(io_src2,63,0);
         QData/*63:0*/ TOP__DOT__ID_io_decInfo_aluOp_src1;
+        QData/*63:0*/ TOP__DOT__ID_io_decInfo_memOp_sdata;
         QData/*63:0*/ TOP__DOT__MEM_io_writeRfOp_o_wdata;
+        QData/*63:0*/ TOP__DOT__Regfile_io_readRes_rs1Val;
         QData/*63:0*/ TOP__DOT__Regfile_io_readRes_rs2Val;
         QData/*63:0*/ TOP__DOT__IF__DOT___GEN_0;
         QData/*63:0*/ TOP__DOT__ID__DOT__immI;
         QData/*63:0*/ TOP__DOT__ID__DOT___GEN_58;
-        QData/*63:0*/ TOP__DOT__MEM__DOT__mask;
         QData/*63:0*/ TOP__DOT__MEM__DOT__loadval;
         QData/*63:0*/ TOP__DOT__Regfile__DOT__registers_0;
         QData/*63:0*/ TOP__DOT__Regfile__DOT__registers_1;
@@ -70,6 +78,8 @@ VL_MODULE(VTOP___024root) {
         QData/*63:0*/ TOP__DOT__Regfile__DOT__registers_21;
         QData/*63:0*/ TOP__DOT__Regfile__DOT__registers_22;
         QData/*63:0*/ TOP__DOT__Regfile__DOT__registers_23;
+    };
+    struct {
         QData/*63:0*/ TOP__DOT__Regfile__DOT__registers_24;
         QData/*63:0*/ TOP__DOT__Regfile__DOT__registers_25;
         QData/*63:0*/ TOP__DOT__Regfile__DOT__registers_26;
@@ -78,8 +88,6 @@ VL_MODULE(VTOP___024root) {
         QData/*63:0*/ TOP__DOT__Regfile__DOT__registers_29;
         QData/*63:0*/ TOP__DOT__Regfile__DOT__registers_30;
         QData/*63:0*/ TOP__DOT__Regfile__DOT__registers_31;
-    };
-    struct {
         VlUnpacked<IData/*31:0*/, 32768> TOP__DOT__IF__DOT__inst_rom;
         VlUnpacked<CData/*7:0*/, 16> TOP__DOT__MEM__DOT__ram1;
         VlUnpacked<CData/*7:0*/, 16> TOP__DOT__MEM__DOT__ram2;

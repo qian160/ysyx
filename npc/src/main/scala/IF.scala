@@ -12,7 +12,7 @@ class IF extends Module{
 
     val inst_rom    =  /*SyncRead*/Mem(0x8000, UInt(32.W))  //should be enough...
     //SyncRead will cause the "delay slot"
-
+    //in chisel test and verilator, the path will be different
     loadMemoryFromFileInline(inst_rom, "/home/s081/Downloads/ysyx-workbench/npc/src/main/scala/inst_rom")
     val pc          =  RegInit(CONST.PC_INIT)
 

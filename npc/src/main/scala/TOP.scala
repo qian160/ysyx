@@ -69,8 +69,9 @@ object Gen {
     def main(args:Array[String]) : Unit = {
         println(Yellow("Generate Verilog..."))
         //println(getVerilogString(new TOP))
-        (new chisel3.stage.ChiselStage).emitVerilog(new TOP, args)      //--target-dir , --no-dce
+        (new chisel3.stage.ChiselStage).emitVerilog(new TOP, Array("--target-dir", "src/main/scala/verilator/verilog/"))      //--target-dir , --no-dce
         //(new chisel3.stage.ChiselStage).execute(args, Seq(ChiselGeneratorAnnotation(() => new TOP)))
+
         println(Green("Done"))
 
     }

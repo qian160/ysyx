@@ -72,7 +72,7 @@ class ID extends Module{
             io.decInfo.branchOp.newPC   :=  rs1Val + imm_I(inst)
             //load uses src1 and src2 to calculate the address
             io.decInfo.memOp.isLoad     :=  opcode === Opcode.LOAD
-            io.decInfo.memOp.length     :=  fct3 (1, 0)
+            io.decInfo.memOp.length     :=  fct3(1, 0)
 
             io.decInfo.memOp.sign       :=  fct3(2)     //0 to 3 unsigned, signed when fct3 >= 4
 
@@ -81,6 +81,8 @@ class ID extends Module{
             io.decInfo.aluOp.src1       :=  rs1Val
             io.decInfo.aluOp.src2       :=  rs2Val
             io.decInfo.writeRfOp.wen    :=  true.B
+
+            //io.decInfo.aluOp.src1   :=  
         }
         is(InstType.B){
             io.decInfo.branchOp.newPC   :=  pc + imm_B(inst)

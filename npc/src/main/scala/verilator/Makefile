@@ -3,7 +3,7 @@ RESOURCES = ../../resources/	#Used by chisel BlackBox
 BLACKBOX = $(addprefix  $(RESOURCES), $(shell ls $RESOURCES))
 
 VSRC   = $(addprefix ./verilog/, $(shell ls ./verilog | grep .v))
-CPPSRC = ./cpp/test.cpp
+CPPSRC = $(addprefix ./cpp/, $(shell ls ./cpp | grep cpp))
 FLAGS  = --cc --exe --build --trace
 
 LLVM_FLAGS += $(shell llvm-config --ldflags)
@@ -16,7 +16,7 @@ COLOR_NONE  = \033[0m
 
 #makefiles = $(shell find . -name "makefile")
 
-gen:
+gen:	#use our inst rom in asm
 	make -C ./asm gen
 	@printf "$(COLOR_GREEN)[done]$(COLOR_NONE)\n"
 
@@ -27,7 +27,7 @@ load:
 	else	\
 		printf "$(COLOR_RED)usage: make load img=xxx$(COLOR_NONE)\n"; \
 	fi
-run:
+run:compile
 	@obj_dir/VTOP $(img)
 compile:
 	@verilator $(VSRC) $(CPPSRC) $(FLAGS) --top TOP

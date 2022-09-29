@@ -1,4 +1,4 @@
-.PHONY: test gen clean sim gen load
+.PHONY: test gen clean sim run load
 
 RED   = \033[1;31m
 GREEN = \033[1;32m
@@ -10,11 +10,11 @@ MAIN = Gen
 
 TEST = Test
 
-gen:
+run:
 	sbt "runMain $(MAIN) $(SBT_ARGS)"
 
 test:
-	sbt "testOnly $(TEST)"
+	sbt "testOnly $(TEST) -- -DwriteVcd=1"
 	@rm -rf test_dir
 
 sim:

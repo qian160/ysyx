@@ -24,31 +24,39 @@ class simple extends Module{
     io.sum  :=  io.a + io.b
     io.cnt  :=  cnt.value
 }
-
-class simple1 extends AnyFlatSpec{
+/*
+class simple1 extends AnyFlatSpec with ChiselScalatestTester{
     "empty set " should "have size 0" in{
         assert(Set.empty.size == 0)
     }
+    test(new TOP){dut => ()}
 }
+
+class Test(dut: TOP) extends PeekPokeTester(dut){
+    val Rnd = new Random()
+    for(i <- 0 to 100){  //simulate 100 cycles
+        //poke(dut.io.foo, bar)
+        step(1)
+        //expect(dut.io.foo, bar)
+    }
+
+}
+
+object Test extends App{
+    chisel3.iotesters.Driver.execute(Array(
+        "--target-dir",     "src/main/scala/verilator/verilog/",
+        "--backend-name",   "verilator"),
+        ()  =>  new TOP)   (dut => new Test(dut)
+    )
+}
+*/
 
 class Test extends AnyFlatSpec with ChiselScalatestTester{
-    val Rnd = new Random()
-    "test" should "pass" in{
-        test(new simple){ dut => ()
-
+    "it" should "do something" in{
+        test(new TOP){ dut =>
+            for(i <- 0 to 100){
+                dut.clock.step()
+            }
         }
-
-    }
-}
-
-class ppt(dut: simple) extends PeekPokeTester(dut){
-    val rand = new Random
-    for(i <- 0 to 255){
-        poke(dut.io.a, rand.nextInt(256))
-        poke(dut.io.b, rand.nextInt(256))
-
-        step(1)
-        peek(dut.io.sum)
-
     }
 }

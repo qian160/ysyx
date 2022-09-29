@@ -292,14 +292,13 @@ static int decode_exec(Decode *D) {
       D -> decInfo.type = TYPE_I;
       word_t imm_I = immI(inst);
       switch(fct3){
-        case(0x0):  R(rd) = SEXT(Mr(R(rs1) + imm_I, 1), 8);  break;  //lb
-        case(0x1):  R(rd) = SEXT(Mr(R(rs1) + imm_I, 2), 16); break;  //lh
-        case(0x2):  R(rd) = SEXT(Mr(R(rs1) + imm_I, 4), 32); break;  //lw
-        case(0x3):  R(rd) = Mr(R(rs1) + imm_I, 8);           break;  //ld
-
-        case(0x4):  R(rd) = Mr(R(rs1) + imm_I, 1);           break;  //lbu
-        case(0x5):  R(rd) = Mr(R(rs1) + imm_I, 2);           break;  //lhu
-        case(0x6):  R(rd) = Mr(R(rs1) + imm_I, 4);           break;  //lwu
+        case(0x0):  R(rd) = SEXT(Mr(R(rs1) + imm_I, 1), 8);   break;  //lb
+        case(0x1):  R(rd) = SEXT(Mr(R(rs1) + imm_I, 2), 16);  break;  //lh
+        case(0x2):  R(rd) = SEXT(Mr(R(rs1) + imm_I, 4), 32);  break;  //lw
+        case(0x3):  R(rd) = Mr(R(rs1) + imm_I, 8);            break;  //ld
+        case(0x4):  R(rd) = Mr(R(rs1) + imm_I, 1);            break;  //lbu
+        case(0x5):  R(rd) = Mr(R(rs1) + imm_I, 2);            break;  //lhu
+        case(0x6):  R(rd) = Mr(R(rs1) + imm_I, 4);            break;  //lwu
         default:    panic("bad inst\n");
       }
       break;
@@ -341,6 +340,8 @@ static int decode_exec(Decode *D) {
     default: panic("bad inst\n");
   }
   R(0) = 0; // reset $zero to 0
+
+  Log("pc = 0x%8lx, inst = 0x%8x, wdata = 0x%lx\n", D->pc, inst, R(rd));
   return 0;
 }
 
