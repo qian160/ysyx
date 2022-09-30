@@ -5,53 +5,55 @@
 // The class here is then constructed to instantiate the design.
 // See the Verilator manual for examples.
 
-#ifndef VERILATED_VTEST_H_
-#define VERILATED_VTEST_H_  // guard
+#ifndef VERILATED_VTOP_H_
+#define VERILATED_VTOP_H_  // guard
 
 #include "verilated.h"
-#include "svdpi.h"
 
-class VTest__Syms;
-class VTest___024root;
-class VTest___024unit;
-
+class VTOP__Syms;
+class VTOP___024root;
+class VerilatedVcdC;
 
 // This class is the main interface to the Verilated model
-class VTest VL_NOT_FINAL {
+class VTOP VL_NOT_FINAL {
   private:
     // Symbol table holding complete model state (owned by this class)
-    VTest__Syms* const vlSymsp;
+    VTOP__Syms* const vlSymsp;
 
   public:
 
     // PORTS
     // The application code writes and reads these signals to
     // propagate new values into/out from the Verilated model.
-    VL_IN8(&panic,0,0);
-    VL_IN8(&a,7,0);
-    VL_IN8(&b,7,0);
-    VL_OUT16(&c,8,0);
+    VL_IN8(&clock,0,0);
+    VL_IN8(&reset,0,0);
+    VL_OUT8(&io_instType,4,0);
+    VL_OUT8(&io_branch,0,0);
+    VL_OUT(&io_inst_o,31,0);
+    VL_OUT64(&io_pc_o,63,0);
+    VL_OUT64(&io_o,63,0);
+    VL_OUT64(&io_src1,63,0);
+    VL_OUT64(&io_src2,63,0);
 
     // CELLS
     // Public to allow access to /* verilator public */ items.
     // Otherwise the application code can consider these internals.
-    VTest___024unit* const __PVT____024unit;
 
     // Root instance pointer to allow access to model internals,
     // including inlined /* verilator public_flat_* */ items.
-    VTest___024root* const rootp;
+    VTOP___024root* const rootp;
 
     // CONSTRUCTORS
     /// Construct the model; called by application code
     /// If contextp is null, then the model will use the default global context
     /// If name is "", then makes a wrapper with a
     /// single model invisible with respect to DPI scope names.
-    explicit VTest(VerilatedContext* contextp, const char* name = "TOP");
-    explicit VTest(const char* name = "TOP");
+    explicit VTOP(VerilatedContext* contextp, const char* name = "TOP");
+    explicit VTOP(const char* name = "TOP");
     /// Destroy the model; called (often implicitly) by application code
-    virtual ~VTest();
+    virtual ~VTOP();
   private:
-    VL_UNCOPYABLE(VTest);  ///< Copying not allowed
+    VL_UNCOPYABLE(VTOP);  ///< Copying not allowed
 
   public:
     // API METHODS
@@ -64,14 +66,13 @@ class VTest VL_NOT_FINAL {
     void eval_end_step() {}
     /// Simulation complete, run final blocks.  Application must call on completion.
     void final();
+    /// Trace signals in the model; called by application code
+    void trace(VerilatedVcdC* tfp, int levels, int options = 0);
     /// Return current simulation context for this model.
     /// Used to get to e.g. simulation time via contextp()->time()
     VerilatedContext* contextp() const;
     /// Retrieve name of this model instance (as passed to constructor).
     const char* name() const;
-
-    /// DPI Export functions
-    static void EXIT();
 } VL_ATTR_ALIGNED(VL_CACHE_LINE_BYTES);
 
 #endif  // guard

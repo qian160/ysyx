@@ -1,6 +1,5 @@
 #include<iostream>
 #include<map>
-
 int cmd_h(std::string args);
 int cmd_c(std::string args);
 int cmd_q(std::string args);

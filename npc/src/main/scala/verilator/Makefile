@@ -16,19 +16,14 @@ COLOR_NONE  = \033[0m
 
 -include $(DEPS)
 
-echo:
-	@echo $(DEPS)
-	@echo $(CPPSRC:.cpp=.d)
-
-./cpp/%.d: ./cpp/%.cpp
+./cpp/%.d: ./cpp/%.cpp		#.o is not used...
 	@set -e; rm -f $@;echo $@;\
         $(CPP) -MM $(CPPFLAGS) $< > $@.$$$$; \
         sed 's,\($*\)\.o[ :]*,\1.o $@ : ,g' < $@.$$$$ > $@;\
 	rm -f $@.$$$$
 
-gen:	#use our inst rom in asm
-	make -C ./asm gen
-	@printf "$(COLOR_GREEN)[done]$(COLOR_NONE)\n"
+test:
+	echo $$
 
 load:
 	@if (./cpp/load $(img) > ../inst_rom); then	\

@@ -6,19 +6,19 @@ import AluOPT._
 
 class EX extends Module{
     val io = IO(new Bundle{
-        val decInfo     = Input(new DecodeInfo)
+        val decInfo_i     = Input(new DecodeInfo)
 
-        val writeRfOp   = Output(new WriteRfOp)
-        val memOp       = Output(new MemOp)
+        val writeRfOp_o   = Output(new WriteRfOp)
+        val memOp_o       = Output(new MemOp)
 
         val debug_i     = Input (new Debug_Bundle)
         val debug_o     = Output(new Debug_Bundle)
     })
 
-    val src1 = io.decInfo.aluOp.src1
-    val src2 = io.decInfo.aluOp.src2
+    val src1 = io.decInfo_i.aluOp.src1
+    val src2 = io.decInfo_i.aluOp.src2
 
-    val aluRes = MuxLookup(io.decInfo.aluOp.opt, src1 + src2, Seq(
+    val aluRes = MuxLookup(io.decInfo_i.aluOp.opt, src1 + src2, Seq(
         SUB     -> (src1 - src2),
         SLT     -> Mux(src1.asSInt < src2.asSInt, 1.U, 0.U),
         SLTU    -> Mux(src1 < src2, 1.U, 0.U),
@@ -27,7 +27,7 @@ class EX extends Module{
         XOR     -> (src1 ^ src2),
         OR      -> (src1 | src2),
         AND     -> (src1 & src2),
-        SLL     -> (src1 << src2(5,0)),    //shift left don't cause extension prosrc2lems
+        SLL     -> (src1 << src2(5,0)), 
         SRL     -> (src1 >> src2(5,0)),
         SRA     -> (src1.asSInt >> src2(5,0)).asUInt,
 
@@ -41,13 +41,12 @@ class EX extends Module{
         )
     )
 
-    io.writeRfOp        :=  io.decInfo.writeRfOp
-    io.writeRfOp.wdata  :=  aluRes
+    io.writeRfOp_o        :=  io.decInfo_i.writeRfOp
+    io.writeRfOp_o.wdata  :=  aluRes
 
-    io.memOp        :=  io.decInfo.memOp
-    io.memOp.addr   :=  aluRes
+    io.memOp_o            :=  io.decInfo_i.memOp
+    io.memOp_o.addr       :=  aluRes
 
-    val rd = io.decInfo.writeRfOp.rd
 /*
     switch(io.decInfo.instType){
         is(InstType.I){
