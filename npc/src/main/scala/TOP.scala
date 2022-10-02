@@ -47,6 +47,7 @@ class TOP extends Module{
 
     MEM.io.writeRfOp_i  :=  EX.io.writeRfOp_o
     MEM.io.memOp_i      :=  EX.io.memOp_o
+    MEM.io.loadVal_i    :=  Main_Memory.io.loadVal_o
 
     WB.io.writeRfOp_i   :=  MEM.io.writeRfOp_o
 

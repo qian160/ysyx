@@ -1,5 +1,6 @@
 #include"debug.h"
 #include"testbench.h"
+#include"sdb.h"
 using namespace std;
 char test_path[128] = "/home/s081/Downloads/ysyx-workbench/am-kernels/tests/cpu-tests/build/";
 
