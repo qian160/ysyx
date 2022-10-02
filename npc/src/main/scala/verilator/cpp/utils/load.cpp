@@ -23,5 +23,6 @@ int main(int argc, char **argv)
 	for(int i = 0; i < size / 4; i++){
 		printf("%08x\n", inst_rom[i]);		//need to redirect this output
 	}
+	fclose(in);
 
 }

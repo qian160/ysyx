@@ -18,7 +18,7 @@ class WB extends Module{
     val wdata = io.writeRfOp_i.wdata
     
     val foo = Mux(io.writeRfOp_i.wen, io.writeRfOp_i.wdata, 0.U)
-    printf("wdata = %x\n", foo)
+    printf("\nwdata = %x\n", foo)
 
     DEBUG.io.pc     :=  io.debug.pc
     DEBUG.io.exit   :=  io.debug.exit

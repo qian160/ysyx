@@ -3,16 +3,11 @@
 HOME   = $(shell pwd)
 VSRC   = $(addprefix $(HOME)/verilog/, $(shell ls ./verilog | grep .v))
 CPPSRC = $(addprefix $(HOME)/cpp/, $(shell ls ./cpp | grep cpp))
-VFLAGS = --cc --exe --build --trace
+VFLAGS = --cc --exe --trace --build -Wno-lint
 
 DEPS   = $(CPPSRC:.cpp=.d)
 OBJS   = $(CPPSRC:.cpp=.o)	
 CPPFLAGS    = -I ./cpp -I ./obj_dir
-
-test:
-	@echo $(HOME)
-	@echo $(VSRC)
-	@echo $(CPPSRC)
 
 LLVM_FLAGS += $(shell llvm-config --ldflags)
 LLVM_FLAGS += $(shell llvm-config --cxxflags)
@@ -34,18 +29,12 @@ COLOR_NONE  = \033[0m
 	@echo [g++] $@
 	@g++ -c $@  #-o ./cpp/$@
 
-load:
-	@if (./cpp/load $(img) > ../img_file); then	\
-		./cpp/load $(img)	\
-		printf "$(COLOR_GREEN)success$(COLOR_NONE)\n";	\
-	else	\
-		printf "$(COLOR_RED)usage: make load img=xxx$(COLOR_NONE)\n"; \
-	fi
-compile:
-	@verilator $(VSRC) $(CPPSRC) $(VFLAGS) --top TOP
-	@printf "$(COLOR_GREEN)[done]$(COLOR_NONE)\n"
-
+#usage: make run [img=xxx]
 run:
+ifneq ($(img),)
+	echo loading img $(img)...
+	./cpp/load $(img) > ../img_file
+endif
 	@verilator $(VSRC) $(CPPSRC) $(VFLAGS) --top TOP
 	@obj_dir/VTOP $(img)
 clean:

@@ -19,16 +19,13 @@ class MAIN_MEMORY extends Module{
     io.inst_o       :=  ram((io.pc_i - CONST.PC_INIT) >> 2)
     
     val addr        =   (io.memOp_i.addr - CONST.PMEM_START)  >> 2
-    val sign        =   io.memOp_i.sign
+    val unsigned    =   io.memOp_i.unsigned
     val is_store    =   io.memOp_i.isStore
     val length      =   io.memOp_i.length
 
     //assuming that the address is aligned, little endian
     val dword       =   Cat(ram(addr + 1.U), ram(addr))
 
-    when(io.memOp_i.isLoad){
-        printf("dword = %x\n", dword)
-    }
     val offset  =   io.memOp_i.addr(1, 0)   //mod by 4, get the byte offset in the 32-bit block
     //chisel doesn't support partial assignment like ram(0)(7, 0) := foo, the LHS just produces a value, and is not assignable
     //so we create a temp variable to manipulate with, and finally assign that temp variable to ram
@@ -51,18 +48,21 @@ class MAIN_MEMORY extends Module{
     ))
 
     val mask    =   loadMask  << (offset << 3)
-    dontTouch(mask)
     /*
         for example, if we want to load the value marked as X(temp(6)):
             ________________________________________________
             |temp(7)   | X  |   |   |   |   |   |temp(0)   |
                                 dword
         1.set loadMask to 0x00ff000000000000, then use an and gate to extract the bits there
-        2.the bits we get at step 1 is actually shifted(not starting at lsb, the right side), we need to recover it by shifting back
+        2.the bits we get at step 1 is actually weighted(not starting at lsb, the right side), we need to recover it by shifting back
     */
-    val loadVal_bigEndian   =   (dword & (loadMask << (offset << 3))) >> (offset << 3)       //extract the bits by shifting and masking, then shift back
-    val a  =   loadVal_bigEndian        //alias
-    val loadVal_smallEndian =   Cat(a(7, 0), a(15, 8), a(23, 16), a(31, 24), a(39, 32), a(47, 40), a(55, 48), a(63, 56))
+    val loadVal_temp   =    (dword & mask) >> (offset << 3)       //extract the bits by shifting and masking, then shift back. Not SEXT
+    val loadVal        =    MuxLookup(length, 0.U, Seq(
+        0.U ->  Mux(unsigned, loadVal_temp, SEXT(loadVal_temp, 8,  64)),
+        1.U ->  Mux(unsigned, loadVal_temp, SEXT(loadVal_temp, 16, 64)),
+        2.U ->  Mux(unsigned, loadVal_temp, SEXT(loadVal_temp, 32, 64)),
+        3.U ->  loadVal_temp,
+    ))
 /*
     val loadVal     =   MuxLookup(length, 0.U, Seq(
         0.U ->  Mux(sign, SEXT(dword(63, 56), 8,  64), dword(63 ,56)),
@@ -71,7 +71,7 @@ class MAIN_MEMORY extends Module{
         3.U ->  dword,
     ))
 */
-    io.loadVal_o      :=   loadVal_smallEndian
+    io.loadVal_o      :=   loadVal
     val store_en       =   Wire(UInt(8.W))
     val store_en_lut   =   VecInit("b00000001".U, "b00000011".U, "b00001111".U, "b11111111".U)
     store_en          :=   store_en_lut(length)
@@ -102,7 +102,6 @@ class MAIN_MEMORY extends Module{
 
         ram(addr + 1.U)     :=  temp.asTypeOf(UInt())(63, 32)
         ram(addr)           :=  temp.asTypeOf(UInt())(31, 0)
-        printf("temp = 0x%x\n", temp.asTypeOf(UInt()))
     }
 
     //to make inst rom and data ram compatible and easy to initialize(loadMemoryFromFileInline), the width is set to be 32 bits
