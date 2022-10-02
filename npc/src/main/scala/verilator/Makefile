@@ -3,7 +3,7 @@
 HOME   = $(shell pwd)
 VSRC   = $(addprefix $(HOME)/verilog/, $(shell ls ./verilog | grep .v))
 CPPSRC = $(addprefix $(HOME)/cpp/, $(shell ls ./cpp | grep cpp))
-VFLAGS = --cc --exe --trace
+VFLAGS = --cc --exe --trace --build -Wno-lint
 
 DEPS   = $(CPPSRC:.cpp=.d)
 OBJS   = $(CPPSRC:.cpp=.o)	
@@ -40,7 +40,7 @@ load:
 compile:
 	@verilator $(VSRC) $(CPPSRC) $(VFLAGS) --top TOP
 	@printf "$(COLOR_GREEN)[done]$(COLOR_NONE)\n"
-
+#usage: make run [img=xxx]
 run:
 ifneq ($(img),)
 	echo loading img $(img)...

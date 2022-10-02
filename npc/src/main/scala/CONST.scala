@@ -56,28 +56,30 @@ object AluOPT {
 
     val MUL    = 11.U(5.W)
     val MULH   = 12.U(5.W)
-    val MULHSU = 13.U(5.W)
-    val MULHU  = 14.U(5.W)
+    val MULU   = 13.U(5.W)
+    val MULHSU = 14.U(5.W)
+    val MULHU  = 15.U(5.W)
     //alu don't do division, but EX needs this information to stall so we just encode it here and pass 
-    val REMW   = 21.U(5.W)
-    val DIVW   = 22.U(5.W)
-    val DIVUW  = 23.U(5.W)
-    val DIV    = 26.U(5.W)
-    val DIVU   = 27.U(5.W)
-    val REM    = 28.U(5.W)
-    val REMU   = 29.U(5.W)
-    val REMUW  = 30.U(5.W)
+    val DIV    = 16.U(5.W)
+    val REM    = 17.U(5.W)
+    val DIVU   = 18.U(5.W)
+    val REMU   = 19.U(5.W)
+
+    val REMW   = 20.U(5.W)
+    val DIVW   = 21.U(5.W)
+    val DIVUW  = 22.U(5.W)
+    val REMUW  = 23.U(5.W)
 
     //RV64
-    val MULW = 15.U(5.W)
-    val ADDW = 16.U(5.W)
-    val SUBW = 17.U(5.W)
-    val SLLW = 18.U(5.W)
-    val SRLW = 19.U(5.W)
-    val SRAW = 20.U(5.W)
+    val MULW = 24.U(5.W)
+    val ADDW = 25.U(5.W)
+    val SUBW = 26.U(5.W)
+    val SLLW = 27.U(5.W)
+    val SRLW = 28.U(5.W)
+    val SRAW = 29.U(5.W)
 
-    val LUI     = 24.U(5.W)
-    val AUIPC   = 25.U(5.W)
+    val LUI     = 30.U(5.W)
+    val AUIPC   = 31.U(5.W)
 
     //not alu's job, funct3
     //used in ID to specify a inst
