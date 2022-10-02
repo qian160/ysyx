@@ -43,10 +43,11 @@ VM_USER_LDLIBS = \
 VM_USER_CLASSES = \
 	sdb \
 	test \
+	testbench \
 
 # User .cpp directories (from .cpp's on Verilator command line)
 VM_USER_DIR = \
-	./cpp \
+	/home/s081/Downloads/ysyx-workbench/npc/src/main/scala/verilator/cpp \
 
 
 ### Default rules...
@@ -58,9 +59,11 @@ include $(VERILATOR_ROOT)/include/verilated.mk
 ### Executable rules... (from --exe)
 VPATH += $(VM_USER_DIR)
 
-sdb.o: ./cpp/sdb.cpp
+sdb.o: /home/s081/Downloads/ysyx-workbench/npc/src/main/scala/verilator/cpp/sdb.cpp
 	$(OBJCACHE) $(CXX) $(CXXFLAGS) $(CPPFLAGS) $(OPT_FAST) -c -o $@ $<
-test.o: ./cpp/test.cpp
+test.o: /home/s081/Downloads/ysyx-workbench/npc/src/main/scala/verilator/cpp/test.cpp
+	$(OBJCACHE) $(CXX) $(CXXFLAGS) $(CPPFLAGS) $(OPT_FAST) -c -o $@ $<
+testbench.o: /home/s081/Downloads/ysyx-workbench/npc/src/main/scala/verilator/cpp/testbench.cpp
 	$(OBJCACHE) $(CXX) $(CXXFLAGS) $(CPPFLAGS) $(OPT_FAST) -c -o $@ $<
 
 ### Link rules... (from --exe)

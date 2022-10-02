@@ -15,23 +15,37 @@ class simple extends Module{
     val io = IO(new Bundle{
         val a   =   Input( UInt(8.W))
         val b   =   Input( UInt(8.W))
+        val wdata = Input( UInt(32.W))
+        val mask  = Input(UInt(4.W))
         //val n   =   Output(Vec(16, UInt(8.W)))
-        val sum =   Output(UInt(8.W))
-        val cnt =   Output(UInt(32.W))
+        val sum  =  Output(UInt(8.W))
+        val cnt  =  Output(UInt(32.W))
     })
-    val ram = SyncReadMem(5, UInt(16.W))        //sequential read
+    val ram  = SyncReadMem(5, UInt(16.W))        //test sync read
+    val mem  = Mem(8, UInt(32.W))
     val cnt = Counter(32)
     io.sum  :=  io.a + io.b
     io.cnt  :=  cnt.value
+
+    val temp = Wire(Vec(4, UInt(8.W)))
+    temp    :=  io.wdata.asTypeOf(Vec(4, UInt(8.W)))
+
+    printf("%x\n%x\n%x\n%x\n", temp(0), temp(1), temp(2), temp(3))
 }
-/*
-class simple1 extends AnyFlatSpec with ChiselScalatestTester{
+
+class Test extends AnyFlatSpec with ChiselScalatestTester{
     "empty set " should "have size 0" in{
         assert(Set.empty.size == 0)
     }
-    test(new TOP){dut => ()}
+    "it" should "do something" in{
+        test(new simple){dut => 
+            dut.io.wdata.poke("h11223344".U)
+            dut.clock.step()
+        }
+    }
 }
 
+/*
 class Test(dut: TOP) extends PeekPokeTester(dut){
     val Rnd = new Random()
     for(i <- 0 to 100){  //simulate 100 cycles
@@ -51,6 +65,7 @@ object Test extends App{
 }
 */
 
+/*
 class Test extends AnyFlatSpec with ChiselScalatestTester{
     "it" should "do something" in{
         test(new TOP){ dut =>
@@ -60,3 +75,4 @@ class Test extends AnyFlatSpec with ChiselScalatestTester{
         }
     }
 }
+*/

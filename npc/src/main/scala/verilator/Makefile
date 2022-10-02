@@ -1,12 +1,18 @@
 .PHONY : run gen clean compile load test
-RESOURCES = ../../resources/	#Used by chisel BlackBox
-BLACKBOX = $(addprefix  $(RESOURCES), $(shell ls $RESOURCES))
 
-VSRC   = $(addprefix ./verilog/, $(shell ls ./verilog | grep .v))
-CPPSRC = $(addprefix ./cpp/, $(shell ls ./cpp | grep cpp))
+HOME   = $(shell pwd)
+VSRC   = $(addprefix $(HOME)/verilog/, $(shell ls ./verilog | grep .v))
+CPPSRC = $(addprefix $(HOME)/cpp/, $(shell ls ./cpp | grep cpp))
 VFLAGS = --cc --exe --build --trace
 
-CPPFLAGS    = -I ./cpp
+DEPS   = $(CPPSRC:.cpp=.d)
+OBJS   = $(CPPSRC:.cpp=.o)	
+CPPFLAGS    = -I ./cpp -I ./obj_dir
+
+test:
+	@echo $(HOME)
+	@echo $(VSRC)
+	@echo $(CPPSRC)
 
 LLVM_FLAGS += $(shell llvm-config --ldflags)
 LLVM_FLAGS += $(shell llvm-config --cxxflags)
@@ -16,27 +22,32 @@ COLOR_RED   = \033[1;31m
 COLOR_GREEN = \033[1;32m
 COLOR_NONE  = \033[0m
 
-#include ./cpp/makefile
+-include $(DEPS)
 
-gen:	#use our inst rom in asm
-	make -C ./asm gen
-	@printf "$(COLOR_GREEN)[done]$(COLOR_NONE)\n"
+./cpp/%.d: ./cpp/%.cpp		#.o is not used...
+	@set -e; rm -f $@;echo $@;\
+        $(CPP) -MM $(CPPFLAGS) $< > $@.$$$$; \
+        sed 's,\($*\)\.o[ :]*,\1.o $@ : ,g' < $@.$$$$ > $@;\
+	rm -f $@.$$$$
+
+.cpp/%.o:.cpp/.cpp
+	@echo [g++] $@
+	@g++ -c $@  #-o ./cpp/$@
 
 load:
-	@if (./cpp/load $(img) > ../inst_rom); then	\
+	@if (./cpp/load $(img) > ../img_file); then	\
 		./cpp/load $(img)	\
 		printf "$(COLOR_GREEN)success$(COLOR_NONE)\n";	\
 	else	\
 		printf "$(COLOR_RED)usage: make load img=xxx$(COLOR_NONE)\n"; \
 	fi
-run:compile
-	@echo usage make run [img=foo]
-	$(load)
-	@obj_dir/VTOP $(img)
 compile:
 	@verilator $(VSRC) $(CPPSRC) $(VFLAGS) --top TOP
 	@printf "$(COLOR_GREEN)[done]$(COLOR_NONE)\n"
 
+run:
+	@verilator $(VSRC) $(CPPSRC) $(VFLAGS) --top TOP
+	@obj_dir/VTOP $(img)
 clean:
 	-rm  -rf obj_dir wave.vcd
 	@printf "$(COLOR_GREEN)[done]$(COLOR_NONE)\n"

@@ -1,6 +1,5 @@
 #include<iostream>
 #include<map>
-
 int cmd_h(std::string args);
 int cmd_c(std::string args);
 int cmd_q(std::string args);
@@ -18,7 +17,7 @@ typedef struct {
     const char * Usage;
 }cmd;
 
-static map<char, cmd> cmd_table = {
+static std::map<char, cmd> cmd_table = {
     {'h',   cmd{"h",    "Display informations about commands",    cmd_h,      "help [cmd]. default all"}},
     {'c',   cmd{"c",    "Continue the execution of the program",  cmd_c,      "no argument"}},
     {'q',   cmd{"q",    "Exit the program",                       cmd_q,      "no argument"}},

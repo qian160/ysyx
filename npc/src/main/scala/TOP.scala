@@ -20,43 +20,43 @@ class TOP extends Module{
         val o         = Output(UInt(64.W))  //to avoid dce
         val src1      = Output(UInt(64.W))
         val src2      = Output(UInt(64.W))
-        val instType  = Output(UInt(5.W))
-        val branch    = Output(Bool())
-
     })
 
-    val IF      =   Module(new IF)
-    val ID      =   Module(new ID)
-    val EX      =   Module(new EX)
-    val MEM     =   Module(new MEM)
-    val WB      =   Module(new WB)
-    val Regfile =   Module(new Regfile)
+    val IF          =   Module(new IF)
+    val ID          =   Module(new ID)
+    val EX          =   Module(new EX)
+    val MEM         =   Module(new MEM)
+    val WB          =   Module(new WB)
+    val Regfile     =   Module(new Regfile)
+    val Main_Memory =   Module(new MAIN_MEMORY)
 
-    IF.io.branchOp  :=  ID.io.decInfo.branchOp
+    IF.io.branchOp_i    :=  ID.io.decInfo_o.branchOp
+    IF.io.inst_i        :=  Main_Memory.io.inst_o
 
+    Main_Memory.io.pc_i     :=  IF.io.pc_o
+    Main_Memory.io.memOp_i  :=  MEM.io.memOp_i
 
-    ID.io.inst      :=  IF.io.inst_o
-    ID.io.pc        :=  IF.io.pc_o
-    ID.io.regVal    :=  Regfile.io.readRes
+    ID.io.inst_i      :=  IF.io.inst_o
+    ID.io.pc_i        :=  IF.io.pc_o
+    ID.io.regVal_i    :=  Regfile.io.readRes_o
 
-    Regfile.io.readRfOp     :=  ID.io.readRfOp
-    Regfile.io.writeRfOp    :=  WB.io.writeRfOp_o
+    Regfile.io.readRfOp_i     :=  ID.io.readRfOp_o
+    Regfile.io.writeRfOp_i    :=  WB.io.writeRfOp_o
 
-    EX.io.decInfo       :=  ID.io.decInfo
+    EX.io.decInfo_i       :=  ID.io.decInfo_o
 
-    MEM.io.writeRfOp_i  :=  EX.io.writeRfOp
-    MEM.io.memOp        :=  EX.io.memOp
+    MEM.io.writeRfOp_i  :=  EX.io.writeRfOp_o
+    MEM.io.memOp_i      :=  EX.io.memOp_o
+    MEM.io.loadVal_i    :=  Main_Memory.io.loadVal_o
 
     WB.io.writeRfOp_i   :=  MEM.io.writeRfOp_o
 
     //TOP module's output, for debug use and also to avoid dce
     io.o        :=  WB.io.writeRfOp_o.wdata
-    io.src1     :=  ID.io.decInfo.aluOp.src1
-    io.src2     :=  ID.io.decInfo.aluOp.src2
+    io.src1     :=  ID.io.decInfo_o.aluOp.src1
+    io.src2     :=  ID.io.decInfo_o.aluOp.src2
     io.inst_o   :=  IF.io.inst_o
     io.pc_o     :=  IF.io.pc_o
-    io.instType :=  ID.io.instType
-    io.branch   :=  ID.io.branch
 
 
     EX.io. debug_i  :=  ID.io.debug_o
@@ -73,12 +73,6 @@ object Gen {
         //(new chisel3.stage.ChiselStage).execute(args, Seq(ChiselGeneratorAnnotation(() => new TOP)))
 
         println(Green("Done"))
-
-    }
-}
-
-object gen2 {
-    def main(args: Array[String]):Unit = {
 
     }
 }

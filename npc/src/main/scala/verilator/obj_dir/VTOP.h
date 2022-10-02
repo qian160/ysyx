@@ -27,8 +27,6 @@ class VTOP VL_NOT_FINAL {
     // propagate new values into/out from the Verilated model.
     VL_IN8(&clock,0,0);
     VL_IN8(&reset,0,0);
-    VL_OUT8(&io_instType,4,0);
-    VL_OUT8(&io_branch,0,0);
     VL_OUT(&io_inst_o,31,0);
     VL_OUT64(&io_pc_o,63,0);
     VL_OUT64(&io_o,63,0);

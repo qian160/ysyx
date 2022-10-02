@@ -55,7 +55,6 @@ void TestBench<Module>::tick(){
 	}
 	
 }
-
 template<class Module>
 void TestBench<Module>::reset(){
 	dut -> reset = 1;

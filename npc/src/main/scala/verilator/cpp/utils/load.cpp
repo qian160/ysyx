@@ -14,8 +14,6 @@ int main(int argc, char **argv)
 	unsigned int inst_rom[0x80000];
 	FILE * in  = fopen(img_file.c_str(), "rb");
 	assert(in);
-	FILE * out = fopen("../img_file", "w");
-	assert(out);
 	fseek(in, 0, SEEK_END);
 	size_t size = ftell(in);
 	

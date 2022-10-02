@@ -1,5 +1,7 @@
 #include<iostream>
 #include<string>
+#include<verilated.h>
+#include"sdb.h"
 #include"testbench.h"
 #include"VTOP.h"
 #include"debug.h"

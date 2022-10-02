@@ -1,13 +1,11 @@
 #include<iostream>
 #include<fstream>
 #include<string.h>
-#include<algorithm>
 
 #include<verilated.h>
 #include<VTOP.h>
 #include<verilated_vcd_c.h>
 using namespace std;
-#include"sdb.h"
 
 using namespace std;
 #define red 	"\033[1;31m"
