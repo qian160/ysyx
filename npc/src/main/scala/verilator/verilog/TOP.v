@@ -1172,7 +1172,6 @@ module MAIN_MEMORY(
   wire [61:0] addr = _addr_T_1[63:2]; // @[MAIN_MEMORY.scala 21:63]
   wire [61:0] _dword_T_1 = addr + 62'h1; // @[MAIN_MEMORY.scala 27:38]
   wire [63:0] dword = {ram_dword_MPORT_data,ram_dword_MPORT_1_data}; // @[Cat.scala 31:58]
-  wire  _T_1 = ~reset; // @[MAIN_MEMORY.scala 30:15]
   wire [1:0] offset = io_memOp_i_addr[1:0]; // @[MAIN_MEMORY.scala 32:36]
   wire [15:0] _loadMask_T_1 = 2'h1 == io_memOp_i_length ? 16'hffff : 16'hff; // @[Mux.scala 81:58]
   wire [31:0] _loadMask_T_3 = 2'h2 == io_memOp_i_length ? 32'hffffffff : {{16'd0}, _loadMask_T_1}; // @[Mux.scala 81:58]
@@ -1385,17 +1384,6 @@ module MAIN_MEMORY(
     `endif
         if (io_memOp_i_isLoad & ~reset) begin
           $fwrite(32'h80000002,"dword = %x\n",dword); // @[MAIN_MEMORY.scala 30:15]
-        end
-    `ifdef PRINTF_COND
-      end
-    `endif
-    `endif // SYNTHESIS
-    `ifndef SYNTHESIS
-    `ifdef PRINTF_COND
-      if (`PRINTF_COND) begin
-    `endif
-        if (io_memOp_i_isStore & _T_1) begin
-          $fwrite(32'h80000002,"temp = 0x%x\n",_T_29); // @[MAIN_MEMORY.scala 108:15]
         end
     `ifdef PRINTF_COND
       end
