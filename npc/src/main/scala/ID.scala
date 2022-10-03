@@ -70,7 +70,7 @@ class ID extends Module{
             io.decInfo_o.memOp.isLoad     :=  opcode === Opcode.LOAD
             io.decInfo_o.memOp.length     :=  fct3(1, 0)
 
-            io.decInfo_o.memOp.sign       :=  fct3(2)     //0 to 3 unsigned, signed when fct3 >= 4
+            io.decInfo_o.memOp.unsigned   :=  fct3(2)     //0 to 3 unsigned, signed when fct3 >= 4
 
         }
         is(InstType.R){
@@ -85,10 +85,10 @@ class ID extends Module{
             io.decInfo_o.branchOp.happen  :=  MuxLookup(fct3, false.B, Seq(
                 Fct3.BEQ     ->  (rs1Val  === rs2Val),
                 Fct3.BNE     ->  (rs1Val  =/= rs2Val),
-                Fct3.BLT     ->  (rs1Val.asSInt   <  rs2Val.asSInt),
-                Fct3.BGE     ->  (rs1Val.asSInt   >  rs2Val.asSInt),
-                Fct3.BLTU    ->  (rs1Val  === rs2Val),
-                Fct3.BGEU    ->  (rs1Val  === rs2Val),
+                Fct3.BLT     ->  (rs1Val.asSInt   <   rs2Val.asSInt),
+                Fct3.BGE     ->  (rs1Val.asSInt   >=  rs2Val.asSInt),
+                Fct3.BLTU    ->  (rs1Val   <  rs2Val),
+                Fct3.BGEU    ->  (rs1Val   >= rs2Val),
             ))
         }
         is(InstType.U){     //lui auipc
@@ -132,7 +132,7 @@ class ID extends Module{
     val src2 = io.decInfo_o.aluOp.src2
 
     //printf(p"src1 = ${Hexadecimal(src1)}, src2 = ${Hexadecimal(src2)}\n")
-    printf("pc = %x, inst = %x\n\n",pc, inst/*, src1, src2*/)
+    printf("pc = %x, inst = %x\n\n",pc, inst)
 
     //io.debug_o.exit     :=  inst === CONST.EBREAK
 

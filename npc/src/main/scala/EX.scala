@@ -35,9 +35,9 @@ class EX extends Module{
         ADDW    ->  SEXT(src1(31,0) + src2(31,0), 32, 64),
         SUBW    ->  SEXT(src1(31,0) - src2(31,0), 32, 64),
         MULW    ->  SEXT(src1(31,0) * src2(31,0)(31,0), 32, 64),
-        SLLW    ->  SEXT((src1 << src2(4,0))(31,0), 32, 64),
-        SRLW    ->  SEXT((src1 << src2(4,0))(31,0), 32, 64),
-        SRAW    ->  SEXT((src1(31,0).asSInt >> src2(4,0)).asUInt, 32, 64),
+        SLLW    ->  SEXT((src1(31, 0) << src2(4,0))(31,0), 32, 64),
+        SRLW    ->  SEXT((src1(31, 0) >> src2(4,0))(31,0), 32, 64),
+        SRAW    ->  SEXT((src1(31, 0).asSInt >> src2(4,0)).asUInt, 32, 64),
 
         //temp
         MULHSU  ->  ((src1.asSInt * src2).asUInt)(127, 64),
@@ -49,7 +49,7 @@ class EX extends Module{
         REMU    ->  (src1 % src2),
 
         REMW    ->  SEXT((src1(31, 0).asSInt % src2(31, 0).asSInt).asUInt, 32, 64),
-        DIVW    ->  SEXT((src1(31, 0).asSInt / src2(31, 0).asSInt).asUInt, 32, 65),
+        DIVW    ->  SEXT((src1(31, 0).asSInt / src2(31, 0).asSInt).asUInt, 32, 64),
         DIVUW   ->  SEXT((src1(31, 0) / src2(31, 0)), 32, 64),
         REMUW   ->  SEXT((src1(31, 0) % src2(31, 0)), 32, 64),
         

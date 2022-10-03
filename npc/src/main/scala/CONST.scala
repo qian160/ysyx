@@ -275,10 +275,10 @@ object DecTable {
         Insts.SD      ->  List(InstType.S, AluOPT.ADD),
 //RV64M
         Insts.MULW    ->  List(InstType.R, AluOPT.MUL),
-        Insts.DIVW    ->  List(InstType.R, AluOPT.ADD),
-        Insts.DIVUW   ->  List(InstType.R, AluOPT.ADD),
-        Insts.REMW    ->  List(InstType.R, AluOPT.ADD),
-        Insts.REMUW   ->  List(InstType.R, AluOPT.ADD),
+        Insts.DIVW    ->  List(InstType.R, AluOPT.DIVW),
+        Insts.DIVUW   ->  List(InstType.R, AluOPT.DIVUW),
+        Insts.REMW    ->  List(InstType.R, AluOPT.REMW),
+        Insts.REMUW   ->  List(InstType.R, AluOPT.REMUW),
 
         Insts.EBREAK  ->  List(InstType.SYS, AluOPT.ADD)
 /*

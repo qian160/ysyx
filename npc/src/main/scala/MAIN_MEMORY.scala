@@ -19,16 +19,13 @@ class MAIN_MEMORY extends Module{
     io.inst_o       :=  ram((io.pc_i - CONST.PC_INIT) >> 2)
     
     val addr        =   (io.memOp_i.addr - CONST.PMEM_START)  >> 2
-    val sign        =   io.memOp_i.sign
+    val unsigned    =   io.memOp_i.unsigned
     val is_store    =   io.memOp_i.isStore
     val length      =   io.memOp_i.length
 
     //assuming that the address is aligned, little endian
     val dword       =   Cat(ram(addr + 1.U), ram(addr))
 
-    when(io.memOp_i.isLoad){
-        printf("dword = %x\n", dword)
-    }
     val offset  =   io.memOp_i.addr(1, 0)   //mod by 4, get the byte offset in the 32-bit block
     //chisel doesn't support partial assignment like ram(0)(7, 0) := foo, the LHS just produces a value, and is not assignable
     //so we create a temp variable to manipulate with, and finally assign that temp variable to ram
@@ -61,9 +58,9 @@ class MAIN_MEMORY extends Module{
     */
     val loadVal_temp   =    (dword & mask) >> (offset << 3)       //extract the bits by shifting and masking, then shift back. Not SEXT
     val loadVal        =    MuxLookup(length, 0.U, Seq(
-        0.U ->  SEXT(loadVal_temp, 8,  64),
-        1.U ->  SEXT(loadVal_temp, 16, 64),
-        2.U ->  SEXT(loadVal_temp, 32, 64),
+        0.U ->  Mux(unsigned, loadVal_temp, SEXT(loadVal_temp, 8,  64)),
+        1.U ->  Mux(unsigned, loadVal_temp, SEXT(loadVal_temp, 16, 64)),
+        2.U ->  Mux(unsigned, loadVal_temp, SEXT(loadVal_temp, 32, 64)),
         3.U ->  loadVal_temp,
     ))
 /*
@@ -105,7 +102,6 @@ class MAIN_MEMORY extends Module{
 
         ram(addr + 1.U)     :=  temp.asTypeOf(UInt())(63, 32)
         ram(addr)           :=  temp.asTypeOf(UInt())(31, 0)
-        printf("temp = 0x%x\n", temp.asTypeOf(UInt()))
     }
 
     //to make inst rom and data ram compatible and easy to initialize(loadMemoryFromFileInline), the width is set to be 32 bits
