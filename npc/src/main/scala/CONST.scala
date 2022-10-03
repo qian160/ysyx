@@ -28,10 +28,6 @@ object Fct3 {
     val BGEU    =   7.U(3.W)
 }
 
-object MMIO {
-    val 
-}
-
 object InstType{
     val R   = 0.U(5.W)
     val I   = 1.U(5.W)

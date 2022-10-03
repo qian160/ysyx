@@ -24,7 +24,7 @@ class ID extends Module{
     val inst     = io.inst_i
     val pc       = /*RegNext*/(io.pc_i)
 
-    val decRes   = ListLookup(inst,DecTable.defaultDec,DecTable.decMap)     //returns list(instType,opt)
+    val decRes   = ListLookup(inst, DecTable.defaultDec, DecTable.decMap)     //returns list(instType,opt)
     val instType = decRes(DecTable.TYPE)    //R I S B J U SYS
     val op       = decRes(DecTable.OPT)     //sometimes useless,like InstType.B
 

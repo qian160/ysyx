@@ -209,25 +209,16 @@ void VTOP___024root__trace_chg_sub_0(VTOP___024root* vlSelf, VerilatedVcd* trace
                                                                      (0xffU 
                                                                       & vlSelf->TOP__DOT__Main_Memory__DOT__loadVal_temp[0U])))));
         tracep->chgQData(oldp+30,((((QData)((IData)(
-                                                    ((3U 
-                                                      == 
-                                                      (3U 
-                                                       & (IData)(vlSelf->TOP__DOT__ID__DOT___GEN_61)))
+                                                    ((IData)(vlSelf->TOP__DOT__Main_Memory__DOT___T_2)
                                                       ? 
-                                                     vlSelf->TOP__DOT__Main_Memory__DOT__loadVal_temp[1U]
-                                                      : 
-                                                     ((2U 
+                                                     ((3U 
                                                        == 
                                                        (3U 
                                                         & (IData)(vlSelf->TOP__DOT__ID__DOT___GEN_61)))
                                                        ? 
-                                                      ((IData)(vlSelf->TOP__DOT__ID_io_decInfo_o_memOp_unsigned)
-                                                        ? 
-                                                       vlSelf->TOP__DOT__Main_Memory__DOT__loadVal_temp[1U]
-                                                        : 
-                                                       __Vtemp_h45976053__0[1U])
+                                                      vlSelf->TOP__DOT__Main_Memory__DOT__loadVal_temp[1U]
                                                        : 
-                                                      ((1U 
+                                                      ((2U 
                                                         == 
                                                         (3U 
                                                          & (IData)(vlSelf->TOP__DOT__ID__DOT___GEN_61)))
@@ -236,33 +227,36 @@ void VTOP___024root__trace_chg_sub_0(VTOP___024root* vlSelf, VerilatedVcd* trace
                                                          ? 
                                                         vlSelf->TOP__DOT__Main_Memory__DOT__loadVal_temp[1U]
                                                          : 
-                                                        __Vtemp_hbd746cff__0[1U])
+                                                        __Vtemp_h45976053__0[1U])
                                                         : 
-                                                       ((IData)(vlSelf->TOP__DOT__ID_io_decInfo_o_memOp_unsigned)
+                                                       ((1U 
+                                                         == 
+                                                         (3U 
+                                                          & (IData)(vlSelf->TOP__DOT__ID__DOT___GEN_61)))
                                                          ? 
-                                                        vlSelf->TOP__DOT__Main_Memory__DOT__loadVal_temp[1U]
+                                                        ((IData)(vlSelf->TOP__DOT__ID_io_decInfo_o_memOp_unsigned)
+                                                          ? 
+                                                         vlSelf->TOP__DOT__Main_Memory__DOT__loadVal_temp[1U]
+                                                          : 
+                                                         __Vtemp_hbd746cff__0[1U])
                                                          : 
-                                                        __Vtemp_h9b56c48b__0[1U])))))) 
+                                                        ((IData)(vlSelf->TOP__DOT__ID_io_decInfo_o_memOp_unsigned)
+                                                          ? 
+                                                         vlSelf->TOP__DOT__Main_Memory__DOT__loadVal_temp[1U]
+                                                          : 
+                                                         __Vtemp_h9b56c48b__0[1U]))))
+                                                      : 0U))) 
                                     << 0x20U) | (QData)((IData)(
-                                                                ((3U 
-                                                                  == 
-                                                                  (3U 
-                                                                   & (IData)(vlSelf->TOP__DOT__ID__DOT___GEN_61)))
+                                                                ((IData)(vlSelf->TOP__DOT__Main_Memory__DOT___T_2)
                                                                   ? 
-                                                                 vlSelf->TOP__DOT__Main_Memory__DOT__loadVal_temp[0U]
-                                                                  : 
-                                                                 ((2U 
+                                                                 ((3U 
                                                                    == 
                                                                    (3U 
                                                                     & (IData)(vlSelf->TOP__DOT__ID__DOT___GEN_61)))
                                                                    ? 
-                                                                  ((IData)(vlSelf->TOP__DOT__ID_io_decInfo_o_memOp_unsigned)
-                                                                    ? 
-                                                                   vlSelf->TOP__DOT__Main_Memory__DOT__loadVal_temp[0U]
-                                                                    : 
-                                                                   __Vtemp_h45976053__0[0U])
+                                                                  vlSelf->TOP__DOT__Main_Memory__DOT__loadVal_temp[0U]
                                                                    : 
-                                                                  ((1U 
+                                                                  ((2U 
                                                                     == 
                                                                     (3U 
                                                                      & (IData)(vlSelf->TOP__DOT__ID__DOT___GEN_61)))
@@ -271,13 +265,25 @@ void VTOP___024root__trace_chg_sub_0(VTOP___024root* vlSelf, VerilatedVcd* trace
                                                                      ? 
                                                                     vlSelf->TOP__DOT__Main_Memory__DOT__loadVal_temp[0U]
                                                                      : 
-                                                                    __Vtemp_hbd746cff__0[0U])
+                                                                    __Vtemp_h45976053__0[0U])
                                                                     : 
-                                                                   ((IData)(vlSelf->TOP__DOT__ID_io_decInfo_o_memOp_unsigned)
+                                                                   ((1U 
+                                                                     == 
+                                                                     (3U 
+                                                                      & (IData)(vlSelf->TOP__DOT__ID__DOT___GEN_61)))
                                                                      ? 
-                                                                    vlSelf->TOP__DOT__Main_Memory__DOT__loadVal_temp[0U]
+                                                                    ((IData)(vlSelf->TOP__DOT__ID_io_decInfo_o_memOp_unsigned)
+                                                                      ? 
+                                                                     vlSelf->TOP__DOT__Main_Memory__DOT__loadVal_temp[0U]
+                                                                      : 
+                                                                     __Vtemp_hbd746cff__0[0U])
                                                                      : 
-                                                                    __Vtemp_h9b56c48b__0[0U])))))))),64);
+                                                                    ((IData)(vlSelf->TOP__DOT__ID_io_decInfo_o_memOp_unsigned)
+                                                                      ? 
+                                                                     vlSelf->TOP__DOT__Main_Memory__DOT__loadVal_temp[0U]
+                                                                      : 
+                                                                     __Vtemp_h9b56c48b__0[0U]))))
+                                                                  : 0U))))),64);
         tracep->chgQData(oldp+32,(vlSelf->TOP__DOT__MEM_io_writeRfOp_o_wdata),64);
         tracep->chgCData(oldp+34,(vlSelf->TOP__DOT__ID__DOT__decRes_0),5);
         tracep->chgCData(oldp+35,((0x7fU & vlSelf->TOP__DOT__Main_Memory__DOT__ram_io_inst_o_MPORT_data)),7);
@@ -406,7 +412,17 @@ void VTOP___024root__trace_chg_sub_0(VTOP___024root* vlSelf, VerilatedVcd* trace
                                                       (((QData)((IData)(vlSelf->TOP__DOT__IF__DOT__pc)) 
                                                         - 0x80000000ULL) 
                                                        >> 2U)))),20);
-        tracep->chgIData(oldp+44,((0xfffffU & ((IData)(1U) 
+        tracep->chgBit(oldp+44,(((0x80000000ULL <= 
+                                  (((QData)((IData)(
+                                                    vlSelf->TOP__DOT__EX__DOT___aluRes_T_189[1U])) 
+                                    << 0x20U) | (QData)((IData)(
+                                                                vlSelf->TOP__DOT__EX__DOT___aluRes_T_189[0U])))) 
+                                 & (0x87ffffffULL >= 
+                                    (((QData)((IData)(
+                                                      vlSelf->TOP__DOT__EX__DOT___aluRes_T_189[1U])) 
+                                      << 0x20U) | (QData)((IData)(
+                                                                  vlSelf->TOP__DOT__EX__DOT___aluRes_T_189[0U])))))));
+        tracep->chgIData(oldp+45,((0xfffffU & ((IData)(1U) 
                                                + (IData)(
                                                          (((((QData)((IData)(
                                                                              vlSelf->TOP__DOT__EX__DOT___aluRes_T_189[1U])) 
@@ -415,7 +431,7 @@ void VTOP___024root__trace_chg_sub_0(VTOP___024root* vlSelf, VerilatedVcd* trace
                                                                               vlSelf->TOP__DOT__EX__DOT___aluRes_T_189[0U]))) 
                                                            - 0x80000000ULL) 
                                                           >> 2U))))),20);
-        tracep->chgIData(oldp+45,(vlSelf->TOP__DOT__Main_Memory__DOT__ram
+        tracep->chgIData(oldp+46,(vlSelf->TOP__DOT__Main_Memory__DOT__ram
                                   [(0xfffffU & ((IData)(1U) 
                                                 + (IData)(
                                                           (((((QData)((IData)(
@@ -425,7 +441,7 @@ void VTOP___024root__trace_chg_sub_0(VTOP___024root* vlSelf, VerilatedVcd* trace
                                                                                vlSelf->TOP__DOT__EX__DOT___aluRes_T_189[0U]))) 
                                                             - 0x80000000ULL) 
                                                            >> 2U))))]),32);
-        tracep->chgIData(oldp+46,((0xfffffU & (IData)(
+        tracep->chgIData(oldp+47,((0xfffffU & (IData)(
                                                       (((((QData)((IData)(
                                                                           vlSelf->TOP__DOT__EX__DOT___aluRes_T_189[1U])) 
                                                           << 0x20U) 
@@ -433,7 +449,7 @@ void VTOP___024root__trace_chg_sub_0(VTOP___024root* vlSelf, VerilatedVcd* trace
                                                                            vlSelf->TOP__DOT__EX__DOT___aluRes_T_189[0U]))) 
                                                         - 0x80000000ULL) 
                                                        >> 2U)))),20);
-        tracep->chgIData(oldp+47,(vlSelf->TOP__DOT__Main_Memory__DOT__ram
+        tracep->chgIData(oldp+48,(vlSelf->TOP__DOT__Main_Memory__DOT__ram
                                   [(0xfffffU & (IData)(
                                                        (((((QData)((IData)(
                                                                            vlSelf->TOP__DOT__EX__DOT___aluRes_T_189[1U])) 
@@ -442,13 +458,11 @@ void VTOP___024root__trace_chg_sub_0(VTOP___024root* vlSelf, VerilatedVcd* trace
                                                                             vlSelf->TOP__DOT__EX__DOT___aluRes_T_189[0U]))) 
                                                          - 0x80000000ULL) 
                                                         >> 2U)))]),32);
-        tracep->chgIData(oldp+48,(vlSelf->TOP__DOT__Main_Memory__DOT__ram
-                                  [0U]),32);
-        tracep->chgIData(oldp+49,(vlSelf->TOP__DOT__Main_Memory__DOT__ram
-                                  [1U]),32);
-        tracep->chgIData(oldp+50,((IData)((vlSelf->TOP__DOT__Main_Memory__DOT___T_27 
+        tracep->chgIData(oldp+49,((IData)((vlSelf->TOP__DOT__Main_Memory__DOT___T_30 
                                            >> 0x20U))),32);
-        tracep->chgIData(oldp+51,((IData)(vlSelf->TOP__DOT__Main_Memory__DOT___T_27)),32);
+        tracep->chgBit(oldp+50,(((IData)(vlSelf->TOP__DOT__Main_Memory__DOT___T_2) 
+                                 & (IData)(vlSelf->TOP__DOT__ID_io_decInfo_o_memOp_isStore))));
+        tracep->chgIData(oldp+51,((IData)(vlSelf->TOP__DOT__Main_Memory__DOT___T_30)),32);
         tracep->chgQData(oldp+52,((((((QData)((IData)(
                                                       vlSelf->TOP__DOT__EX__DOT___aluRes_T_189[1U])) 
                                       << 0x20U) | (QData)((IData)(
