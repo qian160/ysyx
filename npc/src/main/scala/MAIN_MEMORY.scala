@@ -1,6 +1,8 @@
 import chisel3._
 import chisel3.util._
 import chisel3.util.experimental._
+
+import MMIO_SPACE._
 import Util._
 
 class MAIN_MEMORY extends Module{
@@ -14,11 +16,14 @@ class MAIN_MEMORY extends Module{
         val loadVal_o = Output(UInt(64.W))
     })
 
-    val ram = Mem(1 << 20, UInt(32.W))  //hope this is enough
+    val rtc_boot_time = RegInit(System.currentTimeMillis.U(64.W))
+    val ram = Mem(1 << 24, UInt(32.W))  //hope this is enough
     loadMemoryFromFileInline(ram, "/home/s081/Downloads/ysyx-workbench/npc/src/main/scala/img_file")
     io.inst_o       :=  ram((io.pc_i - CONST.PC_INIT) >> 2)
     io.loadVal_o    :=  0.U
-    when(in_pmem(io.memOp_i.addr)){
+
+    //start accessing memory
+    //when(in_pmem(io.memOp_i.addr)){
         val addr        =   (io.memOp_i.addr - CONST.PMEM_START)  >> 2
         val unsigned    =   io.memOp_i.unsigned
         val is_store    =   io.memOp_i.isStore
@@ -54,7 +59,7 @@ class MAIN_MEMORY extends Module{
                 ________________________________________________
                 |temp(7)   | X  |   |   |   |   |   |temp(0)   |
                                     dword
-            1.set loadMask to 0x00ff000000000000, then use an and gate to extract the bits there
+            1.set loadMask to 0x00ff000000000000, then use the AND operation to extract the bits there
             2.the bits we get at step 1 is actually weighted(not starting at lsb, the right side), we need to recover it by shifting back
         */
         val loadVal_temp   =    (dword & mask) >> (offset << 3)       //extract the bits by shifting and masking, then shift back. Not SEXT
@@ -105,7 +110,20 @@ class MAIN_MEMORY extends Module{
             ram(addr + 1.U)     :=  temp.asTypeOf(UInt())(63, 32)
             ram(addr)           :=  temp.asTypeOf(UInt())(31, 0)
         }
+    //}
+    /*
+    .elsewhen(in_serial(io.memOp_i.addr)){
+        printf("in serial\n")
+        when(io.memOp_i.isStore){
+            printf("%c", io.memOp_i.sdata)
+        }//serial doesn't support read
+    }.elsewhen(in_rtc(io.memOp_i.addr)){
+        printf("in rtc\n");
+        when(io.memOp_i.isLoad){
+            io.loadVal_o    :=  System.currentTimeMillis.U(64.W) - rtc_boot_time
+        }
     }
+    */
 
     //to make inst rom and data ram compatible and easy to initialize(loadMemoryFromFileInline), the width is set to be 32 bits
 }

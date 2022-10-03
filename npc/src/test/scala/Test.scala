@@ -33,6 +33,27 @@ class simple extends Module{
     printf("%x\n%x\n%x\n%x\n", temp(0), temp(1), temp(2), temp(3))
 }
 
+object t {
+    var test = UInt(8.W)
+}
+
+class simpleDevice extends Module {
+    val io = IO(new Bundle{
+        val w       = Input(Bool())
+        val char    = Input(UInt(8.W))
+        val wdata   = Input(UInt(64.W))
+        val time    = Output(UInt(64.W))
+    })
+    val time = RegInit(0.U(64.W))
+    val boot_time   =   RegInit(System.currentTimeMillis.U(64.W))
+    when(io.w){
+        printf("%c", io.char)
+        time    :=   io.wdata - boot_time
+    }
+
+    io.time :=  time
+}
+
 class Test extends AnyFlatSpec with ChiselScalatestTester{
     "empty set " should "have size 0" in{
         assert(Set.empty.size == 0)
@@ -41,6 +62,29 @@ class Test extends AnyFlatSpec with ChiselScalatestTester{
         test(new simple){dut => 
             dut.io.wdata.poke("h11223344".U)
             dut.clock.step()
+        }
+    }
+    "simple device" should "work" in {
+        test(new simpleDevice){dut =>
+            dut.io.w.poke(true.B)
+            for(i <- 'a' to 'z'){
+                dut.io.char.poke(i)
+                dut.clock.step()
+            }
+            println()
+            println()
+
+            println("test timer\n")
+            dut.io.w.poke(true.B)
+            for(i <- 1 to 10000){
+                val t = System.currentTimeMillis.U
+                dut.io.wdata.poke(t)
+                dut.clock.step()
+                val v = dut.io.time.peek()
+                println(s"$v")
+            }
+            //val res = dut.io.o.peek()
+            //println(s"wdata = $res")
         }
     }
 }

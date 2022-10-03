@@ -21,19 +21,40 @@ object MMIO_SPACE {
     val FB_END              =   FB_BASE         + (300 * 400 * 4).U
     val AUDIO_SBUF_END      =   AUDIO_SBUF_BASE + 0x10000.U
 
-    def in_serial(addr: UInt):Bool  =   (addr >= SERIAL_BASE & addr <= SERIAL_END)
-    def in_kbd(addr: UInt):Bool     =   (addr >= KBD_BASE    & addr <= KBD_END)
-    def in_rtc(addr: UInt):Bool     =   (addr >= RTC_BASE    & addr <= RTC_END)
-    def in_vgactl(addr: UInt):Bool  =   (addr >= VGACTL_BASE & addr <= VGACTL_END)
-    def in_audio(addr: UInt):Bool   =   (addr >= AUDIO_BASE  & addr <= AUDIO_END)
-    def in_disk(addr: UInt):Bool    =   (addr >= DISK_BASE   & addr <= DISK_END)
-    def in_fb(addr: UInt):Bool      =   (addr >= FB_BASE     & addr <= FB_END)
-    
-    def in_audio_sbuf(addr: UInt)   =   (addr >= AUDIO_SBUF_BASE     & addr <= AUDIO_SBUF_END)
+    def in_serial(addr: UInt):Bool  =   (addr >= SERIAL_BASE && addr <= SERIAL_END)
+    def in_kbd(addr: UInt):Bool     =   (addr >= KBD_BASE    && addr <= KBD_END)
+    def in_rtc(addr: UInt):Bool     =   (addr >= RTC_BASE    && addr <= RTC_END)
+    def in_vgactl(addr: UInt):Bool  =   (addr >= VGACTL_BASE && addr <= VGACTL_END)
+    def in_audio(addr: UInt):Bool   =   (addr >= AUDIO_BASE  && addr <= AUDIO_END)
+    def in_disk(addr: UInt):Bool    =   (addr >= DISK_BASE   && addr <= DISK_END)
+    def in_fb(addr: UInt):Bool      =   (addr >= FB_BASE     && addr <= FB_END)
+
+    def in_audio_sbuf(addr: UInt):Bool   =   (addr >= AUDIO_SBUF_BASE   & addr <= AUDIO_SBUF_END)
+
 }
 
 object handler {
-    
+    //just read from these variables, or write to them
+    //to simplify use, just set the array length = 1
+    val RTC     = UInt(64.W)
+    val KBD     = UInt(32.W)
+    val boot_time   =   (System.currentTimeMillis).U(64.W)
+
+    //to simplify call, all these functions' argument list should be the same
+    def serial_handler(is_write: Bool, addr: UInt, wdata: UInt) = {
+        when(is_write){
+            printf("%c", wdata)
+        }   //don't support read
+    }
+    def kbd_handler(is_write: Bool, addr: UInt, wdata: UInt) = {
+
+    }
+    def rtc_handler(is_write: Bool, addr: UInt, wdata: UInt) = {
+        when(is_write){
+
+        }
+    }
+
 }
 
 object serial {
@@ -41,12 +62,4 @@ object serial {
 }
 
 object RTC {
-
-}
-
-object MMIO_MAP {
-    //ListLookup(addr, default, MMIO_MAP.map_table)
-    val map_table = Array(
-
-    )
 }
