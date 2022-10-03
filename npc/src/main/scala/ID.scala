@@ -85,8 +85,8 @@ class ID extends Module{
             io.decInfo_o.branchOp.happen  :=  MuxLookup(fct3, false.B, Seq(
                 Fct3.BEQ     ->  (rs1Val  === rs2Val),
                 Fct3.BNE     ->  (rs1Val  =/= rs2Val),
-                Fct3.BLT     ->  (rs1Val.asSInt   <  rs2Val.asSInt),
-                Fct3.BGE     ->  (rs1Val.asSInt   >  rs2Val.asSInt),
+                Fct3.BLT     ->  (rs1Val.asSInt   <   rs2Val.asSInt),
+                Fct3.BGE     ->  (rs1Val.asSInt   >=  rs2Val.asSInt),
                 Fct3.BLTU    ->  (rs1Val   <  rs2Val),
                 Fct3.BGEU    ->  (rs1Val   >= rs2Val),
             ))

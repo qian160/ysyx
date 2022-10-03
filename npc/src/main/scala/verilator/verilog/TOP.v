@@ -300,7 +300,7 @@ module ID(
   wire  _io_decInfo_o_branchOp_happen_T_1 = io_regVal_i_rs1Val == io_regVal_i_rs2Val; // @[ID.scala 86:43]
   wire  _io_decInfo_o_branchOp_happen_T_2 = io_regVal_i_rs1Val != io_regVal_i_rs2Val; // @[ID.scala 87:43]
   wire  _io_decInfo_o_branchOp_happen_T_5 = $signed(io_regVal_i_rs1Val) < $signed(io_regVal_i_rs2Val); // @[ID.scala 88:51]
-  wire  _io_decInfo_o_branchOp_happen_T_8 = $signed(io_regVal_i_rs1Val) > $signed(io_regVal_i_rs2Val); // @[ID.scala 89:51]
+  wire  _io_decInfo_o_branchOp_happen_T_8 = $signed(io_regVal_i_rs1Val) >= $signed(io_regVal_i_rs2Val); // @[ID.scala 89:51]
   wire  _io_decInfo_o_branchOp_happen_T_9 = io_regVal_i_rs1Val < io_regVal_i_rs2Val; // @[ID.scala 90:44]
   wire  _io_decInfo_o_branchOp_happen_T_10 = io_regVal_i_rs1Val >= io_regVal_i_rs2Val; // @[ID.scala 91:44]
   wire  _io_decInfo_o_branchOp_happen_T_14 = 3'h1 == fct3 ? _io_decInfo_o_branchOp_happen_T_2 : 3'h0 == fct3 &
