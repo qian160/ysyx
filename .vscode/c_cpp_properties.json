@@ -14,7 +14,7 @@
             "cppStandard": "gnu++14",
             "intelliSenseMode": "linux-gcc-x64",
             "compilerArgs": [],
-            "compileCommands": "/home/s081/Downloads/ysyx-workbench/am-kernels/tests/cpu-tests/compile_commands.json",
+            "compileCommands": "/home/s081/Downloads/ysyx-workbench/nemu/compile_commands.json",
             "configurationProvider": "ms-vscode.makefile-tools"
         }
     ],

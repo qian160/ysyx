@@ -4,8 +4,8 @@ import chisel3.util.experimental._
 import Util._
 
 class MAIN_MEMORY extends Module{
-    def bswap(a: UInt): UInt        = Cat(a(7, 0), a(15, 8), a(23, 16), a(31, 24), a(39, 32), a(47, 40), a(55, 48), a(63, 56))
-
+    def bswap(a: UInt): UInt        =   Cat(a(7, 0), a(15, 8), a(23, 16), a(31, 24), a(39, 32), a(47, 40), a(55, 48), a(63, 56))
+    def in_pmem(addr: UInt):Bool    =   (addr >= CONST.PMEM_START & addr <= CONST.PMEM_END)
     val io = IO(new Bundle{
         val pc_i      = Input(UInt(64.W))
         val memOp_i   = Input(new MemOp)
