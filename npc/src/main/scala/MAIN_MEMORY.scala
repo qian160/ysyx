@@ -6,8 +6,28 @@ import MMIO_SPACE._
 import Util._
 
 class MAIN_MEMORY extends Module{
+    //to simplify call, all these functions' argument list should be the same
+    def serial_handler(is_write: Bool, addr: UInt, wdata: UInt): UInt = {
+        when(is_write){
+            printf("%c", wdata)
+        }   //don't support read
+        0.U     //return value, useless here
+    }
+    def kbd_handler(is_write: Bool, addr: UInt, wdata: UInt) = {}
+    def rtc_handler(is_write: Bool, addr: UInt, wdata: UInt): UInt = {
+        val offset_     =   addr - RTC_BASE
+        val new_time    =   Wire(UInt(64.W))
+        new_time        :=  System.currentTimeMillis.U
+        val need_update =   !is_write & offset_ === 4.U
+        rtc_past_time   :=  Mux(need_update, new_time, rtc_past_time)
+
+        rtc_past_time
+    }
+
     def bswap(a: UInt): UInt        =   Cat(a(7, 0), a(15, 8), a(23, 16), a(31, 24), a(39, 32), a(47, 40), a(55, 48), a(63, 56))
     def in_pmem(addr: UInt):Bool    =   (addr >= CONST.PMEM_START & addr <= CONST.PMEM_END)
+
+
     val io = IO(new Bundle{
         val pc_i      = Input(UInt(64.W))
         val memOp_i   = Input(new MemOp)
@@ -17,10 +37,16 @@ class MAIN_MEMORY extends Module{
     })
 
     val rtc_boot_time = RegInit(System.currentTimeMillis.U(64.W))
+    val rtc_past_time = RegInit(0.U(64.W))      //how much time has past
+    //to make inst rom and data ram compatible and easy to initialize(loadMemoryFromFileInline), the width is set to be 32 bits
     val ram = Mem(1 << 20, UInt(32.W))  //hope this is enough
     loadMemoryFromFileInline(ram, "/home/s081/Downloads/ysyx-workbench/npc/src/main/scala/img_file")
     io.inst_o       :=  ram((io.pc_i - CONST.PC_INIT) >> 2)
     io.loadVal_o    :=  0.U
+
+    val is_store    =   io.memOp_i.isStore
+    val addr_i      =   io.memOp_i.addr
+    val sdata       =   io.memOp_i.sdata
 
     //start accessing memory
     when(in_pmem(io.memOp_i.addr)){
@@ -35,15 +61,6 @@ class MAIN_MEMORY extends Module{
 
         //assuming that the address is aligned, little endian
         val dword       =   Cat(ram(addr + 1.U), ram(addr))     //the bits are already stored in small endian
-        /*
-            a4 a3 a2 a1 (ram(addr))
-                                            =>      b4 b3 b2 b1 a4 a3 a2 a1
-            b4 b3 b2 b1 (ram(addr + 1))
-
-            a4 and b4 hold the msb of their byte block, so the weight order is: a4 > a3 > a2 > a1 and b4 > b3 > b2 > b1
-            after connecting together, 
-        
-        */
 
         val offset  =   io.memOp_i.addr(1, 0)   //mod by 4, get the byte offset in the 32-bit block
         //chisel doesn't support partial assignment like ram(0)(7, 0) := foo, the LHS just produces a value, and is not assignable
@@ -98,7 +115,6 @@ class MAIN_MEMORY extends Module{
         dontTouch(test0)
         dontTouch(test1)
 
-        val sdata   =   io.memOp_i.sdata
         //if the address is unaligned, this may not work correctly..
         //store with small endian
         when(is_store){
@@ -114,25 +130,13 @@ class MAIN_MEMORY extends Module{
             ram(addr + 1.U)     :=  temp.asTypeOf(UInt())(63, 32)
             ram(addr)           :=  temp.asTypeOf(UInt())(31, 0)
         }
-    }
-    .elsewhen(in_serial(io.memOp_i.addr)){
-        //printf("in serial\n")
-        when(io.memOp_i.isStore){
-            printf("%c", io.memOp_i.sdata)
-        }//serial doesn't support read
-    }.elsewhen(in_rtc(io.memOp_i.addr)){
-        //printf("in rtc\n");
-        when(io.memOp_i.isLoad){
-            io.loadVal_o    :=  System.currentTimeMillis.U(64.W) - rtc_boot_time
-        }
     }.otherwise{
-        when(io.memOp_i.isStore | io.memOp_i.isLoad)
-        {
-            printf("bad address: %x\n", io.memOp_i.addr)
-        }
+        io.loadVal_o    :=  PriorityMux(Seq(
+            (in_serial(addr_i),     serial_handler(is_store, addr_i, sdata)),
+            (in_rtc(addr_i),        rtc_handler(is_store, addr_i, sdata)),
+            (true.B,                0.U)
+        ))
     }
 
-
-    //to make inst rom and data ram compatible and easy to initialize(loadMemoryFromFileInline), the width is set to be 32 bits
 }
 
