@@ -292,14 +292,13 @@ static int decode_exec(Decode *D) {
       D -> decInfo.type = TYPE_I;
       word_t imm_I = immI(inst);
       switch(fct3){
-        case(0x0):  R(rd) = SEXT(Mr(R(rs1) + imm_I, 1), 8);  break;  //lb
-        case(0x1):  R(rd) = SEXT(Mr(R(rs1) + imm_I, 2), 16); break;  //lh
-        case(0x2):  R(rd) = SEXT(Mr(R(rs1) + imm_I, 4), 32); break;  //lw
-        case(0x3):  R(rd) = Mr(R(rs1) + imm_I, 8);           break;  //ld
-
-        case(0x4):  R(rd) = Mr(R(rs1) + imm_I, 1);           break;  //lbu
-        case(0x5):  R(rd) = Mr(R(rs1) + imm_I, 2);           break;  //lhu
-        case(0x6):  R(rd) = Mr(R(rs1) + imm_I, 4);           break;  //lwu
+        case(0x0):  R(rd) = SEXT(Mr(R(rs1) + imm_I, 1), 8);   IFDEF(CONFIG_REF, printf("lb:  [x%d] <=  0x%lx\n", rd, R(rd)));  break;  //lb
+        case(0x1):  R(rd) = SEXT(Mr(R(rs1) + imm_I, 2), 16);  IFDEF(CONFIG_REF, printf("lh:  [x%d] <=  0x%lx\n", rd, R(rd)));  break;  //lh
+        case(0x2):  R(rd) = SEXT(Mr(R(rs1) + imm_I, 4), 32);  IFDEF(CONFIG_REF, printf("lw:  [x%d] <=  0x%lx\n", rd, R(rd)));  break;  //lw
+        case(0x3):  R(rd) = Mr(R(rs1) + imm_I, 8);            IFDEF(CONFIG_REF, printf("ld:  [x%d] <=  0x%lx\n", rd, R(rd)));  break;  //ld
+        case(0x4):  R(rd) = Mr(R(rs1) + imm_I, 1);            IFDEF(CONFIG_REF, printf("lbu: [x%d] <=  0x%lx\n", rd, R(rd)));  break;  //lbu
+        case(0x5):  R(rd) = Mr(R(rs1) + imm_I, 2);            IFDEF(CONFIG_REF, printf("lhu: [x%d] <=  0x%lx\n", rd, R(rd)));  break;  //lhu
+        case(0x6):  R(rd) = Mr(R(rs1) + imm_I, 4);            IFDEF(CONFIG_REF, printf("lwu: [x%d] <=  0x%lx\n", rd, R(rd)));  break;  //lwu
         default:    panic("bad inst\n");
       }
       break;
@@ -309,10 +308,10 @@ static int decode_exec(Decode *D) {
       D -> decInfo.type = TYPE_S;
       word_t imm_S = immS(inst);
       switch(fct3){
-        case(0x0):  Mw(R(rs1) + imm_S, 1, R(rs2));  break;
-        case(0x1):  Mw(R(rs1) + imm_S, 2, R(rs2));  break;
-        case(0x2):  Mw(R(rs1) + imm_S, 4, R(rs2));  break;
-        case(0x3):  Mw(R(rs1) + imm_S, 8, R(rs2));  break;
+        case(0x0):  Mw(R(rs1) + imm_S, 1, R(rs2));  IFDEF(CONFIG_REF, printf("sb: 0x%lx   =>  pmem[0x%lx]\n", R(rs2), R(rs1) + imm_S ));      break;
+        case(0x1):  Mw(R(rs1) + imm_S, 2, R(rs2));  IFDEF(CONFIG_REF, printf("sh: 0x%lx   =>  pmem[0x%lx]\n", R(rs2), R(rs1) + imm_S ));      break;
+        case(0x2):  Mw(R(rs1) + imm_S, 4, R(rs2));  IFDEF(CONFIG_REF, printf("sw: 0x%lx   =>  pmem[0x%lx]\n", R(rs2), R(rs1) + imm_S ));      break;
+        case(0x3):  Mw(R(rs1) + imm_S, 8, R(rs2));  IFDEF(CONFIG_REF, printf("sd: 0x%lx   =>  pmem[0x%lx]\n", R(rs2), R(rs1) + imm_S ));      break;
         default:    panic("bad inst\n");
       }
       break;
@@ -321,6 +320,7 @@ static int decode_exec(Decode *D) {
     case(BRANCH):{
       D -> decInfo.type = TYPE_B;
       word_t target = D->pc + immB(inst);
+      //printf("branch\b");
       switch(fct3){
         case(0x0):  D -> dnpc =          R(rs1) ==          R(rs2) ? target : D -> dnpc;  break;
         case(0x1):  D -> dnpc =          R(rs1) !=          R(rs2) ? target : D -> dnpc;  break;
@@ -333,14 +333,16 @@ static int decode_exec(Decode *D) {
       break;
     }
 
-    case(JAL):    D->decInfo.type = TYPE_J;    R(rd) = linkAddr; D -> dnpc = D -> pc + immJ(inst);   break;
-    case(JALR):   D->decInfo.type = TYPE_I;    R(rd) = linkAddr; D -> dnpc = R(rs1) + immI(inst);    break;
+    case(JAL):    D->decInfo.type = TYPE_J;    R(rd) = linkAddr; D -> dnpc = D -> pc + immJ(inst);  IFDEF(CONFIG_REF, printf("jal, target at 0x%lx\n", D -> pc + immJ(inst)));    break;
+    case(JALR):   D->decInfo.type = TYPE_I;    R(rd) = linkAddr; D -> dnpc = R(rs1) + immI(inst);   IFDEF(CONFIG_REF, printf("jalr, target at 0x%lx\n", R(rs1) + immI(inst)));    break;
     case(AUIPC):  D->decInfo.type = TYPE_U;    R(rd) = D -> pc + immU(inst);break;
     case(LUI):    D->decInfo.type = TYPE_U;    R(rd) = immU(inst);break;
-    case(EBREAK): NEMUTRAP(D->pc, R(10)); break;  //r(10) is a0
+    case(EBREAK): NEMUTRAP(D->pc, R(10)); break;  //r(10) is a0,  ecall has the same opcode! need to improved, but there will never be an ecall
     default: panic("bad inst\n");
   }
   R(0) = 0; // reset $zero to 0
+
+  IFDEF(CONFIG_REF, Log("\nwdata = 0x%lx\npc = 0x%8lx, inst = 0x%08x,  rd = %d\n", R(rd), D->pc, inst, rd));
   return 0;
 }
 

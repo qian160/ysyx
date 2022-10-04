@@ -7,7 +7,8 @@ static uint32_t *rtc_port_base = NULL;
 static void rtc_io_handler(uint32_t offset, int len, bool is_write) {
   //printf("%s %s %d\n 111\n", __FILE__, __func__, __LINE__);
   assert(offset == 0 || offset == 4);
-  //the offset has 2 usages:
+  //this is the handler function
+  //there are 2 behaviors according to the offset:
   //offset = 0: just read, no update
   //offset = 4: update then read
   if (!is_write && offset == 4) {
