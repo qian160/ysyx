@@ -24,9 +24,10 @@ class MAIN_MEMORY extends Module{
 
     //start accessing memory
     when(in_pmem(io.memOp_i.addr)){
+        /*
         when(io.memOp_i.isLoad | io.memOp_i.isStore){
             printf("addr %x is in pmem\n", io.memOp_i.addr)
-        }
+        }*/
         val addr        =   (io.memOp_i.addr - CONST.PMEM_START)  >> 2
         val unsigned    =   io.memOp_i.unsigned
         val is_store    =   io.memOp_i.isStore
@@ -115,12 +116,12 @@ class MAIN_MEMORY extends Module{
         }
     }
     .elsewhen(in_serial(io.memOp_i.addr)){
-        printf("in serial\n")
+        //printf("in serial\n")
         when(io.memOp_i.isStore){
             printf("%c", io.memOp_i.sdata)
         }//serial doesn't support read
     }.elsewhen(in_rtc(io.memOp_i.addr)){
-        printf("in rtc\n");
+        //printf("in rtc\n");
         when(io.memOp_i.isLoad){
             io.loadVal_o    :=  System.currentTimeMillis.U(64.W) - rtc_boot_time
         }
