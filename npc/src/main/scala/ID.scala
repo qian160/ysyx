@@ -101,8 +101,8 @@ class ID extends Module{
             io.decInfo_o.writeRfOp.wen    :=  true.B
             io.decInfo_o.branchOp.happen  :=  true.B
             io.decInfo_o.branchOp.newPC   :=  pc + imm_J(inst)
-            printf("raw data = %x\n", Cat(inst(31), inst(19,12), inst(20), inst(30,21), 0.U(1.W)))
-            printf("imm = %x, target at %x\n", imm_J(inst), pc + imm_J(inst))
+            //printf("raw data = %x\n", Cat(inst(31), inst(19,12), inst(20), inst(30,21), 0.U(1.W)))
+            //printf("imm = %x, target at %x\n", imm_J(inst), pc + imm_J(inst))
             //link address
             io.decInfo_o.aluOp.src1       :=  pc
             io.decInfo_o.aluOp.src2       :=  4.U(64.W)            
@@ -135,7 +135,7 @@ class ID extends Module{
     val src2 = io.decInfo_o.aluOp.src2
 
     //printf(p"src1 = ${Hexadecimal(src1)}, src2 = ${Hexadecimal(src2)}\n")
-    printf("pc = %x, inst = %x\n\n",pc, inst)
+    //printf("pc = %x, inst = %x\n\n",pc, inst)
 
     //io.debug_o.exit     :=  inst === CONST.EBREAK
 

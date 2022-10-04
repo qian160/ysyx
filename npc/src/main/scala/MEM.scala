@@ -20,6 +20,7 @@ class MEM extends Module{
 
     val sdata   =   io.memOp_i.sdata
     val addr    =   io.memOp_i.addr
+    /*
     when(isStore){
         switch(io.memOp_i.length){
             is(0.U){
@@ -41,7 +42,7 @@ class MEM extends Module{
     when(isLoad){
         printf("[x%d]   <=  0x%x\n",io.writeRfOp_i.rd,  io.loadVal_i)
     }
-
+*/
     io.writeRfOp_o          :=  io.writeRfOp_i
     io.writeRfOp_o.wdata    :=  Mux(isLoad, io.loadVal_i, io.writeRfOp_i.wdata)
 /*

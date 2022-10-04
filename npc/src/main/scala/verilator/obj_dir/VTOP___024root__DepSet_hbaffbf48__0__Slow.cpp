@@ -142,6 +142,7 @@ VL_ATTR_COLD void VTOP___024root___settle__TOP__0(VTOP___024root* vlSelf) {
     VlWide<3>/*95:0*/ __Vtemp_h45976053__0;
     VlWide<3>/*95:0*/ __Vtemp_hbd746cff__0;
     VlWide<3>/*95:0*/ __Vtemp_h9b56c48b__0;
+    VlWide<3>/*95:0*/ __Vtemp_h66045eb7__0;
     // Body
     vlSelf->io_pc_o = (QData)((IData)(vlSelf->TOP__DOT__IF__DOT__pc));
     vlSelf->TOP__DOT__Main_Memory__DOT__ram_io_inst_o_MPORT_data 
@@ -1405,6 +1406,10 @@ VL_ATTR_COLD void VTOP___024root___settle__TOP__0(VTOP___024root* vlSelf) {
                     & ((2U != (IData)(vlSelf->TOP__DOT__ID__DOT__decRes_0)) 
                        & ((4U != (IData)(vlSelf->TOP__DOT__ID__DOT__decRes_0)) 
                           & (5U == (IData)(vlSelf->TOP__DOT__ID__DOT__decRes_0))))))));
+    vlSelf->TOP__DOT__ID_io_decInfo_o_memOp_isLoad 
+        = ((7U != (IData)(vlSelf->TOP__DOT__ID__DOT__decRes_0)) 
+           & ((1U == (IData)(vlSelf->TOP__DOT__ID__DOT__decRes_0)) 
+              & (3U == (0x7fU & vlSelf->TOP__DOT__Main_Memory__DOT__ram_io_inst_o_MPORT_data))));
     vlSelf->TOP__DOT__ID_io_decInfo_o_memOp_unsigned 
         = ((7U != (IData)(vlSelf->TOP__DOT__ID__DOT__decRes_0)) 
            & ((1U == (IData)(vlSelf->TOP__DOT__ID__DOT__decRes_0)) 
@@ -2008,6 +2013,20 @@ VL_ATTR_COLD void VTOP___024root___settle__TOP__0(VTOP___024root* vlSelf) {
                                                      << 0x20U) 
                                                     | (QData)((IData)(
                                                                       vlSelf->TOP__DOT__EX__DOT___aluRes_T_189[0U])))));
+    vlSelf->TOP__DOT__Main_Memory__DOT___T_72 = ((0xa00003f8ULL 
+                                                  <= 
+                                                  (((QData)((IData)(
+                                                                    vlSelf->TOP__DOT__EX__DOT___aluRes_T_189[1U])) 
+                                                    << 0x20U) 
+                                                   | (QData)((IData)(
+                                                                     vlSelf->TOP__DOT__EX__DOT___aluRes_T_189[0U])))) 
+                                                 & (0xa0000400ULL 
+                                                    >= 
+                                                    (((QData)((IData)(
+                                                                      vlSelf->TOP__DOT__EX__DOT___aluRes_T_189[1U])) 
+                                                      << 0x20U) 
+                                                     | (QData)((IData)(
+                                                                       vlSelf->TOP__DOT__EX__DOT___aluRes_T_189[0U])))));
     vlSelf->TOP__DOT__Main_Memory__DOT__dword = (((QData)((IData)(
                                                                   vlSelf->TOP__DOT__Main_Memory__DOT__ram
                                                                   [
@@ -2177,15 +2196,29 @@ VL_ATTR_COLD void VTOP___024root___settle__TOP__0(VTOP___024root* vlSelf) {
                                                | (QData)((IData)(
                                                                  (0xffU 
                                                                   & vlSelf->TOP__DOT__Main_Memory__DOT__loadVal_temp[0U])))));
-    vlSelf->TOP__DOT__MEM_io_writeRfOp_o_wdata = ((
-                                                   (7U 
-                                                    != (IData)(vlSelf->TOP__DOT__ID__DOT__decRes_0)) 
-                                                   & ((1U 
-                                                       == (IData)(vlSelf->TOP__DOT__ID__DOT__decRes_0)) 
-                                                      & (3U 
-                                                         == 
-                                                         (0x7fU 
-                                                          & vlSelf->TOP__DOT__Main_Memory__DOT__ram_io_inst_o_MPORT_data))))
+    VL_EXTEND_WQ(95,64, __Vtemp_h66045eb7__0, ((IData)(vlSelf->TOP__DOT__Main_Memory__DOT___T_72)
+                                                ? 0ULL
+                                                : (
+                                                   ((0xa0000048ULL 
+                                                     <= 
+                                                     (((QData)((IData)(
+                                                                       vlSelf->TOP__DOT__EX__DOT___aluRes_T_189[1U])) 
+                                                       << 0x20U) 
+                                                      | (QData)((IData)(
+                                                                        vlSelf->TOP__DOT__EX__DOT___aluRes_T_189[0U])))) 
+                                                    & (0xa0000050ULL 
+                                                       >= 
+                                                       (((QData)((IData)(
+                                                                         vlSelf->TOP__DOT__EX__DOT___aluRes_T_189[1U])) 
+                                                         << 0x20U) 
+                                                        | (QData)((IData)(
+                                                                          vlSelf->TOP__DOT__EX__DOT___aluRes_T_189[0U])))))
+                                                    ? 
+                                                   ((IData)(vlSelf->TOP__DOT__ID_io_decInfo_o_memOp_isLoad)
+                                                     ? 0x6bULL
+                                                     : 0ULL)
+                                                    : 0ULL)));
+    vlSelf->TOP__DOT__MEM_io_writeRfOp_o_wdata = ((IData)(vlSelf->TOP__DOT__ID_io_decInfo_o_memOp_isLoad)
                                                    ? 
                                                   (((QData)((IData)(
                                                                     ((IData)(vlSelf->TOP__DOT__Main_Memory__DOT___T_2)
@@ -2224,7 +2257,8 @@ VL_ATTR_COLD void VTOP___024root___settle__TOP__0(VTOP___024root* vlSelf) {
                                                                          vlSelf->TOP__DOT__Main_Memory__DOT__loadVal_temp[1U]
                                                                           : 
                                                                          __Vtemp_h9b56c48b__0[1U]))))
-                                                                      : 0U))) 
+                                                                      : 
+                                                                     __Vtemp_h66045eb7__0[1U]))) 
                                                     << 0x20U) 
                                                    | (QData)((IData)(
                                                                      ((IData)(vlSelf->TOP__DOT__Main_Memory__DOT___T_2)
@@ -2263,7 +2297,8 @@ VL_ATTR_COLD void VTOP___024root___settle__TOP__0(VTOP___024root* vlSelf) {
                                                                           vlSelf->TOP__DOT__Main_Memory__DOT__loadVal_temp[0U]
                                                                            : 
                                                                           __Vtemp_h9b56c48b__0[0U]))))
-                                                                       : 0U))))
+                                                                       : 
+                                                                      __Vtemp_h66045eb7__0[0U]))))
                                                    : 
                                                   (((QData)((IData)(
                                                                     vlSelf->TOP__DOT__EX__DOT___aluRes_T_189[1U])) 
@@ -2734,7 +2769,7 @@ VL_ATTR_COLD void VTOP___024root___settle__TOP__0(VTOP___024root* vlSelf) {
         vlSelf->TOP__DOT__Main_Memory__DOT___GEN_111 
             = (0xffU & (IData)(TOP__DOT__Main_Memory__DOT___GEN_95));
     }
-    vlSelf->TOP__DOT__Main_Memory__DOT___T_62 = (((QData)((IData)(
+    vlSelf->TOP__DOT__Main_Memory__DOT___T_65 = (((QData)((IData)(
                                                                   ((((IData)(vlSelf->TOP__DOT__ID_io_decInfo_o_memOp_isStore)
                                                                       ? 
                                                                      ((0x80U 
@@ -2951,6 +2986,7 @@ VL_ATTR_COLD void VTOP___024root___ctor_var_reset(VTOP___024root* vlSelf) {
     vlSelf->TOP__DOT__ID_io_decInfo_o_writeRfOp_wen = VL_RAND_RESET_I(1);
     vlSelf->TOP__DOT__ID_io_decInfo_o_aluOp_src1 = VL_RAND_RESET_Q(64);
     vlSelf->TOP__DOT__ID_io_decInfo_o_aluOp_opt = VL_RAND_RESET_I(5);
+    vlSelf->TOP__DOT__ID_io_decInfo_o_memOp_isLoad = VL_RAND_RESET_I(1);
     vlSelf->TOP__DOT__ID_io_decInfo_o_memOp_isStore = VL_RAND_RESET_I(1);
     vlSelf->TOP__DOT__ID_io_decInfo_o_memOp_unsigned = VL_RAND_RESET_I(1);
     vlSelf->TOP__DOT__ID_io_decInfo_o_memOp_sdata = VL_RAND_RESET_Q(64);
@@ -3013,7 +3049,8 @@ VL_ATTR_COLD void VTOP___024root___ctor_var_reset(VTOP___024root* vlSelf) {
     vlSelf->TOP__DOT__Main_Memory__DOT___GEN_113 = VL_RAND_RESET_I(8);
     vlSelf->TOP__DOT__Main_Memory__DOT___GEN_114 = VL_RAND_RESET_I(8);
     vlSelf->TOP__DOT__Main_Memory__DOT___GEN_115 = VL_RAND_RESET_I(8);
-    vlSelf->TOP__DOT__Main_Memory__DOT___T_62 = VL_RAND_RESET_Q(64);
+    vlSelf->TOP__DOT__Main_Memory__DOT___T_65 = VL_RAND_RESET_Q(64);
+    vlSelf->TOP__DOT__Main_Memory__DOT___T_72 = VL_RAND_RESET_I(1);
     vlSelf->TOP__DOT__Main_Memory__DOT__initvar = VL_RAND_RESET_I(32);
     for (int __Vi0=0; __Vi0<2; ++__Vi0) {
         vlSelf->__Vm_traceActivity[__Vi0] = VL_RAND_RESET_I(1);

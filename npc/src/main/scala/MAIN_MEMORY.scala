@@ -24,6 +24,9 @@ class MAIN_MEMORY extends Module{
 
     //start accessing memory
     when(in_pmem(io.memOp_i.addr)){
+        when(io.memOp_i.isLoad | io.memOp_i.isStore){
+            printf("addr %x is in pmem\n", io.memOp_i.addr)
+        }
         val addr        =   (io.memOp_i.addr - CONST.PMEM_START)  >> 2
         val unsigned    =   io.memOp_i.unsigned
         val is_store    =   io.memOp_i.isStore
@@ -110,9 +113,7 @@ class MAIN_MEMORY extends Module{
             ram(addr + 1.U)     :=  temp.asTypeOf(UInt())(63, 32)
             ram(addr)           :=  temp.asTypeOf(UInt())(31, 0)
         }
-    }//.otherwise{
-    //}
-    /*
+    }
     .elsewhen(in_serial(io.memOp_i.addr)){
         printf("in serial\n")
         when(io.memOp_i.isStore){
@@ -123,8 +124,13 @@ class MAIN_MEMORY extends Module{
         when(io.memOp_i.isLoad){
             io.loadVal_o    :=  System.currentTimeMillis.U(64.W) - rtc_boot_time
         }
+    }.otherwise{
+        when(io.memOp_i.isStore | io.memOp_i.isLoad)
+        {
+            printf("bad address: %x\n", io.memOp_i.addr)
+        }
     }
-    */
+
 
     //to make inst rom and data ram compatible and easy to initialize(loadMemoryFromFileInline), the width is set to be 32 bits
 }
