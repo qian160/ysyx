@@ -21,13 +21,13 @@ object MMIO_SPACE {
     val FB_END              =   FB_BASE         + (300 * 400 * 4).U
     val AUDIO_SBUF_END      =   AUDIO_SBUF_BASE + 0x10000.U
 
-    def in_serial(addr: UInt):Bool  =   (addr >= SERIAL_BASE & addr <= SERIAL_END)
-    def in_kbd(addr: UInt):Bool     =   (addr >= KBD_BASE    & addr <= KBD_END)
-    def in_rtc(addr: UInt):Bool     =   (addr >= RTC_BASE    & addr <= RTC_END)
-    def in_vgactl(addr: UInt):Bool  =   (addr >= VGACTL_BASE & addr <= VGACTL_END)
-    def in_audio(addr: UInt):Bool   =   (addr >= AUDIO_BASE  & addr <= AUDIO_END)
-    def in_disk(addr: UInt):Bool    =   (addr >= DISK_BASE   & addr <= DISK_END)
-    def in_fb(addr: UInt):Bool      =   (addr >= FB_BASE     & addr <= FB_END)
+    def in_serial(addr: UInt):Bool  =   (addr >= SERIAL_BASE && addr <= SERIAL_END)
+    def in_kbd(addr: UInt):Bool     =   (addr >= KBD_BASE    && addr <= KBD_END)
+    def in_rtc(addr: UInt):Bool     =   (addr >= RTC_BASE    && addr <= RTC_END)
+    def in_vgactl(addr: UInt):Bool  =   (addr >= VGACTL_BASE && addr <= VGACTL_END)
+    def in_audio(addr: UInt):Bool   =   (addr >= AUDIO_BASE  && addr <= AUDIO_END)
+    def in_disk(addr: UInt):Bool    =   (addr >= DISK_BASE   && addr <= DISK_END)
+    def in_fb(addr: UInt):Bool      =   (addr >= FB_BASE     && addr <= FB_END)
 
     def in_audio_sbuf(addr: UInt):Bool   =   (addr >= AUDIO_SBUF_BASE   & addr <= AUDIO_SBUF_END)
 
@@ -55,14 +55,6 @@ object handler {
         }
     }
 
-    //val handlers = Array(serial_handler, kbd_handler, rtc_handler)
-    //ListLookup(addr, default, MMIO_MAP.map_table) //this finds the handler.
-    /*
-    val map_table = Array(
-        MMIO_SPACE.in_serial    ->  serial_handler _,
-        MMIO_SPACE.in_rtc       ->  rtc_handler _,
-    )
-    */
 }
 
 object serial {
@@ -70,10 +62,4 @@ object serial {
 }
 
 object RTC {
-    val boot_time   =   (System.currentTimeMillis).U(64.W)
 }
-/*
-object MMIO_MAP {
-
-}
-*/
