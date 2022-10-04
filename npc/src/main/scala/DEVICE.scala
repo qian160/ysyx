@@ -50,9 +50,7 @@ object handler {
 
     }
     def rtc_handler(is_write: Bool, addr: UInt, wdata: UInt) = {
-        when(is_write){
 
-        }
     }
 
 }

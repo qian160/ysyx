@@ -18,7 +18,6 @@ VL_MODULE(VTOP___024root) {
         VL_IN8(reset,0,0);
         CData/*0:0*/ TOP__DOT__ID_io_decInfo_o_writeRfOp_wen;
         CData/*4:0*/ TOP__DOT__ID_io_decInfo_o_aluOp_opt;
-        CData/*0:0*/ TOP__DOT__ID_io_decInfo_o_memOp_isLoad;
         CData/*0:0*/ TOP__DOT__ID_io_decInfo_o_memOp_isStore;
         CData/*0:0*/ TOP__DOT__ID_io_decInfo_o_memOp_unsigned;
         CData/*4:0*/ TOP__DOT__ID__DOT__decRes_0;
@@ -33,8 +32,6 @@ VL_MODULE(VTOP___024root) {
         CData/*7:0*/ TOP__DOT__Main_Memory__DOT___GEN_113;
         CData/*7:0*/ TOP__DOT__Main_Memory__DOT___GEN_114;
         CData/*7:0*/ TOP__DOT__Main_Memory__DOT___GEN_115;
-        CData/*0:0*/ TOP__DOT__Main_Memory__DOT___T_69;
-        CData/*0:0*/ TOP__DOT__Main_Memory__DOT___T_74;
         CData/*0:0*/ __Vclklast__TOP__clock;
         VL_OUT(io_inst_o,31,0);
         IData/*31:0*/ TOP__DOT__IF__DOT__pc;
@@ -43,6 +40,7 @@ VL_MODULE(VTOP___024root) {
         VlWide<4>/*127:0*/ TOP__DOT__EX__DOT___aluRes_T_189;
         IData/*31:0*/ TOP__DOT__Main_Memory__DOT__ram_io_inst_o_MPORT_data;
         VlWide<3>/*94:0*/ TOP__DOT__Main_Memory__DOT__loadVal_temp;
+        VlWide<3>/*94:0*/ TOP__DOT__Main_Memory__DOT___GEN_151;
         IData/*31:0*/ TOP__DOT__Main_Memory__DOT__initvar;
         VL_OUT64(io_pc_o,63,0);
         VL_OUT64(io_o,63,0);
@@ -78,10 +76,10 @@ VL_MODULE(VTOP___024root) {
         QData/*63:0*/ TOP__DOT__Regfile__DOT__registers_20;
         QData/*63:0*/ TOP__DOT__Regfile__DOT__registers_21;
         QData/*63:0*/ TOP__DOT__Regfile__DOT__registers_22;
-    };
-    struct {
         QData/*63:0*/ TOP__DOT__Regfile__DOT__registers_23;
         QData/*63:0*/ TOP__DOT__Regfile__DOT__registers_24;
+    };
+    struct {
         QData/*63:0*/ TOP__DOT__Regfile__DOT__registers_25;
         QData/*63:0*/ TOP__DOT__Regfile__DOT__registers_26;
         QData/*63:0*/ TOP__DOT__Regfile__DOT__registers_27;
@@ -92,7 +90,6 @@ VL_MODULE(VTOP___024root) {
         QData/*63:0*/ TOP__DOT__Main_Memory__DOT__rtc_past_time;
         QData/*63:0*/ TOP__DOT__Main_Memory__DOT__dword;
         QData/*63:0*/ TOP__DOT__Main_Memory__DOT___T_62;
-        QData/*63:0*/ TOP__DOT__Main_Memory__DOT___GEN_152;
         VlUnpacked<IData/*31:0*/, 1048576> TOP__DOT__Main_Memory__DOT__ram;
         VlUnpacked<CData/*0:0*/, 2> __Vm_traceActivity;
     };
