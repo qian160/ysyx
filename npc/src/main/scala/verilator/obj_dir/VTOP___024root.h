@@ -35,6 +35,7 @@ VL_MODULE(VTOP___024root) {
         CData/*0:0*/ __Vclklast__TOP__clock;
         VL_OUT(io_inst_o,31,0);
         IData/*31:0*/ TOP__DOT__IF__DOT__pc;
+        IData/*20:0*/ TOP__DOT__ID__DOT___io_decInfo_o_branchOp_newPC_T_24;
         VlWide<3>/*75:0*/ TOP__DOT__ID__DOT___GEN_57;
         VlWide<4>/*127:0*/ TOP__DOT__EX__DOT___aluRes_T_189;
         IData/*31:0*/ TOP__DOT__Main_Memory__DOT__ram_io_inst_o_MPORT_data;
@@ -77,9 +78,9 @@ VL_MODULE(VTOP___024root) {
         QData/*63:0*/ TOP__DOT__Regfile__DOT__registers_23;
         QData/*63:0*/ TOP__DOT__Regfile__DOT__registers_24;
         QData/*63:0*/ TOP__DOT__Regfile__DOT__registers_25;
-        QData/*63:0*/ TOP__DOT__Regfile__DOT__registers_26;
     };
     struct {
+        QData/*63:0*/ TOP__DOT__Regfile__DOT__registers_26;
         QData/*63:0*/ TOP__DOT__Regfile__DOT__registers_27;
         QData/*63:0*/ TOP__DOT__Regfile__DOT__registers_28;
         QData/*63:0*/ TOP__DOT__Regfile__DOT__registers_29;

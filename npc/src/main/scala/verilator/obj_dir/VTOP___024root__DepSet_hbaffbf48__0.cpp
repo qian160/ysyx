@@ -305,27 +305,33 @@ VL_INLINE_OPT void VTOP___024root___sequent__TOP__0(VTOP___024root* vlSelf) {
                        & (2U != (IData)(vlSelf->TOP__DOT__ID__DOT__decRes_0))) 
                       & (4U == (IData)(vlSelf->TOP__DOT__ID__DOT__decRes_0))) 
                      & (~ (IData)(vlSelf->reset))))) {
-        VL_FWRITEF(0x80000002U,"imm = %x, target at %x\n",
-                   64,(((- (QData)((IData)((1U & (vlSelf->TOP__DOT__Main_Memory__DOT__ram_io_inst_o_MPORT_data 
-                                                  >> 0x14U))))) 
-                        << 0xcU) | (QData)((IData)(
-                                                   ((0x800U 
+        VL_FWRITEF(0x80000002U,"raw data = %x\n",21,
+                   ((0x100000U & (vlSelf->TOP__DOT__Main_Memory__DOT__ram_io_inst_o_MPORT_data 
+                                  >> 0xbU)) | ((0xff000U 
+                                                & vlSelf->TOP__DOT__Main_Memory__DOT__ram_io_inst_o_MPORT_data) 
+                                               | ((0x800U 
+                                                   & (vlSelf->TOP__DOT__Main_Memory__DOT__ram_io_inst_o_MPORT_data 
+                                                      >> 9U)) 
+                                                  | (0x7feU 
                                                      & (vlSelf->TOP__DOT__Main_Memory__DOT__ram_io_inst_o_MPORT_data 
-                                                        >> 9U)) 
-                                                    | (0x7feU 
-                                                       & (vlSelf->TOP__DOT__Main_Memory__DOT__ram_io_inst_o_MPORT_data 
-                                                          >> 0x14U)))))),
+                                                        >> 0x14U))))));
+    }
+    if (VL_UNLIKELY((((((((7U != (IData)(vlSelf->TOP__DOT__ID__DOT__decRes_0)) 
+                          & (1U != (IData)(vlSelf->TOP__DOT__ID__DOT__decRes_0))) 
+                         & (0U != (IData)(vlSelf->TOP__DOT__ID__DOT__decRes_0))) 
+                        & (3U != (IData)(vlSelf->TOP__DOT__ID__DOT__decRes_0))) 
+                       & (2U != (IData)(vlSelf->TOP__DOT__ID__DOT__decRes_0))) 
+                      & (4U == (IData)(vlSelf->TOP__DOT__ID__DOT__decRes_0))) 
+                     & (~ (IData)(vlSelf->reset))))) {
+        VL_FWRITEF(0x80000002U,"imm = %x, target at %x\n",
+                   64,(((- (QData)((IData)((1U & (vlSelf->TOP__DOT__ID__DOT___io_decInfo_o_branchOp_newPC_T_24 
+                                                  >> 0x14U))))) 
+                        << 0x15U) | (QData)((IData)(vlSelf->TOP__DOT__ID__DOT___io_decInfo_o_branchOp_newPC_T_24))),
                    64,((QData)((IData)(vlSelf->TOP__DOT__IF__DOT__pc)) 
                        + (((- (QData)((IData)((1U & 
-                                               (vlSelf->TOP__DOT__Main_Memory__DOT__ram_io_inst_o_MPORT_data 
+                                               (vlSelf->TOP__DOT__ID__DOT___io_decInfo_o_branchOp_newPC_T_24 
                                                 >> 0x14U))))) 
-                           << 0xcU) | (QData)((IData)(
-                                                      ((0x800U 
-                                                        & (vlSelf->TOP__DOT__Main_Memory__DOT__ram_io_inst_o_MPORT_data 
-                                                           >> 9U)) 
-                                                       | (0x7feU 
-                                                          & (vlSelf->TOP__DOT__Main_Memory__DOT__ram_io_inst_o_MPORT_data 
-                                                             >> 0x14U))))))));
+                           << 0x15U) | (QData)((IData)(vlSelf->TOP__DOT__ID__DOT___io_decInfo_o_branchOp_newPC_T_24)))));
     }
     if (VL_UNLIKELY((1U & (~ (IData)(vlSelf->reset))))) {
         VL_FWRITEF(0x80000002U,"pc = %x, inst = %x\n\n",
@@ -575,6 +581,15 @@ VL_INLINE_OPT void VTOP___024root___sequent__TOP__0(VTOP___024root* vlSelf) {
                                                                - 0x80000000ULL) 
                                                               >> 2U)))];
     vlSelf->io_inst_o = vlSelf->TOP__DOT__Main_Memory__DOT__ram_io_inst_o_MPORT_data;
+    vlSelf->TOP__DOT__ID__DOT___io_decInfo_o_branchOp_newPC_T_24 
+        = ((0x100000U & (vlSelf->TOP__DOT__Main_Memory__DOT__ram_io_inst_o_MPORT_data 
+                         >> 0xbU)) | ((0xff000U & vlSelf->TOP__DOT__Main_Memory__DOT__ram_io_inst_o_MPORT_data) 
+                                      | ((0x800U & 
+                                          (vlSelf->TOP__DOT__Main_Memory__DOT__ram_io_inst_o_MPORT_data 
+                                           >> 9U)) 
+                                         | (0x7feU 
+                                            & (vlSelf->TOP__DOT__Main_Memory__DOT__ram_io_inst_o_MPORT_data 
+                                               >> 0x14U)))));
     TOP__DOT__ID__DOT___io_decInfo_o_aluOp_src2_T_16 
         = ((0xfe0U & (vlSelf->TOP__DOT__Main_Memory__DOT__ram_io_inst_o_MPORT_data 
                       >> 0x14U)) | (0x1fU & (vlSelf->TOP__DOT__Main_Memory__DOT__ram_io_inst_o_MPORT_data 
@@ -3321,16 +3336,10 @@ VL_INLINE_OPT void VTOP___024root___combo__TOP__0(VTOP___024root* vlSelf) {
                                                        + 
                                                        (((- (QData)((IData)(
                                                                             (1U 
-                                                                             & (vlSelf->TOP__DOT__Main_Memory__DOT__ram_io_inst_o_MPORT_data 
+                                                                             & (vlSelf->TOP__DOT__ID__DOT___io_decInfo_o_branchOp_newPC_T_24 
                                                                                 >> 0x14U))))) 
-                                                         << 0xcU) 
-                                                        | (QData)((IData)(
-                                                                          ((0x800U 
-                                                                            & (vlSelf->TOP__DOT__Main_Memory__DOT__ram_io_inst_o_MPORT_data 
-                                                                               >> 9U)) 
-                                                                           | (0x7feU 
-                                                                              & (vlSelf->TOP__DOT__Main_Memory__DOT__ram_io_inst_o_MPORT_data 
-                                                                                >> 0x14U)))))))
+                                                         << 0x15U) 
+                                                        | (QData)((IData)(vlSelf->TOP__DOT__ID__DOT___io_decInfo_o_branchOp_newPC_T_24))))
                                                        : 0ULL))))))
                                               : (QData)((IData)(
                                                                 ((IData)(4U) 
