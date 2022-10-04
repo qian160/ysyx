@@ -342,7 +342,7 @@ static int decode_exec(Decode *D) {
   }
   R(0) = 0; // reset $zero to 0
 
-  //Log("\nwdata = 0x%lx\npc = 0x%8lx, inst = 0x%08x,  rd = %d\n", R(rd), D->pc, inst, rd);
+  Log("\nwdata = 0x%lx\npc = 0x%8lx, inst = 0x%08x,  rd = %d\n", R(rd), D->pc, inst, rd);
   return 0;
 }
 
