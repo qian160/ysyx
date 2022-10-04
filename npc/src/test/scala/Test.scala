@@ -45,6 +45,8 @@ class VecOverflow extends Module {
     (0 to 3).foreach( (i:Int) => io.o(i) := test(i))
 }
 
+
+
 class simpleDevice extends Module {
     val io = IO(new Bundle{
         val w       = Input(Bool())
@@ -62,16 +64,31 @@ class simpleDevice extends Module {
     io.time :=  time
 }
 
+class Timer extends Module{
+    val io = IO(new Bundle{
+        val w = Input(Bool())
+        //val n = Input(UInt(4.W))
+        val o = Output(UInt(64.W))
+    })
+    val timer = RegInit(System.currentTimeMillis.U(64.W))
+    when(io.w){
+        timer    :=  System.currentTimeMillis.U - timer
+    }
+    io.o    :=  timer
+}
+
 class Test extends AnyFlatSpec with ChiselScalatestTester{
     "empty set " should "have size 0" in{
         assert(Set.empty.size == 0)
     }
+    /*
     "it" should "do something" in{
         test(new simple){dut => 
             dut.io.wdata.poke("h11223344".U)
             dut.clock.step()
         }
     }
+    */
     "simple device" should "work" in {
         test(new simpleDevice){dut =>
             dut.io.w.poke(true.B)
@@ -95,7 +112,7 @@ class Test extends AnyFlatSpec with ChiselScalatestTester{
             //println(s"wdata = $res")
         }
     }
-
+    /*
     "vec overflow" should "dont know" in {
         test(new VecOverflow){dut => 
             for(i <- 0 to 7){
@@ -103,8 +120,19 @@ class Test extends AnyFlatSpec with ChiselScalatestTester{
                 println(s"$v")
             }
         }
-
     }
+    */
+    "timer" should "increase" in {
+        test(new Timer){dut => 
+            dut.io.w    :=  true.B
+            for(i:Int <- 0 to 114514){
+                dut.clock.step()
+                val v = dut.io.o.peek()
+                println(s"$v")
+            }
+        }
+    }
+
 }
 
 /*

@@ -3,6 +3,7 @@ import chisel3.util._
 import chisel3.util.experimental._
 
 import MMIO_SPACE._
+import handler._
 import Util._
 
 class MAIN_MEMORY extends Module{
@@ -17,6 +18,8 @@ class MAIN_MEMORY extends Module{
     })
 
     val rtc_boot_time = RegInit(System.currentTimeMillis.U(64.W))
+    val rtc_past_time = RegInit(0.U(64.W))      //how much time has past
+
     val ram = Mem(1 << 20, UInt(32.W))  //hope this is enough
     loadMemoryFromFileInline(ram, "/home/s081/Downloads/ysyx-workbench/npc/src/main/scala/img_file")
     io.inst_o       :=  ram((io.pc_i - CONST.PC_INIT) >> 2)
@@ -116,14 +119,18 @@ class MAIN_MEMORY extends Module{
         }
     }
     .elsewhen(in_serial(io.memOp_i.addr)){
-        //printf("in serial\n")
-        when(io.memOp_i.isStore){
-            printf("%c", io.memOp_i.sdata)
-        }//serial doesn't support read
+        serial_handler(io.memOp_i.isStore, io.memOp_i.addr, io.memOp_i.sdata)
     }.elsewhen(in_rtc(io.memOp_i.addr)){
-        //printf("in rtc\n");
+        printf("RTC time = %x\n", rtc_past_time);
         when(io.memOp_i.isLoad){
-            io.loadVal_o    :=  System.currentTimeMillis.U(64.W) - rtc_boot_time
+            val offset_ =   io.memOp_i.addr -  RTC_BASE
+            when(offset_ === 0.U){  //just read, no update
+                io.loadVal_o    :=  rtc_past_time
+            }.elsewhen(offset_ === 4.U){
+                var new_time = System.currentTimeMillis.U(64.W) - rtc_boot_time
+                rtc_past_time   :=  new_time
+                io.loadVal_o    :=  new_time
+            }
         }
     }.otherwise{
         when(io.memOp_i.isStore | io.memOp_i.isLoad)
@@ -131,7 +138,6 @@ class MAIN_MEMORY extends Module{
             printf("bad address: %x\n", io.memOp_i.addr)
         }
     }
-
 
     //to make inst rom and data ram compatible and easy to initialize(loadMemoryFromFileInline), the width is set to be 32 bits
 }
