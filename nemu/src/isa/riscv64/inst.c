@@ -333,8 +333,8 @@ static int decode_exec(Decode *D) {
       break;
     }
 
-    case(JAL):    D->decInfo.type = TYPE_J;    R(rd) = linkAddr; D -> dnpc = D -> pc + immJ(inst);  printf("jal, imm = 0x%lx, target at 0x%lx\n", immJ(inst), D -> pc + immJ(inst));    break;
-    case(JALR):   D->decInfo.type = TYPE_I;    R(rd) = linkAddr; D -> dnpc = R(rs1) + immI(inst);   printf("jalr\n");    break;
+    case(JAL):    D->decInfo.type = TYPE_J;    R(rd) = linkAddr; D -> dnpc = D -> pc + immJ(inst);  IFDEF(CONFIG_REF, printf("jal, target at 0x%lx\n", D -> pc + immJ(inst)));    break;
+    case(JALR):   D->decInfo.type = TYPE_I;    R(rd) = linkAddr; D -> dnpc = R(rs1) + immI(inst);   IFDEF(CONFIG_REF, printf("jalr, target at 0x%lx\n", R(rs1) + immI(inst)));    break;
     case(AUIPC):  D->decInfo.type = TYPE_U;    R(rd) = D -> pc + immU(inst);break;
     case(LUI):    D->decInfo.type = TYPE_U;    R(rd) = immU(inst);break;
     case(EBREAK): NEMUTRAP(D->pc, R(10)); break;  //r(10) is a0,  ecall has the same opcode! need to improved, but there will never be an ecall
