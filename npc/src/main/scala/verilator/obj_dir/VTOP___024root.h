@@ -22,6 +22,7 @@ VL_MODULE(VTOP___024root) {
         CData/*0:0*/ TOP__DOT__ID_io_decInfo_o_memOp_unsigned;
         CData/*4:0*/ TOP__DOT__ID__DOT__decRes_0;
         CData/*2:0*/ TOP__DOT__ID__DOT___GEN_61;
+        CData/*0:0*/ TOP__DOT__Main_Memory__DOT___T_2;
         CData/*7:0*/ TOP__DOT__Main_Memory__DOT___GEN_2;
         CData/*7:0*/ TOP__DOT__Main_Memory__DOT___store_en_lut_io_memOp_i_length;
         CData/*7:0*/ TOP__DOT__Main_Memory__DOT___GEN_108;
@@ -77,17 +78,17 @@ VL_MODULE(VTOP___024root) {
         QData/*63:0*/ TOP__DOT__Regfile__DOT__registers_23;
         QData/*63:0*/ TOP__DOT__Regfile__DOT__registers_24;
         QData/*63:0*/ TOP__DOT__Regfile__DOT__registers_25;
-        QData/*63:0*/ TOP__DOT__Regfile__DOT__registers_26;
     };
     struct {
+        QData/*63:0*/ TOP__DOT__Regfile__DOT__registers_26;
         QData/*63:0*/ TOP__DOT__Regfile__DOT__registers_27;
         QData/*63:0*/ TOP__DOT__Regfile__DOT__registers_28;
         QData/*63:0*/ TOP__DOT__Regfile__DOT__registers_29;
         QData/*63:0*/ TOP__DOT__Regfile__DOT__registers_30;
         QData/*63:0*/ TOP__DOT__Regfile__DOT__registers_31;
         QData/*63:0*/ TOP__DOT__Main_Memory__DOT__dword;
-        QData/*63:0*/ TOP__DOT__Main_Memory__DOT___T_27;
-        VlUnpacked<IData/*31:0*/, 16777216> TOP__DOT__Main_Memory__DOT__ram;
+        QData/*63:0*/ TOP__DOT__Main_Memory__DOT___T_62;
+        VlUnpacked<IData/*31:0*/, 1048576> TOP__DOT__Main_Memory__DOT__ram;
         VlUnpacked<CData/*0:0*/, 2> __Vm_traceActivity;
     };
 

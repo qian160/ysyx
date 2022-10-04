@@ -33,8 +33,16 @@ class simple extends Module{
     printf("%x\n%x\n%x\n%x\n", temp(0), temp(1), temp(2), temp(3))
 }
 
-object t {
-    var test = UInt(8.W)
+class VecOverflow extends Module {
+    val io = IO(new Bundle{
+        val o  =   Output(Vec(4, UInt(8.W)))
+    })
+    var test = Wire(Vec(4, UInt(8.W)))
+    test(0) :=  0.U
+    test(1) :=  1.U
+    test(2) :=  2.U
+    test(3) :=  3.U
+    (0 to 3).foreach( (i:Int) => io.o(i) := test(i))
 }
 
 class simpleDevice extends Module {
@@ -86,6 +94,16 @@ class Test extends AnyFlatSpec with ChiselScalatestTester{
             //val res = dut.io.o.peek()
             //println(s"wdata = $res")
         }
+    }
+
+    "vec overflow" should "dont know" in {
+        test(new VecOverflow){dut => 
+            for(i <- 0 to 7){
+                val v = dut.io.o(i).peek()
+                println(s"$v")
+            }
+        }
+
     }
 }
 

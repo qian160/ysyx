@@ -29,6 +29,9 @@ COLOR_NONE  = \033[0m
 	@echo [g++] $@
 	@g++ -c $@  #-o ./cpp/$@
 
+gen:
+	make -C ./asm gen
+
 #usage: make run [img=xxx]
 run:
 ifneq ($(img),)
