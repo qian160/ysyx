@@ -577,11 +577,10 @@ void VTOP___024root__trace_chg_sub_0(VTOP___024root* vlSelf, VerilatedVcd* trace
             __Vtemp_haaf55256__0[2U] = __Vtemp_h9b56c48b__1[2U];
         }
         tracep->chgWData(oldp+67,(__Vtemp_haaf55256__0),95);
-        tracep->chgCData(oldp+70,(((3U == (3U & (IData)(vlSelf->TOP__DOT__ID__DOT___GEN_61)))
-                                    ? 0xffU : (IData)(vlSelf->TOP__DOT__Main_Memory__DOT___GEN_2))),8);
+        tracep->chgCData(oldp+70,(vlSelf->TOP__DOT__Main_Memory__DOT__store_en),8);
         tracep->chgCData(oldp+71,((0xffU & ((IData)(vlSelf->TOP__DOT__ID_io_decInfo_o_memOp_isStore)
                                              ? ((0x80U 
-                                                 & (IData)(vlSelf->TOP__DOT__Main_Memory__DOT___store_en_lut_io_memOp_i_length))
+                                                 & (IData)(vlSelf->TOP__DOT__Main_Memory__DOT__store_en))
                                                  ? 
                                                 ((1U 
                                                   == 
@@ -600,7 +599,7 @@ void VTOP___024root__trace_chg_sub_0(VTOP___024root* vlSelf, VerilatedVcd* trace
                                                         >> 8U))))),8);
         tracep->chgCData(oldp+72,((0xffU & ((IData)(vlSelf->TOP__DOT__ID_io_decInfo_o_memOp_isStore)
                                              ? ((0x80U 
-                                                 & (IData)(vlSelf->TOP__DOT__Main_Memory__DOT___store_en_lut_io_memOp_i_length))
+                                                 & (IData)(vlSelf->TOP__DOT__Main_Memory__DOT__store_en))
                                                  ? 
                                                 ((0U 
                                                   == 
@@ -617,7 +616,7 @@ void VTOP___024root__trace_chg_sub_0(VTOP___024root* vlSelf, VerilatedVcd* trace
                                              : (IData)(vlSelf->TOP__DOT__Main_Memory__DOT__dword)))),8);
         tracep->chgCData(oldp+73,((0xffU & ((IData)(vlSelf->TOP__DOT__ID_io_decInfo_o_memOp_isStore)
                                              ? ((0x80U 
-                                                 & (IData)(vlSelf->TOP__DOT__Main_Memory__DOT___store_en_lut_io_memOp_i_length))
+                                                 & (IData)(vlSelf->TOP__DOT__Main_Memory__DOT__store_en))
                                                  ? 
                                                 ((3U 
                                                   == 
@@ -636,7 +635,7 @@ void VTOP___024root__trace_chg_sub_0(VTOP___024root* vlSelf, VerilatedVcd* trace
                                                         >> 0x18U))))),8);
         tracep->chgCData(oldp+74,((0xffU & ((IData)(vlSelf->TOP__DOT__ID_io_decInfo_o_memOp_isStore)
                                              ? ((0x80U 
-                                                 & (IData)(vlSelf->TOP__DOT__Main_Memory__DOT___store_en_lut_io_memOp_i_length))
+                                                 & (IData)(vlSelf->TOP__DOT__Main_Memory__DOT__store_en))
                                                  ? 
                                                 ((2U 
                                                   == 
@@ -655,7 +654,7 @@ void VTOP___024root__trace_chg_sub_0(VTOP___024root* vlSelf, VerilatedVcd* trace
                                                         >> 0x10U))))),8);
         tracep->chgCData(oldp+75,((0xffU & ((IData)(vlSelf->TOP__DOT__ID_io_decInfo_o_memOp_isStore)
                                              ? ((0x80U 
-                                                 & (IData)(vlSelf->TOP__DOT__Main_Memory__DOT___store_en_lut_io_memOp_i_length))
+                                                 & (IData)(vlSelf->TOP__DOT__Main_Memory__DOT__store_en))
                                                  ? 
                                                 ((5U 
                                                   == 
@@ -674,7 +673,7 @@ void VTOP___024root__trace_chg_sub_0(VTOP___024root* vlSelf, VerilatedVcd* trace
                                                         >> 0x28U))))),8);
         tracep->chgCData(oldp+76,((0xffU & ((IData)(vlSelf->TOP__DOT__ID_io_decInfo_o_memOp_isStore)
                                              ? ((0x80U 
-                                                 & (IData)(vlSelf->TOP__DOT__Main_Memory__DOT___store_en_lut_io_memOp_i_length))
+                                                 & (IData)(vlSelf->TOP__DOT__Main_Memory__DOT__store_en))
                                                  ? 
                                                 ((4U 
                                                   == 
@@ -693,7 +692,7 @@ void VTOP___024root__trace_chg_sub_0(VTOP___024root* vlSelf, VerilatedVcd* trace
                                                         >> 0x20U))))),8);
         tracep->chgCData(oldp+77,((0xffU & ((IData)(vlSelf->TOP__DOT__ID_io_decInfo_o_memOp_isStore)
                                              ? ((0x80U 
-                                                 & (IData)(vlSelf->TOP__DOT__Main_Memory__DOT___store_en_lut_io_memOp_i_length))
+                                                 & (IData)(vlSelf->TOP__DOT__Main_Memory__DOT__store_en))
                                                  ? 
                                                 ((7U 
                                                   == 
@@ -712,7 +711,7 @@ void VTOP___024root__trace_chg_sub_0(VTOP___024root* vlSelf, VerilatedVcd* trace
                                                         >> 0x38U))))),8);
         tracep->chgCData(oldp+78,((0xffU & ((IData)(vlSelf->TOP__DOT__ID_io_decInfo_o_memOp_isStore)
                                              ? ((0x80U 
-                                                 & (IData)(vlSelf->TOP__DOT__Main_Memory__DOT___store_en_lut_io_memOp_i_length))
+                                                 & (IData)(vlSelf->TOP__DOT__Main_Memory__DOT__store_en))
                                                  ? 
                                                 ((6U 
                                                   == 

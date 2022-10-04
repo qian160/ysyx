@@ -14,7 +14,6 @@ class MAIN_MEMORY extends Module{
 
         val inst_o    = Output(UInt(32.W))
         val loadVal_o = Output(UInt(64.W))
-        val exit_o    = Output(Bool())
     })
 
     val rtc_boot_time = RegInit(System.currentTimeMillis.U(64.W))
@@ -22,7 +21,6 @@ class MAIN_MEMORY extends Module{
     loadMemoryFromFileInline(ram, "/home/s081/Downloads/ysyx-workbench/npc/src/main/scala/img_file")
     io.inst_o       :=  ram((io.pc_i - CONST.PC_INIT) >> 2)
     io.loadVal_o    :=  0.U
-    io.exit_o       :=  false.B
 
     //start accessing memory
     when(in_pmem(io.memOp_i.addr)){
@@ -32,7 +30,16 @@ class MAIN_MEMORY extends Module{
         val length      =   io.memOp_i.length
 
         //assuming that the address is aligned, little endian
-        val dword       =   Cat(ram(addr + 1.U), ram(addr))     //the bits are already stored in small endian, just read. Here we get a 'small endian' number
+        val dword       =   Cat(ram(addr + 1.U), ram(addr))     //the bits are already stored in small endian
+        /*
+            a4 a3 a2 a1 (ram(addr))
+                                            =>      b4 b3 b2 b1 a4 a3 a2 a1
+            b4 b3 b2 b1 (ram(addr + 1))
+
+            a4 and b4 hold the msb of their byte block, so the weight order is: a4 > a3 > a2 > a1 and b4 > b3 > b2 > b1
+            after connecting together, 
+        
+        */
 
         val offset  =   io.memOp_i.addr(1, 0)   //mod by 4, get the byte offset in the 32-bit block
         //chisel doesn't support partial assignment like ram(0)(7, 0) := foo, the LHS just produces a value, and is not assignable
@@ -76,10 +83,9 @@ class MAIN_MEMORY extends Module{
         io.loadVal_o      :=   loadVal
         val store_en       =   Wire(UInt(8.W))
         val store_en_lut   =   VecInit("b00000001".U, "b00000011".U, "b00001111".U, "b11111111".U)
-        store_en          :=   store_en_lut(length)
+        store_en          :=   store_en_lut(length)     //which bytes in the dword block need to be updated
         //maybe lut is faster, we don't need to calculate every time
         //val store_en   =   ((1.U << (1.U << length)) - 1.U)
-        dontTouch(store_en)
 
         val test0 = Wire(UInt(32.W))
         val test1 = Wire(UInt(32.W))
@@ -89,23 +95,23 @@ class MAIN_MEMORY extends Module{
         dontTouch(test1)
 
         val sdata   =   io.memOp_i.sdata
-        //if the address is unaligned, this may not work correctly
+        //if the address is unaligned, this may not work correctly..
+        //store with small endian
         when(is_store){
-            when(store_en(0) & (0.U + offset < 8.U)){ temp(0.U + offset) :=  sdata(7,  0 )}
-            when(store_en(1) & (1.U + offset < 8.U)){ temp(1.U + offset) :=  sdata(15, 8 )}    //consider endianess, may use Cat here
-            when(store_en(2) & (2.U + offset < 8.U)){ temp(2.U + offset) :=  sdata(23, 16)}
-            when(store_en(3) & (3.U + offset < 8.U)){ temp(3.U + offset) :=  sdata(31, 24)}
-            when(store_en(4) & (4.U + offset < 8.U)){ temp(4.U + offset) :=  sdata(39, 32)}
-            when(store_en(5) & (5.U + offset < 8.U)){ temp(5.U + offset) :=  sdata(47, 40)}
-            when(store_en(6) & (6.U + offset < 8.U)){ temp(6.U + offset) :=  sdata(55, 48)}
-            when(store_en(7) & (7.U + offset < 8.U)){ temp(7.U + offset) :=  sdata(63, 56)}
+            when(store_en(0) & (0.U + offset < 8.U))    {temp(0.U + offset) :=  sdata(7,  0 )}
+            when(store_en(1) & (1.U + offset < 8.U))    {temp(1.U + offset) :=  sdata(15, 8 )}    //consider endianess, may use Cat here
+            when(store_en(2) & (2.U + offset < 8.U))    {temp(2.U + offset) :=  sdata(23, 16)}
+            when(store_en(3) & (3.U + offset < 8.U))    {temp(3.U + offset) :=  sdata(31, 24)}
+            when(store_en(4) & (4.U + offset < 8.U))    {temp(4.U + offset) :=  sdata(39, 32)}
+            when(store_en(5) & (5.U + offset < 8.U))    {temp(5.U + offset) :=  sdata(47, 40)}
+            when(store_en(6) & (6.U + offset < 8.U))    {temp(6.U + offset) :=  sdata(55, 48)}
+            when(store_en(7) & (7.U + offset < 8.U))    {temp(7.U + offset) :=  sdata(63, 56)}
 
             ram(addr + 1.U)     :=  temp.asTypeOf(UInt())(63, 32)
             ram(addr)           :=  temp.asTypeOf(UInt())(31, 0)
         }
-    }.otherwise{
-        io.exit_o   :=  true.B
-    }
+    }//.otherwise{
+    //}
     /*
     .elsewhen(in_serial(io.memOp_i.addr)){
         printf("in serial\n")

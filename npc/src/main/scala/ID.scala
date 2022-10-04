@@ -100,6 +100,7 @@ class ID extends Module{
             io.decInfo_o.writeRfOp.wen    :=  true.B
             io.decInfo_o.branchOp.happen  :=  true.B
             io.decInfo_o.branchOp.newPC   :=  pc + imm_J(inst)
+            printf("imm = %x, target at %x\n", imm_J(inst), pc + imm_J(inst))
             //link address
             io.decInfo_o.aluOp.src1       :=  pc
             io.decInfo_o.aluOp.src2       :=  4.U(64.W)            

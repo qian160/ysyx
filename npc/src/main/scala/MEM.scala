@@ -10,7 +10,6 @@ class MEM extends Module{
         val loadVal_i   = Input(UInt(64.W))
 
         val writeRfOp_o = Output(new WriteRfOp)
-
         val debug_i     = Input (new Debug_Bundle)
         val debug_o     = Output(new Debug_Bundle)
     })
