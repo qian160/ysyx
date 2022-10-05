@@ -8,7 +8,7 @@ import Util._
 class MAIN_MEMORY extends Module{
     //to simplify call, all these functions' argument list should be the same
     def serial_handler(is_write: Bool, addr: UInt, wdata: UInt): UInt = {
-        when(is_write){
+        when(is_write & in_serial(addr)){
             printf("%c", wdata)
         }   //don't support read
         0.U     //return value, useless here
@@ -16,19 +16,17 @@ class MAIN_MEMORY extends Module{
     def kbd_handler(is_write: Bool, addr: UInt, wdata: UInt) = {}
     def rtc_handler(is_write: Bool, addr: UInt, wdata: UInt): UInt = {
         val offset_     =   addr - RTC_BASE
-        val new_time    =   Wire(UInt(64.W))
-        new_time        :=  System.currentTimeMillis.U
-        val need_update =   !is_write & offset_ === 4.U
-        rtc_past_time   :=  Mux(need_update, new_time, rtc_past_time)
-
+        val need_update =   (!is_write & offset_ === 4.U & in_rtc(addr))
+        //when(in_rtc(addr)){printf("past time: %d\n", rtc_past_time)}
+        rtc_past_time   :=  Mux(need_update, io.timer_i, rtc_past_time)
         rtc_past_time
     }
 
     def bswap(a: UInt): UInt        =   Cat(a(7, 0), a(15, 8), a(23, 16), a(31, 24), a(39, 32), a(47, 40), a(55, 48), a(63, 56))
     def in_pmem(addr: UInt):Bool    =   (addr >= CONST.PMEM_START & addr <= CONST.PMEM_END)
 
-
     val io = IO(new Bundle{
+        val timer_i   = Input(UInt(64.W))       //from TOP(cpp Input)
         val pc_i      = Input(UInt(64.W))
         val memOp_i   = Input(new MemOp)
 
@@ -36,8 +34,8 @@ class MAIN_MEMORY extends Module{
         val loadVal_o = Output(UInt(64.W))
     })
 
-    val rtc_boot_time = RegInit(System.currentTimeMillis.U(64.W))
     val rtc_past_time = RegInit(0.U(64.W))      //how much time has past
+    //printf("past time = %d\n", rtc_past_time);
     //to make inst rom and data ram compatible and easy to initialize(loadMemoryFromFileInline), the width is set to be 32 bits
     val ram = Mem(1 << 20, UInt(32.W))  //hope this is enough
     loadMemoryFromFileInline(ram, "/home/s081/Downloads/ysyx-workbench/npc/src/main/scala/img_file")
