@@ -1,4 +1,6 @@
 #include <verilated_vcd_c.h>
+#include "emoji.h"
+#include <ctime>
 using namespace std;
 //Verilog or chisel can't read binary file to get the instructions, so 
 //we have to add this feature to our cpp testbench, which lose the compability
@@ -12,6 +14,7 @@ private:
 	//shared_ptr<VerilatedVcdC>	m_trace;
 	//shared_ptr<Module>			dut;
 	vluint64_t		m_tickcount;
+	clock_t			boot_time;
 public:
 	TestBench();
 	virtual ~TestBench();
@@ -34,11 +37,12 @@ void TestBench<Module>::tick(){
 	dut	->	eval();
 	//cout << "pc = 0x" << hex << pc << endl;
 
-	if(m_trace) 
+	if(m_trace)
 		m_trace	-> dump(10*m_tickcount-2);
 
 	// Repeat for the positive edge of the clock
 	dut	->	clock = 1;
+	dut ->  io_timer_i = clock() / 1000l- boot_time;
 	dut	->	eval();		//update the flip flops
 
 	if(m_trace) 
@@ -66,6 +70,12 @@ void TestBench<Module>::reset(){
 	dut -> reset = 0;
 
 	cout << "pc: reset at 0x" << hex << dut -> io_pc_o << endl;
+	boot_time = clock() / 1000l;		//init value
+	for(auto iter : emojis){
+		cout << iter.second;
+	}
+	cout << endl;
+	cout << "😅😅😅😅😅😅😅😅😅😅😅😅😅😅😅😅😅😅😅😅" << endl;
 }
 
 template<class Module>
