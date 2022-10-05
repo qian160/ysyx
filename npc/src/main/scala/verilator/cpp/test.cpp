@@ -17,7 +17,7 @@ int main(int argc, char **argv)
 	else
 		img_file = strcat(test_path, strcat(argv[1], "-riscv64-npc.bin"));
 	tb.reset();
-	tb.trace("./wave.vcd");
+	//tb.trace("./wave.vcd");
 	string s;
 	const string deli = " ";
 	while(1){

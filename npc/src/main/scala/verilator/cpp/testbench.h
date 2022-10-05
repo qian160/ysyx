@@ -82,12 +82,10 @@ template<class Module>
 TestBench<Module>::TestBench(){
 	// According to the Verilator spec, you *must* call traceEverOn
 	// before calling any of the tracing functions within Verilator.
-	Verilated::traceEverOn(true);
+	//Verilated::traceEverOn(true);
 	dut = new Module;
 	m_trace = nullptr;
 	m_tickcount = 0l;
-	//m_trace = make_shared<VerilatedVcdC>(nullptr);
-	//dut		= make_shared<Module>();
 	dut	->	clock = 0;
 }
 
