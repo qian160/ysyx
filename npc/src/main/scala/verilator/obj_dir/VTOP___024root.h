@@ -32,8 +32,8 @@ VL_MODULE(VTOP___024root) {
         CData/*7:0*/ TOP__DOT__Main_Memory__DOT___GEN_113;
         CData/*7:0*/ TOP__DOT__Main_Memory__DOT___GEN_114;
         CData/*7:0*/ TOP__DOT__Main_Memory__DOT___GEN_115;
-        CData/*0:0*/ TOP__DOT__Main_Memory__DOT___io_loadVal_o_T_2;
-        CData/*0:0*/ TOP__DOT__Main_Memory__DOT___io_loadVal_o_T_11;
+        CData/*0:0*/ TOP__DOT__Main_Memory__DOT___T_69;
+        CData/*0:0*/ TOP__DOT__Main_Memory__DOT___T_74;
         CData/*0:0*/ __Vclklast__TOP__clock;
         VL_OUT(io_inst_o,31,0);
         IData/*31:0*/ TOP__DOT__IF__DOT__pc;
@@ -92,6 +92,7 @@ VL_MODULE(VTOP___024root) {
         QData/*63:0*/ TOP__DOT__Main_Memory__DOT__rtc_past_time;
         QData/*63:0*/ TOP__DOT__Main_Memory__DOT__dword;
         QData/*63:0*/ TOP__DOT__Main_Memory__DOT___T_62;
+        QData/*63:0*/ TOP__DOT__Main_Memory__DOT___rtc_past_time_T;
         VlUnpacked<IData/*31:0*/, 1048576> TOP__DOT__Main_Memory__DOT__ram;
         VlUnpacked<CData/*0:0*/, 2> __Vm_traceActivity;
     };

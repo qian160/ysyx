@@ -534,10 +534,10 @@ module MEM(
   assign io_writeRfOp_o_wen = io_writeRfOp_i_wen; // @[MEM.scala 46:29]
   assign io_writeRfOp_o_rd = io_writeRfOp_i_rd; // @[MEM.scala 46:29]
   assign io_writeRfOp_o_wdata = io_memOp_i_isLoad ? io_loadVal_i : io_writeRfOp_i_wdata; // @[MEM.scala 47:36]
-  assign io_debug_o_exit = io_debug_i_exit; // @[MEM.scala 55:21]
-  assign io_debug_o_a0 = io_debug_i_a0; // @[MEM.scala 55:21]
-  assign io_debug_o_pc = io_debug_i_pc; // @[MEM.scala 55:21]
-  assign io_debug_o_inst = io_debug_i_inst; // @[MEM.scala 55:21]
+  assign io_debug_o_exit = io_debug_i_exit; // @[MEM.scala 56:21]
+  assign io_debug_o_a0 = io_debug_i_a0; // @[MEM.scala 56:21]
+  assign io_debug_o_pc = io_debug_i_pc; // @[MEM.scala 56:21]
+  assign io_debug_o_inst = io_debug_i_inst; // @[MEM.scala 56:21]
 endmodule
 module WB(
   input         io_writeRfOp_i_wen,
@@ -1088,11 +1088,11 @@ module MAIN_MEMORY(
   wire [19:0] ram_MPORT_1_addr; // @[MAIN_MEMORY.scala 40:18]
   wire  ram_MPORT_1_mask; // @[MAIN_MEMORY.scala 40:18]
   wire  ram_MPORT_1_en; // @[MAIN_MEMORY.scala 40:18]
-  reg [63:0] rtc_past_time; // @[MAIN_MEMORY.scala 37:32]
+  reg [63:0] rtc_past_time; // @[MAIN_MEMORY.scala 38:32]
   wire [63:0] _io_inst_o_T_1 = io_pc_i - 64'h80000000; // @[MAIN_MEMORY.scala 42:38]
-  wire  _T = io_memOp_i_addr >= 64'h80000000; // @[MAIN_MEMORY.scala 26:47]
-  wire  _T_1 = io_memOp_i_addr <= 64'h87ffffff; // @[MAIN_MEMORY.scala 26:74]
-  wire  _T_2 = io_memOp_i_addr >= 64'h80000000 & io_memOp_i_addr <= 64'h87ffffff; // @[MAIN_MEMORY.scala 26:67]
+  wire  _T = io_memOp_i_addr >= 64'h80000000; // @[MAIN_MEMORY.scala 27:47]
+  wire  _T_1 = io_memOp_i_addr <= 64'h87ffffff; // @[MAIN_MEMORY.scala 27:74]
+  wire  _T_2 = io_memOp_i_addr >= 64'h80000000 & io_memOp_i_addr <= 64'h87ffffff; // @[MAIN_MEMORY.scala 27:67]
   wire [63:0] _addr_T_1 = io_memOp_i_addr - 64'h80000000; // @[MAIN_MEMORY.scala 55:46]
   wire [61:0] addr = _addr_T_1[63:2]; // @[MAIN_MEMORY.scala 55:67]
   wire [61:0] _dword_T_1 = addr + 62'h1; // @[MAIN_MEMORY.scala 61:42]
@@ -1102,10 +1102,10 @@ module MAIN_MEMORY(
   wire [31:0] _byteMask_T_3 = 2'h2 == io_memOp_i_length ? 32'hffffffff : {{16'd0}, _byteMask_T_1}; // @[Mux.scala 81:58]
   wire [63:0] byteMask = 2'h3 == io_memOp_i_length ? 64'hffffffffffffffff : {{32'd0}, _byteMask_T_3}; // @[Mux.scala 81:58]
   wire [4:0] _mask_T = {offset, 3'h0}; // @[MAIN_MEMORY.scala 85:46]
-  wire [94:0] _GEN_189 = {{31'd0}, byteMask}; // @[MAIN_MEMORY.scala 85:35]
-  wire [94:0] mask = _GEN_189 << _mask_T; // @[MAIN_MEMORY.scala 85:35]
-  wire [94:0] _GEN_162 = {{31'd0}, dword}; // @[MAIN_MEMORY.scala 94:40]
-  wire [94:0] _loadVal_temp_T = _GEN_162 & mask; // @[MAIN_MEMORY.scala 94:40]
+  wire [94:0] _GEN_198 = {{31'd0}, byteMask}; // @[MAIN_MEMORY.scala 85:35]
+  wire [94:0] mask = _GEN_198 << _mask_T; // @[MAIN_MEMORY.scala 85:35]
+  wire [94:0] _GEN_166 = {{31'd0}, dword}; // @[MAIN_MEMORY.scala 94:40]
+  wire [94:0] _loadVal_temp_T = _GEN_166 & mask; // @[MAIN_MEMORY.scala 94:40]
   wire [94:0] loadVal_temp = _loadVal_temp_T >> _mask_T; // @[MAIN_MEMORY.scala 94:48]
   wire [7:0] _loadVal_T_1 = loadVal_temp[7:0]; // @[HELPERS.scala 15:65]
   wire [63:0] _loadVal_T_3 = {{56{_loadVal_T_1[7]}},_loadVal_T_1}; // @[HELPERS.scala 15:80]
@@ -1127,11 +1127,11 @@ module MAIN_MEMORY(
   wire [7:0] _GEN_5 = 2'h1 == _T_4[1:0] ? io_memOp_i_sdata[7:0] : dword[15:8]; // @[MAIN_MEMORY.scala 119:{77,77} 66:39]
   wire [7:0] _GEN_6 = 2'h2 == _T_4[1:0] ? io_memOp_i_sdata[7:0] : dword[23:16]; // @[MAIN_MEMORY.scala 119:{77,77} 66:39]
   wire [7:0] _GEN_7 = 2'h3 == _T_4[1:0] ? io_memOp_i_sdata[7:0] : dword[31:24]; // @[MAIN_MEMORY.scala 119:{77,77} 66:39]
-  wire [2:0] _GEN_163 = {{1'd0}, _T_4[1:0]}; // @[MAIN_MEMORY.scala 119:{77,77} 66:39]
-  wire [7:0] _GEN_8 = 3'h4 == _GEN_163 ? io_memOp_i_sdata[7:0] : dword[39:32]; // @[MAIN_MEMORY.scala 119:{77,77} 66:39]
-  wire [7:0] _GEN_9 = 3'h5 == _GEN_163 ? io_memOp_i_sdata[7:0] : dword[47:40]; // @[MAIN_MEMORY.scala 119:{77,77} 66:39]
-  wire [7:0] _GEN_10 = 3'h6 == _GEN_163 ? io_memOp_i_sdata[7:0] : dword[55:48]; // @[MAIN_MEMORY.scala 119:{77,77} 66:39]
-  wire [7:0] _GEN_11 = 3'h7 == _GEN_163 ? io_memOp_i_sdata[7:0] : dword[63:56]; // @[MAIN_MEMORY.scala 119:{77,77} 66:39]
+  wire [2:0] _GEN_167 = {{1'd0}, _T_4[1:0]}; // @[MAIN_MEMORY.scala 119:{77,77} 66:39]
+  wire [7:0] _GEN_8 = 3'h4 == _GEN_167 ? io_memOp_i_sdata[7:0] : dword[39:32]; // @[MAIN_MEMORY.scala 119:{77,77} 66:39]
+  wire [7:0] _GEN_9 = 3'h5 == _GEN_167 ? io_memOp_i_sdata[7:0] : dword[47:40]; // @[MAIN_MEMORY.scala 119:{77,77} 66:39]
+  wire [7:0] _GEN_10 = 3'h6 == _GEN_167 ? io_memOp_i_sdata[7:0] : dword[55:48]; // @[MAIN_MEMORY.scala 119:{77,77} 66:39]
+  wire [7:0] _GEN_11 = 3'h7 == _GEN_167 ? io_memOp_i_sdata[7:0] : dword[63:56]; // @[MAIN_MEMORY.scala 119:{77,77} 66:39]
   wire [7:0] _GEN_12 = store_en[0] ? _GEN_4 : dword[7:0]; // @[MAIN_MEMORY.scala 119:57 66:39]
   wire [7:0] _GEN_13 = store_en[0] ? _GEN_5 : dword[15:8]; // @[MAIN_MEMORY.scala 119:57 66:39]
   wire [7:0] _GEN_14 = store_en[0] ? _GEN_6 : dword[23:16]; // @[MAIN_MEMORY.scala 119:57 66:39]
@@ -1145,11 +1145,11 @@ module MAIN_MEMORY(
   wire [7:0] _GEN_21 = 2'h1 == _T_12 ? io_memOp_i_sdata[15:8] : _GEN_13; // @[MAIN_MEMORY.scala 120:{77,77}]
   wire [7:0] _GEN_22 = 2'h2 == _T_12 ? io_memOp_i_sdata[15:8] : _GEN_14; // @[MAIN_MEMORY.scala 120:{77,77}]
   wire [7:0] _GEN_23 = 2'h3 == _T_12 ? io_memOp_i_sdata[15:8] : _GEN_15; // @[MAIN_MEMORY.scala 120:{77,77}]
-  wire [2:0] _GEN_167 = {{1'd0}, _T_12}; // @[MAIN_MEMORY.scala 120:{77,77}]
-  wire [7:0] _GEN_24 = 3'h4 == _GEN_167 ? io_memOp_i_sdata[15:8] : _GEN_16; // @[MAIN_MEMORY.scala 120:{77,77}]
-  wire [7:0] _GEN_25 = 3'h5 == _GEN_167 ? io_memOp_i_sdata[15:8] : _GEN_17; // @[MAIN_MEMORY.scala 120:{77,77}]
-  wire [7:0] _GEN_26 = 3'h6 == _GEN_167 ? io_memOp_i_sdata[15:8] : _GEN_18; // @[MAIN_MEMORY.scala 120:{77,77}]
-  wire [7:0] _GEN_27 = 3'h7 == _GEN_167 ? io_memOp_i_sdata[15:8] : _GEN_19; // @[MAIN_MEMORY.scala 120:{77,77}]
+  wire [2:0] _GEN_171 = {{1'd0}, _T_12}; // @[MAIN_MEMORY.scala 120:{77,77}]
+  wire [7:0] _GEN_24 = 3'h4 == _GEN_171 ? io_memOp_i_sdata[15:8] : _GEN_16; // @[MAIN_MEMORY.scala 120:{77,77}]
+  wire [7:0] _GEN_25 = 3'h5 == _GEN_171 ? io_memOp_i_sdata[15:8] : _GEN_17; // @[MAIN_MEMORY.scala 120:{77,77}]
+  wire [7:0] _GEN_26 = 3'h6 == _GEN_171 ? io_memOp_i_sdata[15:8] : _GEN_18; // @[MAIN_MEMORY.scala 120:{77,77}]
+  wire [7:0] _GEN_27 = 3'h7 == _GEN_171 ? io_memOp_i_sdata[15:8] : _GEN_19; // @[MAIN_MEMORY.scala 120:{77,77}]
   wire [7:0] _GEN_28 = store_en[1] ? _GEN_20 : _GEN_12; // @[MAIN_MEMORY.scala 120:57]
   wire [7:0] _GEN_29 = store_en[1] ? _GEN_21 : _GEN_13; // @[MAIN_MEMORY.scala 120:57]
   wire [7:0] _GEN_30 = store_en[1] ? _GEN_22 : _GEN_14; // @[MAIN_MEMORY.scala 120:57]
@@ -1163,11 +1163,11 @@ module MAIN_MEMORY(
   wire [7:0] _GEN_37 = 2'h1 == _T_19 ? io_memOp_i_sdata[23:16] : _GEN_29; // @[MAIN_MEMORY.scala 121:{77,77}]
   wire [7:0] _GEN_38 = 2'h2 == _T_19 ? io_memOp_i_sdata[23:16] : _GEN_30; // @[MAIN_MEMORY.scala 121:{77,77}]
   wire [7:0] _GEN_39 = 2'h3 == _T_19 ? io_memOp_i_sdata[23:16] : _GEN_31; // @[MAIN_MEMORY.scala 121:{77,77}]
-  wire [2:0] _GEN_171 = {{1'd0}, _T_19}; // @[MAIN_MEMORY.scala 121:{77,77}]
-  wire [7:0] _GEN_40 = 3'h4 == _GEN_171 ? io_memOp_i_sdata[23:16] : _GEN_32; // @[MAIN_MEMORY.scala 121:{77,77}]
-  wire [7:0] _GEN_41 = 3'h5 == _GEN_171 ? io_memOp_i_sdata[23:16] : _GEN_33; // @[MAIN_MEMORY.scala 121:{77,77}]
-  wire [7:0] _GEN_42 = 3'h6 == _GEN_171 ? io_memOp_i_sdata[23:16] : _GEN_34; // @[MAIN_MEMORY.scala 121:{77,77}]
-  wire [7:0] _GEN_43 = 3'h7 == _GEN_171 ? io_memOp_i_sdata[23:16] : _GEN_35; // @[MAIN_MEMORY.scala 121:{77,77}]
+  wire [2:0] _GEN_175 = {{1'd0}, _T_19}; // @[MAIN_MEMORY.scala 121:{77,77}]
+  wire [7:0] _GEN_40 = 3'h4 == _GEN_175 ? io_memOp_i_sdata[23:16] : _GEN_32; // @[MAIN_MEMORY.scala 121:{77,77}]
+  wire [7:0] _GEN_41 = 3'h5 == _GEN_175 ? io_memOp_i_sdata[23:16] : _GEN_33; // @[MAIN_MEMORY.scala 121:{77,77}]
+  wire [7:0] _GEN_42 = 3'h6 == _GEN_175 ? io_memOp_i_sdata[23:16] : _GEN_34; // @[MAIN_MEMORY.scala 121:{77,77}]
+  wire [7:0] _GEN_43 = 3'h7 == _GEN_175 ? io_memOp_i_sdata[23:16] : _GEN_35; // @[MAIN_MEMORY.scala 121:{77,77}]
   wire [7:0] _GEN_44 = store_en[2] ? _GEN_36 : _GEN_28; // @[MAIN_MEMORY.scala 121:57]
   wire [7:0] _GEN_45 = store_en[2] ? _GEN_37 : _GEN_29; // @[MAIN_MEMORY.scala 121:57]
   wire [7:0] _GEN_46 = store_en[2] ? _GEN_38 : _GEN_30; // @[MAIN_MEMORY.scala 121:57]
@@ -1181,11 +1181,11 @@ module MAIN_MEMORY(
   wire [7:0] _GEN_53 = 2'h1 == _T_26 ? io_memOp_i_sdata[31:24] : _GEN_45; // @[MAIN_MEMORY.scala 122:{77,77}]
   wire [7:0] _GEN_54 = 2'h2 == _T_26 ? io_memOp_i_sdata[31:24] : _GEN_46; // @[MAIN_MEMORY.scala 122:{77,77}]
   wire [7:0] _GEN_55 = 2'h3 == _T_26 ? io_memOp_i_sdata[31:24] : _GEN_47; // @[MAIN_MEMORY.scala 122:{77,77}]
-  wire [2:0] _GEN_175 = {{1'd0}, _T_26}; // @[MAIN_MEMORY.scala 122:{77,77}]
-  wire [7:0] _GEN_56 = 3'h4 == _GEN_175 ? io_memOp_i_sdata[31:24] : _GEN_48; // @[MAIN_MEMORY.scala 122:{77,77}]
-  wire [7:0] _GEN_57 = 3'h5 == _GEN_175 ? io_memOp_i_sdata[31:24] : _GEN_49; // @[MAIN_MEMORY.scala 122:{77,77}]
-  wire [7:0] _GEN_58 = 3'h6 == _GEN_175 ? io_memOp_i_sdata[31:24] : _GEN_50; // @[MAIN_MEMORY.scala 122:{77,77}]
-  wire [7:0] _GEN_59 = 3'h7 == _GEN_175 ? io_memOp_i_sdata[31:24] : _GEN_51; // @[MAIN_MEMORY.scala 122:{77,77}]
+  wire [2:0] _GEN_179 = {{1'd0}, _T_26}; // @[MAIN_MEMORY.scala 122:{77,77}]
+  wire [7:0] _GEN_56 = 3'h4 == _GEN_179 ? io_memOp_i_sdata[31:24] : _GEN_48; // @[MAIN_MEMORY.scala 122:{77,77}]
+  wire [7:0] _GEN_57 = 3'h5 == _GEN_179 ? io_memOp_i_sdata[31:24] : _GEN_49; // @[MAIN_MEMORY.scala 122:{77,77}]
+  wire [7:0] _GEN_58 = 3'h6 == _GEN_179 ? io_memOp_i_sdata[31:24] : _GEN_50; // @[MAIN_MEMORY.scala 122:{77,77}]
+  wire [7:0] _GEN_59 = 3'h7 == _GEN_179 ? io_memOp_i_sdata[31:24] : _GEN_51; // @[MAIN_MEMORY.scala 122:{77,77}]
   wire [7:0] _GEN_60 = store_en[3] ? _GEN_52 : _GEN_44; // @[MAIN_MEMORY.scala 122:57]
   wire [7:0] _GEN_61 = store_en[3] ? _GEN_53 : _GEN_45; // @[MAIN_MEMORY.scala 122:57]
   wire [7:0] _GEN_62 = store_en[3] ? _GEN_54 : _GEN_46; // @[MAIN_MEMORY.scala 122:57]
@@ -1271,16 +1271,18 @@ module MAIN_MEMORY(
   wire [7:0] temp_7 = io_memOp_i_isStore ? _GEN_131 : dword[63:56]; // @[MAIN_MEMORY.scala 118:23 66:39]
   wire [7:0] temp_6 = io_memOp_i_isStore ? _GEN_130 : dword[55:48]; // @[MAIN_MEMORY.scala 118:23 66:39]
   wire [63:0] _T_62 = {temp_7,temp_6,temp_5,temp_4,temp_3,temp_2,temp_1,temp_0}; // @[MAIN_MEMORY.scala 128:50]
-  wire  _io_loadVal_o_T_2 = io_memOp_i_addr >= 64'ha00003f8 & io_memOp_i_addr <= 64'ha0000400; // @[DEVICE.scala 24:62]
-  wire  _io_loadVal_o_T_6 = io_memOp_i_isStore & _io_loadVal_o_T_2; // @[MAIN_MEMORY.scala 11:23]
-  wire  _io_loadVal_o_T_11 = io_memOp_i_addr >= 64'ha0000048 & io_memOp_i_addr <= 64'ha0000050; // @[DEVICE.scala 26:62]
-  wire [63:0] io_loadVal_o_offset_ = io_memOp_i_addr - 64'ha0000048; // @[MAIN_MEMORY.scala 18:34]
-  wire  io_loadVal_o_need_update = ~io_memOp_i_isStore & io_loadVal_o_offset_ == 64'h4 & _io_loadVal_o_T_11; // @[MAIN_MEMORY.scala 19:58]
-  wire [63:0] _io_loadVal_o_T_12 = _io_loadVal_o_T_11 ? rtc_past_time : 64'h0; // @[Mux.scala 47:70]
-  wire [63:0] _io_loadVal_o_T_13 = _io_loadVal_o_T_2 ? 64'h0 : _io_loadVal_o_T_12; // @[Mux.scala 47:70]
-  wire [94:0] _GEN_151 = _T_2 ? loadVal : {{31'd0}, _io_loadVal_o_T_13}; // @[MAIN_MEMORY.scala 102:27 132:25 50:35]
+  wire  _T_69 = io_memOp_i_addr >= 64'ha00003f8 & io_memOp_i_addr <= 64'ha0000400; // @[DEVICE.scala 24:62]
+  wire  _T_71 = ~reset; // @[MAIN_MEMORY.scala 132:30]
+  wire  _T_74 = io_memOp_i_addr >= 64'ha0000048 & io_memOp_i_addr <= 64'ha0000050; // @[DEVICE.scala 26:62]
+  wire [63:0] offset_ = io_memOp_i_addr - 64'ha0000048; // @[MAIN_MEMORY.scala 134:36]
+  wire  need_update = ~io_memOp_i_isStore & offset_ == 64'h4; // @[MAIN_MEMORY.scala 135:40]
+  wire [63:0] _rtc_past_time_T = need_update ? io_timer_i : rtc_past_time; // @[MAIN_MEMORY.scala 137:32]
+  wire [63:0] _GEN_148 = _T_74 ? rtc_past_time : 64'h0; // @[MAIN_MEMORY.scala 133:31 138:25 43:21]
+  wire [63:0] _GEN_150 = _T_69 ? 64'h0 : _GEN_148; // @[MAIN_MEMORY.scala 131:34 43:21]
+  wire [94:0] _GEN_155 = _T_2 ? loadVal : {{31'd0}, _GEN_150}; // @[MAIN_MEMORY.scala 102:27 50:35]
   wire [31:0] test0 = ram_test0_MPORT_data; // @[MAIN_MEMORY.scala 109:25 111:17]
   wire [31:0] test1 = ram_test1_MPORT_data; // @[MAIN_MEMORY.scala 110:25 112:17]
+  wire  _GEN_191 = ~_T_2; // @[MAIN_MEMORY.scala 132:30]
   assign ram_io_inst_o_MPORT_en = 1'h1;
   assign ram_io_inst_o_MPORT_addr = _io_inst_o_T_1[21:2];
   assign ram_io_inst_o_MPORT_data = ram[ram_io_inst_o_MPORT_addr]; // @[MAIN_MEMORY.scala 40:18]
@@ -1305,7 +1307,7 @@ module MAIN_MEMORY(
   assign ram_MPORT_1_mask = 1'h1;
   assign ram_MPORT_1_en = _T_2 & io_memOp_i_isStore;
   assign io_inst_o = ram_io_inst_o_MPORT_data; // @[MAIN_MEMORY.scala 42:21]
-  assign io_loadVal_o = _GEN_151[63:0];
+  assign io_loadVal_o = _GEN_155[63:0];
   always @(posedge clock) begin
     if (ram_MPORT_en & ram_MPORT_mask) begin
       ram[ram_MPORT_addr] <= ram_MPORT_data; // @[MAIN_MEMORY.scala 40:18]
@@ -1313,19 +1315,32 @@ module MAIN_MEMORY(
     if (ram_MPORT_1_en & ram_MPORT_1_mask) begin
       ram[ram_MPORT_1_addr] <= ram_MPORT_1_data; // @[MAIN_MEMORY.scala 40:18]
     end
-    if (reset) begin // @[MAIN_MEMORY.scala 37:32]
-      rtc_past_time <= 64'h0; // @[MAIN_MEMORY.scala 37:32]
+    if (reset) begin // @[MAIN_MEMORY.scala 38:32]
+      rtc_past_time <= 64'h0; // @[MAIN_MEMORY.scala 38:32]
     end else if (!(_T_2)) begin // @[MAIN_MEMORY.scala 50:35]
-      if (io_loadVal_o_need_update) begin // @[MAIN_MEMORY.scala 21:32]
-        rtc_past_time <= io_timer_i;
+      if (!(_T_69)) begin // @[MAIN_MEMORY.scala 131:34]
+        if (_T_74) begin // @[MAIN_MEMORY.scala 133:31]
+          rtc_past_time <= _rtc_past_time_T; // @[MAIN_MEMORY.scala 137:25]
+        end
       end
     end
     `ifndef SYNTHESIS
     `ifdef PRINTF_COND
       if (`PRINTF_COND) begin
     `endif
-        if (~_T_2 & _io_loadVal_o_T_6 & ~reset) begin
-          $fwrite(32'h80000002,"%c",io_memOp_i_sdata); // @[MAIN_MEMORY.scala 12:19]
+        if (~_T_2 & _T_69 & io_memOp_i_isStore & ~reset) begin
+          $fwrite(32'h80000002,"%c",io_memOp_i_sdata); // @[MAIN_MEMORY.scala 132:30]
+        end
+    `ifdef PRINTF_COND
+      end
+    `endif
+    `endif // SYNTHESIS
+    `ifndef SYNTHESIS
+    `ifdef PRINTF_COND
+      if (`PRINTF_COND) begin
+    `endif
+        if (_GEN_191 & ~_T_69 & _T_74 & _T_71) begin
+          $fwrite(32'h80000002,"\tpast time = %d, offset = %d, need = %d\n",io_loadVal_o,offset_,need_update); // @[MAIN_MEMORY.scala 139:15]
         end
     `ifdef PRINTF_COND
       end

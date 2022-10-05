@@ -19,6 +19,7 @@ class MAIN_MEMORY extends Module{
         val need_update =   (!is_write & offset_ === 4.U & in_rtc(addr))
         //when(in_rtc(addr)){printf("past time: %d\n", rtc_past_time)}
         rtc_past_time   :=  Mux(need_update, io.timer_i, rtc_past_time)
+        printf("past time = %d, offset = %d, need = %d\n", rtc_past_time, offset_, need_update);
         rtc_past_time
     }
 
@@ -35,7 +36,6 @@ class MAIN_MEMORY extends Module{
     })
 
     val rtc_past_time = RegInit(0.U(64.W))      //how much time has past
-    //printf("past time = %d\n", rtc_past_time);
     //to make inst rom and data ram compatible and easy to initialize(loadMemoryFromFileInline), the width is set to be 32 bits
     val ram = Mem(1 << 20, UInt(32.W))  //hope this is enough
     loadMemoryFromFileInline(ram, "/home/s081/Downloads/ysyx-workbench/npc/src/main/scala/img_file")
@@ -128,12 +128,25 @@ class MAIN_MEMORY extends Module{
             ram(addr + 1.U)     :=  temp.asTypeOf(UInt())(63, 32)
             ram(addr)           :=  temp.asTypeOf(UInt())(31, 0)
         }
-    }.otherwise{
+    }.elsewhen(in_serial(addr_i)){
+        when(is_store){printf("%c", sdata)}
+    }.elsewhen(in_rtc(addr_i)){
+        val offset_     =   addr_i - RTC_BASE
+        val need_update =   (!is_store & offset_ === 4.U)
+        //when(in_rtc(addr)){printf("past time: %d\n", rtc_past_time)}
+        rtc_past_time   :=  Mux(need_update, io.timer_i, rtc_past_time)
+        io.loadVal_o    :=  rtc_past_time
+        printf("\tpast time = %d, offset = %d, need = %d\n", io.loadVal_o, offset_, need_update);
+    }
+    
+    /*
+    .otherwise{
         io.loadVal_o    :=  PriorityMux(Seq(
             (in_serial(addr_i),     serial_handler(is_store, addr_i, sdata)),
             (in_rtc(addr_i),        rtc_handler(is_store, addr_i, sdata)),
             (true.B,                0.U)
         ))
     }
+    */
 
 }

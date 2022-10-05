@@ -45,6 +45,7 @@ class MEM extends Module{
 */
     io.writeRfOp_o          :=  io.writeRfOp_i
     io.writeRfOp_o.wdata    :=  Mux(isLoad, io.loadVal_i, io.writeRfOp_i.wdata)
+
 /*
     whne(isStore){
         printf("store a data 0x%x to address 0x%x\n", sdata, )
