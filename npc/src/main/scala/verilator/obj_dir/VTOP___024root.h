@@ -89,10 +89,10 @@ VL_MODULE(VTOP___024root) {
         QData/*63:0*/ TOP__DOT__Regfile__DOT__registers_29;
         QData/*63:0*/ TOP__DOT__Regfile__DOT__registers_30;
         QData/*63:0*/ TOP__DOT__Regfile__DOT__registers_31;
-        QData/*63:0*/ TOP__DOT__Main_Memory__DOT__rtc_past_time;
+        QData/*63:0*/ TOP__DOT__Main_Memory__DOT__test;
         QData/*63:0*/ TOP__DOT__Main_Memory__DOT__dword;
         QData/*63:0*/ TOP__DOT__Main_Memory__DOT___T_62;
-        QData/*63:0*/ TOP__DOT__Main_Memory__DOT___rtc_past_time_T;
+        QData/*63:0*/ TOP__DOT__Main_Memory__DOT___test_T_1;
         VlUnpacked<IData/*31:0*/, 1048576> TOP__DOT__Main_Memory__DOT__ram;
         VlUnpacked<CData/*0:0*/, 2> __Vm_traceActivity;
     };
