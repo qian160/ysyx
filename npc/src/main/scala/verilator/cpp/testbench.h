@@ -8,11 +8,8 @@ using namespace std;
 template<class Module> class TestBench {
 private:
 	//private, user don't need to know
-	
 	VerilatedVcdC	*m_trace;
 	Module			*dut;
-	//shared_ptr<VerilatedVcdC>	m_trace;
-	//shared_ptr<Module>			dut;
 	vluint64_t		m_tickcount;
 	clock_t			boot_time;
 public:
@@ -24,6 +21,7 @@ public:
 	// Close a trace file
 	virtual void	close(void);
 	virtual void	tick(void);
+	virtual Module*	getModule();
 };
 
 //implementation
@@ -42,7 +40,7 @@ void TestBench<Module>::tick(){
 
 	// Repeat for the positive edge of the clock
 	dut	->	clock = 1;
-	dut ->  io_timer_i = clock() / 1000l- boot_time;
+	dut ->  io_timer_i = clock() - boot_time;
 	dut	->	eval();		//update the flip flops
 
 	if(m_trace) 
@@ -57,7 +55,7 @@ void TestBench<Module>::tick(){
 		m_trace->dump(10*m_tickcount+5);
 		m_trace->flush();
 	}
-	
+
 }
 template<class Module>
 void TestBench<Module>::reset(){
@@ -70,7 +68,7 @@ void TestBench<Module>::reset(){
 	dut -> reset = 0;
 
 	cout << "pc: reset at 0x" << hex << dut -> io_pc_o << endl;
-	boot_time = clock() / 1000l;		//init value
+	boot_time = clock();		//init value
 	for(auto iter : emojis){
 		cout << iter.second;
 	}
@@ -86,8 +84,6 @@ TestBench<Module>::TestBench(){
 	dut = new Module;
 	m_trace = nullptr;
 	m_tickcount = 0l;
-	//m_trace = make_shared<VerilatedVcdC>(nullptr);
-	//dut		= make_shared<Module>();
 	dut	->	clock = 0;
 }
 
@@ -112,4 +108,9 @@ void TestBench<Module>::close(){
 		m_trace	-> close();
 		m_trace = NULL;
 	}
+}
+
+template<class Module>
+Module * TestBench<Module>::getModule(){
+	return this->dut;
 }

@@ -4,10 +4,11 @@
 using namespace std;
 char test_path[128] = "/home/s081/Downloads/ysyx-workbench/am-kernels/tests/cpu-tests/build/";
 
-VTOP * top = new VTOP("top");
 vluint64_t TIME = 0;
 static char * img_file = nullptr;
-TestBench<VTOP> tb;
+TestBench<VTOP> tb;				//the test class
+
+VTOP * top = tb.getModule();	//the dut module
 
 int main(int argc, char **argv)
 {
@@ -21,7 +22,7 @@ int main(int argc, char **argv)
 	string s;
 	const string deli = " ";
 	while(1){
-		cout << Cyan("(sdb)");
+		cout << "(😅)";
 		getline(cin, s);
 		s.erase(0, s.find_first_not_of(" "));	//remove the leading spaces
 		int cmd_end = s.find(deli);

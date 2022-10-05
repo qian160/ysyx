@@ -8,7 +8,7 @@ import Util._
 class MAIN_MEMORY extends Module{
     //to simplify call, all these functions' argument list should be the same
     def serial_handler(is_write: Bool, addr: UInt, wdata: UInt): UInt = {
-        when(is_write){
+        when(is_write & in_serial(addr)){
             printf("%c", wdata)
         }   //don't support read
         0.U     //return value, useless here
@@ -16,19 +16,18 @@ class MAIN_MEMORY extends Module{
     def kbd_handler(is_write: Bool, addr: UInt, wdata: UInt) = {}
     def rtc_handler(is_write: Bool, addr: UInt, wdata: UInt): UInt = {
         val offset_     =   addr - RTC_BASE
-        val new_time    =   Wire(UInt(64.W))
-        new_time        :=  System.currentTimeMillis.U
-        val need_update =   !is_write & offset_ === 4.U
-        rtc_past_time   :=  Mux(need_update, new_time, rtc_past_time)
-
+        val need_update =   (!is_write & offset_ === 4.U & in_rtc(addr))
+        //when(in_rtc(addr)){printf("past time: %d\n", rtc_past_time)}
+        rtc_past_time   :=  Mux(need_update, io.timer_i, rtc_past_time)
+        printf("past time = %d, offset = %d, need = %d\n", rtc_past_time, offset_, need_update);
         rtc_past_time
     }
 
     def bswap(a: UInt): UInt        =   Cat(a(7, 0), a(15, 8), a(23, 16), a(31, 24), a(39, 32), a(47, 40), a(55, 48), a(63, 56))
     def in_pmem(addr: UInt):Bool    =   (addr >= CONST.PMEM_START & addr <= CONST.PMEM_END)
 
-
     val io = IO(new Bundle{
+        val timer_i   = Input(UInt(64.W))       //from TOP(cpp Input)
         val pc_i      = Input(UInt(64.W))
         val memOp_i   = Input(new MemOp)
 
@@ -36,7 +35,6 @@ class MAIN_MEMORY extends Module{
         val loadVal_o = Output(UInt(64.W))
     })
 
-    val rtc_boot_time = RegInit(System.currentTimeMillis.U(64.W))
     val rtc_past_time = RegInit(0.U(64.W))      //how much time has past
     //to make inst rom and data ram compatible and easy to initialize(loadMemoryFromFileInline), the width is set to be 32 bits
     val ram = Mem(1 << 20, UInt(32.W))  //hope this is enough
@@ -47,6 +45,7 @@ class MAIN_MEMORY extends Module{
     val is_store    =   io.memOp_i.isStore
     val addr_i      =   io.memOp_i.addr
     val sdata       =   io.memOp_i.sdata
+    val test        =   RegInit(0.U(64.W))
 
     //start accessing memory
     when(in_pmem(io.memOp_i.addr)){
@@ -130,13 +129,25 @@ class MAIN_MEMORY extends Module{
             ram(addr + 1.U)     :=  temp.asTypeOf(UInt())(63, 32)
             ram(addr)           :=  temp.asTypeOf(UInt())(31, 0)
         }
-    }.otherwise{
+    }.elsewhen(in_serial(addr_i)){
+        when(is_store){printf("%c", sdata)}
+    }.elsewhen(in_rtc(addr_i)){
+        val offset_     =   addr_i - RTC_BASE
+        val need_update =   (!is_store & offset_ === 4.U)
+        //when(in_rtc(addr)){printf("past time: %d\n", rtc_past_time)}
+        rtc_past_time   :=  Mux(need_update, io.timer_i, rtc_past_time)
+        io.loadVal_o    :=  rtc_past_time
+        //printf("\tpast time = %d, offset = %d, need = %d\n", io.loadVal_o, offset_, need_update);
+    }
+    
+    /*
+    .otherwise{
         io.loadVal_o    :=  PriorityMux(Seq(
             (in_serial(addr_i),     serial_handler(is_store, addr_i, sdata)),
             (in_rtc(addr_i),        rtc_handler(is_store, addr_i, sdata)),
             (true.B,                0.U)
         ))
     }
+    */
 
 }
-

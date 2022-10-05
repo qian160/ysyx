@@ -6,6 +6,15 @@
 #include"VTOP.h"
 #include"debug.h"
 
+extern VTOP * top;
+
+const char *regs[] = {    //names.. add $ prefix to make regex match easier
+    "0",   "ra", "sp",   "gp",  "tp",  "t0",  "t1",  "t2",
+    "s0",  "s1", "a0",   "a1",  "a2",  "a3",  "a4",  "a5",
+    "a6",  "a7", "s2",   "s3",  "s4",  "s5",  "s6",  "s7",
+    "s8",  "s9", "s10",  "s11", "t3",  "t4",  "t5",  "t6", 
+};
+
 using namespace std;
 //link this file to test.cpp. so in test.cpp's main loop we can call those functions
 extern TestBench<VTOP> tb;
@@ -43,4 +52,14 @@ int cmd_h(string cmd){
 int cmd_q(string arg){
     cout << Green("Goodbye\n");
     exit(0);
+}
+
+#define show(x) (printf("[%3s] = %-16lx%c", regs[x],  top->io_regs_##x, x & 0b1 ? '\n' : '\t'))
+
+int cmd_i(string arg) {
+    show(0);    show(1);    show(2);    show(3);    show(4);    show(5);    show(6);    show(7);
+    show(8);    show(9);    show(10);   show(11);   show(12);   show(13);   show(14);   show(15);
+    show(16);   show(17);   show(18);   show(19);   show(20);   show(21);   show(22);   show(23);
+    show(24);   show(25);   show(26);   show(27);   show(28);   show(29);   show(30);   show(31);
+    return 0;
 }
