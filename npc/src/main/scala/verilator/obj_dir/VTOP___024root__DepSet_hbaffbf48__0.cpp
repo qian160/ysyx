@@ -186,7 +186,7 @@ VL_INLINE_OPT void VTOP___024root___sequent__TOP__0(VTOP___024root* vlSelf) {
                                << 0x20U) | (QData)((IData)(
                                                            vlSelf->TOP__DOT__EX__DOT___aluRes_T_189[0U]))) 
                              - 0xa0000048ULL)))) {
-                vlSelf->TOP__DOT__Main_Memory__DOT__rtc_past_time = 0x183a3df8901ULL;
+                vlSelf->TOP__DOT__Main_Memory__DOT__rtc_past_time = 0x183a42b7932ULL;
             }
         }
         if (((IData)(vlSelf->TOP__DOT__ID_io_decInfo_o_writeRfOp_wen) 

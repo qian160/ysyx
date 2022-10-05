@@ -15,11 +15,12 @@ class MAIN_MEMORY extends Module{
     }
     def kbd_handler(is_write: Bool, addr: UInt, wdata: UInt) = {}
     def rtc_handler(is_write: Bool, addr: UInt, wdata: UInt): UInt = {
-        val offset  =   addr - RTC_BASE
-
-        val need_update =   !is_write & offset === 4.U
-        val new_time    =   System.currentTimeMillis.U(64.W)
+        val offset_     =   addr - RTC_BASE
+        val new_time    =   Wire(UInt(64.W))
+        new_time        :=  System.currentTimeMillis.U
+        val need_update =   !is_write & offset_ === 4.U
         rtc_past_time   :=  Mux(need_update, new_time, rtc_past_time)
+
         rtc_past_time
     }
 
@@ -138,4 +139,3 @@ class MAIN_MEMORY extends Module{
     }
 
 }
-

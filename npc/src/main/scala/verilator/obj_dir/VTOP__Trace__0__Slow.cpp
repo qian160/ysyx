@@ -278,7 +278,7 @@ VL_ATTR_COLD void VTOP___024root__trace_init_sub__TOP__0(VTOP___024root* vlSelf,
     tracep->declBus(c+79,"temp_4", false,-1, 7,0);
     tracep->declBus(c+80,"temp_7", false,-1, 7,0);
     tracep->declBus(c+81,"temp_6", false,-1, 7,0);
-    tracep->declQuad(c+82,"io_loadVal_o_offset", false,-1, 63,0);
+    tracep->declQuad(c+82,"io_loadVal_o_offset_", false,-1, 63,0);
     tracep->declBit(c+84,"io_loadVal_o_need_update", false,-1);
     tracep->declBus(c+50,"test0", false,-1, 31,0);
     tracep->declBus(c+51,"test1", false,-1, 31,0);
