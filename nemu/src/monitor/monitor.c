@@ -24,7 +24,7 @@ static void welcome() {
         "If it is not necessary, you can disable it in menuconfig"));
   Log("Build time: %s, %s", __TIME__, __DATE__);
   printf("%swelcome to %s-NEMU!%s\n", "😀", ANSI_FMT(str(__GUEST_ISA__), ANSI_FG_YELLOW ANSI_BG_RED), "😀");
-  printf("👽😡🤡🥶😎😭😵🤤🥵😄🤣🥳💩🤖😱😴😀🥰😅😫");
+  printf("👽😡🤡🥶😎😭😵🤤🥵😄🤣🥳💩🤖😱😴😀🥰😅😫\n");
   printf("For help, type \"help\"\n");
 }
 
