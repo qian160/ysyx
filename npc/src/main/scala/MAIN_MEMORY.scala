@@ -136,9 +136,7 @@ class MAIN_MEMORY extends Module{
         val need_update =   (!is_store & offset_ === 4.U)
         //when(in_rtc(addr)){printf("past time: %d\n", rtc_past_time)}
         rtc_past_time   :=  Mux(need_update, io.timer_i, rtc_past_time)
-        //io.loadVal_o    :=  rtc_past_time
-        test    :=  test + 1.U
-        io.loadVal_o    :=  test
+        io.loadVal_o    :=  rtc_past_time
         //printf("\tpast time = %d, offset = %d, need = %d\n", io.loadVal_o, offset_, need_update);
     }
     
