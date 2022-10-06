@@ -37,6 +37,7 @@ int cmd_s(string steps){
         //no argument, default execuate once
         tb.tick();
         memcpy((void *)&state, (void *)&top -> io_regs_0, 32 * sizeof(uint64_t));
+        state.pc = top->io_pc_o;
         difftest_regcpy(&state, DIFFTEST_TO_REF);
         difftest_exec(1);
     }
@@ -45,7 +46,10 @@ int cmd_s(string steps){
             tb.tick();
             //update the states, for difftest use
             memcpy((void *)&state, (void *)&top -> io_regs_0, 32 * sizeof(uint64_t));
+            state.pc = top->io_pc_o;
+
             difftest_regcpy(&state, DIFFTEST_TO_REF);
+
             difftest_exec(1);
             printf("test\n");
         }
