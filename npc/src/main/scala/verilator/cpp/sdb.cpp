@@ -7,6 +7,7 @@
 #include"debug.h"
 
 extern VTOP * top;
+enum { DIFFTEST_TO_DUT, DIFFTEST_TO_REF };
 
 const char *regs[] = {    //names.. add $ prefix to make regex match easier
     "0",   "ra", "sp",   "gp",  "tp",  "t0",  "t1",  "t2",

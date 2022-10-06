@@ -8,7 +8,7 @@ VFLAGS = --cc --exe --trace --build -Wno-lint
 DEPS   = $(CPPSRC:.cpp=.d)
 OBJS   = $(CPPSRC:.cpp=.o)	
 CPPFLAGS    = -I ./cpp -I ./obj_dir
-
+DIFFTEST    = 
 LLVM_FLAGS += $(shell llvm-config --ldflags)
 LLVM_FLAGS += $(shell llvm-config --cxxflags)
 LLVM_FLAGS += $(shell llvm-config --libs)
@@ -44,3 +44,7 @@ clean:
 	-rm  -rf obj_dir wave.vcd
 	@printf "$(COLOR_GREEN)[done]$(COLOR_NONE)\n"
 
+test:
+ifneq ($(diff),)
+	echo 11
+endif
