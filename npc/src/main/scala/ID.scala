@@ -64,7 +64,7 @@ class ID extends Module{
             val is_jalr =   opcode  === Opcode.JALR
 
             io.decInfo_o.aluOp.src1   :=  Mux(is_jalr, pc,        rs1Val)
-            io.decInfo_o.aluOp.src2   :=  Mux(is_jalr, 4.U(64.W), imm_I(inst))
+            //io.decInfo_o.aluOp.src2   :=  Mux(is_jalr, 4.U(64.W), imm_I(inst))
             io.decInfo_o.branchOp.happen  :=  Mux(is_jalr, true.B, false.B)
             io.decInfo_o.branchOp.newPC   :=  rs1Val + imm_I(inst)
             //load uses src1 and src2 to calculate the address
@@ -135,7 +135,7 @@ class ID extends Module{
     val src2 = io.decInfo_o.aluOp.src2
 
     //printf(p"src1 = ${Hexadecimal(src1)}, src2 = ${Hexadecimal(src2)}\n")
-    //printf("pc = %x, inst = %x\n\n",pc, inst)
+    printf("pc = %x, inst = %x\n\n",pc, inst)
 
     //io.debug_o.exit     :=  inst === CONST.EBREAK
 
