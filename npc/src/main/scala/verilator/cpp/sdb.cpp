@@ -7,7 +7,15 @@
 #include"debug.h"
 
 extern VTOP * top;
-extern bool difftest_checkregs(uint64_t pc, CPU_state *dut_r);
+
+void get_state(CPU_state & state){
+    memcpy((void*)&state, &top->io_regs_0, 32 * sizeof(uint64_t));
+}
+
+extern bool (*difftest_checkregs)(uint64_t pc);
+extern void (*difftest_regcpy)(void *dut, bool direction);
+extern void (*difftest_exec)(int n);
+
 enum { DIFFTEST_TO_DUT, DIFFTEST_TO_REF };
 
 const char *regs[] = {    //names.. add $ prefix to make regex match easier
@@ -27,8 +35,10 @@ static int step(size_t steps){
 */
 int cmd_s(string steps){
     size_t n = atoi(steps.c_str());
-    if(!n){
+    if(!n){ 
+        //no argument, default execuate once
         tb.tick();
+        //difftest_regcpy()
     }
     else{
         while(n-- && !Verilated::gotFinish()){

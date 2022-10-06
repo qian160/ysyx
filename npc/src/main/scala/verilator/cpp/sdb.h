@@ -6,6 +6,9 @@ typedef struct{
     uint64_t pc;
 }CPU_state;
 
+static char test_path[128] = "/home/s081/Downloads/ysyx-workbench/am-kernels/tests/cpu-tests/build/";
+static char *diff = "/home/s081/Downloads/ysyx-workbench/nemu/build/riscv64-nemu-interpreter-so";
+
 int cmd_h(std::string args);
 int cmd_c(std::string args);
 int cmd_q(std::string args);
