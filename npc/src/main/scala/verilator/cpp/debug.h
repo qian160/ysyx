@@ -9,6 +9,9 @@
 
 #define normal "\033[0m"
 
+#include<string>
+using namespace std;
+
 static inline string Red(string str){	 return red + str + normal;}
 static inline string Yellow(string str){ return yellow + str + normal;}
 static inline string Green(string str){	 return green + str + normal;}

@@ -75,7 +75,9 @@ void difftest_init(char * img_file) {
   Log("The image is %s, size = %ld", img_file, size);
 
   fseek(fp, 0, SEEK_SET);
+  //pmem(pointer to flobal memory) + paddr(argument) - CONFIG_MBASE(0x80000000)
   assert(fread(guest_to_host(RESET_VECTOR), size, 1, fp));
+  cpu.pc  = 0x80000000;
   fclose(fp);
   //need to pass the img file to nemu
 }

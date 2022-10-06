@@ -18,7 +18,6 @@ void init_difftest(){
         difftest_exec		=	(void (*)(int)) 		 (dlsym(handle, "difftest_exec"));
         if(!difftest_init || !difftest_checkregs || !difftest_exec || !difftest_regcpy)
             throw std::runtime_error("failed to find functions in so");
-        cout << "\n\n" << img_file << "nishiyige\n\n";
         difftest_init(img_file);
     }
     catch(std::runtime_error e){
