@@ -15,7 +15,7 @@ CPU_state dut_state;
   2. just call difftest_exec, compare the updated dut_state and cpu_state in nemu
 */
 
-bool dt_checkregs(vaddr_t pc) {
+bool difftest_checkregs(vaddr_t pc) {
   for(int i = 0; i < 32; i++){
     //an error happens
     if(cpu.gpr[i] ^dut_state.gpr[i]) {
@@ -31,7 +31,7 @@ bool dt_checkregs(vaddr_t pc) {
   return true;
 }
 
-void dt_regcpy(void *dut, bool direction) {
+void difftest_regcpy(void *dut, bool direction) {
   printf("regcpy\n");
   CPU_state *state = (CPU_state*)dut;
   if (direction == DIFFTEST_TO_REF) {
@@ -49,7 +49,7 @@ void dt_regcpy(void *dut, bool direction) {
 }
 
 //how to know the dut's reg?
-void dt_exec(int n){
+void difftest_exec(int n){
   while(n--){
     uint64_t pc = cpu.pc; //the inst goint to be execuated
     cpu_exec(1);
@@ -61,7 +61,7 @@ void difftest_raise_intr(word_t NO) {
   assert(0);
 }
 
-void dt_init(int port) {
+void difftest_init(int port) {
   /* Perform ISA dependent initialization. */
   init_isa();
 }

@@ -13,6 +13,8 @@ VTOP * top = tb.getModule();	//the dut module
 bool (*difftest_checkregs)(uint64_t pc) = nullptr;
 void (*difftest_regcpy)(void *dut, bool direction) = nullptr;
 void (*difftest_exec)(int n) = nullptr;
+void (*difftest_init)(int port) = nullptr;
+
 
 int main(int argc, char **argv)
 {
@@ -28,10 +30,11 @@ int main(int argc, char **argv)
 
 	void *handle = dlopen(diff, RTLD_LAZY);
 	assert(handle);
-	difftest_checkregs	=	(bool (*)(uint64_t))	 (dlsym(handle, "dt_checkregs"));
-	difftest_regcpy		=	(void (*)(void *, bool)) (dlsym(handle, "dt_regcpy"));
-	difftest_exec		=	(void (*)(int)) 		 (dlsym(handle, "dt_exec"));
-	assert(difftest_checkregs);	assert(difftest_regcpy);	assert(difftest_exec);
+	difftest_init		=	(void (*)(int ))		 (dlsym(handle, "difftest_init"));
+	difftest_checkregs	=	(bool (*)(uint64_t))	 (dlsym(handle, "difftest_checkregs"));
+	difftest_regcpy		=	(void (*)(void *, bool)) (dlsym(handle, "difftest_regcpy"));
+	difftest_exec		=	(void (*)(int)) 		 (dlsym(handle, "difftest_exec"));
+	assert(difftest_init);	assert(difftest_checkregs);	assert(difftest_regcpy);	assert(difftest_exec);
 	while(1){
 		int rnd = rand() % emojis.size();
 		cout << "(😅)";
