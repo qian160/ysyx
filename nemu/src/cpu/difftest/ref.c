@@ -52,7 +52,7 @@ void dt_exec(int n){
   while(n--){
     uint64_t pc = cpu.pc; //the inst goint to be execuated
     cpu_exec(1);
-    assert(difftest_checkregs(pc));
+    assert(dt_checkregs(pc));
   }
 }
 
