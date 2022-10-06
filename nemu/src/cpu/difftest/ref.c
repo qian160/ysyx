@@ -66,7 +66,6 @@ void difftest_raise_intr(word_t NO) {
 }
 
 void difftest_init(char * img_file) {
-
   FILE *fp = fopen(img_file, "rb");
   Assert(fp, "Can not open '%s'", img_file);
 
@@ -76,11 +75,7 @@ void difftest_init(char * img_file) {
   Log("The image is %s, size = %ld", img_file, size);
 
   fseek(fp, 0, SEEK_SET);
-  int ret = fread(guest_to_host(RESET_VECTOR), size, 1, fp);
-
-  assert(ret == 1);
-
+  assert(fread(guest_to_host(RESET_VECTOR), size, 1, fp));
   fclose(fp);
-  return size;
   //need to pass the img file to nemu
 }
