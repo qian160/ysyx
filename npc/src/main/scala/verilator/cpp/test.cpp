@@ -35,6 +35,7 @@ int main(int argc, char **argv)
 	difftest_regcpy		=	(void (*)(void *, bool)) (dlsym(handle, "difftest_regcpy"));
 	difftest_exec		=	(void (*)(int)) 		 (dlsym(handle, "difftest_exec"));
 	assert(difftest_init);	assert(difftest_checkregs);	assert(difftest_regcpy);	assert(difftest_exec);
+	difftest_init(114514);
 	while(1){
 		int rnd = rand() % emojis.size();
 		cout << "(😅)";

@@ -40,7 +40,9 @@ int cmd_s(string steps){
     if(!n){ 
         //no argument, default execuate once
         tb.tick();
-        //difftest_regcpy()
+        memcpy((void *)&state, (void *)&top -> io_regs_0, 32 * sizeof(uint64_t));
+        difftest_regcpy(&state, DIFFTEST_TO_REF);
+        difftest_exec(1);
     }
     else{
         while(n-- && !Verilated::gotFinish()){
@@ -49,6 +51,7 @@ int cmd_s(string steps){
             memcpy((void *)&state, (void *)&top -> io_regs_0, 32 * sizeof(uint64_t));
             difftest_regcpy(&state, DIFFTEST_TO_REF);
             difftest_exec(1);
+            printf("test\n");
         }
     }
     return 0;
