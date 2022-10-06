@@ -3,12 +3,13 @@
 HOME   = $(shell pwd)
 VSRC   = $(addprefix $(HOME)/verilog/, $(shell ls ./verilog | grep .v))
 CPPSRC = $(addprefix $(HOME)/cpp/, $(shell ls ./cpp | grep cpp))
-VFLAGS = --cc --exe --trace --build -Wno-lint
+VFLAGS = --cc --exe --trace -Wno-lint --build
 
 DEPS   = $(CPPSRC:.cpp=.d)
 OBJS   = $(CPPSRC:.cpp=.o)	
 CPPFLAGS    = -I ./cpp -I ./obj_dir
-
+DIFFTEST    = $(NEMU_HOME)/build/riscv64-nemu-interpreter-so
+ 
 LLVM_FLAGS += $(shell llvm-config --ldflags)
 LLVM_FLAGS += $(shell llvm-config --cxxflags)
 LLVM_FLAGS += $(shell llvm-config --libs)
@@ -38,9 +39,8 @@ ifneq ($(img),)
 	echo loading img $(img)...
 	./cpp/load $(img) > ../img_file
 endif
-	@verilator $(VSRC) $(CPPSRC) $(VFLAGS) --top TOP
+	@verilator $(VSRC) $(CPPSRC) $(VFLAGS) --top TOP -LDFLAGS -ldl
 	@obj_dir/VTOP $(img)
 clean:
 	-rm  -rf obj_dir wave.vcd
 	@printf "$(COLOR_GREEN)[done]$(COLOR_NONE)\n"
-

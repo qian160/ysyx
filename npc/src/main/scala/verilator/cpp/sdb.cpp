@@ -8,6 +8,18 @@
 
 extern VTOP * top;
 
+void get_state(CPU_state & state){
+    memcpy((void*)&state, &top->io_regs_0, 32 * sizeof(uint64_t));
+}
+
+CPU_state state;
+
+extern bool (*difftest_checkregs)(uint64_t pc);
+extern void (*difftest_regcpy)(void *dut, bool direction);
+extern void (*difftest_exec)(int n);
+
+enum { DIFFTEST_TO_DUT, DIFFTEST_TO_REF };
+
 const char *regs[] = {    //names.. add $ prefix to make regex match easier
     "0",   "ra", "sp",   "gp",  "tp",  "t0",  "t1",  "t2",
     "s0",  "s1", "a0",   "a1",  "a2",  "a3",  "a4",  "a5",
@@ -25,8 +37,10 @@ static int step(size_t steps){
 */
 int cmd_s(string steps){
     size_t n = atoi(steps.c_str());
-    if(!n){
+    if(!n){ 
+        //no argument, default execuate once
         tb.tick();
+        //difftest_regcpy()
     }
     else{
         while(n-- && !Verilated::gotFinish()){
@@ -54,12 +68,10 @@ int cmd_q(string arg){
     exit(0);
 }
 
-#define show(x) (printf("[%3s] = %-16lx%c", regs[x],  top->io_regs_##x, x & 0b1 ? '\n' : '\t'))
-
 int cmd_i(string arg) {
-    show(0);    show(1);    show(2);    show(3);    show(4);    show(5);    show(6);    show(7);
-    show(8);    show(9);    show(10);   show(11);   show(12);   show(13);   show(14);   show(15);
-    show(16);   show(17);   show(18);   show(19);   show(20);   show(21);   show(22);   show(23);
-    show(24);   show(25);   show(26);   show(27);   show(28);   show(29);   show(30);   show(31);
+    memcpy((void *)&state, (void *)&top -> io_regs_0, 32 * sizeof(uint64_t));
+    for(int i = 0; i < 32; i++){
+        printf("\033[1;33m[%3s] = %-16lx%c\033[0m", regs[i], state.gpr[i], i & 0b1? '\n' : '\t');
+    }
     return 0;
 }
