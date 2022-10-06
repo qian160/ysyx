@@ -390,6 +390,38 @@ VL_INLINE_OPT void VTOP___024root___sequent__TOP__0(VTOP___024root* vlSelf) {
         vlSelf->TOP__DOT__Main_Memory__DOT__ram[__Vdlyvdim0__TOP__DOT__Main_Memory__DOT__ram__v1] 
             = __Vdlyvval__TOP__DOT__Main_Memory__DOT__ram__v1;
     }
+    vlSelf->io_regs_29 = vlSelf->TOP__DOT__Regfile__DOT__registers_29;
+    vlSelf->io_regs_28 = vlSelf->TOP__DOT__Regfile__DOT__registers_28;
+    vlSelf->io_regs_27 = vlSelf->TOP__DOT__Regfile__DOT__registers_27;
+    vlSelf->io_regs_30 = vlSelf->TOP__DOT__Regfile__DOT__registers_30;
+    vlSelf->io_regs_31 = vlSelf->TOP__DOT__Regfile__DOT__registers_31;
+    vlSelf->io_regs_26 = vlSelf->TOP__DOT__Regfile__DOT__registers_26;
+    vlSelf->io_regs_25 = vlSelf->TOP__DOT__Regfile__DOT__registers_25;
+    vlSelf->io_regs_14 = vlSelf->TOP__DOT__Regfile__DOT__registers_14;
+    vlSelf->io_regs_15 = vlSelf->TOP__DOT__Regfile__DOT__registers_15;
+    vlSelf->io_regs_16 = vlSelf->TOP__DOT__Regfile__DOT__registers_16;
+    vlSelf->io_regs_17 = vlSelf->TOP__DOT__Regfile__DOT__registers_17;
+    vlSelf->io_regs_18 = vlSelf->TOP__DOT__Regfile__DOT__registers_18;
+    vlSelf->io_regs_19 = vlSelf->TOP__DOT__Regfile__DOT__registers_19;
+    vlSelf->io_regs_20 = vlSelf->TOP__DOT__Regfile__DOT__registers_20;
+    vlSelf->io_regs_21 = vlSelf->TOP__DOT__Regfile__DOT__registers_21;
+    vlSelf->io_regs_22 = vlSelf->TOP__DOT__Regfile__DOT__registers_22;
+    vlSelf->io_regs_23 = vlSelf->TOP__DOT__Regfile__DOT__registers_23;
+    vlSelf->io_regs_24 = vlSelf->TOP__DOT__Regfile__DOT__registers_24;
+    vlSelf->io_regs_12 = vlSelf->TOP__DOT__Regfile__DOT__registers_12;
+    vlSelf->io_regs_11 = vlSelf->TOP__DOT__Regfile__DOT__registers_11;
+    vlSelf->io_regs_9 = vlSelf->TOP__DOT__Regfile__DOT__registers_9;
+    vlSelf->io_regs_8 = vlSelf->TOP__DOT__Regfile__DOT__registers_8;
+    vlSelf->io_regs_7 = vlSelf->TOP__DOT__Regfile__DOT__registers_7;
+    vlSelf->io_regs_2 = vlSelf->TOP__DOT__Regfile__DOT__registers_2;
+    vlSelf->io_regs_1 = vlSelf->TOP__DOT__Regfile__DOT__registers_1;
+    vlSelf->io_regs_3 = vlSelf->TOP__DOT__Regfile__DOT__registers_3;
+    vlSelf->io_regs_0 = vlSelf->TOP__DOT__Regfile__DOT__registers_0;
+    vlSelf->io_regs_4 = vlSelf->TOP__DOT__Regfile__DOT__registers_4;
+    vlSelf->io_regs_5 = vlSelf->TOP__DOT__Regfile__DOT__registers_5;
+    vlSelf->io_regs_6 = vlSelf->TOP__DOT__Regfile__DOT__registers_6;
+    vlSelf->io_regs_13 = vlSelf->TOP__DOT__Regfile__DOT__registers_13;
+    vlSelf->io_regs_10 = vlSelf->TOP__DOT__Regfile__DOT__registers_10;
     vlSelf->io_pc_o = (QData)((IData)(vlSelf->TOP__DOT__IF__DOT__pc));
     vlSelf->TOP__DOT__Main_Memory__DOT__ram_io_inst_o_MPORT_data 
         = vlSelf->TOP__DOT__Main_Memory__DOT__ram[(0xfffffU 

@@ -8,11 +8,8 @@ using namespace std;
 template<class Module> class TestBench {
 private:
 	//private, user don't need to know
-	
 	VerilatedVcdC	*m_trace;
 	Module			*dut;
-	//shared_ptr<VerilatedVcdC>	m_trace;
-	//shared_ptr<Module>			dut;
 	vluint64_t		m_tickcount;
 	clock_t			boot_time;
 public:
@@ -24,6 +21,7 @@ public:
 	// Close a trace file
 	virtual void	close(void);
 	virtual void	tick(void);
+	virtual Module*	getModule();
 };
 
 //implementation
@@ -57,7 +55,7 @@ void TestBench<Module>::tick(){
 		m_trace->dump(10*m_tickcount+5);
 		m_trace->flush();
 	}
-	
+
 }
 template<class Module>
 void TestBench<Module>::reset(){
@@ -82,7 +80,7 @@ template<class Module>
 TestBench<Module>::TestBench(){
 	// According to the Verilator spec, you *must* call traceEverOn
 	// before calling any of the tracing functions within Verilator.
-	//Verilated::traceEverOn(true);
+	Verilated::traceEverOn(true);
 	dut = new Module;
 	m_trace = nullptr;
 	m_tickcount = 0l;
@@ -110,4 +108,9 @@ void TestBench<Module>::close(){
 		m_trace	-> close();
 		m_trace = NULL;
 	}
+}
+
+template<class Module>
+Module * TestBench<Module>::getModule(){
+	return this->dut;
 }
