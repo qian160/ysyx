@@ -24,7 +24,7 @@ bool difftest_checkregs(vaddr_t pc) {
   for(int i = 0; i < 32; i++){
     //an error happens
     if(cpu.gpr[i] ^dut_state.gpr[i]) {
-      Log_Color(RED, "\npc = 0x%lx, \ndnpc = 0x%lx:  \n%s should be 0x%lx, but get 0x%lx\n", pc, cpu.pc, regs[i], dut_state.gpr[i], cpu.gpr[i]);
+      Log_Color(RED, "\npc = 0x%lx, \ndnpc = 0x%lx:  \n%s should be 0x%lx, but get 0x%lx\n", pc, cpu.pc, regs[i], cpu.gpr[i], dut_state.gpr[i]);
       return false;
     }
   }
