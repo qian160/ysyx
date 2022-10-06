@@ -7,6 +7,7 @@
 #include"debug.h"
 
 extern VTOP * top;
+extern bool difftest_checkregs(uint64_t pc, CPU_state *dut_r);
 enum { DIFFTEST_TO_DUT, DIFFTEST_TO_REF };
 
 const char *regs[] = {    //names.. add $ prefix to make regex match easier

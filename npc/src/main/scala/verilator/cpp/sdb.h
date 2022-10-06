@@ -1,6 +1,11 @@
 #include<iostream>
 #include<map>
 
+typedef struct{
+    uint64_t gpr[32];
+    uint64_t pc;
+}CPU_state;
+
 int cmd_h(std::string args);
 int cmd_c(std::string args);
 int cmd_q(std::string args);
