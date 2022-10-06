@@ -28,9 +28,9 @@ int main(int argc, char **argv)
 
 	void *handle = dlopen(diff, RTLD_LAZY);
 	assert(handle);
-	difftest_checkregs	=	(bool (*)(uint64_t))	 (dlsym(handle, "difftest_checkregs"));
-	difftest_regcpy		=	(void (*)(void *, bool)) (dlsym(handle, "difftest_regcpy"));
-	difftest_exec		=	(void (*)(int)) 		 (dlsym(handle, "difftest_exec"));
+	difftest_checkregs	=	(bool (*)(uint64_t))	 (dlsym(handle, "dt_checkregs"));
+	difftest_regcpy		=	(void (*)(void *, bool)) (dlsym(handle, "dt_regcpy"));
+	difftest_exec		=	(void (*)(int)) 		 (dlsym(handle, "dt_exec"));
 	assert(difftest_checkregs);	assert(difftest_regcpy);	assert(difftest_exec);
 	while(1){
 		int rnd = rand() % emojis.size();
