@@ -2,7 +2,7 @@
 #include <cpu/cpu.h>
 #include <cpu/ifetch.h>
 #include <cpu/decode.h>
-
+#include "../../../include/generated/autoconf.h"
 #include "../../../include/trace.h"   //load op will set ringbuf's rd
 
 extern void update_mringbuf(bool isLoad, word_t addr, word_t data, int rd);
