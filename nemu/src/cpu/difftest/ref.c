@@ -65,7 +65,22 @@ void difftest_raise_intr(word_t NO) {
   assert(0);
 }
 
-void difftest_init(int port) {
-  /* Perform ISA dependent initialization. */
-  init_isa();
+void difftest_init(char * img_file) {
+
+  FILE *fp = fopen(img_file, "rb");
+  Assert(fp, "Can not open '%s'", img_file);
+
+  fseek(fp, 0, SEEK_END);
+  long size = ftell(fp);
+
+  Log("The image is %s, size = %ld", img_file, size);
+
+  fseek(fp, 0, SEEK_SET);
+  int ret = fread(guest_to_host(RESET_VECTOR), size, 1, fp);
+
+  assert(ret == 1);
+
+  fclose(fp);
+  return size;
+  //need to pass the img file to nemu
 }

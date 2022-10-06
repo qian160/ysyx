@@ -2,20 +2,13 @@
 #include<verilated_vcd_c.h>
 #include"sdb.h"
 
-#include<dlfcn.h>
 using namespace std;
 
 vluint64_t TIME = 0;
-static char * img_file = nullptr;
+char * img_file = nullptr;
 TestBench<VTOP> tb;				//the test class
-
+extern void init_difftest();
 VTOP * top = tb.getModule();	//the dut module
-
-bool (*difftest_checkregs)(uint64_t pc) = nullptr;
-void (*difftest_regcpy)(void *dut, bool direction) = nullptr;
-void (*difftest_exec)(int n) = nullptr;
-void (*difftest_init)(int port) = nullptr;
-
 
 int main(int argc, char **argv)
 {
@@ -28,15 +21,7 @@ int main(int argc, char **argv)
 	//tb.trace("./wave.vcd");
 	string s;
 	const string deli = " ";
-
-	void *handle = dlopen(diff, RTLD_LAZY);
-	assert(handle);
-	difftest_init		=	(void (*)(int ))		 (dlsym(handle, "difftest_init"));
-	difftest_checkregs	=	(bool (*)(uint64_t))	 (dlsym(handle, "difftest_checkregs"));
-	difftest_regcpy		=	(void (*)(void *, bool)) (dlsym(handle, "difftest_regcpy"));
-	difftest_exec		=	(void (*)(int)) 		 (dlsym(handle, "difftest_exec"));
-	assert(difftest_init);	assert(difftest_checkregs);	assert(difftest_regcpy);	assert(difftest_exec);
-	difftest_init(114514);
+	init_difftest();
 	while(1){
 		int rnd = rand() % emojis.size();
 		cout << "(😅)";
