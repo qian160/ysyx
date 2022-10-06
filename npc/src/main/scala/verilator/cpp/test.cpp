@@ -1,6 +1,7 @@
-#include"debug.h"
-#include"testbench.h"
+#include"common.h"
+#include<verilated_vcd_c.h>
 #include"sdb.h"
+
 #include<dlfcn.h>
 using namespace std;
 

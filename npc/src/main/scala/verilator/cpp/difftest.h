@@ -1,0 +1,1 @@
+enum { DIFFTEST_TO_DUT, DIFFTEST_TO_REF };

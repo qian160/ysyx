@@ -37,7 +37,6 @@ bool difftest_checkregs(vaddr_t pc) {
 }
 
 void difftest_regcpy(void *dut, bool direction) {
-  printf("regcpy\n");
   CPU_state *state = (CPU_state*)dut;
   if (direction == DIFFTEST_TO_REF) {
     for(int i = 0; i < 32; i++){
