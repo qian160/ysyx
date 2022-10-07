@@ -23,12 +23,12 @@ bool difftest_checkregs() {
   for(int i = 0; i < 32; i++){
     //an error happens
     if(cpu.gpr[i] ^dut_state.gpr[i]) {
-      Log_Color(RED, "\npc = 0x%lx:  \n%s should be 0x%lx, but get 0x%lx\n", curr_pc, regs[i], cpu.gpr[i], dut_state.gpr[i]);
+      Log_Color(RED, "\n\npc = 0x%lx:  \n%s should be 0x%lx, but get 0x%lx\n", curr_pc, regs[i], cpu.gpr[i], dut_state.gpr[i]);
       return false;
     }
   }
   if(cpu.pc  ^ dut_state.pc) {
-    Log_Color(RED, "\nbad pc: expected 0x%lx, but get 0x%lx\n", cpu.pc, dut_state.pc);
+    Log_Color(RED, "\n\nbad pc: expected 0x%lx, but get 0x%lx\n", cpu.pc, dut_state.pc);
     return false;
   }
   return true;
