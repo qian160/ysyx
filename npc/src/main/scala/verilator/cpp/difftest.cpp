@@ -2,27 +2,43 @@
 #include<stdexcept>
 #include<memory>
 #include<iostream>
-using namespace std;
+/*
+    1. let ref execuate first, but don't check regs now(this updates the ref's timer)
+    2. update dut's timer using ref's new value
+    3. let dut execuate 
+    4. check regs
+*/
 extern char * img_file;
 
-void init_difftest(){
-    std::string diff = "/home/s081/Downloads/ysyx-workbench/nemu/build/riscv64-nemu-interpreter-so";
+void init_difftest()
+{
+    const std::string diff = "/home/s081/Downloads/ysyx-workbench/nemu/build/riscv64-nemu-interpreter-so";
     //std::shared_ptr<void> handle =  std::make_shared<void>(dlopen(diff.c_str(), RTLD_LAZY));
     void * handle = dlopen(diff.c_str(), RTLD_LAZY);
     try{
         if(!handle)
             throw std::runtime_error("failed to open diff so");
-        difftest_init		=	(void (*)(char* ))		 (dlsym(handle, "difftest_init"));
-        difftest_checkregs	=	(bool (*)(uint64_t))	 (dlsym(handle, "difftest_checkregs"));
-        difftest_regcpy		=	(void (*)(void *, bool)) (dlsym(handle, "difftest_regcpy"));
-        difftest_exec		=	(void (*)(int)) 		 (dlsym(handle, "difftest_exec"));
-        if(!difftest_init || !difftest_checkregs || !difftest_exec || !difftest_regcpy)
-            throw std::runtime_error("failed to find functions in so");
+
+        if(!(difftest_init = init(dlsym(handle, "difftest_init"))))
+            throw std::runtime_error("can't find difftest_init");
+
+        if(!(difftest_checkregs	= checkregs(dlsym(handle, "difftest_checkregs"))))
+            throw std::runtime_error("can't find difftest_checkregs");
+
+        if(!(difftest_regcpy =	regcpy(dlsym(handle, "difftest_regcpy"))))
+            throw std::runtime_error("can't find diftest_regcpy");
+
+        if(!(difftest_exec = exec(dlsym(handle, "difftest_ref_exec_once"))))
+            throw std::runtime_error("can't find difftest_exec");
+
+        if(!(npc_timer = (uint64_t*)dlsym(handle, "npc_timer")))
+            throw std::runtime_error("can't find npc_timer");
+
+        //everything is okay
         difftest_init(img_file);
     }
     catch(std::runtime_error e){
         std::cout << e.what() << std::endl;
         exit(0);
     }
-
 }

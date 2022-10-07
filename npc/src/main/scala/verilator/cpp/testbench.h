@@ -1,5 +1,9 @@
 #include <verilated_vcd_c.h>
 #include "emoji.h"
+
+#define _DIFFTEST_ 1
+//extern uint64_t * npc_timer;
+
 using namespace std;
 //Verilog or chisel can't read binary file to get the instructions, so 
 //we have to add this feature to our cpp testbench, which lose the compability
@@ -40,7 +44,8 @@ void TestBench<Module>::tick(){
 	// Repeat for the positive edge of the clock
 	dut	->	clock = 1;
 	//dut -> io_timer_i = if difftest xx else clock() - boot_time
-	dut ->  io_timer_i = clock() - boot_time;
+	//dut ->  io_timer_i = clock() - boot_time;
+	//dut	->	io_timer_i	=	*npc_timer;
 	dut	->	eval();		//update the flip flops
 
 	if(m_trace) 
