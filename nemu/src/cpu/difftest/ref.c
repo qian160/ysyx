@@ -52,7 +52,7 @@ void difftest_regcpy(void *dut, bool direction) {
 }
 
 //how to know the dut's reg?
-void difftest_ref_exec(){   //exec once
+void difftest_ref_exec_once(){   //exec once
   curr_pc = cpu.pc;         //the inst going to be execuaated. If difftest fails, this inst should take the responsibility
   cpu_exec(1);
 //  assert(difftest_checkregs(pc));
