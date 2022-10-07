@@ -36,11 +36,12 @@ VL_MODULE(VTOP___024root) {
         CData/*0:0*/ TOP__DOT__Main_Memory__DOT___T_69;
         CData/*0:0*/ TOP__DOT__Main_Memory__DOT___T_74;
         CData/*0:0*/ __Vclklast__TOP__clock;
+        SData/*12:0*/ TOP__DOT__ID__DOT___io_decInfo_o_branchOp_newPC_T_13;
         VL_OUT(io_inst_o,31,0);
         IData/*31:0*/ TOP__DOT__IF__DOT__pc;
         IData/*20:0*/ TOP__DOT__ID__DOT___io_decInfo_o_branchOp_newPC_T_24;
         VlWide<3>/*75:0*/ TOP__DOT__ID__DOT___GEN_57;
-        VlWide<4>/*127:0*/ TOP__DOT__EX__DOT___aluRes_T_189;
+        VlWide<4>/*127:0*/ TOP__DOT__EX__DOT___aluRes_T_191;
         IData/*31:0*/ TOP__DOT__Main_Memory__DOT__ram_io_inst_o_MPORT_data;
         VlWide<3>/*94:0*/ TOP__DOT__Main_Memory__DOT__loadVal_temp;
         IData/*31:0*/ TOP__DOT__Main_Memory__DOT__initvar;
@@ -77,9 +78,9 @@ VL_MODULE(VTOP___024root) {
         VL_OUT64(io_regs_29,63,0);
         VL_OUT64(io_regs_30,63,0);
         VL_OUT64(io_regs_31,63,0);
-        VL_OUT64(io_pc_o,63,0);
     };
     struct {
+        VL_OUT64(io_pc_o,63,0);
         VL_OUT64(io_o,63,0);
         VL_OUT64(io_src1,63,0);
         VL_OUT64(io_src2,63,0);

@@ -274,7 +274,7 @@ object DecTable {
         Insts.LD      ->  List(InstType.I, AluOPT.ADD),
         Insts.SD      ->  List(InstType.S, AluOPT.ADD),
 //RV64M
-        Insts.MULW    ->  List(InstType.R, AluOPT.MUL),
+        Insts.MULW    ->  List(InstType.R, AluOPT.MULW),
         Insts.DIVW    ->  List(InstType.R, AluOPT.DIVW),
         Insts.DIVUW   ->  List(InstType.R, AluOPT.DIVUW),
         Insts.REMW    ->  List(InstType.R, AluOPT.REMW),

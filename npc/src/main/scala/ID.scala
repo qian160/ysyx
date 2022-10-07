@@ -8,7 +8,7 @@ class ID extends Module{
     def imm_J(inst: UInt) = SEXT(Cat(inst(31), inst(19,12), inst(20), inst(30,21), 0.U(1.W)),21, 64)
     def imm_U(inst: UInt) = SEXT(inst(31,12), 20, 64)
     def imm_S(inst: UInt) = SEXT(Cat(inst(31,25), inst(11,7)), 12, 64)
-    def imm_B(inst: UInt) = SEXT(Cat(inst(31), inst(7), inst(30,25), inst(11,8), 0.U(1.W)), 12, 64)
+    def imm_B(inst: UInt) = SEXT(Cat(inst(31), inst(7), inst(30,25), inst(11,8), 0.U(1.W)), 13, 64)
 
     val io = IO(new Bundle{
         val inst_i        =   Input(UInt(32.W))
@@ -24,6 +24,8 @@ class ID extends Module{
 
     val inst     = io.inst_i
     val pc       = /*RegNext*/(io.pc_i)
+
+
 
     val decRes   = ListLookup(inst, DecTable.defaultDec, DecTable.decMap)     //returns list(instType,opt)
     val instType = decRes(DecTable.TYPE)    //R I S B J U SYS
@@ -135,7 +137,8 @@ class ID extends Module{
     val src2 = io.decInfo_o.aluOp.src2
 
     //printf(p"src1 = ${Hexadecimal(src1)}, src2 = ${Hexadecimal(src2)}\n")
-    //printf("pc = %x, inst = %x\n\n",pc, inst)
+    //printf("\npc = %x, inst = %x\n",pc, inst)
+    //printf("src1 = %x, src2 = %x\n\n\n", io.decInfo_o.aluOp.src1, io.decInfo_o.aluOp.src2)
 
     //io.debug_o.exit     :=  inst === CONST.EBREAK
 

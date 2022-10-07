@@ -19,6 +19,7 @@ static void rtc_io_handler(uint32_t offset, int len, bool is_write) {
     //rtc_port_base[1] = us >> 32;        //sec
     rtc_port_base[0] = us;
     npc_timer = us;
+    printf("timer updated: 0x%lx\n", us);
   }
 }
 

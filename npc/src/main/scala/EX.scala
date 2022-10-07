@@ -34,7 +34,7 @@ class EX extends Module{
 
         ADDW    ->  SEXT(src1(31,0) + src2(31,0), 32, 64),
         SUBW    ->  SEXT(src1(31,0) - src2(31,0), 32, 64),
-        MULW    ->  SEXT(src1(31,0) * src2(31,0)(31,0), 32, 64),
+        MULW    ->  SEXT((src1.asSInt(31,0) * src2.asSInt(31,0))(31,0), 32, 64).asUInt,
         SLLW    ->  SEXT((src1(31, 0) << src2(4,0))(31,0), 32, 64),
         SRLW    ->  SEXT((src1(31, 0) >> src2(4,0))(31,0), 32, 64),
         SRAW    ->  SEXT((src1(31, 0).asSInt >> src2(4,0)).asUInt, 32, 64),
@@ -63,6 +63,7 @@ class EX extends Module{
     io.memOp_o            :=  io.decInfo_i.memOp
     io.memOp_o.addr       :=  aluRes
 
+    //printf("alures = %x\n", aluRes)
 /*
     switch(io.decInfo.instType){
         is(InstType.I){
