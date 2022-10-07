@@ -7,7 +7,7 @@ void __am_timer_init() {
   // the 'ind' will be compiled to 'ld' in asm, remember how lw is implemented in nemu(inst.c):
   // firstly it calls paddr_read. And then pmem_read will find that the address is not in pmem
   // then it will try mmio_read and map_read. After map_read, the call_back function is also called
-  //__asm__ volatile("j 0");
+  __asm__ volatile("j 0");
   init_time = ind(RTC_ADDR);
 }
 
