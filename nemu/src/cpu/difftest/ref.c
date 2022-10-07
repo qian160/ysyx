@@ -37,12 +37,12 @@ bool difftest_checkregs() {
 
 void difftest_regcpy(void *dut, bool direction) {
   CPU_state *state = (CPU_state*)dut;
+  printf("direction = %d\n", direction);
   if (direction == DIFFTEST_TO_REF) {
     for(int i = 0; i < 32; i++){
       dut_state.gpr[i]  = state->gpr[i];
     }
     dut_state.pc  = state->pc;
-    printf("done\n");
   }
   else  {
     for(int i = 0; i < 32; i++){
