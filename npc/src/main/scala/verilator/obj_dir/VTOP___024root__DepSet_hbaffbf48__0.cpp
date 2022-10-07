@@ -138,17 +138,6 @@ VL_INLINE_OPT void VTOP___024root___sequent__TOP__0(VTOP___024root* vlSelf) {
     VlWide<3>/*95:0*/ __Vtemp_h9b56c48b__0;
     VlWide<3>/*95:0*/ __Vtemp_h8883d467__0;
     // Body
-    if (VL_UNLIKELY((1U & (~ (IData)(vlSelf->reset))))) {
-        VL_FWRITEF(0x80000002U,"\nwdata = %x\n",64,
-                   ((IData)(vlSelf->TOP__DOT__ID_io_decInfo_o_writeRfOp_wen)
-                     ? vlSelf->TOP__DOT__MEM_io_writeRfOp_o_wdata
-                     : 0ULL));
-    }
-    if (VL_UNLIKELY((1U & (~ (IData)(vlSelf->reset))))) {
-        VL_FWRITEF(0x80000002U,"pc = %x, inst = %x\n\n",
-                   64,(QData)((IData)(vlSelf->TOP__DOT__IF__DOT__pc)),
-                   32,vlSelf->TOP__DOT__Main_Memory__DOT__ram_io_inst_o_MPORT_data);
-    }
     if (VL_UNLIKELY(((((~ (IData)(vlSelf->TOP__DOT__Main_Memory__DOT___T_2)) 
                        & (IData)(vlSelf->TOP__DOT__Main_Memory__DOT___T_69)) 
                       & (IData)(vlSelf->TOP__DOT__ID_io_decInfo_o_memOp_isStore)) 
@@ -366,6 +355,7 @@ VL_INLINE_OPT void VTOP___024root___sequent__TOP__0(VTOP___024root* vlSelf) {
             vlSelf->TOP__DOT__Regfile__DOT__registers_0 = 0ULL;
         }
     }
+    vlSelf->TOP__DOT__IF__DOT__pc = (IData)(vlSelf->TOP__DOT__IF__DOT___GEN_0);
     if (((IData)(vlSelf->TOP__DOT__Main_Memory__DOT___T_2) 
          & (IData)(vlSelf->TOP__DOT__ID_io_decInfo_o_memOp_isStore))) {
         __Vdlyvval__TOP__DOT__Main_Memory__DOT__ram__v0 
@@ -392,7 +382,6 @@ VL_INLINE_OPT void VTOP___024root___sequent__TOP__0(VTOP___024root* vlSelf) {
                                     - 0x80000000ULL) 
                                    >> 2U)));
     }
-    vlSelf->TOP__DOT__IF__DOT__pc = (IData)(vlSelf->TOP__DOT__IF__DOT___GEN_0);
     if (__Vdlyvset__TOP__DOT__Main_Memory__DOT__ram__v0) {
         vlSelf->TOP__DOT__Main_Memory__DOT__ram[__Vdlyvdim0__TOP__DOT__Main_Memory__DOT__ram__v0] 
             = __Vdlyvval__TOP__DOT__Main_Memory__DOT__ram__v0;

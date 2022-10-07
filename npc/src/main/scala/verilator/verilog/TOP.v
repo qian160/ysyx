@@ -66,8 +66,6 @@ end // initial
 `endif // SYNTHESIS
 endmodule
 module ID(
-  input         clock,
-  input         reset,
   input  [31:0] io_inst_i,
   input  [63:0] io_pc_i,
   input  [63:0] io_regVal_i_rs1Val,
@@ -392,19 +390,6 @@ module ID(
   assign io_debug_o_a0 = io_regVal_i_a0; // @[ID.scala 52:25]
   assign io_debug_o_pc = io_pc_i; // @[ID.scala 49:25]
   assign io_debug_o_inst = io_inst_i; // @[ID.scala 50:25]
-  always @(posedge clock) begin
-    `ifndef SYNTHESIS
-    `ifdef PRINTF_COND
-      if (`PRINTF_COND) begin
-    `endif
-        if (~reset) begin
-          $fwrite(32'h80000002,"pc = %x, inst = %x\n\n",io_pc_i,io_inst_i); // @[ID.scala 138:11]
-        end
-    `ifdef PRINTF_COND
-      end
-    `endif
-    `endif // SYNTHESIS
-  end
 endmodule
 module EX(
   input         io_decInfo_i_writeRfOp_wen,
@@ -555,8 +540,6 @@ module MEM(
   assign io_debug_o_inst = io_debug_i_inst; // @[MEM.scala 56:21]
 endmodule
 module WB(
-  input         clock,
-  input         reset,
   input         io_writeRfOp_i_wen,
   input  [4:0]  io_writeRfOp_i_rd,
   input  [63:0] io_writeRfOp_i_wdata,
@@ -572,7 +555,6 @@ module WB(
   wire [63:0] DEBUG_pc; // @[WB.scala 16:23]
   wire [31:0] DEBUG_inst; // @[WB.scala 16:23]
   wire [63:0] DEBUG_a0; // @[WB.scala 16:23]
-  wire [63:0] foo = io_writeRfOp_i_wen ? io_writeRfOp_i_wdata : 64'h0; // @[WB.scala 20:18]
   DEBUG DEBUG ( // @[WB.scala 16:23]
     .exit(DEBUG_exit),
     .pc(DEBUG_pc),
@@ -586,19 +568,6 @@ module WB(
   assign DEBUG_pc = io_debug_pc; // @[WB.scala 23:21]
   assign DEBUG_inst = io_debug_inst; // @[WB.scala 25:21]
   assign DEBUG_a0 = io_debug_a0; // @[WB.scala 26:21]
-  always @(posedge clock) begin
-    `ifndef SYNTHESIS
-    `ifdef PRINTF_COND
-      if (`PRINTF_COND) begin
-    `endif
-        if (~reset) begin
-          $fwrite(32'h80000002,"\nwdata = %x\n",foo); // @[WB.scala 21:11]
-        end
-    `ifdef PRINTF_COND
-      end
-    `endif
-    `endif // SYNTHESIS
-  end
 endmodule
 module Regfile(
   input         clock,
@@ -1523,8 +1492,6 @@ module TOP(
   wire [31:0] IF_io_inst_i; // @[TOP.scala 29:31]
   wire [63:0] IF_io_pc_o; // @[TOP.scala 29:31]
   wire [31:0] IF_io_inst_o; // @[TOP.scala 29:31]
-  wire  ID_clock; // @[TOP.scala 30:31]
-  wire  ID_reset; // @[TOP.scala 30:31]
   wire [31:0] ID_io_inst_i; // @[TOP.scala 30:31]
   wire [63:0] ID_io_pc_i; // @[TOP.scala 30:31]
   wire [63:0] ID_io_regVal_i_rs1Val; // @[TOP.scala 30:31]
@@ -1596,8 +1563,6 @@ module TOP(
   wire [63:0] MEM_io_debug_o_a0; // @[TOP.scala 32:31]
   wire [63:0] MEM_io_debug_o_pc; // @[TOP.scala 32:31]
   wire [31:0] MEM_io_debug_o_inst; // @[TOP.scala 32:31]
-  wire  WB_clock; // @[TOP.scala 33:31]
-  wire  WB_reset; // @[TOP.scala 33:31]
   wire  WB_io_writeRfOp_i_wen; // @[TOP.scala 33:31]
   wire [4:0] WB_io_writeRfOp_i_rd; // @[TOP.scala 33:31]
   wire [63:0] WB_io_writeRfOp_i_wdata; // @[TOP.scala 33:31]
@@ -1671,8 +1636,6 @@ module TOP(
     .io_inst_o(IF_io_inst_o)
   );
   ID ID ( // @[TOP.scala 30:31]
-    .clock(ID_clock),
-    .reset(ID_reset),
     .io_inst_i(ID_io_inst_i),
     .io_pc_i(ID_io_pc_i),
     .io_regVal_i_rs1Val(ID_io_regVal_i_rs1Val),
@@ -1750,8 +1713,6 @@ module TOP(
     .io_debug_o_inst(MEM_io_debug_o_inst)
   );
   WB WB ( // @[TOP.scala 33:31]
-    .clock(WB_clock),
-    .reset(WB_reset),
     .io_writeRfOp_i_wen(WB_io_writeRfOp_i_wen),
     .io_writeRfOp_i_rd(WB_io_writeRfOp_i_rd),
     .io_writeRfOp_i_wdata(WB_io_writeRfOp_i_wdata),
@@ -1862,8 +1823,6 @@ module TOP(
   assign IF_io_branchOp_i_happen = ID_io_decInfo_o_branchOp_happen; // @[TOP.scala 37:25]
   assign IF_io_branchOp_i_newPC = ID_io_decInfo_o_branchOp_newPC; // @[TOP.scala 37:25]
   assign IF_io_inst_i = Main_Memory_io_inst_o; // @[TOP.scala 38:25]
-  assign ID_clock = clock;
-  assign ID_reset = reset;
   assign ID_io_inst_i = IF_io_inst_o; // @[TOP.scala 44:23]
   assign ID_io_pc_i = IF_io_pc_o; // @[TOP.scala 45:23]
   assign ID_io_regVal_i_rs1Val = Regfile_io_readRes_o_rs1Val; // @[TOP.scala 46:23]
@@ -1897,8 +1856,6 @@ module TOP(
   assign MEM_io_debug_i_a0 = EX_io_debug_o_a0; // @[TOP.scala 71:21]
   assign MEM_io_debug_i_pc = EX_io_debug_o_pc; // @[TOP.scala 71:21]
   assign MEM_io_debug_i_inst = EX_io_debug_o_inst; // @[TOP.scala 71:21]
-  assign WB_clock = clock;
-  assign WB_reset = reset;
   assign WB_io_writeRfOp_i_wen = MEM_io_writeRfOp_o_wen; // @[TOP.scala 57:25]
   assign WB_io_writeRfOp_i_rd = MEM_io_writeRfOp_o_rd; // @[TOP.scala 57:25]
   assign WB_io_writeRfOp_i_wdata = MEM_io_writeRfOp_o_wdata; // @[TOP.scala 57:25]

@@ -135,7 +135,7 @@ class ID extends Module{
     val src2 = io.decInfo_o.aluOp.src2
 
     //printf(p"src1 = ${Hexadecimal(src1)}, src2 = ${Hexadecimal(src2)}\n")
-    printf("pc = %x, inst = %x\n\n",pc, inst)
+    //printf("pc = %x, inst = %x\n\n",pc, inst)
 
     //io.debug_o.exit     :=  inst === CONST.EBREAK
 
