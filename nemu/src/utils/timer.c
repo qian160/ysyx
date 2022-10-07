@@ -13,6 +13,7 @@ static uint64_t get_time_internal() {
   struct timeval now;
   gettimeofday(&now, NULL); //tv = time val
   uint64_t us = now.tv_sec * 1000000 + now.tv_usec;
+  printf("us = 0x%lx\n", us);
 #else
   struct timespec now;
   clock_gettime(CLOCK_MONOTONIC_COARSE, &now);
