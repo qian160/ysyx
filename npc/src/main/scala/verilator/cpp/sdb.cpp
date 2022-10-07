@@ -16,7 +16,7 @@ extern uint64_t * npc_timer;
 CPU_state state;
 
 const char *regs[] = {    //names.. add $ prefix to make regex match easier
-    "0",   "ra", "sp",   "gp",  "tp",  "t0",  "t1",  "t2",
+    "x0",  "ra", "sp",   "gp",  "tp",  "t0",  "t1",  "t2",
     "s0",  "s1", "a0",   "a1",  "a2",  "a3",  "a4",  "a5",
     "a6",  "a7", "s2",   "s3",  "s4",  "s5",  "s6",  "s7",
     "s8",  "s9", "s10",  "s11", "t3",  "t4",  "t5",  "t6", 
@@ -46,7 +46,6 @@ int cmd_s(string steps){
         difftest_exec();
         top->io_timer_i = *npc_timer;
         tb.tick();
-
         assert(difftest());
     }
     return 0;
