@@ -34,7 +34,6 @@ bool difftest()
     //let ref know dut's registers
     difftest_regcpy(&state, DIFFTEST_TO_REF);
 
-    //difficulty: how to assign this time value to dut's reg?
     return difftest_checkregs();
 }
 
