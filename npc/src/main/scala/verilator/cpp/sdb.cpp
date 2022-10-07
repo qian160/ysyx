@@ -1,11 +1,17 @@
 #include"common.h"
 #include"sdb.h"
-#include"difftest.h"
 extern VTOP * top;
+
+enum { DIFFTEST_TO_DUT, DIFFTEST_TO_REF };
 
 void get_state(CPU_state & state){
     memcpy((void*)&state, &top->io_regs_0, 32 * sizeof(uint64_t));
 }
+
+extern bool (*difftest_checkregs)();
+extern void (*difftest_regcpy)(void *dut, bool direction);
+extern void (*difftest_exec)();
+extern void (*difftest_init)(char *img_file);
 
 CPU_state state;
 
@@ -24,13 +30,10 @@ bool difftest()
 {
     memcpy((void *)&state, (void *)&top -> io_regs_0, 32 * sizeof(uint64_t));
     state.pc = top->io_pc_o;
-    cout << 1 << endl;
     difftest_regcpy(&state, DIFFTEST_TO_REF);
-    cout << 2 <<  endl;
 
     difftest_exec();
 //    top->io_timer_i = *npc_timer;
-    cout << state.pc << endl;
     return difftest_checkregs();
 }
 

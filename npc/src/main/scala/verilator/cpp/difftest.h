@@ -6,10 +6,10 @@
 #endif
 
 #include<dlfcn.h>
-static bool (*difftest_checkregs)() = nullptr;
-static void (*difftest_regcpy)(void *dut, bool direction) = nullptr;
-static void (*difftest_exec)() = nullptr;
-static void (*difftest_init)(char *img_file) = nullptr;
+bool (*difftest_checkregs)() = nullptr;
+void (*difftest_regcpy)(void *dut, bool direction) = nullptr;
+void (*difftest_exec)() = nullptr;
+void (*difftest_init)(char *img_file) = nullptr;
 
 static uint64_t* npc_timer = 0;
 
