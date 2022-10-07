@@ -38,4 +38,5 @@ void init_timer() {
   add_mmio_map("rtc", CONFIG_RTC_MMIO, rtc_port_base, 8, rtc_io_handler);
 #endif
   IFNDEF(CONFIG_TARGET_AM, add_alarm_handle(timer_intr));
+  printf("init timer\n");
 }
