@@ -4,14 +4,10 @@
 static uint64_t init_time = 0;
 
 void __am_timer_init() {
-  // the 'inl' will be compiled to 'lw' in asm, remember how lw is implemented in nemu(inst.c):
+  // the 'ind' will be compiled to 'ld' in asm, remember how lw is implemented in nemu(inst.c):
   // firstly it calls paddr_read. And then pmem_read will find that the address is not in pmem
   // then it will try mmio_read and map_read. After map_read, the call_back function is also called
-  // only at offset 4 will the clock be updated 
-
-  //uint32_t hi = inl(RTC_ADDR + 4);    //trigger the handler function
-  //uint32_t lo = inl(RTC_ADDR);
-  //init_time = ((uint64_t)hi << 32) | (uint64_t)lo;
+  __asm__ volatile("j 0");
   init_time = ind(RTC_ADDR);
 }
 
