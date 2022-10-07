@@ -10,10 +10,10 @@ static inline uint64_t read_timer(){
 }
 
 void __am_timer_init() {
-  //inl will be compiled to lw, recall the implementation of lw in nemu(inst.c)
-  //it will call paddr_read. And then this function will discover that the address is a device, 
-  //so it calls mmio_read and map_read. After map_read, the call_back function is also called
-  //only at offset 4 will the clock be updated 
+  // the c-style insts 'inl' will be compiled to lw, recall the implementation of lw in nemu(inst.c):
+  // it will call paddr_read. And then this function will discover that the address is a device, 
+  // so it calls mmio_read and map_read. After map_read, the call_back function is also called
+  // only at offset 4 will the clock be updated 
   uint32_t hi = inl(RTC_ADDR + 4);
   uint32_t lo = inl(RTC_ADDR);
   //init_time = read_timer();
@@ -25,7 +25,6 @@ void __am_timer_uptime(AM_TIMER_UPTIME_T *uptime) {
   uint32_t now_lo = inl(RTC_ADDR);
   uint64_t now = ((uint64_t)now_hi << 32) | (uint64_t)now_lo;
   uptime -> us = now - init_time;
-  printf("us = 0x%lx\n", uptime -> us);
 }
 
 void __am_timer_rtc(AM_TIMER_RTC_T *rtc) {
