@@ -60,6 +60,7 @@ void sdl_clear_event_queue() {
 
 //put these devices at the specific memory space
 void init_device() {
+  printf("init device\n");
   IFDEF(CONFIG_TARGET_AM, ioe_init());
   init_map();   //allocate space for mmio?
 
