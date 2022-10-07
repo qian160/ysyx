@@ -56,7 +56,7 @@ void difftest_regcpy(void *dut, bool direction) {
 void difftest_exec(int n){
   while(n--){
     uint64_t pc = cpu.pc; //the inst goint to be execuated
-    cpu_exec(1);
+    cpu_exec(1);          //let dut(outside of nemu) execuate first
     assert(difftest_checkregs(pc));
   }
 }

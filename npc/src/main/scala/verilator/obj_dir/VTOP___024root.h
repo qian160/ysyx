@@ -21,7 +21,7 @@ VL_MODULE(VTOP___024root) {
         CData/*0:0*/ TOP__DOT__ID_io_decInfo_o_memOp_isStore;
         CData/*0:0*/ TOP__DOT__ID_io_decInfo_o_memOp_unsigned;
         CData/*4:0*/ TOP__DOT__ID__DOT__decRes_0;
-        CData/*2:0*/ TOP__DOT__ID__DOT___GEN_60;
+        CData/*2:0*/ TOP__DOT__ID__DOT___GEN_61;
         CData/*0:0*/ TOP__DOT__Main_Memory__DOT___T_2;
         CData/*7:0*/ TOP__DOT__Main_Memory__DOT__store_en;
         CData/*7:0*/ TOP__DOT__Main_Memory__DOT___GEN_108;
@@ -38,7 +38,7 @@ VL_MODULE(VTOP___024root) {
         VL_OUT(io_inst_o,31,0);
         IData/*31:0*/ TOP__DOT__IF__DOT__pc;
         IData/*20:0*/ TOP__DOT__ID__DOT___io_decInfo_o_branchOp_newPC_T_24;
-        VlWide<3>/*75:0*/ TOP__DOT__ID__DOT___GEN_62;
+        VlWide<3>/*75:0*/ TOP__DOT__ID__DOT___GEN_57;
         VlWide<4>/*127:0*/ TOP__DOT__EX__DOT___aluRes_T_189;
         IData/*31:0*/ TOP__DOT__Main_Memory__DOT__ram_io_inst_o_MPORT_data;
         VlWide<3>/*94:0*/ TOP__DOT__Main_Memory__DOT__loadVal_temp;
@@ -88,6 +88,7 @@ VL_MODULE(VTOP___024root) {
         QData/*63:0*/ TOP__DOT__Regfile_io_readRes_o_rs1Val;
         QData/*63:0*/ TOP__DOT__Regfile_io_readRes_o_rs2Val;
         QData/*63:0*/ TOP__DOT__IF__DOT___GEN_0;
+        QData/*63:0*/ TOP__DOT__ID__DOT__immI;
         QData/*63:0*/ TOP__DOT__Regfile__DOT__registers_0;
         QData/*63:0*/ TOP__DOT__Regfile__DOT__registers_1;
         QData/*63:0*/ TOP__DOT__Regfile__DOT__registers_2;
