@@ -12,7 +12,7 @@ extern bool (*difftest_checkregs)();
 extern void (*difftest_regcpy)(void *dut, bool direction);
 extern void (*difftest_exec)();
 extern void (*difftest_init)(char *img_file);
-
+extern uint64_t * npc_timer;
 CPU_state state;
 
 const char *regs[] = {    //names.. add $ prefix to make regex match easier
@@ -28,12 +28,13 @@ extern TestBench<VTOP> tb;
 
 bool difftest()
 {
+    //get dut's information about registers
     memcpy((void *)&state, (void *)&top -> io_regs_0, 32 * sizeof(uint64_t));
     state.pc = top->io_pc_o;
+    //let ref know dut's registers
     difftest_regcpy(&state, DIFFTEST_TO_REF);
 
-    difftest_exec();
-//    top->io_timer_i = *npc_timer;
+    //difficulty: how to assign this time value to dut's reg?
     return difftest_checkregs();
 }
 
@@ -42,7 +43,10 @@ int cmd_s(string steps){
     //if n is not given, use the default case(step once)
     n = n? n: 1;
     while(n-- && !Verilated::gotFinish()){
+        difftest_exec();
+        top->io_timer_i = *npc_timer;
         tb.tick();
+
         assert(difftest());
     }
     return 0;

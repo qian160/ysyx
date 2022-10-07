@@ -2,7 +2,12 @@
 #include<stdexcept>
 #include<memory>
 #include<iostream>
-
+/*
+    1. let ref execuate first, but don't check regs now(this updates the ref's timer)
+    2. update dut's timer using ref's new value
+    3. let dut execuate 
+    4. check regs
+*/
 extern char * img_file;
 
 void init_difftest()

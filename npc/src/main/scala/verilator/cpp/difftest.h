@@ -11,7 +11,7 @@ void (*difftest_regcpy)(void *dut, bool direction) = nullptr;
 void (*difftest_exec)() = nullptr;
 void (*difftest_init)(char *img_file) = nullptr;
 
-static uint64_t* npc_timer = 0;
+uint64_t* npc_timer = 0;
 
 //alias
 using checkregs =   bool(*)();
