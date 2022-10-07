@@ -1338,8 +1338,9 @@ module MAIN_MEMORY(
   wire [63:0] _T_62 = {temp_7,temp_6,temp_5,temp_4,temp_3,temp_2,temp_1,temp_0}; // @[MAIN_MEMORY.scala 129:50]
   wire  _T_69 = io_memOp_i_addr >= 64'ha00003f8 & io_memOp_i_addr <= 64'ha0000400; // @[DEVICE.scala 24:62]
   wire  _T_74 = io_memOp_i_addr >= 64'ha0000048 & io_memOp_i_addr <= 64'ha0000050; // @[DEVICE.scala 26:62]
-  wire [63:0] _rtc_past_time_T = io_memOp_i_isLoad ? io_timer_i : rtc_past_time; // @[MAIN_MEMORY.scala 137:32]
-  wire [63:0] _GEN_148 = _T_74 ? rtc_past_time : 64'h0; // @[MAIN_MEMORY.scala 134:31 138:25 43:21]
+  wire [63:0] new_time = io_memOp_i_isLoad ? io_timer_i : rtc_past_time; // @[MAIN_MEMORY.scala 137:32]
+  wire [63:0] _io_loadVal_o_T = io_memOp_i_isStore ? 64'h0 : new_time; // @[MAIN_MEMORY.scala 140:32]
+  wire [63:0] _GEN_148 = _T_74 ? _io_loadVal_o_T : 64'h0; // @[MAIN_MEMORY.scala 134:31 140:25 43:21]
   wire [63:0] _GEN_150 = _T_69 ? 64'h0 : _GEN_148; // @[MAIN_MEMORY.scala 132:34 43:21]
   wire [94:0] _GEN_155 = _T_2 ? loadVal : {{31'd0}, _GEN_150}; // @[MAIN_MEMORY.scala 103:27 51:35]
   wire [31:0] test0 = ram_test0_MPORT_data; // @[MAIN_MEMORY.scala 110:25 112:17]
@@ -1381,7 +1382,7 @@ module MAIN_MEMORY(
     end else if (!(_T_2)) begin // @[MAIN_MEMORY.scala 51:35]
       if (!(_T_69)) begin // @[MAIN_MEMORY.scala 132:34]
         if (_T_74) begin // @[MAIN_MEMORY.scala 134:31]
-          rtc_past_time <= _rtc_past_time_T; // @[MAIN_MEMORY.scala 137:25]
+          rtc_past_time <= new_time; // @[MAIN_MEMORY.scala 138:25]
         end
       end
     end

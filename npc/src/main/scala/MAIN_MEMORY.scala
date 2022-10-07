@@ -133,9 +133,11 @@ class MAIN_MEMORY extends Module{
         when(is_store){printf("%c", sdata)}
     }.elsewhen(in_rtc(addr_i)){
         //store is ignored
-        //timer is updated by nemu
-        rtc_past_time   :=  Mux(io.memOp_i.isLoad, io.timer_i, rtc_past_time)
-        io.loadVal_o    :=  rtc_past_time
+        //nemu updates the time
+        val new_time    =   Mux(io.memOp_i.isLoad, io.timer_i, rtc_past_time)
+        rtc_past_time   :=  new_time
+        //io.loadVal_o    :=  Mux(io.memOp_i.isLoad, io.timer_i, rtc_past_time)
+        io.loadVal_o    :=  Mux(is_store, 0.U, new_time)
     }
     
     /*
