@@ -42,6 +42,7 @@ void difftest_regcpy(void *dut, bool direction) {
       dut_state.gpr[i]  = state->gpr[i];
     }
     dut_state.pc  = state->pc;
+    printf("done\n");
   }
   else  {
     for(int i = 0; i < 32; i++){
