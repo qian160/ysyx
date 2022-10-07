@@ -1,6 +1,6 @@
 #include"common.h"
 #include"sdb.h"
-
+#include"difftest.h"
 
 extern VTOP * top;
 
@@ -10,9 +10,7 @@ void get_state(CPU_state & state){
 
 CPU_state state;
 
-extern bool (*difftest_checkregs)(uint64_t pc);
-extern void (*difftest_regcpy)(void *dut, bool direction);
-extern void (*difftest_exec)(int n);
+
 
 enum { DIFFTEST_TO_DUT, DIFFTEST_TO_REF };
 
@@ -27,28 +25,25 @@ using namespace std;
 //link this file to test.cpp. so in test.cpp's main loop we can call those functions
 extern TestBench<VTOP> tb;
 
+bool difftest()
+{
+    memcpy((void *)&state, (void *)&top -> io_regs_0, 32 * sizeof(uint64_t));
+    state.pc = top->io_pc_o;
+
+    difftest_regcpy(&state, DIFFTEST_TO_REF);
+    difftest_exec();
+    top->io_timer_i = *npc_timer;
+    return difftest_checkregs();
+}
+
 int cmd_s(string steps){
     size_t n = atoi(steps.c_str());
-    if(!n){ 
-        //no argument, default execuate once
+    //if n is not given, use the default case(step once)
+    n = n? 1: n;    
+
+    while(n-- && !Verilated::gotFinish()){
         tb.tick();
-        memcpy((void *)&state, (void *)&top -> io_regs_0, 32 * sizeof(uint64_t));
-        state.pc = top->io_pc_o;
-
-        difftest_regcpy(&state, DIFFTEST_TO_REF);
-        difftest_exec(1);
-    }
-    else{
-        while(n-- && !Verilated::gotFinish()){
-            tb.tick();
-            //update the states
-            memcpy((void *)&state, (void *)&top -> io_regs_0, 32 * sizeof(uint64_t));
-            state.pc = top->io_pc_o;
-
-            difftest_regcpy(&state, DIFFTEST_TO_REF);
-
-            difftest_exec(1);
-        }
+        assert(difftest);
     }
     return 0;
 }
