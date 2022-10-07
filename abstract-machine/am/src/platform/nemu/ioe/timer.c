@@ -14,7 +14,7 @@ void __am_timer_init() {
   // firstly it calls paddr_read. And then pmem_read will find that the address is not in pmem
   // then it will try mmio_read and map_read. After map_read, the call_back function is also called
   // only at offset 4 will the clock be updated 
-  uint32_t hi = inl(RTC_ADDR + 4);
+  uint32_t hi = inl(RTC_ADDR + 4);    //trigger the handler function
   uint32_t lo = inl(RTC_ADDR);
   //init_time = read_timer();
   init_time = ((uint64_t)hi << 32) | (uint64_t)lo;

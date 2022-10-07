@@ -22,6 +22,7 @@ static void rtc_io_handler(uint32_t offset, int len, bool is_write) {
     rtc_port_base[0] = (uint32_t)us;    //us
     rtc_port_base[1] = us >> 32;        //sec
     npc_timer = us;
+    printf("new timer @0x%lx\n", us);
   }
 }
 
