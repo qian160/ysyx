@@ -35,20 +35,18 @@ bool difftest_checkregs() {
   return true;
 }
 
-void difftest_regcpy(void *dut, bool direction) {
-  CPU_state *state = (CPU_state*)dut;
-  printf("direction = %d\n", direction);
+void difftest_regcpy(CPU_state *dut, bool direction) {
   if (direction == DIFFTEST_TO_REF) {
     for(int i = 0; i < 32; i++){
-      dut_state.gpr[i]  = state->gpr[i];
+      dut_state.gpr[i]  = dut->gpr[i];
     }
-    dut_state.pc  = state->pc;
+    dut_state.pc  = dut->pc;
   }
   else  {
     for(int i = 0; i < 32; i++){
-      state->gpr[i]  = cpu.gpr[i];
+      dut->gpr[i]  = cpu.gpr[i];
     }
-    state->pc = cpu.pc;
+    dut->pc = cpu.pc;
   }
 }
 
