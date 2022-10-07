@@ -1,7 +1,6 @@
 #include"common.h"
 #include"sdb.h"
 #include"difftest.h"
-
 extern VTOP * top;
 
 void get_state(CPU_state & state){
@@ -9,10 +8,6 @@ void get_state(CPU_state & state){
 }
 
 CPU_state state;
-
-
-
-enum { DIFFTEST_TO_DUT, DIFFTEST_TO_REF };
 
 const char *regs[] = {    //names.. add $ prefix to make regex match easier
     "0",   "ra", "sp",   "gp",  "tp",  "t0",  "t1",  "t2",
@@ -29,21 +24,23 @@ bool difftest()
 {
     memcpy((void *)&state, (void *)&top -> io_regs_0, 32 * sizeof(uint64_t));
     state.pc = top->io_pc_o;
-
+    cout << 1 << endl;
     difftest_regcpy(&state, DIFFTEST_TO_REF);
+    cout << 2 <<  endl;
+
     difftest_exec();
-    top->io_timer_i = *npc_timer;
+//    top->io_timer_i = *npc_timer;
+    cout << state.pc << endl;
     return difftest_checkregs();
 }
 
 int cmd_s(string steps){
     size_t n = atoi(steps.c_str());
     //if n is not given, use the default case(step once)
-    n = n? 1: n;    
-
+    n = n? n: 1;
     while(n-- && !Verilated::gotFinish()){
         tb.tick();
-        assert(difftest);
+        assert(difftest());
     }
     return 0;
 }
@@ -67,7 +64,7 @@ int cmd_q(string arg){
 }
 
 int cmd_i(string arg) {
-    //memcpy((void *)&state, (void *)&top -> io_regs_0, 32 * sizeof(uint64_t));
+    memcpy((void *)&state, (void *)&top -> io_regs_0, 32 * sizeof(uint64_t));
     for(int i = 0; i < 32; i++){
         printf("\033[1;33m[%3s] = %-16lx%c\033[0m", regs[i], state.gpr[i], i & 0b1? '\n' : '\t');
     }
