@@ -1,5 +1,5 @@
 #include<iostream>
-
+//an interesting thing about difftest: if both dut and ref try to print something, then that will be printed twice
 enum { DIFFTEST_TO_DUT, DIFFTEST_TO_REF };
 #include<dlfcn.h>
 bool (*difftest_checkregs)(void) = nullptr;

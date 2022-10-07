@@ -23,7 +23,7 @@ void init_difftest()
         if(!(difftest_regcpy =	regcpy(dlsym(handle, "difftest_regcpy"))))
             throw std::runtime_error("can't find diftest_regcpy");
 
-        if(!(difftest_exec = exec(dlsym(handle, "difftest_exec"))))
+        if(!(difftest_exec = exec(dlsym(handle, "difftest_ref_exec_once"))))
             throw std::runtime_error("can't find difftest_exec");
 
         if(!(npc_timer = (uint64_t*)dlsym(handle, "npc_timer")))
