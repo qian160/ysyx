@@ -18,6 +18,7 @@ VL_MODULE(VTOP___024root) {
         VL_IN8(reset,0,0);
         CData/*0:0*/ TOP__DOT__ID_io_decInfo_o_writeRfOp_wen;
         CData/*4:0*/ TOP__DOT__ID_io_decInfo_o_aluOp_opt;
+        CData/*0:0*/ TOP__DOT__ID_io_decInfo_o_memOp_isLoad;
         CData/*0:0*/ TOP__DOT__ID_io_decInfo_o_memOp_isStore;
         CData/*0:0*/ TOP__DOT__ID_io_decInfo_o_memOp_unsigned;
         CData/*4:0*/ TOP__DOT__ID__DOT__decRes_0;
@@ -77,9 +78,9 @@ VL_MODULE(VTOP___024root) {
         VL_OUT64(io_regs_30,63,0);
         VL_OUT64(io_regs_31,63,0);
         VL_OUT64(io_pc_o,63,0);
-        VL_OUT64(io_o,63,0);
     };
     struct {
+        VL_OUT64(io_o,63,0);
         VL_OUT64(io_src1,63,0);
         VL_OUT64(io_src2,63,0);
         QData/*63:0*/ TOP__DOT__ID_io_decInfo_o_aluOp_src1;

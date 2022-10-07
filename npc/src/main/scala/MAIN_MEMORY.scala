@@ -132,15 +132,10 @@ class MAIN_MEMORY extends Module{
     }.elsewhen(in_serial(addr_i)){
         when(is_store){printf("%c", sdata)}
     }.elsewhen(in_rtc(addr_i)){
-        val offset_     =   addr_i - RTC_BASE
-        val need_update =   (!is_store & offset_ === 4.U)
-        //when(in_rtc(addr)){printf("past time: %d\n", rtc_past_time)}
-        rtc_past_time   :=  Mux(need_update, io.timer_i, rtc_past_time)
-        //if we directly read the register, it has a cycle's latency
-        //io.loadVal_o    :=  Mux(need_update, io.timer_i, rtc_past_time)
+        //store is ignored
+        //timer is updated by nemu
+        rtc_past_time   :=  Mux(io.memOp_i.isLoad, io.timer_i, rtc_past_time)
         io.loadVal_o    :=  rtc_past_time
-        //printf("in rtc: pc = %x, offset = %x, loadval = %x\n", io.pc_i, offset_, rtc_past_time)
-        //printf("\tpast time = %d, offset = %d, need = %d\n", io.loadVal_o, offset_, need_update);
     }
     
     /*
