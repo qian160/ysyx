@@ -1,10 +1,6 @@
-#include<iostream>
-#include<string>
-#include<verilated.h>
+#include"common.h"
 #include"sdb.h"
-#include"testbench.h"
-#include"VTOP.h"
-#include"debug.h"
+
 
 extern VTOP * top;
 
@@ -30,21 +26,28 @@ const char *regs[] = {    //names.. add $ prefix to make regex match easier
 using namespace std;
 //link this file to test.cpp. so in test.cpp's main loop we can call those functions
 extern TestBench<VTOP> tb;
-/*
-static int step(size_t steps){
-    while()
-}
-*/
+
 int cmd_s(string steps){
     size_t n = atoi(steps.c_str());
     if(!n){ 
         //no argument, default execuate once
         tb.tick();
-        //difftest_regcpy()
+        memcpy((void *)&state, (void *)&top -> io_regs_0, 32 * sizeof(uint64_t));
+        state.pc = top->io_pc_o;
+
+        difftest_regcpy(&state, DIFFTEST_TO_REF);
+        difftest_exec(1);
     }
     else{
         while(n-- && !Verilated::gotFinish()){
             tb.tick();
+            //update the states
+            memcpy((void *)&state, (void *)&top -> io_regs_0, 32 * sizeof(uint64_t));
+            state.pc = top->io_pc_o;
+
+            difftest_regcpy(&state, DIFFTEST_TO_REF);
+
+            difftest_exec(1);
         }
     }
     return 0;
@@ -69,7 +72,7 @@ int cmd_q(string arg){
 }
 
 int cmd_i(string arg) {
-    memcpy((void *)&state, (void *)&top -> io_regs_0, 32 * sizeof(uint64_t));
+    //memcpy((void *)&state, (void *)&top -> io_regs_0, 32 * sizeof(uint64_t));
     for(int i = 0; i < 32; i++){
         printf("\033[1;33m[%3s] = %-16lx%c\033[0m", regs[i], state.gpr[i], i & 0b1? '\n' : '\t');
     }

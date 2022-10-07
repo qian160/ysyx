@@ -1,13 +1,3 @@
-#include<iostream>
-#include<fstream>
-#include<string.h>
-
-#include<verilated.h>
-#include<VTOP.h>
-#include<verilated_vcd_c.h>
-using namespace std;
-
-using namespace std;
 #define red 	"\033[1;31m"
 #define green 	"\033[1;32m"
 #define yellow  "\033[1;33m"
@@ -18,6 +8,9 @@ using namespace std;
 #define pink 	"\033[1;38m"
 
 #define normal "\033[0m"
+
+#include<string>
+using namespace std;
 
 static inline string Red(string str){	 return red + str + normal;}
 static inline string Yellow(string str){ return yellow + str + normal;}
