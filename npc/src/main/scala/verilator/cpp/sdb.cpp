@@ -1,5 +1,6 @@
 #include"common.h"
 #include"sdb.h"
+#include<iterator>
 extern VTOP * top;
 
 enum { DIFFTEST_TO_DUT, DIFFTEST_TO_REF };
@@ -76,7 +77,13 @@ int cmd_h(string cmd){
 }
 
 int cmd_q(string arg){
-    cout << Green("Goodbye\n");
+    //iostream's iterator, treats the stream as an array.
+    /*  
+        for istream_iterator, trying to dereferrence it will get the input from the associated stream
+        for ostream_iterator, assigning value to it will send that value to the stream
+    */
+    ostream_iterator<string> out(cout);
+    *out = Green("Goodbye😀\n");
     exit(0);
 }
 
