@@ -15,6 +15,7 @@ extern void (*difftest_init)(char *img_file);
 extern uint64_t * npc_timer;
 CPU_state state;
 
+
 const char *regs[] = {    //names.. add $ prefix to make regex match easier
     "x0",  "ra", "sp",   "gp",  "tp",  "t0",  "t1",  "t2",
     "s0",  "s1", "a0",   "a1",  "a2",  "a3",  "a4",  "a5",
@@ -37,15 +38,26 @@ bool difftest()
     return difftest_checkregs();
 }
 
+uint64_t getTime(){
+    struct timespec now;
+    clock_gettime(CLOCK_MONOTONIC_COARSE, &now);
+    return now.tv_sec * 1000000 + now.tv_nsec / 1000;
+}
+
+uint64_t boot_time = getTime();
+
 int cmd_s(string steps){
     size_t n = atoi(steps.c_str());
     //if n is not given, use the default case(step once)
     n = n? n: 1;
     while(n-- && !Verilated::gotFinish()){
-        difftest_exec();
-        top->io_timer_i = *npc_timer;
+        //difftest_exec();
+        //top->io_timer_i = *npc_timer;
+        top->io_timer_i = getTime() - boot_time;
+        //top -> io_timer_i = clock() - boot_time;
+        //cout << "time: " << top->io_timer_i << endl;
         tb.tick();
-        assert(difftest());
+        //assert(difftest());
     }
     return 0;
 }

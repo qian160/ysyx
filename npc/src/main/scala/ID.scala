@@ -7,7 +7,6 @@ class ID extends Module{
 //    def imm_J(inst: UInt) = SEXT(Cat(inst(31), inst(19,12), inst(20), inst(30,21), 0.U(1.W)),13, 64)
     def imm_J(inst: UInt) = SEXT(Cat(inst(31), inst(19,12), inst(20), inst(30,21), 0.U(1.W)),21, 64)
     //def imm_U(inst: UInt) = SEXT(inst(31,12), 20, 64)
-    //static word_t immU(uint32_t i) { return SEXT(BITS(i, 31, 12), 20) << 12; }
     def imm_U(inst: UInt) = SEXT(inst(31,12), 20, 64) << 12
     def imm_S(inst: UInt) = SEXT(Cat(inst(31,25), inst(11,7)), 12, 64)
     def imm_B(inst: UInt) = SEXT(Cat(inst(31), inst(7), inst(30,25), inst(11,8), 0.U(1.W)), 13, 64)
@@ -141,7 +140,7 @@ class ID extends Module{
     //printf(p"src1 = ${Hexadecimal(src1)}, src2 = ${Hexadecimal(src2)}\n")
     //printf("\npc = %x, inst = %x\n",pc, inst)
     //printf("src1 = %x, src2 = %x\n\n\n", io.decInfo_o.aluOp.src1, io.decInfo_o.aluOp.src2)
-
+    //printf("pc = %x, inst = %x\n", pc, inst)
     //io.debug_o.exit     :=  inst === CONST.EBREAK
 
 //    val EXIT = Module(new EXIT)

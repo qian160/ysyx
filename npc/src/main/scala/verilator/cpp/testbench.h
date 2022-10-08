@@ -43,9 +43,6 @@ void TestBench<Module>::tick(){
 
 	// Repeat for the positive edge of the clock
 	dut	->	clock = 1;
-	//dut -> io_timer_i = if difftest xx else clock() - boot_time
-	//dut ->  io_timer_i = clock() - boot_time;
-	//dut	->	io_timer_i	=	*npc_timer;
 	dut	->	eval();		//update the flip flops
 
 	if(m_trace) 

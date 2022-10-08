@@ -13,8 +13,10 @@ VTOP * top = tb.getModule();	//the dut module
 int main(int argc, char **argv)
 {
 	Verilated::commandArgs(argc, argv);
-	if(argc < 2)
-		cout << Yellow("no image is given, using the default inst rom\n") << endl;
+	if(argc < 2){
+		cout << Yellow("no image is given, using the old inst rom\n") << endl;
+		img_file = DEFAULT_IMG;
+	}
 	else
 		img_file = strcat(test_path, strcat(argv[1], "-riscv64-npc.bin"));
 	tb.reset();

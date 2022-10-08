@@ -7,7 +7,7 @@ typedef struct{
 }CPU_state;
 
 static char test_path[128] = "/home/s081/Downloads/ysyx-workbench/am-kernels/tests/cpu-tests/build/";
-
+static char *DEFAULT_IMG = "/home/s081/Downloads/ysyx-workbench/npc/src/main/scala/img/file";
 int cmd_h(std::string args);
 int cmd_c(std::string args);
 int cmd_q(std::string args);

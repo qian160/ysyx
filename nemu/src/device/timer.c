@@ -11,8 +11,8 @@ static void rtc_io_handler(uint32_t offset, int len, bool is_write) {
   assert(offset == 0 || offset == 4);
   // this is the handler function(callback)
   // only read will update the timer
-  //write is ignored
-  if (!is_write/* && offset == 4*/) {
+  // write is ignored
+  if (!is_write) {
     uint64_t us = get_time();
     //rtc just accumulate the time. It's uptime's job to calculate the past time
     //rtc_port_base[0] = (uint32_t)us;    //us
