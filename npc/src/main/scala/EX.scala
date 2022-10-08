@@ -63,7 +63,7 @@ class EX extends Module{
     io.memOp_o            :=  io.decInfo_i.memOp
     io.memOp_o.addr       :=  aluRes
 
-    printf("alures = %x\n", aluRes)
+    //printf("alures = %x\n", aluRes)
 /*
     switch(io.decInfo.instType){
         is(InstType.I){

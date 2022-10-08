@@ -17,50 +17,45 @@ void difftest_memcpy(paddr_t addr, void *buf, size_t n, bool direction) {
 }
 
 CPU_state dut_state;
-/*in npc, how to use difftest:
-  1. pack the dut regs up in a struct, then call regcpy, this updates the dut_state variable above
-  2. just call difftest_exec, compare the updated dut_state and cpu_state in nemu
-*/
+vaddr_t   curr_pc;
 
-bool difftest_checkregs(vaddr_t pc) {
+bool difftest_checkregs() {
   for(int i = 0; i < 32; i++){
     //an error happens
     if(cpu.gpr[i] ^dut_state.gpr[i]) {
-      Log_Color(RED, "\npc = 0x%lx, \ndnpc = 0x%lx:  \n%s should be 0x%lx, but get 0x%lx\n", pc, cpu.pc, regs[i], cpu.gpr[i], dut_state.gpr[i]);
+      putchar('\n');
+      Log_Color(RED, "\npc = 0x%lx:  \n%s should be 0x%lx, but get 0x%lx\n", curr_pc, regs[i], cpu.gpr[i], dut_state.gpr[i]);
       return false;
     }
   }
-  //printf("\n\ncpu.pc: 0x%lx \t ref.pc: 0x%lx\n", cpu.pc, ref_r->pc);
   if(cpu.pc  ^ dut_state.pc) {
+    putchar('\n');
     Log_Color(RED, "\nbad pc: expected 0x%lx, but get 0x%lx\n", cpu.pc, dut_state.pc);
     return false;
   }
   return true;
 }
 
-void difftest_regcpy(void *dut, bool direction) {
-  CPU_state *state = (CPU_state*)dut;
+void difftest_regcpy(CPU_state *dut, bool direction) {
   if (direction == DIFFTEST_TO_REF) {
     for(int i = 0; i < 32; i++){
-      dut_state.gpr[i]  = state->gpr[i];
+      dut_state.gpr[i]  = dut->gpr[i];
     }
-    dut_state.pc  = state->pc;
+    dut_state.pc  = dut->pc;
   }
   else  {
     for(int i = 0; i < 32; i++){
-      state->gpr[i]  = cpu.gpr[i];
+      dut->gpr[i]  = cpu.gpr[i];
     }
-    state->pc = cpu.pc;
+    dut->pc = cpu.pc;
   }
 }
 
 //how to know the dut's reg?
-void difftest_exec(int n){
-  while(n--){
-    uint64_t pc = cpu.pc; //the inst goint to be execuated
-    cpu_exec(1);          //let dut(outside of nemu) execuate first
-    assert(difftest_checkregs(pc));
-  }
+void difftest_ref_exec_once(){   //exec once
+  curr_pc = cpu.pc;         //the inst going to be execuaated. If difftest fails, this inst should take the responsibility
+  cpu_exec(1);
+//  assert(difftest_checkregs(pc));
 }
 
 void difftest_raise_intr(word_t NO) {

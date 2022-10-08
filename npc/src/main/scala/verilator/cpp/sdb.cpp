@@ -1,5 +1,6 @@
 #include"common.h"
 #include"sdb.h"
+#include<iterator>
 extern VTOP * top;
 
 enum { DIFFTEST_TO_DUT, DIFFTEST_TO_REF };
@@ -14,6 +15,7 @@ extern void (*difftest_exec)();
 extern void (*difftest_init)(char *img_file);
 extern uint64_t * npc_timer;
 CPU_state state;
+
 
 const char *regs[] = {    //names.. add $ prefix to make regex match easier
     "x0",  "ra", "sp",   "gp",  "tp",  "t0",  "t1",  "t2",
@@ -34,19 +36,29 @@ bool difftest()
     //let ref know dut's registers
     difftest_regcpy(&state, DIFFTEST_TO_REF);
 
-    //difficulty: how to assign this time value to dut's reg?
     return difftest_checkregs();
 }
+
+uint64_t getTime(){
+    struct timespec now;
+    clock_gettime(CLOCK_MONOTONIC_COARSE, &now);
+    return (now.tv_sec * 1000000 + now.tv_nsec / 1000);
+}
+
+uint64_t boot_time = getTime();
 
 int cmd_s(string steps){
     size_t n = atoi(steps.c_str());
     //if n is not given, use the default case(step once)
     n = n? n: 1;
     while(n-- && !Verilated::gotFinish()){
-        difftest_exec();
-        top->io_timer_i = *npc_timer;
+        //difftest_exec();
+        //top->io_timer_i = *npc_timer;
+        top->io_timer_i = (getTime() - boot_time);
+        //top -> io_timer_i = clock() - boot_time;
+        //cout << "time: " << top->io_timer_i << endl;
         tb.tick();
-        assert(difftest());
+        //assert(difftest());
     }
     return 0;
 }
@@ -65,7 +77,13 @@ int cmd_h(string cmd){
 }
 
 int cmd_q(string arg){
-    cout << Green("Goodbye\n");
+    //iostream's iterator, treats the stream as an array.
+    /*  
+        for istream_iterator, trying to dereferrence it will get the input from the associated stream
+        for ostream_iterator, assigning value to it will send that value to the stream
+    */
+    ostream_iterator<string> out(cout);
+    *out = Green("Goodbye😀\n");
     exit(0);
 }
 
