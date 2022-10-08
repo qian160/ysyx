@@ -9,6 +9,7 @@ import chisel3.util._
 import chisel3.experimental._
 import chisel3.util.experimental.loadMemoryFromFileInline
 
+import Util._
 import D._
 
 class simple extends Module{
@@ -77,7 +78,31 @@ class Timer extends Module{
     io.o    :=  timer
 }
 
+class immU_Gen extends Module {
+    val io = IO(new Bundle{
+        val inst = Input(UInt(32.W))
+
+        val pc   = Input(UInt(64.W))
+
+        val o1   = Output(UInt(64.W))
+        val o2   = Output(UInt(64.W))
+        val o3   = Output(UInt(64.W))
+    })    
+    def imm_U1(inst: UInt) = SEXT(inst(31,12), 20, 64) << 12
+    def imm_U2(inst: UInt) = SEXT(inst(31,12) << 12, 32, 64)
+    def imm_U3(inst: UInt) = SEXT(inst(31,12), 20, 64)
+
+    val inst = io.inst
+    val pc   = io.pc
+    io.o1   :=  imm_U1(inst) + pc
+    io.o2   :=  imm_U2(inst) + pc
+    io.o3   :=  imm_U3(inst) + pc
+
+}
+
 class Test extends AnyFlatSpec with ChiselScalatestTester{
+
+
     "empty set " should "have size 0" in{
         assert(Set.empty.size == 0)
     }
@@ -89,6 +114,7 @@ class Test extends AnyFlatSpec with ChiselScalatestTester{
         }
     }
     */
+    /*
     "simple device" should "work" in {
         test(new simpleDevice){dut =>
             dut.io.w.poke(true.B)
@@ -101,7 +127,7 @@ class Test extends AnyFlatSpec with ChiselScalatestTester{
 
             println("test timer\n")
             dut.io.w.poke(true.B)
-            for(i <- 1 to 10000){
+            for(i <- 1 to 1000){
                 val t = System.currentTimeMillis.U
                 dut.io.wdata.poke(t)
                 dut.clock.step()
@@ -112,6 +138,7 @@ class Test extends AnyFlatSpec with ChiselScalatestTester{
             //println(s"wdata = $res")
         }
     }
+    */
     /*
     "vec overflow" should "dont know" in {
         test(new VecOverflow){dut => 
@@ -122,15 +149,31 @@ class Test extends AnyFlatSpec with ChiselScalatestTester{
         }
     }
     */
+    /*
     "timer" should "increase" in {
         test(new Timer){dut => 
             dut.io.w    :=  true.B
-            for(i:Int <- 0 to 114514){
+            for(i:Int <- 0 to 100){
                 dut.clock.step()
                 val v = dut.io.o.peek()
                 println(s"$v")
             }
         }
+    }
+    */
+    println("\n\n")
+    "imm_u" should "just test" in {
+        test(new immU_Gen){ dut => 
+            dut.io.pc.poke("h80001bfc".U(64.W))
+            dut.io.inst.poke("h00004697".U(64.W))
+
+            val v1 = dut.io.o1.peek()
+            val v2 = dut.io.o2.peek()
+            val v3 = dut.io.o3.peek()
+
+            println(s"$v1\n$v2\n$v3")
+        }
+
     }
 
 }
