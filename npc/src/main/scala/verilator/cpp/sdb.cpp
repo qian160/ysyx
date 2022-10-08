@@ -41,7 +41,7 @@ bool difftest()
 uint64_t getTime(){
     struct timespec now;
     clock_gettime(CLOCK_MONOTONIC_COARSE, &now);
-    return now.tv_sec * 1000000 + now.tv_nsec / 1000;
+    return (now.tv_sec * 1000000 + now.tv_nsec / 1000);
 }
 
 uint64_t boot_time = getTime();
@@ -53,7 +53,7 @@ int cmd_s(string steps){
     while(n-- && !Verilated::gotFinish()){
         //difftest_exec();
         //top->io_timer_i = *npc_timer;
-        top->io_timer_i = getTime() - boot_time;
+        top->io_timer_i = (getTime() - boot_time);
         //top -> io_timer_i = clock() - boot_time;
         //cout << "time: " << top->io_timer_i << endl;
         tb.tick();
