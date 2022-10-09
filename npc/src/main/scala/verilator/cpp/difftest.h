@@ -9,7 +9,7 @@
 bool (*difftest_checkregs)() = nullptr;
 void (*difftest_regcpy)(void *dut, bool direction) = nullptr;
 void (*difftest_exec)() = nullptr;
-void (*difftest_init)(char *img_file) = nullptr;
+void (*difftest_init)(const char *img_file) = nullptr;
 
 uint64_t* npc_timer = 0;
 
@@ -17,4 +17,8 @@ uint64_t* npc_timer = 0;
 using checkregs =   bool(*)();
 using regcpy    =   void(*)(void*, bool);
 using exec      =   void(*)();
-using init      =   void(*)(char*);
+using init      =   void(*)(const char*);
+
+#define DIFF "/home/s081/Downloads/ysyx-workbench/nemu/build/riscv64-nemu-interpreter-so"
+
+bool difftest();

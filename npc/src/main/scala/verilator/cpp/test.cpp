@@ -5,7 +5,7 @@
 using namespace std;
 
 vluint64_t TIME = 0;
-char * img_file = nullptr;
+unique_ptr<string> img_file(nullptr);
 TestBench<VTOP> tb;				//the test class
 extern void init_difftest();
 VTOP * top = tb.getModule();	//the dut module
@@ -15,10 +15,10 @@ int main(int argc, char **argv)
 	Verilated::commandArgs(argc, argv);
 	if(argc < 2){
 		cout << Yellow("no image is given, using the old inst rom\n") << endl;
-		img_file = DEFAULT_IMG;
+		img_file.reset(new DEFAULT_IMG);
 	}
 	else
-		img_file = strcat(test_path, strcat(argv[1], "-riscv64-npc.bin"));
+		img_file.reset(new string(TEST_PATH + string(argv[1]) + string("-riscv64-npc.bin")));
 	tb.reset();
 	//tb.trace("./wave.vcd");
 	string s;

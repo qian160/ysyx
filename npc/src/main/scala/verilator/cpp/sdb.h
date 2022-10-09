@@ -1,13 +1,13 @@
 #include<iostream>
-#include<map>
+#include<unordered_map>
 
 typedef struct{
     uint64_t gpr[32];
     uint64_t pc;
 }CPU_state;
 
-static char test_path[128] = "/home/s081/Downloads/ysyx-workbench/am-kernels/tests/cpu-tests/build/";
-static char DEFAULT_IMG[128] = "/home/s081/Downloads/ysyx-workbench/npc/src/main/scala/img/file";
+#define TEST_PATH   string("/home/s081/Downloads/ysyx-workbench/am-kernels/tests/cpu-tests/build/")
+#define DEFAULT_IMG string("/home/s081/Downloads/ysyx-workbench/npc/src/main/scala/img/file")
 int cmd_h(std::string args);
 int cmd_c(std::string args);
 int cmd_q(std::string args);
@@ -25,33 +25,10 @@ typedef struct {
     const char * Usage;
 }cmd;
 
-static std::map<char, cmd> cmd_table = {
+static std::unordered_map<char, cmd> cmd_table = {
     {'h',   cmd{"h",    "Display informations about commands",    cmd_h,      "help [cmd]. default all"}},
     {'c',   cmd{"c",    "Continue the execution of the program",  cmd_c,      "no argument"}},
     {'q',   cmd{"q",    "Exit the program",                       cmd_q,      "no argument"}},
     {'s',   cmd{"s",    "Step and execuate n instrction",         cmd_s,      "s [num], default 1"}},
     {'i',   cmd{"i",    "show information",                       cmd_i,      "r"}},
 };
-
-/*
-static struct cmd{
-    const char *name;
-    const char *description;
-    int (*handler) (std::string);
-    const char * Usage;
-} cmd_table [] = {
-    {"h",      "Display informations about commands. Can take an argument",    cmd_h,      "help (cmd), show cmd's description and usage. If default show all but without usage"},
-    {"c",      "Continue the execution of the program",                        cmd_c,      "no argument"},
-    {"q",      "Exit NEMU",                                                    cmd_q,      "no argument"},
-    {"s",      "Step and execuate n instrction",                               cmd_s,      "s (num), default -1"},
-    {"i",      "Print the specific information. See help info",                cmd_i,      "info {r/w/reg_name}"},
-    {"x",      "Examine the memory",                                           cmd_x,      "x num expr"},
-    {"p",      "Print the expression's value",                                 cmd_p,      "p expr"},
-    {"w",      "Add or delete watchpoint.",                                    cmd_w,      "w a expr, w d num0, num1, ..."},
-    {"d",      "disasmble the next n inst. Or starting at other address ",     cmd_d,      "d n (expr). the second arg is optional"},
-    {"b",      "set breakpoints at some address. A wrap function of cmd_w",    cmd_b,      "b expr. In fact this is just a wrap of watchpoints"},
-
-
-};
-*/
-#define NR_CMD (sizeof(cmd_table) / sizeof(cmd_table[0]) )

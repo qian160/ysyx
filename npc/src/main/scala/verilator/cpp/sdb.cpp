@@ -1,5 +1,7 @@
 #include"common.h"
 #include"sdb.h"
+#include"macro.h"
+#include"conf.h"
 #include<iterator>
 extern VTOP * top;
 
@@ -12,7 +14,7 @@ void get_state(CPU_state & state){
 extern bool (*difftest_checkregs)();
 extern void (*difftest_regcpy)(void *dut, bool direction);
 extern void (*difftest_exec)();
-extern void (*difftest_init)(char *img_file);
+extern void (*difftest_init)(const char *img_file);
 extern uint64_t * npc_timer;
 CPU_state state;
 
@@ -33,9 +35,7 @@ bool difftest()
     //get dut's information about registers
     memcpy((void *)&state, (void *)&top -> io_regs_0, 32 * sizeof(uint64_t));
     state.pc = top->io_pc_o;
-    //let ref know dut's registers
     difftest_regcpy(&state, DIFFTEST_TO_REF);
-
     return difftest_checkregs();
 }
 
@@ -52,13 +52,12 @@ int cmd_s(string steps){
     //if n is not given, use the default case(step once)
     n = n? n: 1;
     while(n-- && !Verilated::gotFinish()){
-        //difftest_exec();
-        //top->io_timer_i = *npc_timer;
-        top->io_timer_i = (getTime() - boot_time);
-        //top -> io_timer_i = clock() - boot_time;
-        //cout << "time: " << top->io_timer_i << endl;
+        IFDEF(DIFFTEST_ENABLE, difftest_exec());                    //let ref execuate first, to get the new timer
+        IFDEF(DIFFTEST_ENABLE, top -> io_timer_i = *npc_timer);
+
+        IFNDEF(DIFFTEST_ENABLE, top->io_timer_i = (getTime() - boot_time));
         tb.tick();
-        //assert(difftest());
+        IFDEF(DIFFTEST_ENABLE, assert(difftest()));
     }
     return 0;
 }
@@ -75,16 +74,23 @@ int cmd_h(string cmd){
     }
     return 0;
 }
+int cmd_q (string arg){
+    /*      
+        iostream's iterator, treats the stream as an array.
 
-int cmd_q(string arg){
-    //iostream's iterator, treats the stream as an array.
-    /*  
         for istream_iterator, trying to dereferrence it will get the input from the associated stream
         for ostream_iterator, assigning value to it will send that value to the stream
     */
     ostream_iterator<string> out(cout);
-    *out = Green("Goodbye😀\n");
-    exit(0);
+    *out++ = Green("Goodbye😀\n");
+
+    __asm__ volatile(
+        "movl $60,  %eax\n\t"
+        "xorl %edi, %edi\n\t"
+        "syscall\n"
+    );
+
+    return 114514;
 }
 
 int cmd_i(string arg) {
