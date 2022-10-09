@@ -47,6 +47,8 @@ class MAIN_MEMORY extends Module{
     val sdata       =   io.memOp_i.sdata
     val test        =   RegInit(0.U(64.W))
 
+    rtc_past_time   :=  io.timer_i
+
     //start accessing memory
     when(in_pmem(io.memOp_i.addr)){
         /*
@@ -132,12 +134,9 @@ class MAIN_MEMORY extends Module{
     }.elsewhen(in_serial(addr_i)){
         when(is_store){printf("%c", sdata)}
     }.elsewhen(in_rtc(addr_i)){
-        //store is ignored
-        //nemu updates the time
-        val new_time    =   Mux(io.memOp_i.isLoad, io.timer_i, rtc_past_time)
-        rtc_past_time   :=  new_time
-        //io.loadVal_o    :=  Mux(io.memOp_i.isLoad, io.timer_i, rtc_past_time)
-        io.loadVal_o    :=  Mux(is_store, 0.U, new_time)
+        //timer is updated by cpp
+        //io.loadVal_o    :=  rtc_past_time     //this is okay but will delay a cycle and fails difftest
+        io.loadVal_o    :=  io.timer_i
     }
     
     /*
