@@ -59,7 +59,7 @@ int printf(const char *fmt, ...) {
 
   va_list ap;
   va_start(ap, fmt);
-  char buf[0x8000];
+  char buf[0x8000];   //sometimes we will print huge strings......
   int n = vsprintf(buf, fmt, ap);
   va_end(ap);
   for(int i = 0; i < n; i++){
