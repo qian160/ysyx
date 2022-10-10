@@ -7,6 +7,6 @@ ramdisk_end:
 .section .rodata
 .globl logo
 logo:
-.string "emm\n"
+.string "emsjoisjgsughkjvnm,xnirsjxfm,nxlkgn%#$^&%(&(#%#%#$m\n"
 .incbin "resources/logo.txt"    #this will cause some bugs...
 .byte 0
