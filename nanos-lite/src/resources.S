@@ -7,5 +7,5 @@ ramdisk_end:
 .section .rodata
 .globl logo
 logo:
-.incbin "resources/114514.txt"
+.incbin "resources/logo.txt"
 .byte 0                         #end of string
