@@ -262,6 +262,7 @@ static int decode_exec(Decode *D) {
           switch(immI(inst)){
             case(0):                                      // ecall
               isa_raise_intr(0, D -> pc);
+              D -> dnpc = cpu.pc;
               break;  // ecall
             case(1):  NEMUTRAP(D->pc, R(10));     break;  // ebreak
             default:  panic("bad sys inst\n");    break;
