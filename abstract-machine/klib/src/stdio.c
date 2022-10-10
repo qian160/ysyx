@@ -56,6 +56,7 @@ char *itoa(int number, int base)  //10, 16
 }
 
 int printf(const char *fmt, ...) {
+  /*
   va_list ap;
   va_start(ap, fmt);
   char buf[1024];
@@ -65,6 +66,8 @@ int printf(const char *fmt, ...) {
     putch(buf[i]);
   }
   return n;
+  */
+  return 0;
 }
 
 //v: use va_list as argument instead of ... its behavior is same as sprintf
