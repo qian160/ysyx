@@ -3,7 +3,7 @@
 #include <riscv/riscv.h>
 #include <klib.h>
 
-#define syscall_num c -> gpr[16]
+#define syscall_num c -> gpr[17]
 static Context* (*user_handler)(Event, Context*) = NULL;
 
 //called by __am_asm_trap
@@ -12,7 +12,7 @@ Context* __am_irq_handle(Context *c) {
   if (user_handler) {
     Event ev = {0};
     switch (syscall_num) {
-      case -1: ev.event = EVENT_YIELD; printf("yield\n");break;
+      case -1: ev.event = EVENT_YIELD; break;
       default: ev.event = EVENT_ERROR; break;
     }
 
