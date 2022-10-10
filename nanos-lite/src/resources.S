@@ -8,4 +8,4 @@ ramdisk_end:
 .globl logo
 logo:
 .incbin "resources/logo.txt"
-.byte 0
+.byte 0                         #end of string

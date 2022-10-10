@@ -9,14 +9,26 @@ extern void update_mringbuf(bool isLoad, word_t addr, word_t data, int rd);
 extern void update_ftrace(bool is_ret, word_t addr, word_t pc, const char * name, int depth);
 extern char * getFuncName(word_t addr);
 extern int depth; //ftrace
+
 enum {
   TYPE_I, TYPE_U, TYPE_S, TYPE_J, TYPE_R, TYPE_B, TYPE_SYS,
   TYPE_N, // none
 };
 
+word_t * getCSR(word_t addr){
+  switch(addr){
+    case MSTATUS: return &cpu.mstatus;
+    case MEPC:    return &cpu.mepc;
+    case MCAUSE:  return &cpu.mcause;
+    case MTVEC:   return &cpu.mtvec;
+    default: panic("bad csr addr\n");
+  }
+}
+
 #define funct3(inst) (BITS(inst, 14, 12))
 #define funct7(inst) (BITS(inst, 31, 25))
 #define opcode(inst) (BITS(inst, 6, 0))
+
 static word_t immI(uint32_t i) { return SEXT(BITS(i, 31, 20), 12); }
 static word_t immU(uint32_t i) { return SEXT(BITS(i, 31, 12), 20) << 12; }
 static word_t immS(uint32_t i) { return SEXT((BITS(i, 31, 25) << 5) | BITS(i, 11, 7), 12); }
@@ -35,8 +47,6 @@ extern void _ftrace(Decode * D);
 
 static const char tp[] __attribute__((unused))= "IUSJRB";    //use type as index
 
-#ifdef CONFIG_SHOW_DECODE_INFORMATION
-
 void show_bits(word_t b){
   int cnt = 65;
   const long long mask = 1l << 63;
@@ -49,72 +59,6 @@ void show_bits(word_t b){
   return;
 }
 
-void show_bits_fmt(word_t b){
-  printf(ANSI_FMT("| ", ANSI_FG_PINK));
-  show_bits(b); 
-  printf(ANSI_FMT("  |", ANSI_FG_PINK));
-  putchar('\n');
-  return;
-}
-
-void show_decode(Decode *D){
-word_t src1   = D->decInfo.src1;
-word_t src2   = D->decInfo.src2;
-uint32_t dest = D->decInfo.rd;
-int type      = D->decInfo.type;
-printf(ANSI_FMT(" ---------------------------------------------------------------------------\n", ANSI_FG_YELLOW));
-  puts(ANSI_FMT("| Information about the just execuated instruction: \t\t\t    |", ANSI_FG_GREEN));
-  char buf[30];
-  disassemble(buf, sizeof(buf), D -> pc, (uint8_t *)(&D -> inst), 4);
-  printf(ANSI_FMT("| type-%c:  %32s \t\t\t\t    | \n| old PC = 0x%-60lx   |\n", ANSI_FG_GREEN),tp[type], buf, D -> pc);
-  printf(ANSI_FMT("| src1 = 0x%-64lx | \n", ANSI_FG_YELLOW), src1);   
-  show_bits_fmt(src1);
-  printf(ANSI_FMT("| src2 = 0x%-64lx | \n", ANSI_FG_YELLOW), src2);   
-  show_bits_fmt(src2);
-  int fct3 = D -> decInfo.funct3;
-  switch(type){  
-    case(TYPE_I):case(TYPE_R):case(TYPE_U):
-    if(D -> decInfo.is_load){
-      word_t address = src1 + src2;
-      word_t loadVal = Mr(src1 + src2, L_width(fct3));
-      printf(ANSI_FMT("| load a value 0x%-16lx from address: 0x%-24lx  | \n", ANSI_FG_YELLOW), loadVal, address);
-      show_bits_fmt(loadVal);
-      IFDEF(CONFIG_MTRACE_ENABLE, update_mringbuf(1, address, loadVal, dest));
-    }
-    else if(D->decInfo.is_jalr){
-      printf(ANSI_FMT("| jalr, set %s = 0x%-lx, new PC at 0x%lx. %s's bits are: \t\t|\n", ANSI_FG_YELLOW), reg_name(dest), src1, src2, reg_name(dest));
-      show_bits_fmt(src1);
-    }
-    else  {
-      printf(ANSI_FMT("| set %s = 0x%-60lx  | \n", ANSI_FG_YELLOW), reg_name(dest), R(dest)); 
-      show_bits_fmt(R(dest));
-    }
-    break;
-    case(TYPE_B):
-      if( src1 == 0){
-        printf(ANSI_FMT("| branch is not taken %-40s | \n",  ANSI_FG_YELLOW), " ");
-      }
-      else {
-        printf(ANSI_FMT("| branch is taken, new PC at 0x%-44lx | \n", ANSI_FG_YELLOW), src2);
-      }
-      break;
-    case(TYPE_J):
-      printf(ANSI_FMT("| jal, set %s = 0x%lx, new PC at 0x%-34lx | \n", ANSI_FG_YELLOW), reg_name(dest), src1, src2);
-      show_bits_fmt(src1);
-      break;
-    case(TYPE_S):{
-      word_t storeVal = src2 & BITMASK(S_width(fct3) << 3);
-      printf(ANSI_FMT("| store a value 0x%-16lx to address 0x%-27lx | \n", ANSI_FG_YELLOW), storeVal, src1);
-      show_bits_fmt(storeVal);
-      IFDEF(CONFIG_MTRACE_ENABLE, update_mringbuf(0, src1, storeVal, dest));
-      break;
-    }
-    default:  break;
-  }
-  printf(ANSI_FMT(" ---------------------------------------------------------------------------\n", ANSI_FG_YELLOW));
-}
-#endif
-
 #define JAL_TARGET      (immJ(inst) + D -> pc)
 #define BRANCH_TARGET   (immB(inst) + D -> pc)
 #define JALR_TARGET     (immI(inst) + R(rs1))
@@ -123,23 +67,6 @@ printf(ANSI_FMT(" --------------------------------------------------------------
 
 static int decode_exec(Decode *D) {
   D->dnpc = D->snpc;    //default
-/*
-#define INSTPAT_INST(D) ((D)->inst)
-//a match is found, do what it supposed to do.
-#define INSTPAT_MATCH(D, name, type, ... , body  ) { \
-  decode_operand(D, concat(TYPE_, type)); \
-  word_t src1 __attribute__((unused)) = D -> decInfo.src1;\
-  word_t src2 __attribute__((unused)) = D -> decInfo.src2;\
-  char dest   __attribute__((unused)) = D -> decInfo.rd;\
-  __VA_ARGS__ ; \
-  IFDEF(CONFIG_SHOW_DECODE_INFORMATION, show_decode(D));\
-  \
-  IFDEF(CONFIG_FTRACE_ENABLE, _ftrace(D));\
-}
-*/
-  //check one by one
-  //note that when we say inst(0), we are counting from the right side(LSB), but str(0) below starts at left side
-  //each pattern has its unique mask, key and shift
   /*
     some frequently used psedo inst:
       li rd, imm:  -> addi rd, x0, 0  load immediate
@@ -150,7 +77,7 @@ static int decode_exec(Decode *D) {
       auipc + addi : get the address of a section, or some label
   */
   //every case should carefully end up with a break
-  //do what it is only supposed to do. For exanple, we don't need to calculate the jump address before every case(Although in Verilog we may do this)
+  //do what it is only supposed to do. For exanple, we don't need to calculate the jump address before every case. THis will improve some performance
 
   uint32_t inst = D -> inst;
   unsigned char rd  = BITS(inst, 11, 7);
@@ -159,7 +86,7 @@ static int decode_exec(Decode *D) {
   unsigned char opcode = opcode(inst);
   unsigned fct3 = funct3(inst);
   unsigned fct7 = funct7(inst);
-
+  
   switch(opcode){
     case ARITH_R:{
       D -> decInfo.type = TYPE_R;
@@ -291,6 +218,7 @@ static int decode_exec(Decode *D) {
     case(LOAD):{
       D -> decInfo.type = TYPE_I;
       word_t imm_I = immI(inst);
+      IFDEF(CONFIG_REF, printf("\n\npc:  0x%lx, base = 0x%lx, offset = %ld\n", D -> pc, R(rs1), imm_I));
       switch(fct3){
         case(0x0):  R(rd) = SEXT(Mr(R(rs1) + imm_I, 1), 8);   IFDEF(CONFIG_REF, printf("lb:  [x%d] <=  0x%lx\n", rd, R(rd)));  break;  //lb
         case(0x1):  R(rd) = SEXT(Mr(R(rs1) + imm_I, 2), 16);  IFDEF(CONFIG_REF, printf("lh:  [x%d] <=  0x%lx\n", rd, R(rd)));  break;  //lh
@@ -307,6 +235,7 @@ static int decode_exec(Decode *D) {
     case(STORE):{
       D -> decInfo.type = TYPE_S;
       word_t imm_S = immS(inst);
+      IFDEF(CONFIG_REF, printf("\n\npc:  0x%lx, base = 0x%lx, offset = %ld\n", D -> pc, R(rs1), imm_S));
       switch(fct3){
         case(0x0):  Mw(R(rs1) + imm_S, 1, R(rs2));  IFDEF(CONFIG_REF, printf("sb: 0x%lx   =>  pmem[0x%lx]\n", R(rs2), R(rs1) + imm_S ));      break;
         case(0x1):  Mw(R(rs1) + imm_S, 2, R(rs2));  IFDEF(CONFIG_REF, printf("sh: 0x%lx   =>  pmem[0x%lx]\n", R(rs2), R(rs1) + imm_S ));      break;
@@ -337,25 +266,43 @@ static int decode_exec(Decode *D) {
     case(JALR):   D->decInfo.type = TYPE_I;    R(rd) = linkAddr; D -> dnpc = R(rs1) + immI(inst);   IFDEF(CONFIG_REF, printf("jalr, target at 0x%lx\n", R(rs1) + immI(inst)));    break;
     case(AUIPC):  D->decInfo.type = TYPE_U;    R(rd) = D -> pc + immU(inst);break;
     case(LUI):    D->decInfo.type = TYPE_U;    R(rd) = immU(inst);break;
-    case(EBREAK): NEMUTRAP(D->pc, R(10)); break;  //r(10) is a0,  ecall has the same opcode! need to improved, but there will never be an ecall
-    default: panic("bad inst\n");
+    case(SYS):{
+      switch(fct3){
+        case(0):{
+          switch(immI(inst)){
+            case(0):                                      // ecall
+              D-> dnpc = cpu.mtvec;
+              cpu.mepc = D->pc;
+              break;  // ecall
+            case(1):  NEMUTRAP(D->pc, R(10));     break;  // ebreak
+            case(0x302):                                  // mret
+              D -> dnpc = cpu.mepc;
+              break;
+            default:  panic("bad sys inst\n");    break;
+          }
+          break;
+        }
+        case(CSRRW):  R(rd) = *getCSR(immI(inst));    *getCSR(immI(inst)) = R(rs1);           break;
+        case(CSRRS):  R(rd) = *getCSR(immI(inst));    *getCSR(immI(inst)) = R(rs1) |  R(rs1); break;
+        case(CSRRC):  R(rd) = *getCSR(immI(inst));    *getCSR(immI(inst)) = R(rs1) & ~R(rs1); break;
+        case(CSRRWI): R(rd) = *getCSR(immI(inst));    *getCSR(immI(inst)) = R(rs1);           break;
+        case(CSRRSI): R(rd) = *getCSR(immI(inst));    *getCSR(immI(inst)) = R(rs1) |  rs1;    break;
+        case(CSRRCI): R(rd) = *getCSR(immI(inst));    *getCSR(immI(inst)) = R(rs1) & ~SEXT(rs1, 5); break;
+
+      }
+    //NEMUTRAP(D->pc, R(10)); break;  //r(10) is a0,  ecall has the same opcode! need to improved, but there will never be an ecall
+      break;
+    }
   }
   R(0) = 0; // reset $zero to 0
 
-  IFDEF(CONFIG_REF, Log("\nwdata = 0x%lx\npc = 0x%8lx, inst = 0x%08x,  rd = %d\n", opcode == BRANCH? 0: R(rd), D->pc, inst, rd));
+  //IFDEF(CONFIG_REF, Log("\nwdata = 0x%lx\npc = 0x%8lx, inst = 0x%08x,  rd = %d\n", opcode == BRANCH? 0: R(rd), D->pc, inst, rd));
   return 0;
 }
 
 int isa_exec_once(Decode *D) {
   uint32_t inst = inst_fetch(&D -> snpc, 4);  //snpc will be updated in fetch ( +4 )
   D->inst = inst;
-   //set some decode flags here
-  /*
-  D -> decInfo.is_jalr  = opcode(inst) == jalr_opcode; 
-  D -> decInfo.is_lui   = BITS(inst, 5, 5);    //just a possibility
-  D -> decInfo.funct3   = funct3(inst);
-  D -> decInfo.is_load  = opcode(inst) == load_opcode;
-  */
 
   return decode_exec(D);
 }

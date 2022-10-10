@@ -3,10 +3,22 @@
 
 #include <common.h>
 
+#define MTVEC   0x305
+#define MSTATUS 0x300
+#define MCAUSE  0x342
+#define MEPC    0x341
+
 typedef struct {
   word_t gpr[32];
-  vaddr_t pc;
+  word_t pc;
+
+  word_t mtvec;
+  word_t mstatus;
+  word_t mepc;
+  word_t mcause;
 } riscv64_CPU_state;
+
+enum CSRMODE{CSRRW = 1, CSRRS, CSRRC, CSRRWI = 5, CSRRSI, CSRRCI};
 
 // decode
 typedef struct {

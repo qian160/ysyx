@@ -56,15 +56,17 @@ char *itoa(int number, int base)  //10, 16
 }
 
 int printf(const char *fmt, ...) {
+
   va_list ap;
   va_start(ap, fmt);
-  char buf[1024];
+  char buf[0x8000];   //sometimes we will print huge strings......
   int n = vsprintf(buf, fmt, ap);
   va_end(ap);
   for(int i = 0; i < n; i++){
     putch(buf[i]);
   }
   return n;
+
 }
 
 //v: use va_list as argument instead of ... its behavior is same as sprintf

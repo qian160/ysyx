@@ -13,7 +13,7 @@
 #define JALR      0b1100111
 #define LUI       0b0110111
 #define AUIPC     0b0010111
-#define EBREAK    0b1110011
+#define SYS       0b1110011
 
 #define ARITH_64_R  0b0111011
 #define ARITH_64_I  0b0011011

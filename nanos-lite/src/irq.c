@@ -2,6 +2,9 @@
 
 static Context* do_event(Event e, Context* c) {
   switch (e.event) {
+    case EVENT_YIELD:
+      Log("\nyield detected. Do nothing now\n");
+      break;
     default: panic("Unhandled event ID = %d", e.event);
   }
 
