@@ -260,9 +260,9 @@ static int decode_exec(Decode *D) {
       switch(fct3){
         case(0):{
           switch(immI(inst)){
-            case(0):  panic("ecall not implemented\n");         break;//ecall
-            case(1):  NEMUTRAP(D->pc, R(10));   break;
-            default:  panic("bad sys inst\n");  break;
+            case(0):  D-> dnpc = cpu.csr[MTVEC];  break;  // ecall
+            case(1):  NEMUTRAP(D->pc, R(10));     break;  // ebreak
+            default:  panic("bad sys inst\n");    break;
           }
           break;
         }
