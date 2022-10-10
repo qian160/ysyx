@@ -7,6 +7,9 @@ ramdisk_end:
 .section .rodata
 .globl logo
 logo:
-.string "emsjoisjgsughkjvnm,xnirsjxfm,nxlkgn%#$^&%(&(#%#%#$m\n"
+.string "emsjoisjgsughkjvnm,xnirsjxfm,nxlkgn%#$^&%(&(#%#%#$m\nemsjoisjgsughkjvnm,xnirsjxfm,nxlkgn%#$^&%(&(#%#%#$m\nemsjoisjgsughkjvnm,xnirsjxfm,nxlkgn%#$^&%(&(#%#%#$m\nemsjoisjgsughkjvnm,xnirsjxfm,nxlkgn%#$^&%(&(#%#%#$m\nemsjoisjgsughkjvnm,xnirsjxfm,nxlkgn%#$^&%(&(#%#%#$m\nemsjoisjgsughkjvnm,xnirsjxfm,nxlkgn%#$^&%(&(#%#%#$m\nemsjoisjgsughkjvnm,xnirsjxfm,nxlkgn%#$^&%(&(#%#%#$m\nemsjoisjgsughkjvnm,xnirsjxfm,nxlkgn%#$^&%(&(#%#%#$m\nemsjoisjgsughkjvnm,xnirsjxfm,nxlkgn%#$^&%(&(#%#%#$m\nemsjoisjgsughkjvnm,xnirsjxfm,nxlkgn%#$^&%(&(#%#%#$m\nemsjoisjgsughkjvnm,xnirsjxfm,nxlkgn%#$^&%(&(#%#%#$m\nemsjoisjgsughkjvnm,xnirsjxfm,nxlkgn%#$^&%(&(#%#%#$m\nemsjoisjgsughkjvnm,xnirsjxfm,nxlkgn%#$^&%(&(#%#%#$m\nemsjoisjgsughkjvnm,xnirsjxfm,nxlkgn%#$^&%(&(#%#%#$m\nemsjoisjgsughkjvnm,xnirsjxfm,nxlkgn%#$^&%(&(#%#%#$m\nemsjoisjgsughkjvnm,xnirsjxfm,nxlkgn%#$^&%(&(#%#%#$m\nemsjoisjgsughkjvnm,xnirsjxfm,nxlkgn%#$^&%(&(#%#%#$m\nemsjoisjgsughkjvnm,xnirsjxfm,nxlkgn%#$^&%(&(#%#%#$m\nemsjoisjgsughkjvnm,xnirsjxfm,nxlkgn%#$^&%(&(#%#%#$m\nemsjoisjgsughkjvnm,xnirsjxfm,nxlkgn%#$^&%(&(#%#%#$m\nemsjoisjgsughkjvnm,xnirsjxfm,nxlkgn%#$^&%(&(#%#%#$m\nemsjoisjgsughkjvnm,xnirsjxfm,nxlkgn%#$^&%(&(#%#%#$m\nemsjoisjgsughkjvnm,xnirsjxfm,nxlkgn%#$^&%(&(#%#%#$m\nemsjoisjgsughkjvnm,xnirsjxfm,nxlkgn%#$^&%(&(#%#%#$m\nemsjoisjgsughkjvnm,xnirsjxfm,nxlkgn%#$^&%(&(#%#%#$m\nemsjoisjgsughkjvnm,xnirsjxfm,nxlkgn%#$^&%(&(#%#%#$m\nemsjoisjgsughkjvnm,xnirsjxfm,nxlkgn%#$^&%(&(#%#%#$m\nemsjoisjgsughkjvnm,xnirsjxfm,nxlkgn%#$^&%(&(#%#%#$m\nemsjoisjgsughkjvnm,xnirsjxfm,nxlkgn%#$^&%(&(#%#%#$m\nemsjoisjgsughkjvnm,xnirsjxfm,nxlkgn%#$^&%(&(#%#%#$m\nemsjoisjgsughkjvnm,xnirsjxfm,nxlkgn%#$^&%(&(#%#%#$m\n
+emsjoisjgsughkjvnm,xnirsjxfm,nxlkgn%#$^&%(&(#%#%#$m\nemsjoisjgsughkjvnm,xnirsjxfm,nxlkgn%#$^&%(&(#%#%#$m\n
+emsjoisjgsughkjvnm,xnirsjxfm,nxlkgn%#$^&%(&(#%#%#$m\nemsjoisjgsughkjvnm,xnirsjxfm,nxlkgn%#$^&%(&(#%#%#$m\n
+emsjoisjgsughkjvnm,xnirsjxfm,nxlkgn%#$^&%(&(#%#%#$m\n"
 .incbin "resources/logo.txt"    #this will cause some bugs...
 .byte 0
