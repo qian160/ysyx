@@ -12,6 +12,7 @@
 #define XLEN  8
 #endif
 
+//sp will be the argument directly past to handle, so no need to store
 #define REGS(f) \
       f( 1)       f( 3) f( 4) f( 5) f( 6) f( 7) f( 8) f( 9) \
 f(10) f(11) f(12) f(13) f(14) f(15) f(16) f(17) f(18) f(19) \
@@ -38,16 +39,16 @@ __am_asm_trap:
   csrr t1, mstatus
   csrr t2, mepc
 
-  STORE t0, OFFSET_CAUSE(sp)
-  STORE t1, OFFSET_STATUS(sp)
-  STORE t2, OFFSET_EPC(sp)
+  STORE t0, OFFSET_CAUSE(sp)        #256
+  STORE t1, OFFSET_STATUS(sp)       #264
+  STORE t2, OFFSET_EPC(sp)          #272
 
   # set mstatus.MPRV to pass difftest
   li a0, (1 << 17)
   or t1, t1, a0
   csrw mstatus, t1
 
-  mv a0, sp
+  mv a0, sp       #a0 is arg1
   jal __am_irq_handle
 
   LOAD t1, OFFSET_STATUS(sp)
