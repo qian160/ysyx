@@ -15,6 +15,16 @@ enum {
   TYPE_N, // none
 };
 
+word_t * getCSR(word_t addr){
+  switch(addr){
+    case MSTATUS: return &cpu.mstatus;
+    case MEPC:    return &cpu.mepc;
+    case MCAUSE:  return &cpu.mcause;
+    case MTVEC:   return &cpu.mtvec;
+    default: panic("bad csr addr\n");
+  }
+}
+
 #define funct3(inst) (BITS(inst, 14, 12))
 #define funct7(inst) (BITS(inst, 31, 25))
 #define opcode(inst) (BITS(inst, 6, 0))
@@ -272,12 +282,12 @@ static int decode_exec(Decode *D) {
           }
           break;
         }
-        case(CSRRW):  R(rd) = cpu.csr[immI(inst)];    cpu.csr[immI(inst)] = R(rs1);           break;
-        case(CSRRS):  R(rd) = cpu.csr[immI(inst)];    cpu.csr[immI(inst)] = R(rs1) |  R(rs1); break;
-        case(CSRRC):  R(rd) = cpu.csr[immI(inst)];    cpu.csr[immI(inst)] = R(rs1) & ~R(rs1); break;
-        case(CSRRWI): R(rd) = cpu.csr[immI(inst)];    cpu.csr[immI(inst)] = R(rs1);           break;
-        case(CSRRSI): R(rd) = cpu.csr[immI(inst)];    cpu.csr[immI(inst)] = R(rs1) |  rs1;    break;
-        case(CSRRCI): R(rd) = cpu.csr[immI(inst)];    cpu.csr[immI(inst)] = R(rs1) & ~SEXT(rs1, 5); break;
+        case(CSRRW):  R(rd) = *getCSR(immI(inst));    *getCSR(immI(inst)) = R(rs1);           break;
+        case(CSRRS):  R(rd) = *getCSR(immI(inst));    *getCSR(immI(inst)) = R(rs1) |  R(rs1); break;
+        case(CSRRC):  R(rd) = *getCSR(immI(inst));    *getCSR(immI(inst)) = R(rs1) & ~R(rs1); break;
+        case(CSRRWI): R(rd) = *getCSR(immI(inst));    *getCSR(immI(inst)) = R(rs1);           break;
+        case(CSRRSI): R(rd) = *getCSR(immI(inst));    *getCSR(immI(inst)) = R(rs1) |  rs1;    break;
+        case(CSRRCI): R(rd) = *getCSR(immI(inst));    *getCSR(immI(inst)) = R(rs1) & ~SEXT(rs1, 5); break;
 
       }
     //NEMUTRAP(D->pc, R(10)); break;  //r(10) is a0,  ecall has the same opcode! need to improved, but there will never be an ecall
