@@ -70,7 +70,7 @@ int cmd_c(string args){
 int cmd_h(string cmd){
     for(auto i :cmd_table){
         cout.width(8);
-        cout << i.second.name << " - " << i.second.description << " - " << i.second.Usage << endl;
+        cout << i.first << " - " << i.second.description << " - " << i.second.Usage << endl;
     }
     return 0;
 }

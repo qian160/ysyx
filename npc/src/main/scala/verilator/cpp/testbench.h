@@ -16,20 +16,21 @@ private:
 	vluint64_t		m_tickcount;
 	clock_t			boot_time;
 public:
-	TestBench();
-	virtual ~TestBench();
-	virtual void	reset(void);
+	TestBench() noexcept;
+	//TestBench(std::initializer_list<int int>)();
+	virtual ~TestBench() noexcept;
+	virtual void	reset(void) noexcept;
 	// Open/create a trace file
-	virtual	void	trace(const char *vcdname);
+	virtual	void	trace(const char *vcdname) noexcept;
 	// Close a trace file
-	virtual void	close(void);
-	virtual void	tick(void);
-	virtual Module*	getModule();
+	virtual void	close(void) noexcept;
+	virtual void	tick(void) noexcept;
+	virtual Module*	getModule() noexcept;
 };
 
 //implementation
 template<class Module>
-void TestBench<Module>::tick(){
+void TestBench<Module>::tick() noexcept{
 	// Make sure the tickcount is greater than zero before we do this
 	m_tickcount++;
 
@@ -60,7 +61,7 @@ void TestBench<Module>::tick(){
 
 }
 template<class Module>
-void TestBench<Module>::reset(){
+void TestBench<Module>::reset() noexcept{
 	dut -> reset = 1;
 	dut -> clock = 0;
 	dut -> eval();
@@ -71,7 +72,7 @@ void TestBench<Module>::reset(){
 
 	cout << "pc: reset at 0x" << hex << dut -> io_pc_o << endl;
 	boot_time = clock();		//init value
-	for(auto iter : emojis){
+	for(const auto iter : emojis){
 		cout << iter.second;
 	}
 	cout << endl;
@@ -79,7 +80,7 @@ void TestBench<Module>::reset(){
 }
 
 template<class Module>
-TestBench<Module>::TestBench(){
+TestBench<Module>::TestBench() noexcept{
 	// According to the Verilator spec, you *must* call traceEverOn
 	// before calling any of the tracing functions within Verilator.
 	Verilated::traceEverOn(true);
@@ -90,13 +91,13 @@ TestBench<Module>::TestBench(){
 }
 
 template<class Module>
-TestBench<Module>::~TestBench(){
+TestBench<Module>::~TestBench() noexcept{
 	delete dut;
 	dut = NULL;
 }
 
 template<class Module>
-void TestBench<Module>::trace(const char *vcdname){
+void TestBench<Module>::trace(const char *vcdname) noexcept{
 	if (!m_trace) {
 		m_trace = new VerilatedVcdC;
 		dut  -> trace(m_trace, 99);
@@ -105,7 +106,7 @@ void TestBench<Module>::trace(const char *vcdname){
 }
 
 template<class Module>
-void TestBench<Module>::close(){
+void TestBench<Module>::close() noexcept{
 	if (m_trace) {
 		m_trace	-> close();
 		m_trace = NULL;
@@ -113,6 +114,6 @@ void TestBench<Module>::close(){
 }
 
 template<class Module>
-Module * TestBench<Module>::getModule(){
+Module * TestBench<Module>::getModule() noexcept{
 	return this->dut;
 }

@@ -3,27 +3,21 @@
 
 static uint64_t init_time = 0;
 
-static inline uint64_t read_timer(){
-  uint64_t hi = ((uint64_t)inl(RTC_ADDR + 4) << 32);
-  uint64_t lo = (uint64_t)inl(RTC_ADDR);
-  return hi | lo;
-}
-
 void __am_timer_init() {
-  //inl will be compiled to lw, recall the implementation of lw in nemu(inst.c)
-  //it will call paddr_read. And then this function will discover that the address is a device, 
-  //so it calls mmio_read and map_read. After map_read, the call_back function is also called
-  //only at offset 4 will the clock be updated 
-  uint32_t hi = inl(RTC_ADDR + 4);
-  uint32_t lo = inl(RTC_ADDR);
-  //init_time = read_timer();
-  init_time = ((uint64_t)hi << 32) | (uint64_t)lo;
+  // the 'ind' will be compiled to 'ld' in asm, remember how lw is implemented in nemu(inst.c):
+  // firstly it calls paddr_read. And then pmem_read will find that the address is not in pmem
+  // then it will try mmio_read and map_read. After map_read, the call_back function is also called
+  //__asm__ volatile("j 0");
+  init_time = ind(RTC_ADDR);
 }
 
+/*  difference between this function and 'rtc_io_handler':
+      * rtc_io_handler will be called whenever you try to r/w that address
+      * this am function serves as am's API, and will only be called through the 'io_read' or 'io_write' function by user program(through a lut)
+        * so this am function will also trigger 'rtc_io_handler' since it wants to r/w that address
+*/
 void __am_timer_uptime(AM_TIMER_UPTIME_T *uptime) {
-  int32_t now_hi = inl(RTC_ADDR + 4);
-  uint32_t now_lo = inl(RTC_ADDR);
-  uint64_t now = ((uint64_t)now_hi << 32) | (uint64_t)now_lo;
+  uint64_t now = ind(RTC_ADDR);
   uptime -> us = now - init_time;
 }
 

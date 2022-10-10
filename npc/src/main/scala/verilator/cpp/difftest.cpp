@@ -24,19 +24,19 @@ void init_difftest()
         if(!handle)
             throw std::runtime_error("failed to open diff so");
 
-        if(!(difftest_init = init(dlsym(handle, "difftest_init"))))
+        if(!(difftest_init      = init(dlsym(handle, "difftest_init"))))
             throw std::runtime_error("can't find difftest_init");
 
         if(!(difftest_checkregs	= checkregs(dlsym(handle, "difftest_checkregs"))))
             throw std::runtime_error("can't find difftest_checkregs");
 
-        if(!(difftest_regcpy =	regcpy(dlsym(handle, "difftest_regcpy"))))
+        if(!(difftest_regcpy    =	regcpy(dlsym(handle, "difftest_regcpy"))))
             throw std::runtime_error("can't find diftest_regcpy");
 
-        if(!(difftest_exec = exec(dlsym(handle, "difftest_ref_exec_once"))))
+        if(!(difftest_exec      = exec(dlsym(handle, "difftest_ref_exec_once"))))
             throw std::runtime_error("can't find difftest_exec");
 
-        if(!(npc_timer = (uint64_t*)dlsym(handle, "npc_timer")))
+        if(!(npc_timer          = (uint64_t*)dlsym(handle, "npc_timer")))
             throw std::runtime_error("can't find npc_timer");
 
         //everything is okay

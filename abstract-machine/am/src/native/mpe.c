@@ -35,6 +35,7 @@ bool mpe_init(void (*entry)()) {
   
   entry();
   panic("MP entry should not return\n");
+  return 0;
 }
 
 int cpu_count() {

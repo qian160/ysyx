@@ -170,10 +170,12 @@ int sprintf(char *out, const char *fmt, ...) {
 
 int snprintf(char *out, size_t n, const char *fmt, ...) {
   panic("Not implemented");
+  return 0;
 }
 
 int vsnprintf(char *out, size_t n, const char *fmt, va_list ap) {
   panic("Not implemented");
+  return 0;
 }
 
 #endif

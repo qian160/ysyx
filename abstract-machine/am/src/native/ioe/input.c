@@ -37,6 +37,7 @@ static int event_thread(void *args) {
       }
     }
   }
+  return 0;
 }
 
 void __am_input_init() {

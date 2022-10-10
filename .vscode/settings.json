@@ -30,6 +30,8 @@
         "amdev.h": "c",
         "amtest.h": "c",
         "decode.h": "c",
-        "cmd.h": "c"
+        "cmd.h": "c",
+        "trap.h": "c",
+        "host.h": "c"
     }
 }
