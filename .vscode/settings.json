@@ -32,6 +32,8 @@
         "decode.h": "c",
         "cmd.h": "c",
         "trap.h": "c",
-        "host.h": "c"
+        "host.h": "c",
+        "limits": "c",
+        "isa.h": "c"
     }
 }

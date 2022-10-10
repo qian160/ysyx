@@ -3,12 +3,14 @@
 #include <cpu/ifetch.h>
 #include <cpu/decode.h>
 #include "../../../include/generated/autoconf.h"
+#include "../../../include/isa.h"
 #include "../../../include/trace.h"   //load op will set ringbuf's rd
 
 extern void update_mringbuf(bool isLoad, word_t addr, word_t data, int rd);
 extern void update_ftrace(bool is_ret, word_t addr, word_t pc, const char * name, int depth);
 extern char * getFuncName(word_t addr);
 extern int depth; //ftrace
+
 enum {
   TYPE_I, TYPE_U, TYPE_S, TYPE_J, TYPE_R, TYPE_B, TYPE_SYS,
   TYPE_N, // none
@@ -17,6 +19,7 @@ enum {
 #define funct3(inst) (BITS(inst, 14, 12))
 #define funct7(inst) (BITS(inst, 31, 25))
 #define opcode(inst) (BITS(inst, 6, 0))
+
 static word_t immI(uint32_t i) { return SEXT(BITS(i, 31, 20), 12); }
 static word_t immU(uint32_t i) { return SEXT(BITS(i, 31, 12), 20) << 12; }
 static word_t immS(uint32_t i) { return SEXT((BITS(i, 31, 25) << 5) | BITS(i, 11, 7), 12); }
@@ -159,7 +162,7 @@ static int decode_exec(Decode *D) {
   unsigned char opcode = opcode(inst);
   unsigned fct3 = funct3(inst);
   unsigned fct7 = funct7(inst);
-
+  
   switch(opcode){
     case ARITH_R:{
       D -> decInfo.type = TYPE_R;
