@@ -264,11 +264,15 @@ static int decode_exec(Decode *D) {
             case(1):  NEMUTRAP(D->pc, R(10));   break;
             default:  panic("bad sys inst\n");  break;
           }
+          break;
         }
-        default:{   //csr
-          
-        }
-        break;
+        case(CSRRW):  R(rd) = cpu.csr[immI(inst)];    cpu.csr[immI(inst)] = R(rs1);           break;
+        case(CSRRS):  R(rd) = cpu.csr[immI(inst)];    cpu.csr[immI(inst)] = R(rs1) |  R(rs1); break;
+        case(CSRRC):  R(rd) = cpu.csr[immI(inst)];    cpu.csr[immI(inst)] = R(rs1) & ~R(rs1); break;
+        case(CSRRWI): R(rd) = cpu.csr[immI(inst)];    cpu.csr[immI(inst)] = R(rs1);           break;
+        case(CSRRSI): R(rd) = cpu.csr[immI(inst)];    cpu.csr[immI(inst)] = R(rs1) |  rs1;    break;
+        case(CSRRCI): R(rd) = cpu.csr[immI(inst)];    cpu.csr[immI(inst)] = R(rs1) & ~SEXT(rs1, 5); break;
+
       }
     //NEMUTRAP(D->pc, R(10)); break;  //r(10) is a0,  ecall has the same opcode! need to improved, but there will never be an ecall
       break;

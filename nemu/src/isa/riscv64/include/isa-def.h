@@ -10,10 +10,10 @@
 typedef struct {
   word_t gpr[32];
   word_t pc;
-  word_t csr[3];
+  word_t csr[0X400];
 } riscv64_CPU_state;
 
-enum CSRMODE{RW = 1, RS, RC, RWI = 5, RS1, RCI};
+enum CSRMODE{CSRRW = 1, CSRRS, CSRRC, CSRRWI = 5, CSRRSI, CSRRCI};
 
 // decode
 typedef struct {
