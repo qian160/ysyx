@@ -36,7 +36,7 @@ Context *kcontext(Area kstack, void (*entry)(void *), void *arg) {
 }
 
 void yield() {
-  asm volatile("li a7, -1; ecall");   //x17, the handler is 'do_event'(in irq.c)
+  asm volatile("li a7, -1; ecall");   //x17, the handler is '__am_asm_trap'(in trap.S), which will call 'do_event'(in irq.c)
 }
 
 bool ienabled() {
