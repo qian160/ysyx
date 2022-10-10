@@ -65,9 +65,8 @@ int printf(const char *fmt, ...) {
   for(int i = 0; i < n; i++){
     putch(buf[i]);
   }
-  return 1;
+  return n;
 
-  return 0;
 }
 
 //v: use va_list as argument instead of ... its behavior is same as sprintf
