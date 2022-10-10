@@ -15,11 +15,11 @@ void isa_reg_display() {
 	for (int i = 0; i < 31; i += 2) 
     printf(ANSI_FMT("| %s:\t0x%-16lx\t|\t%s:\t0x%-16lx |\n", ANSI_FG_YELLOW), regs[i], gpr(i),regs[i+1], gpr(i+1));
   puts(ANSI_FMT("--------------------------------------------------------------------\n", ANSI_FG_YELLOW));
-  putchar('\n');
 
   printf(ANSI_FMT("mtvec:   0x%-16lx\n", ANSI_FG_PINK), cpu.csr[MTVEC]);
   printf(ANSI_FMT("mstatus: 0x%-16lx\n", ANSI_FG_PINK), cpu.csr[MSTATUS]);
   printf(ANSI_FMT("mcause:  0x%-16lx\n", ANSI_FG_PINK), cpu.csr[MCAUSE]);
+  putchar('\n');
 }
 
 word_t isa_reg_str2val(const char *s, bool *success) {
