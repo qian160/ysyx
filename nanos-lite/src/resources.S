@@ -9,5 +9,3 @@ ramdisk_end:
 logo:
 .incbin "resources/logo.txt"
 .byte 0
-.byte 0
-.byte 0
