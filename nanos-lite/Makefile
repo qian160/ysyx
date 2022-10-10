@@ -32,3 +32,6 @@ update:
 
 .PHONY: update
 endif
+
+.PHONY: run
+	@./build/nanos-lite-native
