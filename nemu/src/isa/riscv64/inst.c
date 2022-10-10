@@ -2,6 +2,7 @@
 #include <cpu/cpu.h>
 #include <cpu/ifetch.h>
 #include <cpu/decode.h>
+#include "../../../../abstract-machine/am/include/am.h"
 #include "../../../include/generated/autoconf.h"
 #include "../../../include/trace.h"   //load op will set ringbuf's rd
 
@@ -260,10 +261,7 @@ static int decode_exec(Decode *D) {
       switch(fct3){
         case(0):{
           switch(immI(inst)){
-            case(0):  
-              D-> dnpc = cpu.csr[MTVEC];
-              cpu.csr[MEPC] = D->pc;
-              break;  // ecall
+            case(0):  isa_raise_intr(EVENT_ECALL, D->pc);break;  // ecall
             case(1):  NEMUTRAP(D->pc, R(10));     break;  // ebreak
             default:  panic("bad sys inst\n");    break;
           }
