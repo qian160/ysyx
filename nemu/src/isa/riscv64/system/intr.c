@@ -6,6 +6,7 @@ word_t isa_raise_intr(word_t NO, vaddr_t epc) {
    */
   cpu.csr[MCAUSE] = NO;
   cpu.csr[MEPC]   = epc;
+
   return 0;
 }
 
