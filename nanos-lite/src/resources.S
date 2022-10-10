@@ -7,5 +7,5 @@ ramdisk_end:
 .section .rodata
 .globl logo
 logo:
-.incbin "resources/logo.txt"    #this will cause some bugs...
-.byte 0
+.incbin "resources/logo.txt"
+.byte 0                         #end of string
