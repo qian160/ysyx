@@ -3,7 +3,7 @@
 #include <riscv/riscv.h>
 #include <klib.h>
 
-#define syscall_num c -> gpr[17]
+#define syscall_num c -> gpr[17]    //a7
 static Context* (*user_handler)(Event, Context*) = NULL;
 
 //called by __am_asm_trap
