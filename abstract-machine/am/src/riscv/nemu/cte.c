@@ -11,6 +11,7 @@ Context* __am_irq_handle(Context *c) {
 //  asm volatile ("j 0");
   if (user_handler) {
     Event ev = {0};
+    c -> mepc += 4;
     switch (syscall_num) {
       case -1: ev.event = EVENT_YIELD; break;
       default: ev.event = EVENT_ERROR; break;
