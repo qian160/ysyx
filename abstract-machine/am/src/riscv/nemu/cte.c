@@ -2,9 +2,8 @@
 #include <am.h>
 #include <riscv/riscv.h>
 #include <klib.h>
-
 #define syscall_num c -> gpr[17]    //a7
-static Context* (*user_handler)(Event, Context*) = NULL;
+static Context* (*user_handler)(Event, Context*) = NULL;    // do_event
 
 //called by __am_asm_trap
 Context* __am_irq_handle(Context *c) {
@@ -30,7 +29,6 @@ bool cte_init(Context*(*handler)(Event, Context*)) {
   // initialize exception entry
   // mtvec now holds that handler func's address
   asm volatile("csrw mtvec, %0" : : "r"(__am_asm_trap));
-
   // register event handler
   user_handler = handler;
 
