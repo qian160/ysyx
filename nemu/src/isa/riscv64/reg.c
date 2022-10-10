@@ -17,9 +17,9 @@ void isa_reg_display() {
   puts(ANSI_FMT("--------------------------------------------------------------------\n", ANSI_FG_YELLOW));
   putchar('\n');
 
-  printf(ANSI_FMT("mtvec:   0x%lx\n", ANSI_FG_PINK), cpu.csr[MTVEC]);
-  printf(ANSI_FMT("mstatus: 0x%lx\n", ANSI_FG_PINK), cpu.csr[MSTATUS]);
-  printf(ANSI_FMT("mcause:  0x%lx\n", ANSI_FG_PINK), cpu.csr[MCAUSE]);
+  printf(ANSI_FMT("mtvec:   0x%-16lx\n", ANSI_FG_PINK), cpu.csr[MTVEC]);
+  printf(ANSI_FMT("mstatus: 0x%-16lx\n", ANSI_FG_PINK), cpu.csr[MSTATUS]);
+  printf(ANSI_FMT("mcause:  0x%-16lx\n", ANSI_FG_PINK), cpu.csr[MCAUSE]);
 }
 
 word_t isa_reg_str2val(const char *s, bool *success) {
