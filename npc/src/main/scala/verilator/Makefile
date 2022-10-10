@@ -3,11 +3,11 @@
 HOME   = $(shell pwd)
 VSRC   = $(addprefix $(HOME)/verilog/, $(shell ls ./verilog | grep .v))
 CPPSRC = $(addprefix $(HOME)/cpp/, $(shell ls ./cpp | grep cpp))
-VFLAGS = --cc --exe --trace -Wno-lint --build
+VFLAGS = --cc --exe --trace -Wno-lint --build --top TOP -LDFLAGS -ldl
 
 DEPS   = $(CPPSRC:.cpp=.d)
 OBJS   = $(CPPSRC:.cpp=.o)	
-CPPFLAGS    = -I ./cpp -I ./obj_dir
+CPPFLAGS    = -I./obj_dir -I./cpp/include
 DIFFTEST    = $(NEMU_HOME)/build/riscv64-nemu-interpreter-so
  
 LLVM_FLAGS += $(shell llvm-config --ldflags)
@@ -18,17 +18,17 @@ COLOR_RED   = \033[1;31m
 COLOR_GREEN = \033[1;32m
 COLOR_NONE  = \033[0m
 
--include $(DEPS)
+-include $(DEPS)	#this will trigger some execuations
 
 ./cpp/%.d: ./cpp/%.cpp		#.o is not used...
-	@set -e; rm -f $@;echo $@;\
+	@set -e; rm -f $@;echo update $@;\
         $(CPP) -MM $(CPPFLAGS) $< > $@.$$$$; \
         sed 's,\($*\)\.o[ :]*,\1.o $@ : ,g' < $@.$$$$ > $@;\
 	rm -f $@.$$$$
 
-.cpp/%.o:.cpp/.cpp
-	@echo [g++] $@
-	@g++ -c $@  #-o ./cpp/$@
+#.cpp/%.o:.cpp/%.cpp
+#	@echo [g++] $@
+#	@g++ -c $@  #-o ./cpp/$@
 
 gen:
 	make -C ./asm gen
@@ -36,11 +36,12 @@ gen:
 #usage: make run [img=xxx]
 run:
 ifneq ($(img),)
-	echo loading img $(img)...
-	./cpp/load $(img) > ../img_file
+	@echo loading img $(img)...
+	@echo 
+	@./cpp/load $(img) > ../img_file
 endif
-	@verilator $(VSRC) $(CPPSRC) $(VFLAGS) --top TOP -LDFLAGS -ldl
+	@verilator $(VSRC) $(CPPSRC) $(VFLAGS) $(CPPFLAGS)
 	@obj_dir/VTOP $(img)
 clean:
 	-rm  -rf obj_dir wave.vcd
-	@printf "$(COLOR_GREEN)[done]$(COLOR_NONE)\n"
+		@printf "$(COLOR_GREEN)[done]$(COLOR_NONE)\n"

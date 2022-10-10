@@ -1,4 +1,5 @@
-static std::map<std::string, std::string> emojis = {
+#include<unordered_map>
+static std::unordered_map<std::string, std::string> emojis {
 	{"smile", 			"😀"},
 	{"sweat",			"😅"},
 	{"laugh", 			"😄"},
