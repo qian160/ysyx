@@ -7,5 +7,6 @@ ramdisk_end:
 .section .rodata
 .globl logo
 logo:
+.string "nishiyige\n"
 .incbin "resources/logo.txt"
 .byte 0
