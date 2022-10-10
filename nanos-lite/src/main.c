@@ -21,6 +21,7 @@ int main() {
 
 #ifdef HAS_CTE
   init_irq();
+  printf("1\n");
 #endif
 
   init_fs();
