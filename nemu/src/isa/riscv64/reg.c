@@ -1,5 +1,6 @@
 #include <isa.h>
 #include "local-include/reg.h"
+#include "../../../include/isa.h"
 
 const char *regs[] = {    //names.. add $ prefix to make regex match easier
   "$0",   "$ra", "$sp",   "$gp",  "$tp",  "$t0",  "$t1",  "$t2",
@@ -15,6 +16,10 @@ void isa_reg_display() {
     printf(ANSI_FMT("| %s:\t0x%-16lx\t|\t%s:\t0x%-16lx |\n", ANSI_FG_YELLOW), regs[i], gpr(i),regs[i+1], gpr(i+1));
   puts(ANSI_FMT("--------------------------------------------------------------------\n", ANSI_FG_YELLOW));
   putchar('\n');
+
+  printf(ANSI_FMT("mtvec:   0x%lx\n", ANSI_BG_MAGENTA), cpu.csr[MTVEC]);
+  printf(ANSI_FMT("mstatus: 0x%lx\n", ANSI_BG_MAGENTA), cpu.csr[MSTATUS]);
+  printf(ANSI_FMT("mcause:  0x%lx\n", ANSI_BG_MAGENTA), cpu.csr[MCAUSE]);
 }
 
 word_t isa_reg_str2val(const char *s, bool *success) {
