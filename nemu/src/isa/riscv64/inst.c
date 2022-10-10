@@ -3,7 +3,7 @@
 #include <cpu/ifetch.h>
 #include <cpu/decode.h>
 #include "../../../include/generated/autoconf.h"
-#include "../../../include/isa.h"
+//#include "../../../include/isa.h"
 #include "../../../include/trace.h"   //load op will set ringbuf's rd
 
 extern void update_mringbuf(bool isLoad, word_t addr, word_t data, int rd);
@@ -38,8 +38,6 @@ extern void _ftrace(Decode * D);
 
 static const char tp[] __attribute__((unused))= "IUSJRB";    //use type as index
 
-#ifdef CONFIG_SHOW_DECODE_INFORMATION
-
 void show_bits(word_t b){
   int cnt = 65;
   const long long mask = 1l << 63;
@@ -52,72 +50,6 @@ void show_bits(word_t b){
   return;
 }
 
-void show_bits_fmt(word_t b){
-  printf(ANSI_FMT("| ", ANSI_FG_PINK));
-  show_bits(b); 
-  printf(ANSI_FMT("  |", ANSI_FG_PINK));
-  putchar('\n');
-  return;
-}
-
-void show_decode(Decode *D){
-word_t src1   = D->decInfo.src1;
-word_t src2   = D->decInfo.src2;
-uint32_t dest = D->decInfo.rd;
-int type      = D->decInfo.type;
-printf(ANSI_FMT(" ---------------------------------------------------------------------------\n", ANSI_FG_YELLOW));
-  puts(ANSI_FMT("| Information about the just execuated instruction: \t\t\t    |", ANSI_FG_GREEN));
-  char buf[30];
-  disassemble(buf, sizeof(buf), D -> pc, (uint8_t *)(&D -> inst), 4);
-  printf(ANSI_FMT("| type-%c:  %32s \t\t\t\t    | \n| old PC = 0x%-60lx   |\n", ANSI_FG_GREEN),tp[type], buf, D -> pc);
-  printf(ANSI_FMT("| src1 = 0x%-64lx | \n", ANSI_FG_YELLOW), src1);   
-  show_bits_fmt(src1);
-  printf(ANSI_FMT("| src2 = 0x%-64lx | \n", ANSI_FG_YELLOW), src2);   
-  show_bits_fmt(src2);
-  int fct3 = D -> decInfo.funct3;
-  switch(type){  
-    case(TYPE_I):case(TYPE_R):case(TYPE_U):
-    if(D -> decInfo.is_load){
-      word_t address = src1 + src2;
-      word_t loadVal = Mr(src1 + src2, L_width(fct3));
-      printf(ANSI_FMT("| load a value 0x%-16lx from address: 0x%-24lx  | \n", ANSI_FG_YELLOW), loadVal, address);
-      show_bits_fmt(loadVal);
-      IFDEF(CONFIG_MTRACE_ENABLE, update_mringbuf(1, address, loadVal, dest));
-    }
-    else if(D->decInfo.is_jalr){
-      printf(ANSI_FMT("| jalr, set %s = 0x%-lx, new PC at 0x%lx. %s's bits are: \t\t|\n", ANSI_FG_YELLOW), reg_name(dest), src1, src2, reg_name(dest));
-      show_bits_fmt(src1);
-    }
-    else  {
-      printf(ANSI_FMT("| set %s = 0x%-60lx  | \n", ANSI_FG_YELLOW), reg_name(dest), R(dest)); 
-      show_bits_fmt(R(dest));
-    }
-    break;
-    case(TYPE_B):
-      if( src1 == 0){
-        printf(ANSI_FMT("| branch is not taken %-40s | \n",  ANSI_FG_YELLOW), " ");
-      }
-      else {
-        printf(ANSI_FMT("| branch is taken, new PC at 0x%-44lx | \n", ANSI_FG_YELLOW), src2);
-      }
-      break;
-    case(TYPE_J):
-      printf(ANSI_FMT("| jal, set %s = 0x%lx, new PC at 0x%-34lx | \n", ANSI_FG_YELLOW), reg_name(dest), src1, src2);
-      show_bits_fmt(src1);
-      break;
-    case(TYPE_S):{
-      word_t storeVal = src2 & BITMASK(S_width(fct3) << 3);
-      printf(ANSI_FMT("| store a value 0x%-16lx to address 0x%-27lx | \n", ANSI_FG_YELLOW), storeVal, src1);
-      show_bits_fmt(storeVal);
-      IFDEF(CONFIG_MTRACE_ENABLE, update_mringbuf(0, src1, storeVal, dest));
-      break;
-    }
-    default:  break;
-  }
-  printf(ANSI_FMT(" ---------------------------------------------------------------------------\n", ANSI_FG_YELLOW));
-}
-#endif
-
 #define JAL_TARGET      (immJ(inst) + D -> pc)
 #define BRANCH_TARGET   (immB(inst) + D -> pc)
 #define JALR_TARGET     (immI(inst) + R(rs1))
@@ -126,23 +58,6 @@ printf(ANSI_FMT(" --------------------------------------------------------------
 
 static int decode_exec(Decode *D) {
   D->dnpc = D->snpc;    //default
-/*
-#define INSTPAT_INST(D) ((D)->inst)
-//a match is found, do what it supposed to do.
-#define INSTPAT_MATCH(D, name, type, ... , body  ) { \
-  decode_operand(D, concat(TYPE_, type)); \
-  word_t src1 __attribute__((unused)) = D -> decInfo.src1;\
-  word_t src2 __attribute__((unused)) = D -> decInfo.src2;\
-  char dest   __attribute__((unused)) = D -> decInfo.rd;\
-  __VA_ARGS__ ; \
-  IFDEF(CONFIG_SHOW_DECODE_INFORMATION, show_decode(D));\
-  \
-  IFDEF(CONFIG_FTRACE_ENABLE, _ftrace(D));\
-}
-*/
-  //check one by one
-  //note that when we say inst(0), we are counting from the right side(LSB), but str(0) below starts at left side
-  //each pattern has its unique mask, key and shift
   /*
     some frequently used psedo inst:
       li rd, imm:  -> addi rd, x0, 0  load immediate
@@ -153,7 +68,7 @@ static int decode_exec(Decode *D) {
       auipc + addi : get the address of a section, or some label
   */
   //every case should carefully end up with a break
-  //do what it is only supposed to do. For exanple, we don't need to calculate the jump address before every case(Although in Verilog we may do this)
+  //do what it is only supposed to do. For exanple, we don't need to calculate the jump address before every case. THis will improve some performance
 
   uint32_t inst = D -> inst;
   unsigned char rd  = BITS(inst, 11, 7);

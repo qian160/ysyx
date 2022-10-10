@@ -3,9 +3,12 @@
 
 #include <common.h>
 
+enum {MTVEC, MSTATUS, MCAUSE};
+
 typedef struct {
   word_t gpr[32];
-  vaddr_t pc;
+  word_t pc;
+  word_t csr[3];
 } riscv64_CPU_state;
 
 // decode
