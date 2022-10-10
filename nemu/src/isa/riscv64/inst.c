@@ -3,7 +3,6 @@
 #include <cpu/ifetch.h>
 #include <cpu/decode.h>
 #include "../../../include/generated/autoconf.h"
-//#include "../../../include/isa.h"
 #include "../../../include/trace.h"   //load op will set ringbuf's rd
 
 extern void update_mringbuf(bool isLoad, word_t addr, word_t data, int rd);
@@ -257,8 +256,23 @@ static int decode_exec(Decode *D) {
     case(JALR):   D->decInfo.type = TYPE_I;    R(rd) = linkAddr; D -> dnpc = R(rs1) + immI(inst);   IFDEF(CONFIG_REF, printf("jalr, target at 0x%lx\n", R(rs1) + immI(inst)));    break;
     case(AUIPC):  D->decInfo.type = TYPE_U;    R(rd) = D -> pc + immU(inst);break;
     case(LUI):    D->decInfo.type = TYPE_U;    R(rd) = immU(inst);break;
-    case(EBREAK): NEMUTRAP(D->pc, R(10)); break;  //r(10) is a0,  ecall has the same opcode! need to improved, but there will never be an ecall
-    default: panic("bad inst\n");
+    case(SYS):{
+      switch(fct3){
+        case(0):{
+          switch(immI(inst)){
+            case(0):  panic("ecall not implemented\n");         break;//ecall
+            case(1):  NEMUTRAP(D->pc, R(10));   break;
+            default:  panic("bad sys inst\n");  break;
+          }
+        }
+        default:{   //csr
+          
+        }
+        break;
+      }
+    //NEMUTRAP(D->pc, R(10)); break;  //r(10) is a0,  ecall has the same opcode! need to improved, but there will never be an ecall
+      break;
+    }
   }
   R(0) = 0; // reset $zero to 0
 
@@ -269,13 +283,6 @@ static int decode_exec(Decode *D) {
 int isa_exec_once(Decode *D) {
   uint32_t inst = inst_fetch(&D -> snpc, 4);  //snpc will be updated in fetch ( +4 )
   D->inst = inst;
-   //set some decode flags here
-  /*
-  D -> decInfo.is_jalr  = opcode(inst) == jalr_opcode; 
-  D -> decInfo.is_lui   = BITS(inst, 5, 5);    //just a possibility
-  D -> decInfo.funct3   = funct3(inst);
-  D -> decInfo.is_load  = opcode(inst) == load_opcode;
-  */
 
   return decode_exec(D);
 }

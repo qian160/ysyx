@@ -3,13 +3,17 @@
 
 #include <common.h>
 
-enum {MTVEC, MSTATUS, MCAUSE};
+#define MTVEC   0x305
+#define MSTATUS 0x300
+#define MCAUSE  0x342
 
 typedef struct {
   word_t gpr[32];
   word_t pc;
   word_t csr[3];
 } riscv64_CPU_state;
+
+enum CSRMODE{RW = 1, RS, RC, RWI = 5, RS1, RCI};
 
 // decode
 typedef struct {
