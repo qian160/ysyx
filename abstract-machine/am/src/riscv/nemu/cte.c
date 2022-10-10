@@ -12,7 +12,7 @@ Context* __am_irq_handle(Context *c) {
   if (user_handler) {
     Event ev = {0};
     switch (syscall_num) {
-      case -1: ev.event = EVENT_YIELD; break;
+      case -1: ev.event = EVENT_YIELD; printf("yield\n");break;
       default: ev.event = EVENT_ERROR; break;
     }
 

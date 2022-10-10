@@ -1,7 +1,6 @@
 #include <common.h>
 
 static Context* do_event(Event e, Context* c) {
-  printf("%d\n",e.event );
   switch (e.event) {
     case EVENT_YIELD:
       printf("yield detected\n");
