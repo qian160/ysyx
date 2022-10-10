@@ -16,10 +16,10 @@ void isa_reg_display() {
     printf(ANSI_FMT("| %s:\t0x%-16lx\t|\t%s:\t0x%-16lx |\n", ANSI_FG_YELLOW), regs[i], gpr(i),regs[i+1], gpr(i+1));
   puts(ANSI_FMT("--------------------------------------------------------------------\n", ANSI_FG_YELLOW));
 
-  printf(ANSI_FMT("mtvec:   0x%-16lx\n", ANSI_FG_PINK), cpu.csr[MTVEC]);
-  printf(ANSI_FMT("mstatus: 0x%-16lx\n", ANSI_FG_PINK), cpu.csr[MSTATUS]);
-  printf(ANSI_FMT("mcause:  0x%-16lx\n", ANSI_FG_PINK), cpu.csr[MCAUSE]);
-  printf(ANSI_FMT("mepc:    0x%-16lx\n", ANSI_FG_PINK), cpu.csr[MEPC]);
+  printf(ANSI_FMT("mtvec:   0x%-16lx\n", ANSI_FG_PINK), cpu.mtvec);
+  printf(ANSI_FMT("mstatus: 0x%-16lx\n", ANSI_FG_PINK), cpu.mstatus);
+  printf(ANSI_FMT("mcause:  0x%-16lx\n", ANSI_FG_PINK), cpu.mcause);
+  printf(ANSI_FMT("mepc:    0x%-16lx\n", ANSI_FG_PINK), cpu.mepc);
   putchar('\n');
 }
 
