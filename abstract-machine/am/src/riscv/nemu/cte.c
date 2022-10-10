@@ -4,9 +4,9 @@
 #include <klib.h>
 static Context* (*user_handler)(Event, Context*) = NULL;
 
+//called by __am_asm_trap
 Context* __am_irq_handle(Context *c) {
 //  asm volatile ("j 0");
-while(1){};
   if (user_handler) {
     Event ev = {0};
     switch (c->mcause) {
