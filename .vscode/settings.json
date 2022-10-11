@@ -34,6 +34,8 @@
         "trap.h": "c",
         "host.h": "c",
         "limits": "c",
-        "isa.h": "c"
+        "isa.h": "c",
+        "proc.h": "c",
+        "files.h": "c"
     }
 }
