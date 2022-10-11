@@ -14,9 +14,8 @@ Context* __am_irq_handle(Context *c) {
     Event ev = {0};
     printf("call number: %d\n", syscall_num);
     c -> mepc += 4;   //need further consideration
-    if(syscall_num >= SYS_exit && syscall_num <= SYS_gettimeofday){
+    if(syscall_num >= SYS_exit && syscall_num <= SYS_gettimeofday)
       ev.event = EVENT_SYSCALL; //do_event will figure out the syscall 
-    }
     else if(syscall_num == -1)
       ev.event  = EVENT_YIELD;
     else{
