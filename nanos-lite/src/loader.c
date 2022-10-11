@@ -35,7 +35,7 @@ ELF Header:\n Entry point address:\t\t%p\n Start of program headers:\t\t%u\n \
 Start of section headers:\t\t%u\n---------------------------------------------\n",\
   elf_header.e_entry, elf_header.e_phoff, elf_header.e_shoff);
 
-  // check elf magic number           0x7f, 'E, 'L', 'F'(LSB TO MSB)
+  // check elf magic number           0x7f, 'E, 'L', 'F'
   assert(*(int*)elf_header.e_ident == 0x464c457f);
 
   // read and analyze each program header
@@ -46,7 +46,7 @@ Start of section headers:\t\t%u\n---------------------------------------------\n
     if(pgm_header.p_type == PT_LOAD) {
 
       printf("---------------------------------------------\n\
-Program Headers:\n Offset:\t0x%08x\n VirtAddr:\t%p\n FileSiz:\t0x%08x\n MemSiz:\t0x%08x\n\
+Program Headers:\n Offset:\t0x%8x\n VirtAddr:\t%p\n FileSiz:\t0x%8x\n MemSiz:\t0x%8x\n\
 ---------------------------------------------\n",\
         pgm_header.p_offset, pgm_header.p_vaddr, pgm_header.p_filesz, pgm_header.p_memsz);
 
