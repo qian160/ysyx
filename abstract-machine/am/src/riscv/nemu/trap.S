@@ -33,7 +33,7 @@ f(30) f(31)
 __am_asm_trap:
   addi sp, sp, -CONTEXT_SIZE
 
-  MAP(REGS, PUSH)
+  MAP(REGS, PUSH)       # save the context
 
   csrr t0, mcause
   csrr t1, mstatus
@@ -56,7 +56,7 @@ __am_asm_trap:
   csrw mstatus, t1
   csrw mepc, t2
 
-  MAP(REGS, POP)
+  MAP(REGS, POP)        # restore the context
 
   addi sp, sp, CONTEXT_SIZE
   mret

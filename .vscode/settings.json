@@ -36,6 +36,7 @@
         "limits": "c",
         "isa.h": "c",
         "proc.h": "c",
-        "files.h": "c"
+        "files.h": "c",
+        "fs.h": "c"
     }
 }

@@ -1,6 +1,7 @@
 #include <proc.h>
 #include <elf.h>
 #include <fs.h>
+#include <am.h>
 
 #ifdef __LP64__
 # define Elf_Ehdr Elf64_Ehdr
@@ -34,9 +35,10 @@ static uintptr_t loader(PCB *pcb, const char *filename) {
 ELF Header:\n Entry point address:\t\t%p\n Start of program headers:\t\t%u\n \
 Start of section headers:\t\t%u\n---------------------------------------------\n",\
   elf_header.e_entry, elf_header.e_phoff, elf_header.e_shoff);
-
+printf("%s\n", __ISA__);
   // check elf magic number           0x7f, 'E, 'L', 'F'(LSB TO MSB)
   assert(*(int*)elf_header.e_ident == 0x464c457f);
+  
 
   // read and analyze each program header
   for(int i = 0; i < elf_header.e_phnum; ++i) {
@@ -46,7 +48,7 @@ Start of section headers:\t\t%u\n---------------------------------------------\n
     if(pgm_header.p_type == PT_LOAD) {
 
       printf("---------------------------------------------\n\
-Program Headers:\n Offset:\t%08x\n VirtAddr:\t%x\n FileSiz:\t%08x\n MemSiz:\t%08x\n\
+Program Headers:\n Offset:\t%08x\n VirtAddr:\t%p\n FileSiz:\t%08x\n MemSiz:\t%08x\n\
 ---------------------------------------------\n",\
         pgm_header.p_offset, pgm_header.p_vaddr, pgm_header.p_filesz, pgm_header.p_memsz);
 

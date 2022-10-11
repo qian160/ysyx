@@ -1,6 +1,6 @@
 #include <common.h>
 
-extern uint8_t ramdisk_start;
+extern uint8_t ramdisk_start;   //set by .incbin
 extern uint8_t ramdisk_end;
 #define RAMDISK_SIZE ((&ramdisk_end) - (&ramdisk_start))
 
