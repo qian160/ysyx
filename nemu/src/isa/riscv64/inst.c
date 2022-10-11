@@ -296,7 +296,7 @@ static int decode_exec(Decode *D) {
       break;
     }
   }
-  printf("pc: 0x%lx\n", D->pc);
+  //printf("pc: 0x%lx\n", D->pc);
   R(0) = 0; // reset $zero to 0
 
   //IFDEF(CONFIG_REF, Log("\nwdata = 0x%lx\npc = 0x%8lx, inst = 0x%08x,  rd = %d\n", opcode == BRANCH? 0: R(rd), D->pc, inst, rd));
