@@ -51,9 +51,9 @@ Start of section headers:\t\t%u\n---------------------------------------------\n
 
     if(pgm_header.p_type == PT_LOAD) {
 
-      printf("---------------------------------------------\n\n\
+      printf("---------------------------------------------\n\
 Program Headers:\n Offset:\t%08x\n VirtAddr:\t%p\n FileSiz:\t%08x\n MemSiz:\t%08x\n\
----------------------------------------------\n",\
+---------------------------------------------\n\n",\
         pgm_header.p_offset, pgm_header.p_vaddr, pgm_header.p_filesz, pgm_header.p_memsz);
 
       // read segment and write into memery
