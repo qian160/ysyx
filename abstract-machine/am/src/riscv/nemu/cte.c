@@ -4,8 +4,6 @@
 #include "../../../../../navy-apps/libs/libos/src/syscall.h"
 #include <klib.h>
 
-extern struct CPU_state cpu;
-
 #define syscall_num c -> gpr[17]    //a7
 static Context* (*user_handler)(Event, Context*) = NULL;    // do_event
 
