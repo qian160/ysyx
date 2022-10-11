@@ -53,6 +53,8 @@ intptr_t _syscall_(intptr_t type, intptr_t a0, intptr_t a1, intptr_t a2) {
   return ret;
 }
 
+//why not using array of function pointer?
+
 void _exit(int status) {
   _syscall_(SYS_exit, status, 0, 0);
   while (1);
@@ -180,4 +182,8 @@ int symlink(const char *target, const char *linkpath) {
 
 int ioctl(int fd, unsigned long request, ...) {
   return -1;
+}
+
+int _yield() {
+  return 0;
 }
