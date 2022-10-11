@@ -79,6 +79,6 @@ Start of section headers:\t\t%u\n\n\n",\
 void naive_uload(PCB *pcb, const char *filename) {
   uintptr_t entry = loader(pcb, filename);
   Log("Jump to entry = %p", entry);
-  ((void(*)())entry) ();
+  ((void(*)())entry) ();    //_start(defined in riscv.S), temp addres at 0x83000438
 }
 
