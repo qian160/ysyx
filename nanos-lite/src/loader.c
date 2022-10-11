@@ -36,21 +36,10 @@ ELF Header:\n Entry point address:\t\t%p\n Start of program headers:\t\t%u\n \
 Start of section headers:\t\t%u\n---------------------------------------------\n",\
   elf_header.e_entry, elf_header.e_phoff, elf_header.e_shoff);
 
-  switch (__ISA__[0])
-  {
-  case ('r'):
-    printf("nishiyige\n\n\n");
-    /* code */
-    break;
-  
-  default:
-  printf("%d\n\n\n", __ISA__[0]);
-    break;
-  }
   // check elf magic number           0x7f, 'E, 'L', 'F'(LSB TO MSB)
   assert(*(int*)elf_header.e_ident == 0x464c457f);
-  
-
+  printf("%d\n\n\n", __ISA__);
+  //elf_header.e_machine == EM_RISCV;
   // read and analyze each program header
   for(int i = 0; i < elf_header.e_phnum; ++i) {
     fs_lseek(elf_fd, elf_header.e_phoff + i*sizeof(Elf_Phdr), SEEK_SET); // 0+64
