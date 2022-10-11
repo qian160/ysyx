@@ -5,7 +5,7 @@ extern void do_syscall(Context *c);
 static Context* do_event(Event e, Context* c) {
   switch (e.event) {
     case EVENT_YIELD:
-      Log("\nyield\n. Do nothing now\n");
+      Log("\nyield. Do nothing now\n");
       break;
     case EVENT_SYSCALL:
       do_syscall(c);
