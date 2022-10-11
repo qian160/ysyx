@@ -46,7 +46,7 @@ Start of section headers:\t\t%u\n---------------------------------------------\n
     if(pgm_header.p_type == PT_LOAD) {
 
       printf("---------------------------------------------\n\
-Program Headers:\n Offset:\t0x%08x\n VirtAddr:\t%p\n FileSiz:\t0x%08x\n MemSiz:\t0x%08x\n\
+        Program Headers:\n Offset:\t0x%08x\n VirtAddr:\t%p\n FileSiz:\t0x%08x\n MemSiz:\t0x%08x\n\
 ---------------------------------------------\n",\
         pgm_header.p_offset, pgm_header.p_vaddr, pgm_header.p_filesz, pgm_header.p_memsz);
 
