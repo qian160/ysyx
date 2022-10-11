@@ -7,7 +7,7 @@
 #define syscall_num c -> gpr[17]    //a7
 static Context* (*user_handler)(Event, Context*) = NULL;    // do_event
 
-//called by __am_asm_trap
+//called by __am_asm_trap. the arg is in fact SP
 Context* __am_irq_handle(Context *c) {
   //find the irq reason by examing a7
   if (user_handler) {
@@ -18,7 +18,7 @@ Context* __am_irq_handle(Context *c) {
       ev.event = EVENT_SYSCALL; //do_event will figure out the syscall 
     else if(syscall_num == -1)
       ev.event  = EVENT_YIELD;
-    else{
+    else {
       switch (syscall_num) {
         default: ev.event = EVENT_ERROR; break;
       }
@@ -27,7 +27,6 @@ Context* __am_irq_handle(Context *c) {
     c = user_handler(ev, c);    //do_event
     assert(c != NULL);
   }
-
   return c;
 }
 

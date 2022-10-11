@@ -23,5 +23,5 @@ void do_syscall(Context *c) {
 
     default: panic("Unhandled syscall ID = %d", a7);
   }
-  Log("syscall %d handled successfully\n", a7);
+  Log("syscall %d ended\n", a7);
 }

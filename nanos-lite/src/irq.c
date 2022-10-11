@@ -9,11 +9,11 @@ static Context* do_event(Event e, Context* c) {
       break;
     case EVENT_SYSCALL:
       do_syscall(c);
-    break;
+      break;
     default: panic("Unhandled event ID = %d", e.event);
   }
 
-  return c;
+  return c;   //return value is kept in a0
 }
 
 void init_irq(void) {
