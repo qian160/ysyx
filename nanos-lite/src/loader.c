@@ -38,10 +38,11 @@ Start of section headers:\t\t%u\n\n\n",\
   // check elf magic number           0x7f, 'E, 'L', 'F'(LSB TO MSB)
   assert(*(int*)elf_header.e_ident == 0x464c457f);
 
-  if(strcmp(__ISA__, "riscv64") == 0)
+#if defined (__ISA_RISCV64__)
     assert(elf_header.e_machine == EM_RISCV);
-  else if(strcmp(__ISA__, "naive") == 0)
+#elif defined (__ISA_X86_64)
     assert(elf_header.e_machine == EM_X86_64);
+#endif
 
   // read and analyze each program header
   for(int i = 0; i < elf_header.e_phnum; ++i) {

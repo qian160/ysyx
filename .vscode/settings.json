@@ -37,6 +37,7 @@
         "isa.h": "c",
         "proc.h": "c",
         "files.h": "c",
-        "fs.h": "c"
+        "fs.h": "c",
+        "syscall.h": "c"
     }
 }

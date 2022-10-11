@@ -9,7 +9,7 @@ typedef struct {
   size_t disk_offset;
   ReadFn read;
   WriteFn write;
-  size_t file_offset;
+  size_t file_offset;   //fseek
 } Finfo;
 
 enum {FD_STDIN, FD_STDOUT, FD_STDERR, FD_FB, FD_RAMDISK};
