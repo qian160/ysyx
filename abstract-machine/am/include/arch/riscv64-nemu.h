@@ -7,9 +7,9 @@ struct Context {
   void *pdir;
 };
 
-#define GPR1 gpr[17] // a7
-#define GPR2 gpr[0]
-#define GPR3 gpr[0]
-#define GPR4 gpr[0]
-#define GPRx gpr[0]
+#define CALL_NUMBER   gpr[17]  // a7
+#define SYSCALL_ARG1  gpr[10]  // a0
+#define SYSCALL_ARG2  gpr[11]  // a1
+#define SYSCALL_ARG3  gpr[12]  // a2
+#define SYSCALL_RETV  gpr[10]  // a0
 #endif
