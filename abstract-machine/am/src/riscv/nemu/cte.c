@@ -48,7 +48,6 @@ Context *kcontext(Area kstack, void (*entry)(void *), void *arg) {
 }
 
 void yield() {
-  halt(0);
   //a7 is the syscall number. Improve event_yield to be syscall_yield so it can be dealt uniformly
   asm volatile("li a7, -1; ecall");   //x17, the handler is '__am_asm_trap'(in trap.S), which will call 'do_event'(in irq.c)
 }
