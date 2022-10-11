@@ -38,7 +38,7 @@ Start of section headers:\t\t%u\n---------------------------------------------\n
 
   // check elf magic number           0x7f, 'E, 'L', 'F'(LSB TO MSB)
   assert(*(int*)elf_header.e_ident == 0x464c457f);
-  printf("%d\n\n\n", __ISA__);
+  printf("%s\n\n\n", __ISA__);
   //elf_header.e_machine == EM_RISCV;
   // read and analyze each program header
   for(int i = 0; i < elf_header.e_phnum; ++i) {
