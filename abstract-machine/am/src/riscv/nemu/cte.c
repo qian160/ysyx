@@ -12,6 +12,7 @@ Context* __am_irq_handle(Context *c) {
   if (user_handler) {
     Event ev = {0};
     c -> mepc += 4;   //need further consideration
+    printf("111");
     if(syscall_num >= SYS_exit && syscall_num <= SYS_gettimeofday){
       ev.event = EVENT_SYSCALL; //do_event will figure out the syscall 
     }
@@ -22,7 +23,6 @@ Context* __am_irq_handle(Context *c) {
         default: ev.event = EVENT_ERROR; break;
       }
     }
-
 
     c = user_handler(ev, c);    //do_event
     assert(c != NULL);
