@@ -38,8 +38,8 @@ Start of section headers:\t\t%u\n---------------------------------------------\n
 
   // check elf magic number           0x7f, 'E, 'L', 'F'(LSB TO MSB)
   assert(*(int*)elf_header.e_ident == 0x464c457f);
-  printf("%s\n\n\n", __ISA__);
-  //elf_header.e_machine == EM_RISCV;
+  if(strcmp(__ISA__, "riscv64") == 0)
+    assert(elf_header.e_machine == EM_RISCV);
   // read and analyze each program header
   for(int i = 0; i < elf_header.e_phnum; ++i) {
     fs_lseek(elf_fd, elf_header.e_phoff + i*sizeof(Elf_Phdr), SEEK_SET); // 0+64
