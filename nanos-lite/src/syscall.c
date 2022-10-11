@@ -10,7 +10,7 @@ extern size_t fs_lseek(int fd, size_t offset, int whence);
 
 void do_syscall(Context *c) {
   uintptr_t a7 = c -> CALL_NUMBER;
-  
+  Log("1");
   uintptr_t _a0  __attribute__((unused))= c -> SYSCALL_ARG1;
   uintptr_t _a1  __attribute__((unused))= c -> SYSCALL_ARG2;
   uintptr_t _a2  __attribute__((unused))= c -> SYSCALL_ARG3;
