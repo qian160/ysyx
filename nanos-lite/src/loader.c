@@ -44,6 +44,7 @@ Start of section headers:\t\t%u\n---------------------------------------------\n
     break;
   
   default:
+  printf("%d\n\n\n", __ISA__[0]);
     break;
   }
   // check elf magic number           0x7f, 'E, 'L', 'F'(LSB TO MSB)
