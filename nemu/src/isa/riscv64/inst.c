@@ -278,7 +278,7 @@ static int decode_exec(Decode *D) {
             case(1):  NEMUTRAP(D->pc, R(10));     break;  // ebreak
             case(0x302):                                  // mret
               D -> dnpc = cpu.mepc;
-              Log("\nmret at pc: 0x%lx\n", D -> pc);
+              Log("\nmret at pc: 0x%lx. return to 0x%lx\n", D -> pc, cpu.mepc);
               break;
             default:  panic("bad sys inst\n");    break;
           }
