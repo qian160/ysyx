@@ -35,7 +35,17 @@ static uintptr_t loader(PCB *pcb, const char *filename) {
 ELF Header:\n Entry point address:\t\t%p\n Start of program headers:\t\t%u\n \
 Start of section headers:\t\t%u\n---------------------------------------------\n",\
   elf_header.e_entry, elf_header.e_phoff, elf_header.e_shoff);
-printf("%s\n", __ISA__);
+
+  switch (__ISA__[0])
+  {
+  case ('r'):
+    printf("nishiyige\n\n\n");
+    /* code */
+    break;
+  
+  default:
+    break;
+  }
   // check elf magic number           0x7f, 'E, 'L', 'F'(LSB TO MSB)
   assert(*(int*)elf_header.e_ident == 0x464c457f);
   
