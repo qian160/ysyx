@@ -33,7 +33,7 @@ static uintptr_t loader(PCB *pcb, const char *filename) {
 
   printf("---------------------------------------------\n\
 ELF Header:\n Entry point address:\t\t%p\n Start of program headers:\t\t%u\n \
-Start of section headers:\t\t%u\n---------------------------------------------\n",\
+Start of section headers:\t\t%u\n---------------------------------------------\n\n",\
   elf_header.e_entry, elf_header.e_phoff, elf_header.e_shoff);
 
   // check elf magic number           0x7f, 'E, 'L', 'F'(LSB TO MSB)
