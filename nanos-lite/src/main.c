@@ -6,7 +6,10 @@ void init_ramdisk(void);
 void init_irq(void);
 void init_fs(void);
 void init_proc(void);
-
+/*
+    yield ->  ecall with syscall_num '-1'  ->  pc <= mtvec(__am_asm_trap)  ->  __am_irq_handle[find the event type according to the syscall number? then call another function]
+          ->  do_event    ->  back to __am_asm_trap ->  mret
+*/
 int main() {
   extern const char logo[];
   printf("%s", logo);
