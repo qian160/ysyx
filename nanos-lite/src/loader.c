@@ -31,7 +31,7 @@ static uintptr_t loader(PCB *pcb, const char *filename) {
   fs_read(elf_fd, &elf_header, sizeof(Elf_Ehdr));
 
   printf("---------------------------------------------\n\
-ELF Header:\n Entry point address:\t\t%p\n Start of program headers:\t\t%u\n\
+ELF Header:\n Entry point address:\t\t%p\n Start of program headers:\t\t%u\n \
 Start of section headers:\t\t%u\n---------------------------------------------\n",\
   elf_header.e_entry, elf_header.e_phoff, elf_header.e_shoff);
 
