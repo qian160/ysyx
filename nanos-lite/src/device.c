@@ -27,7 +27,14 @@ size_t serial_write(const void *buf, size_t offset, size_t len) {
 
 
 size_t events_read(void *buf, size_t offset, size_t len) {
-  return 0;
+  size_t nread = 0;
+  while(len -- ){
+    char key = io_read(AM_INPUT_KEYBRD).keycode;
+    if(key == AM_KEY_NONE)  break;
+    *(char *)buf ++ =  key;
+    nread ++;
+  }
+  return nread;
 }
 
 size_t dispinfo_read(void *buf, size_t offset, size_t len) {
