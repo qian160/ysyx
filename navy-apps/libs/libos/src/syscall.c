@@ -75,6 +75,7 @@ void * _brk = &_end;
 void *_sbrk(intptr_t increment) {
   if(_syscall_(SYS_brk, _brk, increment, 0)==0) {
     void *brk_ret = _brk;
+    write(1, "_sbrk\n", 6);
     _brk += increment;
     return brk_ret;
   }
