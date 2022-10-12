@@ -47,6 +47,7 @@ size_t events_read(void *buf, size_t offset, size_t len) {
   //   assert(0);
   //   return 0;
   // }
+  sprintf(buf, "Got [%s] (%s)\n", keyname[key.keycode], tag);
   Log("Got  (kbd): %s (%d) %s\n", keyname[key.keycode], key.keycode, key.keydown ? "DOWN" : "UP");
   
   return 1;
