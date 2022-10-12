@@ -284,12 +284,12 @@ static int decode_exec(Decode *D) {
           }
           break;
         }
-        case(CSRRW):  R(rd) = *getCSR(immI(inst));    *getCSR(immI(inst)) = R(rs1);           break;
-        case(CSRRS):  R(rd) = *getCSR(immI(inst));    *getCSR(immI(inst)) = R(rs1) |  R(rs1); break;
-        case(CSRRC):  R(rd) = *getCSR(immI(inst));    *getCSR(immI(inst)) = R(rs1) & ~R(rs1); break;
-        case(CSRRWI): R(rd) = *getCSR(immI(inst));    *getCSR(immI(inst)) = R(rs1);           break;
-        case(CSRRSI): R(rd) = *getCSR(immI(inst));    *getCSR(immI(inst)) = R(rs1) |  rs1;    break;
-        case(CSRRCI): R(rd) = *getCSR(immI(inst));    *getCSR(immI(inst)) = R(rs1) & ~SEXT(rs1, 5); break;
+        case(CSRRW):  R(rd) = *getCSR(immI(inst));    *getCSR(immI(inst))  =  R(rs1);           break;
+        case(CSRRS):  R(rd) = *getCSR(immI(inst));    *getCSR(immI(inst)) |=  R(rs1); break;
+        case(CSRRC):  R(rd) = *getCSR(immI(inst));    *getCSR(immI(inst)) &= ~R(rs1); break;
+        case(CSRRWI): R(rd) = *getCSR(immI(inst));    *getCSR(immI(inst)) =   SEXT(rs1, 5);           break;
+        case(CSRRSI): R(rd) = *getCSR(immI(inst));    *getCSR(immI(inst)) |=  SEXT(rs1, 5);    break;
+        case(CSRRCI): R(rd) = *getCSR(immI(inst));    *getCSR(immI(inst)) &= ~SEXT(rs1, 5); break;
 
       }
     //NEMUTRAP(D->pc, R(10)); break;  //r(10) is a0,  ecall has the same opcode! need to improved, but there will never be an ecall
