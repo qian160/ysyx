@@ -30,7 +30,7 @@ size_t events_read(void *buf, size_t offset, size_t len) {
   AM_INPUT_KEYBRD_T key = io_read(AM_INPUT_KEYBRD);
   if(key.keycode == AM_KEY_NONE)  return 0;
 
-  char *tag = key.keydown ? "kd " : "ku ";
+  char *tag = key.keydown ? "keydown " : "keyup ";
   //if (real_length <= len){
   strcpy(buf, tag);
   // }else {
