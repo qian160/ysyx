@@ -31,7 +31,6 @@ size_t events_read(void *buf, size_t offset, size_t len) {
   AM_INPUT_KEYBRD_T key = io_read(AM_INPUT_KEYBRD);
   printf("keycode: %d,  down:%d\n", key.keycode, key.keydown);
   if(key.keycode == AM_KEY_NONE)  return 0;
-  while(1);
   char *tag = key.keydown ? "keydown " : "keyup ";
   strcpy(buf, tag);
   
