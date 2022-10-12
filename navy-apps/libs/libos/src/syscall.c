@@ -73,11 +73,11 @@ extern char _end;
 void * _brk = &_end;
 
 void *_sbrk(intptr_t increment) {
+  while(1);
   assert(0);
   if(_syscall_(SYS_brk, (intptr_t)_brk, increment, 0)==0) {     // always return 0 now
     void *brk_ret = _brk;
     _brk += increment;
-    char buf[100];
     return brk_ret;
   }
   else
