@@ -1,6 +1,7 @@
 #include <common.h>
 #include "syscall.h"
 #include "../../navy-apps/libs/libos/src/syscall.h"
+#include <sys/time.h>
 
 extern int fs_open(const char *pathname, int flags, int mode);
 extern size_t fs_read(int fd, void *buf, size_t len);
@@ -17,6 +18,15 @@ extern size_t fs_lseek(int fd, size_t offset, int whence);
 
 #define _ret c -> SYSCALL_RETV
 
+
+int tm_get(struct timeval *tv, struct timezone *tz) {
+  static uint64_t us;
+  ioe_read(AM_TIMER_UPTIME, &us);
+  tv->tv_sec  = us / (uint64_t)10e6;
+  tv->tv_usec = us % (uint64_t)10e6;
+  return 0;
+}
+
 void do_syscall(Context *c) {
   uintptr_t a7 = c -> CALL_NUMBER;
   uintptr_t  _a0  __attribute__((unused)) = c -> SYSCALL_ARG1;
@@ -32,6 +42,8 @@ void do_syscall(Context *c) {
     case SYS_lseek:   _ret = fs_lseek(_a0, _a1, _a2);  break;
     case SYS_open:    _ret = fs_open((char*)_a0, _a1, _a2);   break;
     case SYS_close:   _ret = 0;   break;
+    case SYS_gettimeofday:
+            _ret = tm_get((struct timeval*)_a0,NULL); break;
     default: panic("Unhandled syscall ID = %d", a7);
   }
 }
