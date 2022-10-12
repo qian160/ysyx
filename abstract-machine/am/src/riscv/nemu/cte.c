@@ -16,8 +16,6 @@ Context* __am_irq_handle(Context *c) {
     c -> mepc += 4;   //need further consideration
     if(syscall_num >= SYS_exit && syscall_num <= SYS_gettimeofday)
       ev.event = EVENT_SYSCALL; //do_event will figure out the syscall 
-    else if(syscall_num == -1)
-      ev.event  = EVENT_YIELD;
     else {
       switch (syscall_num) {
         default: ev.event = EVENT_ERROR; break;
@@ -47,8 +45,9 @@ Context *kcontext(Area kstack, void (*entry)(void *), void *arg) {
 }
 
 void yield() {
-  //a7 is the syscall number. Improve event_yield to be syscall_yield so it can be dealt uniformly
-  //asm volatile("li a7, -1; ecall");   //x17, the handler is '__am_asm_trap'(in trap.S), which will call 'do_event'(in irq.c)
+  // a7 is the syscall number. Improve event_yield to be syscall_yield so it can be dealt uniformly
+  // x17, the handler is '__am_asm_trap'(in trap.S), which will call 'do_event'(in irq.c)
+  //asm volatile("li a7, -1; ecall");
   printf("yield. do nothing\n");
 }
 

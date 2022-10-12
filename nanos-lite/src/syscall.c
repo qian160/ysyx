@@ -8,20 +8,32 @@ extern size_t fs_write(int fd, const void *buf, size_t len);
 extern size_t fs_lseek(int fd, size_t offset, int whence);
 // extern int fs_close(int fd);
 
+size_t write(uint32_t fd, char *buf, size_t len) {
+  size_t ret = 0;
+  if(fd == 1 || fd == 2){
+    while(len-- && *buf) {
+      putch(*buf++);
+      ret ++;
+    }
+  }
+  return ret;
+}
+
 void do_syscall(Context *c) {
   uintptr_t a7 = c -> CALL_NUMBER;
-  uintptr_t _a0  __attribute__((unused))= c -> SYSCALL_ARG1;
-  uintptr_t _a1  __attribute__((unused))= c -> SYSCALL_ARG2;
-  uintptr_t _a2  __attribute__((unused))= c -> SYSCALL_ARG3;
-  uintptr_t _ret __attribute__((unused));
+  uintptr_t _a0  __attribute__((unused)) = c -> SYSCALL_ARG1;
+  uintptr_t _a1  __attribute__((unused)) = c -> SYSCALL_ARG2;
+  uintptr_t _a2  __attribute__((unused)) = c -> SYSCALL_ARG3;
+  uintptr_t _ret __attribute__((unused)) = _a0;
 
   switch (a7) {
     case SYS_yield:   yield();    break;
     case SYS_exit:    halt(_a0);  break;
     //case SYS_read:
-    //case SYS_write: _ret = fs_write(_a0, (char *)_a1, _a2); break;
+    case SYS_write:   _ret = write(_a0, (char *)_a1, _a2);//fs_write(_a0, (char *)_a1, _a2); break;
 
     default: panic("Unhandled syscall ID = %d", a7);
   }
-  Log("syscall %d ended\n", a7);
+  c -> SYSCALL_RETV = _ret;
 }
+
