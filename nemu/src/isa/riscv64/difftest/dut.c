@@ -10,7 +10,10 @@ bool isa_difftest_checkregs(vaddr_t pc, CPU_state *ref_r, vaddr_t dnpc) {
     }
   }
   //printf("\n\ncpu.pc: 0x%lx \t ref.pc: 0x%lx\n", cpu.pc, ref_r->pc);
-  if(cpu.pc  ^ ref_r -> pc)  return false;
+  if(cpu.pc  ^ ref_r -> pc) {
+    Log_Color(RED, "bad pc: 0x%lx.\texpected: 0x%lx\n", cpu.pc, ref_r->pc);
+    return false;
+  }
   return true;
 }
 
