@@ -16,6 +16,7 @@ enum {
   SR,
   COND_OR,
   REG,
+  EPC,
   PC,
   MINUS,
   POINTER,        //can't be distinguished directly. need also to check the previous token's type
@@ -114,6 +115,7 @@ static struct rule {
   {"'[a-zA-Z0-9]'",   CHAR,     0},
   {"\\$[pP][cC]",     PC,       0},
   {"\\$[a-zA-Z0-9]+", REG,      0},
+  {"[mM][eE][pP][cC]",EPC,      0},
   {" +",              NOTYPE,   0},   // multiple spaces, not addition
   {"\\s+",            NOTYPE,   0},   // white spaces
 
@@ -234,9 +236,9 @@ static int dominant_operator(int start, int end)
   for (int i = start; i <= end;i ++)
   {		
     int type = tokens[i].type; 
-    if (type == HEXNUM || type == DECNUM || type == REG || type == PC || type == CHAR)
-      continue;
     //number can't be operator
+    if (type == HEXNUM || type == DECNUM || type == REG || type == PC || type == CHAR || type == EPC)
+      continue;
     if(type == LEFT){
       PS.priv[PS.top++] = pri_min;    //temporarily refuse any requests
       pri_min = -1;
@@ -347,6 +349,9 @@ word_t calculate(int p, int q, bool * success){
     }
     else if(type == CHAR){
       return tk_val[1];
+    }
+    else if(type == EPC){
+      return cpu.mepc;
     }
     else{   //the single token should be of numeric type, not others
       Log("bad token: %s\n", tk_val);

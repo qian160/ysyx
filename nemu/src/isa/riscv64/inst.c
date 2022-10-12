@@ -262,10 +262,10 @@ static int decode_exec(Decode *D) {
       break;
     }
 
-    case(JAL):    D->decInfo.type = TYPE_J;    R(rd) = linkAddr; D -> dnpc = D -> pc + immJ(inst);  IFDEF(CONFIG_REF, printf("jal, target at 0x%lx\n", D -> pc + immJ(inst)));    break;
-    case(JALR):   D->decInfo.type = TYPE_I;    R(rd) = linkAddr; D -> dnpc = R(rs1) + immI(inst);   IFDEF(CONFIG_REF, printf("jalr, target at 0x%lx\n", R(rs1) + immI(inst)));    break;
-    case(AUIPC):  D->decInfo.type = TYPE_U;    R(rd) = D -> pc + immU(inst);break;
-    case(LUI):    D->decInfo.type = TYPE_U;    R(rd) = immU(inst);break;
+    case(JAL):    D->decInfo.type = TYPE_J;    R(rd) = linkAddr; D -> dnpc = D -> pc + immJ(inst);     break;
+    case(JALR):   D->decInfo.type = TYPE_I;    D -> dnpc = R(rs1) + immI(inst); R(rd) = linkAddr;      break;   //R(rd)=xxx must be execuated later!!!!!!!! or the jump target may be wrong(when rs1 = rd)
+    case(AUIPC):  D->decInfo.type = TYPE_U;    R(rd) = D -> pc + immU(inst);  break;
+    case(LUI):    D->decInfo.type = TYPE_U;    R(rd) = immU(inst);            break;
     case(SYS):{
       switch(fct3){
         case(0):{
@@ -273,21 +273,23 @@ static int decode_exec(Decode *D) {
             case(0):                                      // ecall
               D-> dnpc = cpu.mtvec;
               cpu.mepc = D->pc;
+              Log("\necall at pc: 0x%lx\n", D -> pc);
               break;  // ecall
             case(1):  NEMUTRAP(D->pc, R(10));     break;  // ebreak
             case(0x302):                                  // mret
               D -> dnpc = cpu.mepc;
+              Log("\nmret at pc: 0x%lx. return to 0x%lx\n", D -> pc, cpu.mepc);
               break;
             default:  panic("bad sys inst\n");    break;
           }
           break;
         }
-        case(CSRRW):  R(rd) = *getCSR(immI(inst));    *getCSR(immI(inst)) = R(rs1);           break;
-        case(CSRRS):  R(rd) = *getCSR(immI(inst));    *getCSR(immI(inst)) = R(rs1) |  R(rs1); break;
-        case(CSRRC):  R(rd) = *getCSR(immI(inst));    *getCSR(immI(inst)) = R(rs1) & ~R(rs1); break;
-        case(CSRRWI): R(rd) = *getCSR(immI(inst));    *getCSR(immI(inst)) = R(rs1);           break;
-        case(CSRRSI): R(rd) = *getCSR(immI(inst));    *getCSR(immI(inst)) = R(rs1) |  rs1;    break;
-        case(CSRRCI): R(rd) = *getCSR(immI(inst));    *getCSR(immI(inst)) = R(rs1) & ~SEXT(rs1, 5); break;
+        case(CSRRW):  R(rd) = *getCSR(immI(inst));    *getCSR(immI(inst))  =  R(rs1);           break;
+        case(CSRRS):  R(rd) = *getCSR(immI(inst));    *getCSR(immI(inst)) |=  R(rs1);           break;
+        case(CSRRC):  R(rd) = *getCSR(immI(inst));    *getCSR(immI(inst)) &= ~R(rs1);           break;
+        case(CSRRWI): R(rd) = *getCSR(immI(inst));    *getCSR(immI(inst)) =   SEXT(rs1, 5);     break;
+        case(CSRRSI): R(rd) = *getCSR(immI(inst));    *getCSR(immI(inst)) |=  SEXT(rs1, 5);     break;
+        case(CSRRCI): R(rd) = *getCSR(immI(inst));    *getCSR(immI(inst)) &= ~SEXT(rs1, 5);     break;
 
       }
     //NEMUTRAP(D->pc, R(10)); break;  //r(10) is a0,  ecall has the same opcode! need to improved, but there will never be an ecall
@@ -295,7 +297,8 @@ static int decode_exec(Decode *D) {
     }
   }
   R(0) = 0; // reset $zero to 0
-
+  Assert( D-> dnpc != D -> pc, "dead loop at 0x%lx\n", cpu.pc);
+  printf("pc = 0x%lx, dnpc = 0x%lx\n", D->pc, D->dnpc);
   //IFDEF(CONFIG_REF, Log("\nwdata = 0x%lx\npc = 0x%8lx, inst = 0x%08x,  rd = %d\n", opcode == BRANCH? 0: R(rd), D->pc, inst, rd));
   return 0;
 }
