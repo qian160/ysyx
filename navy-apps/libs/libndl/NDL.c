@@ -16,6 +16,7 @@ uint32_t NDL_GetTicks() {
   return time_val.tv_sec*1000 + time_val.tv_usec/1000 - NDL_INIT_TIME;
 }
 
+
 int NDL_PollEvent(char *buf, int len) {
   return 0;
 }
