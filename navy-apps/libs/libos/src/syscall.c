@@ -74,14 +74,12 @@ void * _brk = &_end;
 
 void *_sbrk(intptr_t increment) {
   if(_syscall_(SYS_brk, (intptr_t)_brk, increment, 0)==0) {     // always return 0 now
-  while(1);
     void *brk_ret = _brk;
     _brk += increment;
-    while(1);
     return brk_ret;
   }
   else
-  write(1, "_sbrk failed\n", 14);
+    write(1, "_sbrk failed\n", 14);
   return (void *)-1;
 }
 
