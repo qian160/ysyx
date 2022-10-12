@@ -27,7 +27,7 @@ void do_syscall(Context *c) {
     case SYS_yield:   yield();    break;
     case SYS_exit:    halt(_a0);  break;
     case SYS_read:    _ret = fs_read(_a0, (char*)_a1, _a2);   break;
-    case SYS_write:   putch('1');break;//_ret = fs_write(_a0, (char*)_a1, _a2);  break;//fs_write(_a0, (char *)_a1, _a2); break;
+    case SYS_write:   _ret = fs_write(_a0, (char*)_a1, _a2);  break;//fs_write(_a0, (char *)_a1, _a2); break;
     case SYS_brk:     _ret = 0;   break;
     case SYS_lseek:   _ret = fs_lseek(_a0, _a1, _a2);  break;
     case SYS_open:    _ret = fs_open((char*)_a0, _a1, _a2);   break;
