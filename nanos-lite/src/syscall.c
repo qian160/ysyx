@@ -38,7 +38,7 @@ void do_syscall(Context *c) {
     case SYS_exit:    halt(_a0);  break;
     //case SYS_read:
     case SYS_write:   _ret = write(_a0, (char *)_a1, _a2); break;//fs_write(_a0, (char *)_a1, _a2); break;
-    case SYS_brk:     _ret = 0;  printf("brk\n"); break;
+    case SYS_brk:     _ret = 0;   break;
 
     default: panic("Unhandled syscall ID = %d", a7);
   }
