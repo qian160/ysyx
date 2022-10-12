@@ -115,7 +115,7 @@ static struct rule {
   {"'[a-zA-Z0-9]'",   CHAR,     0},
   {"\\$[pP][cC]",     PC,       0},
   {"\\$[a-zA-Z0-9]+", REG,      0},
-  {"[$]{0,}[mM][eE][pP][cC]",EPC,      0},
+  {"[mM][eE][pP][cC]",EPC,      0},
   {" +",              NOTYPE,   0},   // multiple spaces, not addition
   {"\\s+",            NOTYPE,   0},   // white spaces
 
