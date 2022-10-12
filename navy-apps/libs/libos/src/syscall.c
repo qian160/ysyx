@@ -76,6 +76,9 @@ void *_sbrk(intptr_t increment) {
   if(_syscall_(SYS_brk, (intptr_t)_brk, increment, 0)==0) {     // always return 0 now
     void *brk_ret = _brk;
     _brk += increment;
+    char buf[100];
+    sprintf(buf, "_sbrk success. new _brk at 0x%lx\n", _sbrk);
+    write(1, buf, 100);
     return brk_ret;
   }
   else
