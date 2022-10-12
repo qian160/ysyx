@@ -273,12 +273,12 @@ static int decode_exec(Decode *D) {
             case(0):                                      // ecall
               D-> dnpc = cpu.mtvec;
               cpu.mepc = D->pc;
-              //Log("\necall at pc: 0x%lx\n", D -> pc);
+              Log("\necall at pc: 0x%lx\n", D -> pc);
               break;  // ecall
             case(1):  NEMUTRAP(D->pc, R(10));     break;  // ebreak
             case(0x302):                                  // mret
               D -> dnpc = cpu.mepc;
-              //Log("\nmret at pc: 0x%lx. return to 0x%lx\n", D -> pc, cpu.mepc);
+              Log("\nmret at pc: 0x%lx. return to 0x%lx\n", D -> pc, cpu.mepc);
               break;
             default:  panic("bad sys inst\n");    break;
           }
