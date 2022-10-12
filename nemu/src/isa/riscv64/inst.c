@@ -263,7 +263,7 @@ static int decode_exec(Decode *D) {
     }
 
     case(JAL):    D->decInfo.type = TYPE_J;    R(rd) = linkAddr; D -> dnpc = D -> pc + immJ(inst);     break;
-    case(JALR):   D->decInfo.type = TYPE_I;    R(rd) = linkAddr; D -> dnpc = R(rs1) + immI(inst);      printf("imm = %ld, target = 0x%lx\n", immI(inst), R(rs1) + immI(inst)); break;
+    case(JALR):   D->decInfo.type = TYPE_I;    D -> dnpc = R(rs1) + immI(inst); R(rd) = linkAddr;      break;   //R(rd)=xxx must be execuated later!!!!!!!!
     case(AUIPC):  D->decInfo.type = TYPE_U;    R(rd) = D -> pc + immU(inst);  break;
     case(LUI):    D->decInfo.type = TYPE_U;    R(rd) = immU(inst);            break;
     case(SYS):{
