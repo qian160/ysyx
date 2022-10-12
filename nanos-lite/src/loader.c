@@ -1,6 +1,7 @@
 #include <proc.h>
 #include <elf.h>
 #include <fs.h>
+#include <am.h>
 
 #ifdef __LP64__
 # define Elf_Ehdr Elf64_Ehdr
@@ -30,13 +31,18 @@ static uintptr_t loader(PCB *pcb, const char *filename) {
   printf("loader: hello fd=%d\n", elf_fd);
   fs_read(elf_fd, &elf_header, sizeof(Elf_Ehdr));
 
-  printf("---------------------------------------------\n\
-ELF Header:\n Entry point address:\t\t%p\n Start of program headers:\t\t%u\n \
-Start of section headers:\t\t%u\n---------------------------------------------\n",\
+  printf("ELF Header:\n Entry point address:\t\t%p\n Start of program headers:\t\t%u\n \
+Start of section headers:\t\t%u\n\n\n",\
   elf_header.e_entry, elf_header.e_phoff, elf_header.e_shoff);
 
   // check elf magic number           0x7f, 'E, 'L', 'F'(LSB TO MSB)
   assert(*(int*)elf_header.e_ident == 0x464c457f);
+
+#if defined (__ISA_RISCV64__)
+    assert(elf_header.e_machine == EM_RISCV);
+#elif defined (__ISA_X86_64)
+    assert(elf_header.e_machine == EM_X86_64);
+#endif
 
   // read and analyze each program header
   for(int i = 0; i < elf_header.e_phnum; ++i) {
@@ -45,9 +51,7 @@ Start of section headers:\t\t%u\n---------------------------------------------\n
 
     if(pgm_header.p_type == PT_LOAD) {
 
-      printf("---------------------------------------------\n\
-Program Headers:\n Offset:\t0x%08x\n VirtAddr:\t%p\n FileSiz:\t0x%08x\n MemSiz:\t0x%08x\n\
----------------------------------------------\n",\
+      printf("Program Headers:\n Offset:\t%08x\n VirtAddr:\t%p\n FileSiz:\t%08x\n MemSiz:\t%08x\n \n\n", \
         pgm_header.p_offset, pgm_header.p_vaddr, pgm_header.p_filesz, pgm_header.p_memsz);
 
       // read segment and write into memery
@@ -75,6 +79,6 @@ Program Headers:\n Offset:\t0x%08x\n VirtAddr:\t%p\n FileSiz:\t0x%08x\n MemSiz:\
 void naive_uload(PCB *pcb, const char *filename) {
   uintptr_t entry = loader(pcb, filename);
   Log("Jump to entry = %p", entry);
-  ((void(*)())entry) ();
+  ((void(*)())entry) ();    //_start(defined in riscv.S), temp addres at 0x83000438
 }
 

@@ -27,7 +27,7 @@ void init_proc() {
 
   Log("Initializing processes...");
 
-  naive_uload(NULL, "/home/s081/Downloads/ysyx-workbench/nanos-lite/build/ramdisk.img");
+  naive_uload(NULL, "/bin/hello");
 }
 
 Context* schedule(Context *prev) {
