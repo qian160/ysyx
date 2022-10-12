@@ -8,6 +8,13 @@ extern size_t fs_write(int fd, const void *buf, size_t len);
 extern size_t fs_lseek(int fd, size_t offset, int whence);
 // extern int fs_close(int fd);
 
+
+#define CALL_NUMBER   gpr[17]  // a7
+#define SYSCALL_ARG1  gpr[10]  // a0
+#define SYSCALL_ARG2  gpr[11]  // a1
+#define SYSCALL_ARG3  gpr[12]  // a2
+#define SYSCALL_RETV  gpr[10]  // a0
+
 size_t write(uint32_t fd, char *buf, size_t len) {
   size_t ret = 0;
   if(fd == 1 || fd == 2){
