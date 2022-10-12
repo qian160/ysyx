@@ -17,17 +17,6 @@ extern size_t fs_lseek(int fd, size_t offset, int whence);
 
 #define _ret c -> SYSCALL_RETV
 
-size_t write(uint32_t fd, char *buf, size_t len) {
-  size_t ret = 0;
-  if(fd == 1 || fd == 2){
-    while(len-- && *buf) {
-      putch(*buf++);
-      ret ++;
-    }
-  }
-  return ret;
-}
-
 void do_syscall(Context *c) {
   uintptr_t a7 = c -> CALL_NUMBER;
   uintptr_t  _a0  __attribute__((unused)) = c -> SYSCALL_ARG1;
@@ -42,7 +31,7 @@ void do_syscall(Context *c) {
     case SYS_brk:     _ret = 0;   break;
     case SYS_lseek:   _ret = fs_lseek(_a0, _a1, _a2);  break;
     case SYS_open:    _ret = fs_open((char*)_a0, _a1, _a2);   break;
-    case SYS_close:   _ret = 0;  break;
+    case SYS_close:   _ret = 0;   break;
     default: panic("Unhandled syscall ID = %d", a7);
   }
 }
