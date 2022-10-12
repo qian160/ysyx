@@ -91,6 +91,7 @@ size_t fs_read(int fd, void *buf, size_t len) {
 
   file_table[fd].read(buf, file_table[fd].disk_offset + file_table[fd].file_offset, len);
   fs_lseek(fd, len, SEEK_CUR);
+  Log("len = %d\n", len);
   return len;
 }
 
