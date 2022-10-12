@@ -16,8 +16,10 @@ uint32_t NDL_GetTicks() {
   return time_val.tv_sec*1000 + time_val.tv_usec/1000 - NDL_INIT_TIME;
 }
 
+extern int fs_open(const char *pathname, int flags, int mode);
 
 int NDL_PollEvent(char *buf, int len) {
+  fs_open(0,0,0);
   asm volatile("j 0");
   return 0;
 }
