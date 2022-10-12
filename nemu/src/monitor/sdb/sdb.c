@@ -31,6 +31,7 @@ void sdb_set_batch_mode() {
 }
 
 void sdb_mainloop() {   //get command
+  cpu.mstatus = 0xa00001800;
   if (is_batch_mode) {
     cmd_c(NULL);
     return;
