@@ -73,7 +73,14 @@ extern char _end;
 void * _brk = &_end;
 
 void *_sbrk(intptr_t increment) {
-  return -1;
+  char buf[100];
+
+  sprintf(buf, "old brk = 0x%lx\n", _end);
+  write(1, buf, 100);
+  sprintf(buf, "new brk = 0x%lx\n", _brk);
+  write(1, buf, 100);
+  while(1);
+
   if(_syscall_(SYS_brk, (intptr_t)_brk, increment, 0)==0) {     // always return 0 now
     void *brk_ret = _brk;
     _brk += increment;
