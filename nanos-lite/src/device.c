@@ -27,22 +27,30 @@ size_t serial_write(const void *buf, size_t offset, size_t len) {
 #define KEYDOWN_MASK 0x8000
 
 size_t events_read(void *buf, size_t offset, size_t len) {
-  int is_down  = 0;
-  int key = io_read(AM_INPUT_KEYBRD).keycode;
-  if(key == AM_KEY_NONE) {
-    return 0;
-  }
+  AM_INPUT_KEYBRD_T key = io_read(AM_INPUT_KEYBRD);
+  if(key.keycode == AM_KEY_NONE)  return 0;
 
-  if(key & KEYDOWN_MASK){
-    is_down = 1;
-    key ^= KEYDOWN_MASK;  //clear that bit
-  }
+  char *tag = key.keydown ? "kd " : "ku ";
+  //if (real_length <= len){
+  strcpy(buf, tag);
+  // }else {
+  //   assert(0);
+  //   return 0;
+  // }
+  
+  //real_length += strlen(keyname[ev.keycode]);
+  
+  //if (real_length<= len){
+  strcat(buf, keyname[key.keycode]);
+  // }else {
+  //   Log("Need %d for %s%s but got %d", strlen(keyname[ev.keycode]), (char *)buf, keyname[ev.keycode], len);
+  //   assert(0);
+  //   return 0;
+  // }
+  Log("Got  (kbd): %s (%d) %s\n", keyname[key.keycode], key.keycode, key.keydown ? "DOWN" : "UP");
+  
+  return 1;
 
-  if(is_down)
-    len=sprintf(buf,"keydown %s\n",keyname[key]);
-  else
-    len=sprintf(buf,"keyup %s\n",keyname[key]);
-  return len;
 }
 
 size_t dispinfo_read(void *buf, size_t offset, size_t len) {
