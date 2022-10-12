@@ -78,8 +78,6 @@ void *_sbrk(intptr_t increment) {
     void *brk_ret = _brk;
     _brk += increment;
     char buf[100];
-    sprintf(buf, "_sbrk success. new _brk at 0x%lx\n", _sbrk);
-    write(1, buf, 100);
     return brk_ret;
   }
   else
