@@ -67,6 +67,7 @@ size_t fs_lseek(int fd, size_t offset, int whence) {
 }
 //return the fd. Maybe 'search' is a better name
 int fs_open(const char *pathname, int flags, int mode) {
+  printf("%s\n", pathname);
   for(int fd = 0; fd < total_file_num; ++fd)
     if(strcmp(pathname, file_table[fd].name)==0) {
       file_table[fd].file_offset = 0;
