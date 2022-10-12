@@ -30,7 +30,6 @@ size_t events_read(void *buf, size_t offset, size_t len) {
   int is_down  = 0;
   int key = io_read(AM_INPUT_KEYBRD).keycode;
   if(key == AM_KEY_NONE) {
-    
     return 0;
   }
 
@@ -40,9 +39,9 @@ size_t events_read(void *buf, size_t offset, size_t len) {
   }
 
   if(is_down)
-    len=sprintf(buf,"kd %s\n",keyname[key]);
+    len=sprintf(buf,"keydown %s\n",keyname[key]);
   else
-    len=sprintf(buf,"ku %s\n",keyname[key]);
+    len=sprintf(buf,"keyup %s\n",keyname[key]);
   return len;
 }
 
