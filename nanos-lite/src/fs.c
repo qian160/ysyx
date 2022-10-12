@@ -35,6 +35,7 @@ static Finfo file_table[] __attribute__((used)) = {
   [FD_STDOUT] = {"stdout", 0, 0, invalid_read, serial_write},
   [FD_STDERR] = {"stderr", 0, 0, invalid_read, serial_write},
   [FD_EVENT]  = {"/dev/events",  0, 0, events_read,  invalid_write},
+  //ramdisk
 #include "files.h"
 };
 

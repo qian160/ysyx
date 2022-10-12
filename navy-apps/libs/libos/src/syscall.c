@@ -83,7 +83,7 @@ void *_sbrk(intptr_t increment) {
 }
 
 int _read(int fd, void *buf, size_t count) {
-  return _syscall_(SYS_read, fd, buf, count);
+  return _syscall_(SYS_read, fd, buf, count); //fs_read
 }
 
 int _close(int fd) {
