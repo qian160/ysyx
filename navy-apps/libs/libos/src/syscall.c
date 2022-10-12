@@ -73,7 +73,7 @@ extern char _end;
 void * _brk = &_end;
 
 void *_sbrk(intptr_t increment) {
-  while(1);
+  _exit(114);
   if(_syscall_(SYS_brk, _brk, increment, 0)==0) {
     void *brk_ret = _brk;
     _brk += increment;
