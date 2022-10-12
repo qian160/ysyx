@@ -263,7 +263,7 @@ static int decode_exec(Decode *D) {
     }
 
     case(JAL):    D->decInfo.type = TYPE_J;    R(rd) = linkAddr; D -> dnpc = D -> pc + immJ(inst);     break;
-    case(JALR):   D->decInfo.type = TYPE_I;    R(rd) = linkAddr; D -> dnpc = R(rs1) + immI(inst);      break;
+    case(JALR):   D->decInfo.type = TYPE_I;    R(rd) = linkAddr; D -> dnpc = R(rs1) + immI(inst);  goto end;    break;
     case(AUIPC):  D->decInfo.type = TYPE_U;    R(rd) = D -> pc + immU(inst);  break;
     case(LUI):    D->decInfo.type = TYPE_U;    R(rd) = immU(inst);            break;
     case(SYS):{
@@ -296,6 +296,7 @@ static int decode_exec(Decode *D) {
       break;
     }
   }
+end:
   R(0) = 0; // reset $zero to 0
   Assert( D-> dnpc != D -> pc, "dead loop at 0x%lx\n", cpu.pc);
   printf("pc = 0x%lx, dnpc = 0x%lx\n", D->pc, D->dnpc);
