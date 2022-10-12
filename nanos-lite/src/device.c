@@ -27,9 +27,7 @@ size_t serial_write(const void *buf, size_t offset, size_t len) {
 #define KEYDOWN_MASK 0x8000
 
 size_t events_read(void *buf, size_t offset, size_t len) {
-  printf("111\n");
-  return 0;
-
+  buf = (char*)buf;
   AM_INPUT_KEYBRD_T key = io_read(AM_INPUT_KEYBRD);
   if(key.keycode == AM_KEY_NONE)  return 0;
 
