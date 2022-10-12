@@ -79,6 +79,7 @@ void *_sbrk(intptr_t increment) {
     return brk_ret;
   }
   else
+  write(1, "_sbrk failed\n", 14);
   return (void *)-1;
 }
 
