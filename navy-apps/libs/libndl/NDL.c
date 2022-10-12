@@ -17,6 +17,9 @@ uint32_t NDL_GetTicks() {
   return time_val.tv_sec*1000 + time_val.tv_usec/1000 - NDL_INIT_TIME;
 }
 
+extern int _open(const char *path, int flags, mode_t mode);
+extern int _read(int fd, void *buf, size_t count);
+
 int NDL_PollEvent(char *buf, int len) {
   int fd = _open("/dev/events", O_RDONLY);
   return _read(fd, buf, len);
