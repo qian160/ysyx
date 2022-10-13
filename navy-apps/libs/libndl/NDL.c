@@ -44,24 +44,13 @@ void nishiyige()
   fseek(fp, 0, SEEK_END);
 
   size_t sz = ftell(fp);
-  printf("sz = %d\n", sz);
+  printf("sz = %ld\n", sz);
   fseek(fp, 0, SEEK_SET);
   fread(pixels, sz, 1, fp);
 	pixels = (int *)((char *)pixels + 10);
 
-	printf("offset should be %d\n", *pixels);
-  while (1)
-  {
-    /* code */
-  }
-  
-	temp.w = W;
-	temp.h = H;
-	temp.pixels = pixels;
-	temp.sync = 1;
-	temp.x = 0;
-	temp.y = 0;
-	ioe_write(AM_GPU_FBDRAW, &temp);
+  write(3, pixels, sz);
+
 	while(1);
 	printf("114514\n");
 
