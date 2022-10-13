@@ -80,7 +80,7 @@ int NDL_Init(uint32_t flags) {
   char info[128];
   int dispinfo = open("/proc/dispinfo", 0);
   read(dispinfo, info, sizeof(info));
-  puts(info);
+  printf("%s\n", info);
   while(1);
 
   return 0;
