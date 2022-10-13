@@ -207,8 +207,6 @@ static void gpu_status(AM_GPU_STATUS_T *stat) {
   stat->ready = true;
 }
 
-//struct members: uint32_t dest; void *src; uint32_t size
-//copy size bytes from src to dest(hopefully some offset in gpu)
 static void gpu_memcpy(AM_GPU_MEMCPY_T *params) {
   char *src = params -> src, *dst = to_host(params -> dest);
   for (int i = 0; i < params -> size; i++)
