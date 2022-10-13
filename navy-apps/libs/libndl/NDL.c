@@ -41,7 +41,10 @@ void nishiyige()
   if (!fp) return;
 
   uint32_t *pixels = malloc(W * H * sizeof(uint32_t));
-
+  size_t sz = fseek(fp, 0, SEEK_END);
+  printf("sz = %d\n", sz);
+  fseek(fp, 0, SEEK_SET);
+  fread(pixels, sz, 1, fp);
 	pixels = (int *)((char *)pixels + 10);
 
 	printf("offset should be %d\n", *pixels);
