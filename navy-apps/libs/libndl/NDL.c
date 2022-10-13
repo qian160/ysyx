@@ -27,7 +27,7 @@ int NDL_PollEvent(char *buf, int len) {
 }
 
 void NDL_OpenCanvas(int *w, int *h) {
-  
+
   if (getenv("NWM_APP")) {
     int fbctl = 4;
     fbdev = 5;
@@ -77,6 +77,11 @@ int NDL_Init(uint32_t flags) {
   }
   gettimeofday(&time_val, NULL);
   NDL_INIT_TIME = time_val.tv_sec*1000 + time_val.tv_usec/1000;
+  char info[128];
+  int dispinfo = open("/proc/dispinfo", 0);
+  read(dispinfo, info, sizeof(info));
+  puts(info);
+  while(1);
 
   return 0;
 }
