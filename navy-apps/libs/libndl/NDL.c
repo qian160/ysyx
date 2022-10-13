@@ -5,6 +5,9 @@
 #include <string.h>
 #include <unistd.h>
 #include <sys/time.h>
+#include <amdev.h>
+#include <sys/mman.h>
+
 static int evtdev = -1;
 static int fbdev = -1;
 static int screen_w = 0, screen_h = 0;
@@ -24,6 +27,32 @@ int NDL_PollEvent(char *buf, int len) {
   //in fact we can directly use open and read.... But why?
   int fd = open("/dev/events", 0, 0);
   return read(fd, buf, len);
+}
+
+#define W 400
+#define H 300
+#define SIZE W * H * 4
+
+void nishiyige_test()
+{
+	AM_GPU_FBDRAW_T temp __attribute__((unused));
+	int fd = open("/share/pictures/114514.bmp", O_RDONLY);
+	struct stat sb;
+	fstat(fd, &sb);
+	int * pixels = mmap(NULL, sb.st_size, PROT_READ, MAP_PRIVATE, fd, 0);
+	
+	pixels = (int *)((char *)pixels + 10);
+	printf("offset should be %d\n", *pixels);
+	temp.w = W;
+	temp.h = H;
+	temp.pixels = pixels;
+	temp.sync = 1;
+	temp.x = 0;
+	temp.y = 0;
+	ioe_write(AM_GPU_FBDRAW, &temp);
+	while(1);
+	printf("114514\n");
+
 }
 
 void NDL_OpenCanvas(int *w, int *h) {
@@ -90,3 +119,4 @@ int NDL_Init(uint32_t flags) {
 
 void NDL_Quit() {
 }
+
