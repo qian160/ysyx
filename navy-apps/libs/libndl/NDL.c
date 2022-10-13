@@ -75,16 +75,17 @@ int NDL_Init(uint32_t flags) {
   if (getenv("NWM_APP")) {
     evtdev = 3;
   }
+  // get boot time
   gettimeofday(&time_val, NULL);
   NDL_INIT_TIME = time_val.tv_sec*1000 + time_val.tv_usec/1000;
+  // get screen width and height
   char info[128];
   int dispinfo = open("/proc/dispinfo", 0);
   read(dispinfo, info, sizeof(info));
   printf("%s\n", info);
-  
   sscanf(info, "WIDTH:%d\nHEIGHT:%d", &screen_w, &screen_h);
   printf("w = %d\nh = %d\n", screen_w, screen_h);
-  while(1);
+
   return 0;
 }
 
