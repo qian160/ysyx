@@ -90,8 +90,8 @@ size_t fs_read(int fd, void *buf, size_t len) {
     fd, file_table[fd].disk_offset, file_table[fd].file_offset, len);
 
   file_table[fd].read(buf, file_table[fd].disk_offset + file_table[fd].file_offset, len);
-  fs_lseek(fd, len, SEEK_CUR);
-  Log("\nlen: %d,  fseek: %d\n", len, fs_lseek(fd, len, SEEK_CUR));
+  size_t temp = fs_lseek(fd, len, SEEK_CUR);
+  Log("\ntemp: %d,  len: %d,  fseek: %d\n", temp, len, fs_lseek(fd, len, SEEK_CUR));
   if(fd == 4)while(1);
   return len;
 }
