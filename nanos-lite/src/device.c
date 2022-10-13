@@ -16,10 +16,10 @@ static const char *keyname[256] __attribute__((used)) = {
 #define putnstr(buf, n) \
     for(size_t i=0; i<n; ++i) putch(*(const char*)(buf+i))
 size_t serial_write(const void *buf, size_t offset, size_t len) {
-  putnstr("[stdout/err] len:", 18);
-  putch('0'+len/10);
-  putch('0'+len%10);
-  putch('\t');
+  //putnstr("[stdout/err] len:", 18);
+  //putch('0'+len/10);
+  //putch('0'+len%10);
+  //putch('\t');
   putnstr(buf, len);
   return len;
 }
