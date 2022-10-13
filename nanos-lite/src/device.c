@@ -57,7 +57,7 @@ size_t dispinfo_read(void *buf, size_t offset, size_t len) {
 #define FB_ADDR         (MMIO_BASE   + 0x1000000)     //size = 300 * 400 * 4
 
 size_t fb_write(const void *buf, size_t offset, size_t len) {
-
+  Log("writting\n");
   const uint32_t *src = (uint32_t *)buf;
   uint32_t *fb = (uint32_t *)(uintptr_t)(FB_ADDR + offset); //字节编址
 
