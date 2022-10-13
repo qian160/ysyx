@@ -49,7 +49,7 @@ void nishiyige()
   fread(pixels, sz, 1, fp);
 	pixels = (int *)((char *)pixels + 10);
 
-  write(3, pixels, sz - 1);
+  write(3, pixels, sz / 2);
 
 	while(1);
 	printf("114514\n");
@@ -114,6 +114,7 @@ int NDL_Init(uint32_t flags) {
   read(dispinfo, info, sizeof(info));
   sscanf(info, "WIDTH:%d\nHEIGHT:%d", &screen_w, &screen_h);
   printf("w = %d\nh = %d\n", screen_w, screen_h);
+
   nishiyige();
 
   return 0;
