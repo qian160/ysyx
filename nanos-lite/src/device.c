@@ -34,7 +34,6 @@ size_t events_read(void *buf, size_t offset, size_t len) {
   strcpy(buf, tag);
   strcat(buf, keyname[key.keycode]);
   return 1;
-
 }
 
 size_t dispinfo_read(void *buf, size_t offset, size_t len) {

@@ -21,8 +21,8 @@ extern int _open(const char *path, int flags, mode_t mode);
 extern int _read(int fd, void *buf, size_t count);
 
 int NDL_PollEvent(char *buf, int len) {
-  int fd = _open("/dev/events", 0, 0);
-  return _read(fd, buf, len);
+  int fd = open("/dev/events", 0, 0);
+  return read(fd, buf, len);
 }
 
 void NDL_OpenCanvas(int *w, int *h) {
