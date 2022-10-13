@@ -47,7 +47,8 @@ size_t dispinfo_read(void *buf, size_t offset, size_t len) {
   if (ret >= len){
     assert(0);
   }
-  while(1);
+
+  assert(0);
 
   return ret + 1;
 }
