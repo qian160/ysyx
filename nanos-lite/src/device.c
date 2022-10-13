@@ -37,13 +37,12 @@ size_t events_read(void *buf, size_t offset, size_t len) {
 }
 
 size_t dispinfo_read(void *buf, size_t offset, size_t len) {
-  Log("I'm reading");
+//  Log("I'm reading");
 
   int w = io_read(AM_GPU_CONFIG).width;
   int h = io_read(AM_GPU_CONFIG).height;
 
   int ret = sprintf(buf, "WIDTH:%d\nHEIGHT:%d", w, h);
-  Log("%s", (char *)buf);
   if (ret >= len){
     assert(0);
   }
