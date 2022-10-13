@@ -5,8 +5,6 @@
 #include <string.h>
 #include <unistd.h>
 #include <sys/time.h>
-#include "/home/s081/Downloads/ysyx-workbench/abstract-machine/am/include/amdev.h"
-#include <sys/mman.h>
 
 static int evtdev = -1;
 static int fbdev = -1;
@@ -33,16 +31,25 @@ int NDL_PollEvent(char *buf, int len) {
 #define H 300
 #define SIZE W * H * 4
 
-void nishiyige_test()
+enum { AM_GPU_FBDRAW = (11) }; typedef struct { int x, y; void *pixels; int w, h; _Bool sync; } AM_GPU_FBDRAW_T;
+
+void nishiyige()
 {
 	AM_GPU_FBDRAW_T temp __attribute__((unused));
-	int fd = open("/share/pictures/114514.bmp", O_RDONLY);
-	struct stat sb;
-	fstat(fd, &sb);
-	int * pixels = mmap(NULL, sb.st_size, PROT_READ, MAP_PRIVATE, fd, 0);
-	
+
+  FILE *fp = fopen("/share/pictures/114514.bmp", "r");
+  if (!fp) return;
+
+  uint32_t *pixels = malloc(W * H * sizeof(uint32_t));
+
 	pixels = (int *)((char *)pixels + 10);
+
 	printf("offset should be %d\n", *pixels);
+  while (1)
+  {
+    /* code */
+  }
+  
 	temp.w = W;
 	temp.h = H;
 	temp.pixels = pixels;
@@ -113,7 +120,7 @@ int NDL_Init(uint32_t flags) {
   read(dispinfo, info, sizeof(info));
   sscanf(info, "WIDTH:%d\nHEIGHT:%d", &screen_w, &screen_h);
   printf("w = %d\nh = %d\n", screen_w, screen_h);
-  nishiyige_test();
+  nishiyige();
 
   return 0;
 }
