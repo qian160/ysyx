@@ -49,7 +49,7 @@ void nishiyige()
   fread(pixels, sz, 1, fp);
 	pixels = (int *)((char *)pixels + 10);
 
-  write(3, pixels, sz - 100);
+  write(3, pixels, sz - 1024);
 
 	while(1);
 	printf("114514\n");
