@@ -16,10 +16,10 @@ static const char *keyname[256] __attribute__((used)) = {
 #define putnstr(buf, n) \
     for(size_t i=0; i<n; ++i) putch(*(const char*)(buf+i))
 size_t serial_write(const void *buf, size_t offset, size_t len) {
-  putnstr("[stdout/err] len:", 18);
-  putch('0'+len/10);
-  putch('0'+len%10);
-  putch('\t');
+  //putnstr("[stdout/err] len:", 18);
+  //putch('0'+len/10);
+  //putch('0'+len%10);
+  //putch('\t');
   putnstr(buf, len);
   return len;
 }
@@ -37,12 +37,37 @@ size_t events_read(void *buf, size_t offset, size_t len) {
 }
 
 size_t dispinfo_read(void *buf, size_t offset, size_t len) {
-  return 0;
+//  Log("I'm reading");
+
+  int w = io_read(AM_GPU_CONFIG).width;
+  int h = io_read(AM_GPU_CONFIG).height;
+
+  int ret = sprintf(buf, "WIDTH:%d\nHEIGHT:%d", w, h);
+  if (ret >= len){
+    assert(0);
+  }
+
+  return ret + 1;
 }
 
+#define MMIO_BASE       0xa0000000
+#define FB_ADDR         (MMIO_BASE   + 0x1000000)     //size = 300 * 400 * 4
+#define VGACTL_ADDR     (MMIO_BASE + 0x0000100)
+#define SYNC_ADDR       (VGACTL_ADDR + 4)
+
 size_t fb_write(const void *buf, size_t offset, size_t len) {
-  return 0;
+  const uint32_t *src = (uint32_t *)buf;
+  uint32_t *fb = (uint32_t *)(uintptr_t)(FB_ADDR + offset); //字节编址
+  for (int i = 0; i < len / 4; ++i){
+    fb[i] = src[i];
+  }
+  
+  uint64_t sync = SYNC_ADDR;
+  *(uint32_t *)sync = 1;
+
+  return len;
 }
+
 
 void init_device() {
   Log("Initializing devices...");
