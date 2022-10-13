@@ -1,19 +1,29 @@
 #include <stdint.h>
 #include <stdio.h>
+#include <fcntl.h>
 #include <stdlib.h>
 #include <string.h>
 #include <unistd.h>
-
+#include <sys/time.h>
 static int evtdev = -1;
 static int fbdev = -1;
 static int screen_w = 0, screen_h = 0;
 
+static uint32_t NDL_INIT_TIME;
+static struct timeval time_val;
+
 uint32_t NDL_GetTicks() {
-  return 0;
+  gettimeofday(&time_val, 0);
+  return time_val.tv_sec*1000 + time_val.tv_usec/1000 - NDL_INIT_TIME;
 }
 
+extern int _open(const char *path, int flags, mode_t mode);
+extern int _read(int fd, void *buf, size_t count);
+
 int NDL_PollEvent(char *buf, int len) {
-  return 0;
+  //in fact we can directly use open and read.... But why?
+  int fd = _open("/dev/events", 0, 0);
+  return _read(fd, buf, len);
 }
 
 void NDL_OpenCanvas(int *w, int *h) {
@@ -57,6 +67,9 @@ int NDL_Init(uint32_t flags) {
   if (getenv("NWM_APP")) {
     evtdev = 3;
   }
+  gettimeofday(&time_val, NULL);
+  NDL_INIT_TIME = time_val.tv_sec*1000 + time_val.tv_usec/1000;
+
   return 0;
 }
 

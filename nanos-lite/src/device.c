@@ -1,5 +1,4 @@
 #include <common.h>
-
 #if defined(MULTIPROGRAM) && !defined(TIME_SHARING)
 # define MULTIPROGRAM_YIELD() yield()
 #else
@@ -25,9 +24,16 @@ size_t serial_write(const void *buf, size_t offset, size_t len) {
   return len;
 }
 
+#define KEYDOWN_MASK 0x8000
 
 size_t events_read(void *buf, size_t offset, size_t len) {
-  return 0;
+  buf = (char*)buf;
+  AM_INPUT_KEYBRD_T key = io_read(AM_INPUT_KEYBRD);
+  if(key.keycode == AM_KEY_NONE)  return 0;
+  char *tag = key.keydown ? "keydown: " : "keyup: ";
+  strcpy(buf, tag);
+  strcat(buf, keyname[key.keycode]);
+  return 1;
 }
 
 size_t dispinfo_read(void *buf, size_t offset, size_t len) {
