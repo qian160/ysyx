@@ -19,11 +19,11 @@ struct BitmapHeader {
   uint32_t clrused, clrimportant;
 } __attribute__((packed));
 
+extern int _open(const char *path, int flags, mode_t mode);
 void* BMP_Load(const char *filename, int *width, int *height) {
   FILE *fp = fopen(filename, "r");
-  printf("%s\n", filename);
   if (!fp) return NULL;
-
+  printf("%p\n", fp);
   struct BitmapHeader hdr;
   assert(sizeof(hdr) == 54);
   assert(1 == fread(&hdr, sizeof(struct BitmapHeader), 1, fp));
