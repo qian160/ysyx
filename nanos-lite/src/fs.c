@@ -71,10 +71,6 @@ int fs_open(const char *pathname, int flags, int mode) {
   for(int fd = 0; fd < total_file_num; ++fd)
     if(strcmp(pathname, file_table[fd].name)==0) {
       file_table[fd].file_offset = 0;
-      if(fd > FD_EVENT) {
-        file_table[fd].read  = ramdisk_read;
-        file_table[fd].write = ramdisk_write;
-      }
       //printf("----------------\n[fs_open]\n file %d: \"%s\"\n size: %p\n----------------\n", fd, pathname, file_table[fd].size);
       return fd;
     }
@@ -85,15 +81,24 @@ int fs_open(const char *pathname, int flags, int mode) {
 
 size_t fs_read(int fd, void *buf, size_t len) {
   if(fd <= 2) return 0; // ignore stdin, stdout and stderr
-
+  Finfo * file = &file_table[fd];
+  size_t nread = 0;
   Log("\n----------------\n[fs_read] fd %d\n from (%u + offset %d)\n size=%p\n----------------\n",
-    fd, file_table[fd].disk_offset, file_table[fd].file_offset, len);
+    fd, file->disk_offset, file->file_offset, len);
 
-  file_table[fd].read(buf, file_table[fd].disk_offset + file_table[fd].file_offset, len);
-  size_t temp = fs_lseek(fd, len, SEEK_CUR);
-  Log("\ntemp: %d,  len: %d,  fseek: %d\n", temp, len, fs_lseek(fd, len, SEEK_CUR));
-  if(fd == 4)while(1);
-  return len;
+  if (file->read){    //has read function. not in ramdisk
+    nread = file -> read(buf, file -> file_offset, len);
+    file -> file_offset += nread;
+  }else {
+    nread = file -> file_offset + len <= file -> size ?
+    len : file -> size - file -> file_offset;
+    ramdisk_read(buf, file -> disk_offset + file -> file_offset, nread);
+    file -> file_offset += nread;
+  }
+  Log("\nnread = %d\n", nread);
+  while(1);
+
+  return nread;
 }
 
 size_t fs_write(int fd, const void *buf, size_t len) {
