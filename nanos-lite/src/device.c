@@ -64,6 +64,7 @@ size_t fb_write(const void *buf, size_t offset, size_t len) {
   
   uint64_t sync = SYNC_ADDR;
   *(uint32_t *)sync = 1;
+
   return len;
 }
 
