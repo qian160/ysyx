@@ -5,7 +5,7 @@
 #include <string.h>
 #include <unistd.h>
 #include <sys/time.h>
-#include <amdev.h>
+#include "/home/s081/Downloads/ysyx-workbench/abstract-machine/am/include/amdev.h"
 #include <sys/mman.h>
 
 static int evtdev = -1;
