@@ -48,8 +48,6 @@ size_t dispinfo_read(void *buf, size_t offset, size_t len) {
     assert(0);
   }
 
-  assert(0);
-
   return ret + 1;
 }
 
