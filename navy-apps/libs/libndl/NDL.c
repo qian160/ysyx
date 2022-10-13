@@ -41,7 +41,9 @@ void nishiyige()
   if (!fp) return;
 
   uint32_t *pixels = malloc(W * H * sizeof(uint32_t));
-  size_t sz = fseek(fp, 0, SEEK_END);
+  fseek(fp, 0, SEEK_END);
+
+  size_t sz = ftell(fp);
   printf("sz = %d\n", sz);
   fseek(fp, 0, SEEK_SET);
   fread(pixels, sz, 1, fp);
