@@ -22,11 +22,12 @@ extern int _read(int fd, void *buf, size_t count);
 
 int NDL_PollEvent(char *buf, int len) {
   //in fact we can directly use open and read.... But why?
-  int fd = _open("/dev/events", 0, 0);
-  return _read(fd, buf, len);
+  int fd = open("/dev/events", 0, 0);
+  return read(fd, buf, len);
 }
 
 void NDL_OpenCanvas(int *w, int *h) {
+  
   if (getenv("NWM_APP")) {
     int fbctl = 4;
     fbdev = 5;
@@ -46,7 +47,14 @@ void NDL_OpenCanvas(int *w, int *h) {
   }
 }
 
+static int canvas_w, canvas_h, canvas_x = 0, canvas_y = 0;
+
 void NDL_DrawRect(uint32_t *pixels, int x, int y, int w, int h) {
+  int graphics = open("/dev/fb", O_RDWR);
+  for (int i = 0; i < h; ++i){
+    lseek(graphics, ((canvas_y + y + i) * screen_w + (canvas_x + x)) * sizeof(uint32_t), SEEK_SET);
+    ssize_t s = write(graphics, pixels + w * i, w * sizeof(uint32_t));
+  }
 }
 
 void NDL_OpenAudio(int freq, int channels, int samples) {
