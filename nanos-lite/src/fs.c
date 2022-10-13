@@ -96,7 +96,6 @@ size_t fs_read(int fd, void *buf, size_t len) {
     file -> file_offset += nread;
   }
   Log("\nnread = %d\n", nread);
-  while(1);
 
   return nread;
 }

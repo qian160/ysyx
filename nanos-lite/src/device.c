@@ -31,12 +31,14 @@ size_t events_read(void *buf, size_t offset, size_t len) {
   AM_INPUT_KEYBRD_T key = io_read(AM_INPUT_KEYBRD);
   printf("keycode: %d,  down:%d\n", key.keycode, key.keydown);
   if(key.keycode == AM_KEY_NONE)  return 0;
-  char *tag = key.keydown ? "keydown " : "keyup ";
+  char *tag = key.keydown ? "keydown: " : "keyup: ";
   strcpy(buf, tag);
   
   strcat(buf, keyname[key.keycode]);
 
   sprintf(buf, "Got [%s] (%s)\n", keyname[key.keycode], tag);
+  Log("\n%s\n", buf);
+  while(1);
   Log("Got  (kbd): %s (%d) %s\n", keyname[key.keycode], key.keycode, key.keydown ? "DOWN" : "UP");
   
   return 1;
