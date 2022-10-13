@@ -83,8 +83,8 @@ size_t fs_read(int fd, void *buf, size_t len) {
   if(fd <= 2) return 0; // ignore stdin, stdout and stderr
   Finfo * file = &file_table[fd];
   size_t nread = 0;
-  Log("\n----------------\n[fs_read] fd %d\n from (%u + offset %d)\n size=%p\n----------------\n",
-    fd, file->disk_offset, file->file_offset, len);
+  ///Log("\n----------------\n[fs_read] fd %d\n from (%u + offset %d)\n size=%p\n----------------\n",
+  //  fd, file->disk_offset, file->file_offset, len);
 
   if (file->read){    //has read function. not in ramdisk
     nread = file -> read(buf, file -> file_offset, len);
@@ -95,7 +95,7 @@ size_t fs_read(int fd, void *buf, size_t len) {
     ramdisk_read(buf, file -> disk_offset + file -> file_offset, nread);
     file -> file_offset += nread;
   }
-  Log("\nnread = %d\n", nread);
+  //Log("\nnread = %d\n", nread);
 
   return nread;
 }
