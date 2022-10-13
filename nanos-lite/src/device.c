@@ -50,17 +50,20 @@ size_t dispinfo_read(void *buf, size_t offset, size_t len) {
   return ret + 1;
 }
 
-#define MMIO_BASE 0xa0000000
+#define MMIO_BASE       0xa0000000
 #define FB_ADDR         (MMIO_BASE   + 0x1000000)     //size = 300 * 400 * 4
+#define VGACTL_ADDR     (MMIO_BASE + 0x0000100)
+#define SYNC_ADDR       (VGACTL_ADDR + 4)
 
 size_t fb_write(const void *buf, size_t offset, size_t len) {
   const uint32_t *src = (uint32_t *)buf;
   uint32_t *fb = (uint32_t *)(uintptr_t)(FB_ADDR + offset); //字节编址
-  Log("\nfb = %x, addr = %x\n", fb, FB_ADDR + offset);
-
   for (int i = 0; i < len / 4; ++i){
     fb[i] = src[i];
   }
+  
+  uintptr_t sync = SYNC_ADDR;
+  *(uintptr_t *)sync = 1;
   return len;
 }
 
