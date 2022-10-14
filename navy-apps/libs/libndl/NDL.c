@@ -19,13 +19,10 @@ uint32_t NDL_GetTicks() {
   return time_val.tv_sec*1000 + time_val.tv_usec/1000 - NDL_INIT_TIME;
 }
 
-extern int _open(const char *path, int flags, mode_t mode);
-extern int _read(int fd, void *buf, size_t count);
-
 int NDL_PollEvent(char *buf, int len) {
   //in fact we can directly use open and read.... But why?
   int fd = open("/dev/events", 0, 0);
-  return read(fd, buf, len);
+  return read(fd, buf, len);    //return 1 when a key is there
 }
 
 static int canvas_w, canvas_h, canvas_x = 0, canvas_y = 0;

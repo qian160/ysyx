@@ -74,13 +74,15 @@ int main(int argc, char *argv[], char *envp[]) {
   logo_sf = SDL_LoadBMP("/share/pictures/projectn.bmp");
   assert(logo_sf);
   set_i_max();
+  printf("%d\n", 114514);
   while (1) {
     display_menu(i_max);
     SDL_Event e;
     do {
       SDL_WaitEvent(&e);
-    } while (e.type != SDL_KEYDOWN);
+    } while (e.type != SDL_KEYDOWN);  //dead loop here. Type is not assigned a proper value
     int i = -1;
+    printf("%d\n", e.key.keysym.sym);
     switch (e.key.keysym.sym) {
       case SDLK_0: i = 0; break;
       case SDLK_1: i = 1; break;
@@ -137,10 +139,8 @@ static void draw_text_row(char *s, int r) {
 
 static void display_menu(int n) {
   clear_display();
-  printf("clear display\n");
   SDL_Rect rect = { .x = screen->w - logo_sf->w, .y = 0 };
   SDL_BlitSurface(logo_sf, NULL, screen, &rect);	//bug
-  printf("blit\n");
   printf("Available applications:\n");
   char buf[80];
   int i;

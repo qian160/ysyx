@@ -4,12 +4,11 @@
 #include <assert.h>
 
 SDL_TimerID SDL_AddTimer(uint32_t interval, SDL_NewTimerCallback callback, void *param) {
-  asserr(0);
+  //assert(0);
   return NULL;
 }
 
 int SDL_RemoveTimer(SDL_TimerID id) {
-  asserr(1);
   return 1;
 }
 
