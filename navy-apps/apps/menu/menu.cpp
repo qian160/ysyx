@@ -74,6 +74,7 @@ int main(int argc, char *argv[], char *envp[]) {
   logo_sf = SDL_LoadBMP("/share/pictures/projectn.bmp");
   assert(logo_sf);
   set_i_max();
+  printf("%d\n", 114514);
   while (1) {
     display_menu(i_max);
     SDL_Event e;
