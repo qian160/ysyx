@@ -9,7 +9,7 @@ SDL_TimerID SDL_AddTimer(uint32_t interval, SDL_NewTimerCallback callback, void 
 }
 
 int SDL_RemoveTimer(SDL_TimerID id) {
-  asserr(1);
+  assert(0);
   return 1;
 }
 

@@ -117,9 +117,7 @@ int SDL_PollEvent(SDL_Event *ev) {
 }
 
 int SDL_WaitEvent(SDL_Event *event) {
-  printf("WAIT EVENT\n");
   uint8_t type = 0, sym = 0;
-
   while (!read_keyinfo(&type, &sym));
   event->type = type;
   event->key.keysym.sym = sym;
