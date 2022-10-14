@@ -23,10 +23,9 @@ void nishiyige()
   printf("sz = %ld\n", sz);
   fseek(fp, 0, SEEK_SET);
   fread(pixels, sz, 1, fp);
-  //not all the file is about pixels. need to cut off the useless iinformation
-	pixels = (int *)((char *)pixels + 10);
+  pixels = (int *)((char *)pixels + 10);
 
-  write(3, pixels, sz /*- 128 - 8*/ );
+  write(3, pixels, sz);
 }
 
 int main() {
