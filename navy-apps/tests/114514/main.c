@@ -35,7 +35,9 @@ void nishiyige()
 
 int main() {
   nishiyige();
-  printf("Test ends! Spinning...\n");
-  while (1);
+  printf("nishiyige");
+  while (1){
+  	printf("yige");
+  }
   return 0;
 }
