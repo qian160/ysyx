@@ -78,9 +78,11 @@ printf("set success\n");
 	  printf("1\n");
   while (1) {
     display_menu(i_max);
+	  printf("disp success\n");
     SDL_Event e;
     do {
       SDL_WaitEvent(&e);
+	  printf("wait success\n");
     } while (e.type != SDL_KEYDOWN);
 	printf("wait success?\n");
 
