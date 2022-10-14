@@ -25,7 +25,6 @@ void SDL_BlitSurface(SDL_Surface *src, SDL_Rect *srcrect, SDL_Surface *dst, SDL_
     }else {
       dst_x = 0; dst_y = 0;
     }
-    printf("%d\t%d\t\n", rect_h, rect_w);
 
     for (int i = 0; i < rect_h; ++i){
       for (int j = 0; j < rect_w; ++j){
@@ -33,7 +32,7 @@ void SDL_BlitSurface(SDL_Surface *src, SDL_Rect *srcrect, SDL_Surface *dst, SDL_
       }
     }
 
-    printf("success\n");
+//    printf("success\n");
   }else if (src->format->BitsPerPixel == 8){
     uint8_t* src_pixels = (uint8_t*)src->pixels;
     uint8_t* dst_pixels = (uint8_t*)dst->pixels;
