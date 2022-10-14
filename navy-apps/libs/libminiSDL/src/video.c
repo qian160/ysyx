@@ -4,6 +4,7 @@
 #include <string.h>
 #include <stdlib.h>
 
+//将一张画布中的指定矩形区域复制到另一张画布的指定位置
 void SDL_BlitSurface(SDL_Surface *src, SDL_Rect *srcrect, SDL_Surface *dst, SDL_Rect *dstrect) {
   if (src->format->BitsPerPixel == 32){
     uint32_t* src_pixels = (uint32_t*)src->pixels;
