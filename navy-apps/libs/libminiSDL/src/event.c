@@ -1,5 +1,6 @@
 #include <NDL.h>
 #include <SDL.h>
+#include <stdlib.h>
 #include <string.h>
 #include <assert.h>
 
@@ -21,7 +22,7 @@ static event_element event_queue = {.type = 0, .sym = 0, .next = NULL};
 static event_element *end = &event_queue;
 
 static void append(uint8_t type, uint8_t sym){
-  event_element *new_element = malloc(sizeof(event_element));
+  event_element *new_element = (event_element *)malloc(sizeof(event_element));
   new_element->type = type;
   new_element->sym = sym;
   new_element->next = NULL;
@@ -117,14 +118,10 @@ int SDL_PollEvent(SDL_Event *ev) {
 }
 
 int SDL_WaitEvent(SDL_Event *event) {
+  printf("WAIT EVENT\n");
   uint8_t type = 0, sym = 0;
-  //SDL_PumpEvents();
 
-  //while (!pop(&type, &sym)){
-  while (!read_keyinfo(&type, &sym)){
-    //SDL_PumpEvents();
-  }
-  
+  while (!read_keyinfo(&type, &sym));
   event->type = type;
   event->key.keysym.sym = sym;
 
@@ -146,10 +143,9 @@ int SDL_PeepEvents(SDL_Event *ev, int numevents, int action, uint32_t mask) {
 }
 
 uint8_t* SDL_GetKeyState(int *numkeys) {
+  printf("GetKeyState\n");
   SDL_Event ev;
-
   if (numkeys)
     *numkeys = sizeof(key_state) / sizeof(key_state[0]);
-  //SDL_PumpEvents();
   return key_state;
 }
