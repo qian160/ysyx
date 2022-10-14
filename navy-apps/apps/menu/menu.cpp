@@ -75,7 +75,7 @@ int main(int argc, char *argv[], char *envp[]) {
   assert(logo_sf);
   set_i_max();
 printf("set success\n");
-	  printf("1");
+	  printf("1\n");
   while (1) {
     display_menu(i_max);
     SDL_Event e;
