@@ -27,10 +27,6 @@ void nishiyige()
 	pixels = (int *)((char *)pixels + 10);
 
   write(3, pixels, sz - 128 - 8 );
-
-	while(1);
-	printf("114514\n");
-
 }
 
 int main() {
