@@ -36,15 +36,17 @@ static Finfo file_table[] __attribute__((used)) = {
   [FD_STDIN]  = {"stdin",  0, 0, invalid_read, invalid_write},
   [FD_STDOUT] = {"stdout", 0, 0, invalid_read, serial_write},
   [FD_STDERR] = {"stderr", 0, 0, invalid_read, serial_write},
-  [FD_EVENT]  = {"/dev/events",  0, 0, events_read,  invalid_write},
   [FD_FB]     = {"/dev/fb",0, 0, invalid_read, fb_write},
+  [FD_EVENT]  = {"/dev/events",  0, 0, events_read,  invalid_write},
   {"/proc/dispinfo", 0, 0, dispinfo_read, invalid_write},
   //ramdisk
 #include "files.h"
 };
 
 void init_fs() {
+  file_table[FD_FB].size = 400*300;
   // TODO: initialize the size of /dev/fb
+  // not needed. This is done by NDL_init
 }
 
 #define total_file_num sizeof(file_table)/sizeof(Finfo)
@@ -72,13 +74,14 @@ size_t fs_lseek(int fd, size_t offset, int whence) {
 }
 //return the fd. Maybe 'search' is a better name
 int fs_open(const char *pathname, int flags, int mode) {
-  for(int fd = 0; fd < total_file_num; ++fd)
+  for(int fd = 0; fd < total_file_num; ++fd){
     if(strcmp(pathname, file_table[fd].name)==0) {
       file_table[fd].file_offset = 0;
       //printf("----------------\n[fs_open]\n file %d: \"%s\"\n size: %p\n----------------\n", fd, pathname, file_table[fd].size);
       return fd;
     }
-
+  }
+  printf("can not open %s\n", pathname);
   assert(0);
   return 114514;
 }
