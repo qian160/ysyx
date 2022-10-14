@@ -20,7 +20,6 @@ void SDL_BlitSurface(SDL_Surface *src, SDL_Rect *srcrect, SDL_Surface *dst, SDL_
       rect_w = src->w; rect_h = src->h;
       src_x = 0; src_y = 0;
     }
-    printf("%d\n%d\n%d\n%d\n\n", rect_w, rect_h, src_x, src_y);
     if (dstrect){
       dst_x = dstrect->x, dst_y = dstrect->y;
     }else {
