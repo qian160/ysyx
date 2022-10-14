@@ -31,32 +31,6 @@ int NDL_PollEvent(char *buf, int len) {
 #define H 300
 #define SIZE W * H * 4
 
-enum { AM_GPU_FBDRAW = (11) }; typedef struct { int x, y; void *pixels; int w, h; _Bool sync; } AM_GPU_FBDRAW_T;
-
-void nishiyige()
-{
-	AM_GPU_FBDRAW_T temp __attribute__((unused));
-
-  FILE *fp = fopen("/share/pictures/114514.bmp", "r");
-  if (!fp) return;
-
-  uint32_t *pixels = malloc(W * H * sizeof(uint32_t));
-  fseek(fp, 0, SEEK_END);
-
-  size_t sz = ftell(fp);
-  printf("sz = %ld\n", sz);
-  fseek(fp, 0, SEEK_SET);
-  fread(pixels, sz, 1, fp);
-  //not all the file is about pixels. need to cut off the useless iinformation
-	pixels = (int *)((char *)pixels + 10);
-
-  write(3, pixels, sz - 128 - 8 );
-
-	while(1);
-	printf("114514\n");
-
-}
-
 void NDL_OpenCanvas(int *w, int *h) {
 
   if (getenv("NWM_APP")) {
@@ -115,8 +89,6 @@ int NDL_Init(uint32_t flags) {
   read(dispinfo, info, sizeof(info));
   sscanf(info, "WIDTH:%d\nHEIGHT:%d", &screen_w, &screen_h);
   printf("w = %d\nh = %d\n", screen_w, screen_h);
-
-  //nishiyige();
 
   return 0;
 }
