@@ -6,6 +6,7 @@
 
 //将一张画布中的指定矩形区域复制到另一张画布的指定位置
 void SDL_BlitSurface(SDL_Surface *src, SDL_Rect *srcrect, SDL_Surface *dst, SDL_Rect *dstrect) {
+  //the behavior below follows standard SDL lib's
   if (src->format->BitsPerPixel == 32){
     uint32_t* src_pixels = (uint32_t*)src->pixels;
     uint32_t* dst_pixels = (uint32_t*)dst->pixels;
@@ -15,6 +16,7 @@ void SDL_BlitSurface(SDL_Surface *src, SDL_Rect *srcrect, SDL_Surface *dst, SDL_
       rect_w = srcrect->w; rect_h = srcrect->h;
       src_x = srcrect->x; src_y = srcrect->y; 
     }else {
+      //if srcrect == NULL, copy the whole src surface
       rect_w = src->w; rect_h = src->h;
       src_x = 0; src_y = 0;
     }
@@ -30,6 +32,7 @@ void SDL_BlitSurface(SDL_Surface *src, SDL_Rect *srcrect, SDL_Surface *dst, SDL_
         dst_pixels[(dst_y + i) * dst->w + dst_x + j] = src_pixels[(src_y + i) * src->w + src_x + j];
       }
     }
+    printf("success\n");
   }else if (src->format->BitsPerPixel == 8){
     uint8_t* src_pixels = (uint8_t*)src->pixels;
     uint8_t* dst_pixels = (uint8_t*)dst->pixels;
