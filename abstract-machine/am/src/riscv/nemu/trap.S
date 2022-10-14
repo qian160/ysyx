@@ -35,7 +35,7 @@ __am_asm_trap:
 
   MAP(REGS, PUSH)       # save the context
 
-#  csrr t0, mcause      #TO PASS DIFFTEST
+  csrr t0, mcause       # need to comment this TO PASS DIFFTEST
   csrr t1, mstatus
   csrr t2, mepc
 
