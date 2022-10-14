@@ -69,15 +69,9 @@ static void clear_display(void) {
 
 int main(int argc, char *argv[], char *envp[]) {
   SDL_Init(0);
-  printf("init success");
- 
   screen = SDL_SetVideoMode(0, 0, 32, SDL_HWSURFACE);
-  printf("set success");
-
   font = new BDF_Font(font_fname);
   logo_sf = SDL_LoadBMP("/share/pictures/projectn.bmp");
-  printf("load success");
-
   assert(logo_sf);
   set_i_max();
 
@@ -88,6 +82,7 @@ int main(int argc, char *argv[], char *envp[]) {
     do {
       SDL_WaitEvent(&e);
     } while (e.type != SDL_KEYDOWN);
+	printf("wait success?\n");
 
     int i = -1;
     switch (e.key.keysym.sym) {
