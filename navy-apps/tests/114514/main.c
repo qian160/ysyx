@@ -26,7 +26,7 @@ void nishiyige()
   //not all the file is about pixels. need to cut off the useless iinformation
 	pixels = (int *)((char *)pixels + 10);
 
-  write(3, pixels, sz - 128 - 8 );
+  write(3, pixels, sz /*- 128 - 8*/ );
 }
 
 int main() {
