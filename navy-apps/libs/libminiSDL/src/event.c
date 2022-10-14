@@ -46,8 +46,8 @@ static int pop(uint8_t *type, uint8_t *sym){
   return 1;
 }
 
+//stores each key's state, up or down
 static uint8_t key_state[sizeof(keyname) / sizeof(keyname[0])] = {0};
-
 
 int SDL_PushEvent(SDL_Event *ev) {
   assert(0);
@@ -61,7 +61,8 @@ static int inline read_keyinfo(uint8_t *type, uint8_t *sym){
   if (!ret){
     return 0;
   }
-  //printf("%s\n", key_buf);
+  printf("%s\n", key_buf);
+  while(1);
   key_action = key_buf;
   int i;
   for (i = 0; key_buf[i] != ' '; i++){}
