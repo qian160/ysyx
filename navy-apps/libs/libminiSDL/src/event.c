@@ -93,11 +93,7 @@ static int inline read_keyinfo(uint8_t *type, uint8_t *sym){
 
 int SDL_PollEvent(SDL_Event *ev) {
   uint8_t type = 0, sym = 0;
-  // SDL_PumpEvents();
-
-
-  // if (pop(&type, &sym)){
-  //printf("SDL_PollEvent\n");
+  printf("SDL_PollEvent\n");
   if (read_keyinfo(&type, &sym)){
     ev->type = type;
     ev->key.keysym.sym = sym;
