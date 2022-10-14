@@ -74,17 +74,12 @@ int main(int argc, char *argv[], char *envp[]) {
   logo_sf = SDL_LoadBMP("/share/pictures/projectn.bmp");
   assert(logo_sf);
   set_i_max();
-	    printf("1\n");
 
   while (1) {
-	    printf("1\n");
-    display_menu(i_max);
-
+    display_menu(i_max);		//bug detacted
     SDL_Event e;
     do {
-	    printf("1\n");
       SDL_WaitEvent(&e);
-	    printf("1\n");
     } while (e.type != SDL_KEYDOWN);
 	printf("wait success?\n");
 
@@ -146,7 +141,9 @@ static void draw_text_row(char *s, int r) {
 static void display_menu(int n) {
   clear_display();
   SDL_Rect rect = { .x = screen->w - logo_sf->w, .y = 0 };
+  printf("1");
   SDL_BlitSurface(logo_sf, NULL, screen, &rect);
+  printf("1");
   printf("Available applications:\n");
   char buf[80];
   int i;
