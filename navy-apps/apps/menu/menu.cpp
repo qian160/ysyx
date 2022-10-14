@@ -74,8 +74,6 @@ int main(int argc, char *argv[], char *envp[]) {
   logo_sf = SDL_LoadBMP("/share/pictures/projectn.bmp");
   assert(logo_sf);
   set_i_max();
-printf("set success\n");
-	  printf("1\n");
   while (1) {
     display_menu(i_max);
 	  printf("disp success\n");
@@ -143,10 +141,10 @@ static void draw_text_row(char *s, int r) {
 
 static void display_menu(int n) {
   clear_display();
-  printf("test\n");
+  printf("clear display\n");
   SDL_Rect rect = { .x = screen->w - logo_sf->w, .y = 0 };
   SDL_BlitSurface(logo_sf, NULL, screen, &rect);
-  printf("test\n");
+  printf("blit\n");
   printf("Available applications:\n");
   char buf[80];
   int i;
