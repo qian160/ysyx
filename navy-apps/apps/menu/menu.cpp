@@ -76,14 +76,10 @@ int main(int argc, char *argv[], char *envp[]) {
   set_i_max();
   while (1) {
     display_menu(i_max);
-	  printf("disp success\n");
     SDL_Event e;
     do {
       SDL_WaitEvent(&e);
-	  printf("wait success\n");
     } while (e.type != SDL_KEYDOWN);
-	printf("wait success?\n");
-
     int i = -1;
     switch (e.key.keysym.sym) {
       case SDLK_0: i = 0; break;
