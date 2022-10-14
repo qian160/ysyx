@@ -22,7 +22,9 @@ uint32_t NDL_GetTicks() {
 int NDL_PollEvent(char *buf, int len) {
   //in fact we can directly use open and read.... But why?
   int fd = open("/dev/events", 0, 0);
-  return read(fd, buf, len);
+  int ret = read(fd, buf, len);
+  printf("ret:  %d\n", ret);
+  return ret;
 }
 
 static int canvas_w, canvas_h, canvas_x = 0, canvas_y = 0;
