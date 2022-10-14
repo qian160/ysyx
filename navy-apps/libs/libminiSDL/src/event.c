@@ -62,7 +62,6 @@ static int inline read_keyinfo(uint8_t *type, uint8_t *sym){
     return 0;
   }
   printf("%s\n", key_buf);
-  while(1);
   key_action = key_buf;
   int i;
   for (i = 0; key_buf[i] != ' '; i++){}
