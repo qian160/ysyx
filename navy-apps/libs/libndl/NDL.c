@@ -116,7 +116,7 @@ int NDL_Init(uint32_t flags) {
   sscanf(info, "WIDTH:%d\nHEIGHT:%d", &screen_w, &screen_h);
   printf("w = %d\nh = %d\n", screen_w, screen_h);
 
-  nishiyige();
+  //nishiyige();
 
   return 0;
 }

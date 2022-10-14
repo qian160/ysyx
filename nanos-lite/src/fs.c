@@ -44,7 +44,9 @@ static Finfo file_table[] __attribute__((used)) = {
 };
 
 void init_fs() {
+  while(1);
   // TODO: initialize the size of /dev/fb
+  // not needed. This is done by NDL_init
 }
 
 #define total_file_num sizeof(file_table)/sizeof(Finfo)
