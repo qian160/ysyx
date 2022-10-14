@@ -5,6 +5,7 @@
 #include <string.h>
 #include <unistd.h>
 #include <sys/time.h>
+#include <assert.h>
 
 static int evtdev = -1;
 static int fbdev = -1;
@@ -27,11 +28,26 @@ int NDL_PollEvent(char *buf, int len) {
   return read(fd, buf, len);
 }
 
+static int canvas_w, canvas_h, canvas_x = 0, canvas_y = 0;
+
 #define W 400
 #define H 300
 #define SIZE W * H * 4
 
+//why use pointers?
 void NDL_OpenCanvas(int *w, int *h) {
+  if (*w == 0){
+    *w = screen_w;
+  }
+  if (*h == 0){
+    *h = screen_h;
+  }
+  if(*h > screen_h || *w > screen_w){
+    printf("screen size too large:  [%d x %d]\n", *w, *h);
+    assert(0);
+  }
+  canvas_w = *w;
+  canvas_h = *h;
 
   if (getenv("NWM_APP")) {
     int fbctl = 4;
@@ -51,8 +67,6 @@ void NDL_OpenCanvas(int *w, int *h) {
     close(fbctl);
   }
 }
-
-static int canvas_w, canvas_h, canvas_x = 0, canvas_y = 0;
 
 void NDL_DrawRect(uint32_t *pixels, int x, int y, int w, int h) {
   int graphics = open("/dev/fb", O_RDWR);
