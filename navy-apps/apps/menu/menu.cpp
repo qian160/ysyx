@@ -80,7 +80,9 @@ int main(int argc, char *argv[], char *envp[]) {
 
     SDL_Event e;
     do {
+	    printf("1\n");
       SDL_WaitEvent(&e);
+	    printf("1\n");
     } while (e.type != SDL_KEYDOWN);
 	printf("wait success?\n");
 
