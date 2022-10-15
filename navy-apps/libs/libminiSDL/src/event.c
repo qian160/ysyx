@@ -55,6 +55,7 @@ int SDL_PushEvent(SDL_Event *ev) {
 }
 
 // read an event and pack it to a SDL event(keyboard here)
+// speed it up by using easily recognized key_buf(returned by pollevent)
 static int inline read_keyinfo(uint8_t *type, uint8_t *sym){
   char key_buf[64], *key_action, *key_key;
   int ret = NDL_PollEvent(key_buf, sizeof(key_buf));
@@ -62,7 +63,9 @@ static int inline read_keyinfo(uint8_t *type, uint8_t *sym){
   if (!ret){
     return 0;
   }
-  printf("%s: %s\n", __func__, key_buf);
+  sscanf("%s %s", key_action, key_key);
+  printf("action: %s\nkey:  %s\n", key_action, key_key);
+
 }
 
 
@@ -71,7 +74,6 @@ int SDL_PollEvent(SDL_Event *ev) {
   if (read_keyinfo(&type, &sym)){
     ev->type = type;
     ev->key.keysym.sym = sym;
-
     printf("type: %d\n", type);
     switch(type){
     case SDL_KEYDOWN:
