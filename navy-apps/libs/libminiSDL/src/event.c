@@ -122,7 +122,7 @@ int SDL_WaitEvent(SDL_Event *event) {
   while (!read_keyinfo(&type, &sym));
   event->type = type;
   event->key.keysym.sym = sym;
-  printf("type: %d\nsym:  %d\n", type, sym);
+//  printf("type: %d\nsym:  %d\n", type, sym);
   switch(type){
     case SDL_KEYDOWN:
       key_state[sym] = 1;
