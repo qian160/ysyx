@@ -68,16 +68,24 @@ static int inline read_keyinfo(uint8_t *type, uint8_t *sym){
   //printf("action: %s\nkey:  %s\n", key_action, key_key);
 
   char * action = strtok(key_buf, " ");
-  char * key    = strtok(NULL, " ");
+  char * key    = strtok(NULL, " ");    //need to be converted to an integer
   printf("action: %s\nkey:  %s\n", action, key);
   *type = strcmp(action, "Keyup:") ? SDL_KEYDOWN: SDL_KEYUP;
-  strcpy(sym, key);
-  printf("action = %d,  key = %s\n", *action, key);
-  return 1;
+
+  for (int i = 0; i < sizeof(keyname) / sizeof(char *); ++i){
+    // use logic short-circuit to reduce some computation
+    if (key_key[0] == keyname[i][0] && strcmp(key_key, keyname[i]) == 0){
+      *sym = i;
+      //printf("%d %d\n", *type, *sym);
+      break;
+    }
+  }
+  printf("sym = %d\n", *sym);
+  return ret;
 
 }
 
-
+// check if there is an event. If so pack it up as a SDL_Event and return
 int SDL_PollEvent(SDL_Event *ev) {
   uint8_t type = 0, sym = 0;
   if (read_keyinfo(&type, &sym)){
