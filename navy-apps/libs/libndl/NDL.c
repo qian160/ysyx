@@ -22,6 +22,8 @@ uint32_t NDL_GetTicks() {
 int NDL_PollEvent(char *buf, int len) {
   //in fact we can directly use open and read.... But why?
   int fd = open("/dev/events", 0, 0);
+  int ret = read(fd, buf, len);
+  
   return read(fd, buf, len);    //return 1 when a key is there
 }
 
