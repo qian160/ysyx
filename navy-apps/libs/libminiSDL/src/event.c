@@ -74,7 +74,7 @@ static int inline read_keyinfo(uint8_t *type, uint8_t *sym){
 
   for (int i = 0; i < sizeof(keyname) / sizeof(char *); ++i){
     // use logic short-circuit to reduce some computation
-    if (key_key[0] == keyname[i][0] && strcmp(key_key, keyname[i]) == 0){
+    if (key[0] == keyname[i][0] && strcmp(key, keyname[i]) == 0){
       *sym = i;
       //printf("%d %d\n", *type, *sym);
       break;
