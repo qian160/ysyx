@@ -63,11 +63,17 @@ static int inline read_keyinfo(uint8_t *type, uint8_t *sym){
   if (!ret){
     return 0;
   }
-  sscanf(key_buf, "%s %s", key_action, key_key);
+  // which is faster? sscanf once or strtok twice
+  //sscanf(key_buf, "%s %s", key_action, key_key);
+  //printf("action: %s\nkey:  %s\n", key_action, key_key);
+
   char * action = strtok(key_buf, " ");
   char * key    = strtok(NULL, " ");
-  printf("action: %s\nkey:  %s\n", key_action, key_key);
   printf("action: %s\nkey:  %s\n", action, key);
+  *type = strcmp(action, "Keyup:") ? SDL_KEYDOWN: SDL_KEYUP;
+  strcpy(sym, key);
+  printf("action = %d,  key = %s\n", *action, key);
+  return 1;
 
 }
 
