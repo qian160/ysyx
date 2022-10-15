@@ -24,10 +24,8 @@ extern void naive_uload(PCB * pcb, const char *filename);
 
 void init_proc() {
   switch_boot_pcb();
-
   Log("Initializing processes...");
-
-  naive_uload(NULL, "/bin/menu");
+  naive_uload(NULL, "/bin/nterm");
 }
 
 Context* schedule(Context *prev) {

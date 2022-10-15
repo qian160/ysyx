@@ -33,7 +33,7 @@ size_t events_read(void *buf, size_t offset, size_t len) {
   char *tag = key.keydown ? "keydown: " : "keyup: ";
   strcpy(buf, tag);
   strcat(buf, keyname[key.keycode]);
-  printf("%s\n", buf);
+  Log("%s\n", buf);
   return 1;
 }
 
