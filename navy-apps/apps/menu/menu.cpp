@@ -80,7 +80,7 @@ int main(int argc, char *argv[], char *envp[]) {
     SDL_Event e;
     do {
       SDL_WaitEvent(&e);
-    } while (e.type != SDL_KEYDOWN);
+    } while (e.type != SDL_KEYDOWN);  //dead loop here. Type is not assigned a proper value
     int i = -1;
     printf("%d\n", e.key.keysym.sym);
     switch (e.key.keysym.sym) {

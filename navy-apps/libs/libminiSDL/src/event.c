@@ -56,6 +56,7 @@ int SDL_PushEvent(SDL_Event *ev) {
 
 static char key_buf[64], *key_action, *key_key;
 //To Be Fast
+// do this yourself. fix the bugs
 static int inline read_keyinfo(uint8_t *type, uint8_t *sym){
   int ret = NDL_PollEvent(key_buf, sizeof(key_buf));
   if (!ret){
