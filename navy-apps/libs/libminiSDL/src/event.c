@@ -59,7 +59,7 @@ static char key_buf[64], *key_action, *key_key;
 // do this yourself. fix the bugs
 static int inline read_keyinfo(uint8_t *type, uint8_t *sym){
   int ret = NDL_PollEvent(key_buf, sizeof(key_buf));
-  printf("\n%s\n", key_buf);
+  //printf("\n%s\n", key_buf);
   if (!ret){
     return 0;
   }
