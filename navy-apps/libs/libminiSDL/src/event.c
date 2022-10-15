@@ -63,7 +63,7 @@ static int inline read_keyinfo(uint8_t *type, uint8_t *sym){
   if (!ret){
     return 0;
   }
-  sscanf("%s %s", key_action, key_key);
+  sscanf(key_buf, "%s %s", key_action, key_key);
   printf("action: %s\nkey:  %s\n", key_action, key_key);
 
 }
