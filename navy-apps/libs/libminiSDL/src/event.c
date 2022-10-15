@@ -54,42 +54,15 @@ int SDL_PushEvent(SDL_Event *ev) {
   return 0;
 }
 
-static char key_buf[64], *key_action, *key_key;
-//To Be Fast
-// do this yourself. fix the bugs
+// read an event and pack it to a SDL event(keyboard here)
 static int inline read_keyinfo(uint8_t *type, uint8_t *sym){
+  char key_buf[64], *key_action, *key_key;
   int ret = NDL_PollEvent(key_buf, sizeof(key_buf));
   //printf("\n%s\n", key_buf);    //keyup/down: foo
   if (!ret){
     return 0;
   }
-  key_action = key_buf;
-  int i;
-  for (i = 0; key_buf[i] != ' '; i++){}
-  key_buf[i] = '\0';
-  key_key = &key_buf[i + 1]; 
-  
-  //截断\n
-  for (i = 0;  key_key[i] != '\0' && key_key[i] != '\n'; i++){}
-  if (key_key[i] == '\n'){
-    key_key[i] = '\0';
-  }
-  
-  //strcmp("kd", key_action) == 0
-  if (key_action[1] == 'd'){//加速！！
-    *type = SDL_KEYDOWN;
-  }else{
-    *type = SDL_KEYUP;
-  }
-
-  for (i = 0; i < sizeof(keyname) / sizeof(char *); ++i){
-    //剪枝掉很多
-    if (key_key[0] == keyname[i][0] && strcmp(key_key, keyname[i]) == 0){
-      *sym = i;
-      //printf("%d %d\n", *type, *sym);
-      return ret;
-    }
-  }
+  printf("%s: %s\n", __func__, key_buf);
 }
 
 
@@ -99,6 +72,7 @@ int SDL_PollEvent(SDL_Event *ev) {
     ev->type = type;
     ev->key.keysym.sym = sym;
 
+    printf("type: %d\n", type);
     switch(type){
     case SDL_KEYDOWN:
       key_state[sym] = 1;
