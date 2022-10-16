@@ -91,7 +91,6 @@ int SDL_PollEvent(SDL_Event *ev) {
   if (read_keyinfo(&type, &sym)){
     ev->type = type;
     ev->key.keysym.sym = sym;
-    printf("type: %d\n", type);
     switch(type){
     case SDL_KEYDOWN:
       key_state[sym] = 1;
