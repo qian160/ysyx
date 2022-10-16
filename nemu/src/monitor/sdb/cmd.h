@@ -106,7 +106,6 @@ static int cmd_x(char * args){  //usage: x num expr
     bool * success = (bool * )malloc(sizeof(bool));
     *success = true;
     word_t address = expr(Expr, success);
-    Log("\n%s = %lx", Expr, address);
     if(!success)
     {
         printf(ANSI_FMT("illegal expression\n",ANSI_FG_MAGENTA));

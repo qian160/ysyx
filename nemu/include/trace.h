@@ -25,9 +25,9 @@ void show_mtrace();
 typedef struct {
     int index;
     char buf[CONFIG_ITRACE_SIZE][128];
-}Iringbuf;
+}rb_I;      //ring buffer
 
-Iringbuf iringbuf;
+rb_I rbi;
 
 void show_itrace();
 
