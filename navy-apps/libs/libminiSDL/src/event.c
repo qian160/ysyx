@@ -70,8 +70,9 @@ static int inline read_keyinfo(uint8_t *type, uint8_t *sym){
   char * action = strtok(key_buf, " ");
   char * key    = strtok(NULL, " ");    //need to be converted to an integer
   //printf("action: %s\nkey:  %s\n", action, key);
-  *type = strcmp(action, "Keyup:") ? SDL_KEYDOWN: SDL_KEYUP;
-
+  //*type = strcmp(action, "Keyup:") ? SDL_KEYDOWN: SDL_KEYUP;
+  //speed up
+  *type = action[3] == 'u'? SDL_KEYUP: SDL_KEYDOWN;
   for (int i = 0; i < sizeof(keyname) / sizeof(char *); ++i){
     // use logic short-circuit to reduce some computation
     if (key[0] == keyname[i][0] && strcmp(key, keyname[i]) == 0){
