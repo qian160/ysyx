@@ -1,5 +1,6 @@
 #include"common.h"
 #include<verilated_vcd_c.h>
+#include"macro.h"
 #include"sdb.h"
 using namespace std;
 
@@ -23,7 +24,7 @@ int main(int argc, char **argv)
 	tb.reset();
 	//tb.trace("./wave.vcd");
 	string s;
-	init_difftest();
+	IFDEF(DIFFTEST_ENABLE, init_difftest());
 	while(1){
 		cout << "(😅)";
 		getline(cin, s);

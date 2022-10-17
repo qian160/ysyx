@@ -4,11 +4,12 @@
 typedef struct{
     uint64_t gpr[32];
     uint64_t pc;
+    uint64_t csr[4];
 }CPU_state;
 
 using namespace std;
 
-#define TEST_PATH   string("/home/s081/Downloads/ysyx-workbench/am-kernels/tests/cpu-tests/build/")
+#define TEST_PATH   string("./build/")
 #define DEFAULT_IMG string("/home/s081/Downloads/ysyx-workbench/npc/src/main/scala/img/file")
 int cmd_h(std::string args);
 int cmd_c(std::string args);

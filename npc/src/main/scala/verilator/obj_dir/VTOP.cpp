@@ -14,6 +14,11 @@ VTOP::VTOP(VerilatedContext* _vcontextp__, const char* _vcname__)
     , reset{vlSymsp->TOP.reset}
     , io_inst_o{vlSymsp->TOP.io_inst_o}
     , io_timer_i{vlSymsp->TOP.io_timer_i}
+    , io_csrData_csrVal{vlSymsp->TOP.io_csrData_csrVal}
+    , io_csrData_epc{vlSymsp->TOP.io_csrData_epc}
+    , io_csrData_tvec{vlSymsp->TOP.io_csrData_tvec}
+    , io_csrData_cause{vlSymsp->TOP.io_csrData_cause}
+    , io_csrData_status{vlSymsp->TOP.io_csrData_status}
     , io_regs_0{vlSymsp->TOP.io_regs_0}
     , io_regs_1{vlSymsp->TOP.io_regs_1}
     , io_regs_2{vlSymsp->TOP.io_regs_2}
@@ -47,7 +52,8 @@ VTOP::VTOP(VerilatedContext* _vcontextp__, const char* _vcname__)
     , io_regs_30{vlSymsp->TOP.io_regs_30}
     , io_regs_31{vlSymsp->TOP.io_regs_31}
     , io_pc_o{vlSymsp->TOP.io_pc_o}
-    , io_o{vlSymsp->TOP.io_o}
+    , io_o1{vlSymsp->TOP.io_o1}
+    , io_o2{vlSymsp->TOP.io_o2}
     , io_src1{vlSymsp->TOP.io_src1}
     , io_src2{vlSymsp->TOP.io_src2}
     , rootp{&(vlSymsp->TOP)}

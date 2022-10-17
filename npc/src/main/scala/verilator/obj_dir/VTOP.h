@@ -29,6 +29,11 @@ class VTOP VL_NOT_FINAL {
     VL_IN8(&reset,0,0);
     VL_OUT(&io_inst_o,31,0);
     VL_IN64(&io_timer_i,63,0);
+    VL_OUT64(&io_csrData_csrVal,63,0);
+    VL_OUT64(&io_csrData_epc,63,0);
+    VL_OUT64(&io_csrData_tvec,63,0);
+    VL_OUT64(&io_csrData_cause,63,0);
+    VL_OUT64(&io_csrData_status,63,0);
     VL_OUT64(&io_regs_0,63,0);
     VL_OUT64(&io_regs_1,63,0);
     VL_OUT64(&io_regs_2,63,0);
@@ -62,7 +67,8 @@ class VTOP VL_NOT_FINAL {
     VL_OUT64(&io_regs_30,63,0);
     VL_OUT64(&io_regs_31,63,0);
     VL_OUT64(&io_pc_o,63,0);
-    VL_OUT64(&io_o,63,0);
+    VL_OUT64(&io_o1,63,0);
+    VL_OUT64(&io_o2,63,0);
     VL_OUT64(&io_src1,63,0);
     VL_OUT64(&io_src2,63,0);
 

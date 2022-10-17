@@ -3,23 +3,20 @@ import chisel3.util._
 
 class WB extends Module{
     val io = IO(new Bundle{
-        val writeRfOp_i =   Input(new WriteRfOp)
+        val writeOp_i =   Input(new WriteOp)
 
-        val writeRfOp_o =   Output(new WriteRfOp)
+        val writeOp_o =   Output(new WriteOp)
 
         val debug       =   Input(new Debug_Bundle)
     })
 
-    io.writeRfOp_o  :=  io.writeRfOp_i
+    io.writeOp_o  :=  io.writeOp_i
 
     //debug
     val DEBUG = Module(new DEBUG)
 
-    val wdata = io.writeRfOp_i.wdata
+    val wdata = io.writeOp_i.rf.wdata
     
-    val foo = Mux(io.writeRfOp_i.wen, io.writeRfOp_i.wdata, 0.U)
-    //printf("\nwdata = %x\n", foo)
-
     DEBUG.io.pc     :=  io.debug.pc
     DEBUG.io.exit   :=  io.debug.exit
     DEBUG.io.inst   :=  io.debug.inst

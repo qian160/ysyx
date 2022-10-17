@@ -5,11 +5,12 @@
 
 using namespace std;
 
+// we can't easily just use objcopy, because verilog function readmemh can't recognize that format...
 int main(int argc, char **argv)
 {
 	//string img_file("/home/s081/Downloads/ysyx-workbench/npc/src/main/scala/img_file");
 	if(argc < 2)return 0;
-	string img_file = (string)"/home/s081/Downloads/ysyx-workbench/am-kernels/tests/cpu-tests/build/" + (string)argv[1] + (string)"-riscv64-npc.bin";
+	string img_file = (string)"/home/s081/Downloads/ysyx-workbench/npc/src/main/scala/verilator/build/" + (string)argv[1] + (string)"-riscv64-npc.bin";
 	unsigned int inst_rom[0x80000];
 	FILE * in  = fopen(img_file.c_str(), "rb");
 	assert(in);

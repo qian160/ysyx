@@ -42,6 +42,7 @@ void do_syscall(Context *c) {
     case SYS_lseek:   _ret = fs_lseek(_a0, _a1, _a2);  break;
     case SYS_open:    _ret = fs_open((char*)_a0, _a1, _a2);   break;
     case SYS_close:   _ret = 0;   break;
+    //case SYS_execve:  _ret = 0;   break;
     case SYS_gettimeofday:
             _ret = tm_get((struct timeval*)_a0,NULL); break;
     default: panic("Unhandled syscall ID = %d", a7);
