@@ -18,7 +18,7 @@ class CSR extends Module{
     val mepc    =   RegInit(0.U(64.W))
     val mcause  =   RegInit(0.U(64.W))
     val mstatus =   RegInit(0.U(64.W))
-    val mtvec   =   RegInit(0.U(64.W))
+    val mtvec   =   RegInit("h800011c0".U(64.W))    //__am_asm_trap offered by nanos
 
     val wdata   =   io.writeOp_i.wdata
 
@@ -42,4 +42,10 @@ class CSR extends Module{
     io.csrData_o.tvec   :=  mtvec
     io.csrData_o.cause  :=  mcause
     io.csrData_o.status :=  mstatus
+}
+
+object CSR extends CSR {
+    def raiseIntr(NO: UInt) = {
+        mcause  :=  NO
+    }
 }

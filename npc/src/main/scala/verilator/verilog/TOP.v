@@ -1273,7 +1273,7 @@ module CSR(
       end
     end
     if (reset) begin // @[CSR.scala 21:28]
-      mtvec <= 64'h0; // @[CSR.scala 21:28]
+      mtvec <= 64'h800011c0; // @[CSR.scala 21:28]
     end else if (io_writeOp_i_wen) begin // @[CSR.scala 32:27]
       if (!(12'h341 == io_writeOp_i_waddr)) begin // @[CSR.scala 33:35]
         if (!(12'h342 == io_writeOp_i_waddr)) begin // @[CSR.scala 33:35]
