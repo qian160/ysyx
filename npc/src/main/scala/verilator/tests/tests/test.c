@@ -9,9 +9,9 @@ void halt(int code) {
 */
 int main()
 {
-	int j = 4;
-	int i = 4;
-	halt(1);
-	halt(i - j);
+	int j = 0;
+	int n = 10e8;
+	while(n--)j++;
+	halt(j - 10e8);
 	return 0;
 }
