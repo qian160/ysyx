@@ -11,6 +11,7 @@ int main()
 {
 	int j = 4;
 	int i = 4;
+	halt(1);
 	halt(i - j);
 	return 0;
 }
