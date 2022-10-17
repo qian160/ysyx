@@ -111,8 +111,6 @@ VL_ATTR_COLD void VTOP___024root__trace_init_sub__TOP__0(VTOP___024root* vlSelf,
     tracep->declBus(c+4,"IF_io_inst_i", false,-1, 31,0);
     tracep->declQuad(c+5,"IF_io_pc_o", false,-1, 63,0);
     tracep->declBus(c+4,"IF_io_inst_o", false,-1, 31,0);
-    tracep->declBit(c+156,"ID_clock", false,-1);
-    tracep->declBit(c+157,"ID_reset", false,-1);
     tracep->declBus(c+4,"ID_io_inst_i", false,-1, 31,0);
     tracep->declQuad(c+5,"ID_io_pc_i", false,-1, 63,0);
     tracep->declQuad(c+7,"ID_io_rfData_i_rs1Val", false,-1, 63,0);
@@ -336,8 +334,6 @@ VL_ATTR_COLD void VTOP___024root__trace_init_sub__TOP__0(VTOP___024root* vlSelf,
     tracep->declBus(c+4,"io_debug_o_inst", false,-1, 31,0);
     tracep->popNamePrefix(1);
     tracep->pushNamePrefix("ID ");
-    tracep->declBit(c+156,"clock", false,-1);
-    tracep->declBit(c+157,"reset", false,-1);
     tracep->declBus(c+4,"io_inst_i", false,-1, 31,0);
     tracep->declQuad(c+5,"io_pc_i", false,-1, 63,0);
     tracep->declQuad(c+7,"io_rfData_i_rs1Val", false,-1, 63,0);

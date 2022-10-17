@@ -134,19 +134,6 @@ VL_INLINE_OPT void VTOP___024root___sequent__TOP__0(VTOP___024root* vlSelf) {
     VlWide<3>/*95:0*/ __Vtemp_h86f7ce9f__0;
     VlWide<3>/*95:0*/ __Vtemp_hda19d0ba__0;
     // Body
-    if (VL_UNLIKELY(((((((((((7U != (IData)(vlSelf->TOP__DOT__ID__DOT__decRes_0)) 
-                             & (1U != (IData)(vlSelf->TOP__DOT__ID__DOT__decRes_0))) 
-                            & (0U != (IData)(vlSelf->TOP__DOT__ID__DOT__decRes_0))) 
-                           & (3U != (IData)(vlSelf->TOP__DOT__ID__DOT__decRes_0))) 
-                          & (2U != (IData)(vlSelf->TOP__DOT__ID__DOT__decRes_0))) 
-                         & (4U != (IData)(vlSelf->TOP__DOT__ID__DOT__decRes_0))) 
-                        & (5U != (IData)(vlSelf->TOP__DOT__ID__DOT__decRes_0))) 
-                       & (6U == (IData)(vlSelf->TOP__DOT__ID__DOT__decRes_0))) 
-                      & (0U != (7U & (vlSelf->TOP__DOT__Main_Memory__DOT__ram_io_inst_o_MPORT_data 
-                                      >> 0xcU)))) & 
-                     (~ (IData)(vlSelf->reset))))) {
-        VL_FWRITEF(0x80000002U,"csr\n");
-    }
     if (VL_UNLIKELY(((((~ (IData)(vlSelf->TOP__DOT__Main_Memory__DOT___T_2)) 
                        & ((0xa00003f8ULL <= (((QData)((IData)(
                                                               vlSelf->TOP__DOT__EX__DOT___aluRes_T_191[1U])) 

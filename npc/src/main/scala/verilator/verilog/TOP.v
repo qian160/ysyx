@@ -66,8 +66,6 @@ end // initial
 `endif // SYNTHESIS
 endmodule
 module ID(
-  input         clock,
-  input         reset,
   input  [31:0] io_inst_i,
   input  [63:0] io_pc_i,
   input  [63:0] io_rfData_i_rs1Val,
@@ -296,14 +294,10 @@ module ID(
   wire [11:0] csrAddr = io_inst_i[31:20]; // @[ID.scala 40:25]
   wire [11:0] _immI_T_2 = io_inst_i[31:20]; // @[HELPERS.scala 15:65]
   wire [63:0] immI = {{52{_immI_T_2[11]}},_immI_T_2}; // @[HELPERS.scala 15:80]
-  wire  _T = 5'h7 == decRes_0; // @[ID.scala 64:21]
-  wire  _T_1 = 5'h1 == decRes_0; // @[ID.scala 64:21]
   wire  is_jalr = opcode == 7'h67; // @[ID.scala 70:37]
   wire [63:0] _io_decInfo_o_aluOp_src1_T = is_jalr ? io_pc_i : io_rfData_i_rs1Val; // @[ID.scala 72:46]
   wire [63:0] _io_decInfo_o_aluOp_src2_T_5 = is_jalr ? 64'h4 : immI; // @[ID.scala 73:46]
   wire [63:0] _io_decInfo_o_branchOp_newPC_T_6 = io_rfData_i_rs1Val + immI; // @[ID.scala 75:54]
-  wire  _T_2 = 5'h0 == decRes_0; // @[ID.scala 64:21]
-  wire  _T_3 = 5'h3 == decRes_0; // @[ID.scala 64:21]
   wire [12:0] _io_decInfo_o_branchOp_newPC_T_13 = {io_inst_i[31],io_inst_i[7],io_inst_i[30:25],io_inst_i[11:8],1'h0}; // @[HELPERS.scala 15:65]
   wire [63:0] _io_decInfo_o_branchOp_newPC_T_15 = {{51{_io_decInfo_o_branchOp_newPC_T_13[12]}},
     _io_decInfo_o_branchOp_newPC_T_13}; // @[HELPERS.scala 15:80]
@@ -324,20 +318,16 @@ module ID(
     _io_decInfo_o_branchOp_happen_T_18; // @[Mux.scala 81:58]
   wire  _io_decInfo_o_branchOp_happen_T_22 = 3'h7 == fct3 ? _io_decInfo_o_branchOp_happen_T_10 :
     _io_decInfo_o_branchOp_happen_T_20; // @[Mux.scala 81:58]
-  wire  _T_4 = 5'h2 == decRes_0; // @[ID.scala 64:21]
   wire [63:0] _io_decInfo_o_aluOp_src1_T_2 = opcode == 7'h37 ? 64'h0 : io_pc_i; // @[ID.scala 102:50]
   wire [19:0] _io_decInfo_o_aluOp_src2_T_8 = io_inst_i[31:12]; // @[HELPERS.scala 15:65]
   wire [63:0] _io_decInfo_o_aluOp_src2_T_10 = {{44{_io_decInfo_o_aluOp_src2_T_8[19]}},_io_decInfo_o_aluOp_src2_T_8}; // @[HELPERS.scala 15:80]
   wire [75:0] _io_decInfo_o_aluOp_src2_T_11 = {_io_decInfo_o_aluOp_src2_T_10, 12'h0}; // @[ID.scala 10:55]
-  wire  _T_5 = 5'h4 == decRes_0; // @[ID.scala 64:21]
   wire [20:0] _io_decInfo_o_branchOp_newPC_T_24 = {io_inst_i[31],io_inst_i[19:12],io_inst_i[20],io_inst_i[30:21],1'h0}; // @[HELPERS.scala 15:65]
   wire [63:0] _io_decInfo_o_branchOp_newPC_T_26 = {{43{_io_decInfo_o_branchOp_newPC_T_24[20]}},
     _io_decInfo_o_branchOp_newPC_T_24}; // @[HELPERS.scala 15:80]
   wire [63:0] _io_decInfo_o_branchOp_newPC_T_28 = io_pc_i + _io_decInfo_o_branchOp_newPC_T_26; // @[ID.scala 109:50]
-  wire  _T_6 = 5'h5 == decRes_0; // @[ID.scala 64:21]
   wire [11:0] _io_decInfo_o_aluOp_src2_T_16 = {io_inst_i[31:25],io_inst_i[11:7]}; // @[HELPERS.scala 15:65]
   wire [63:0] _io_decInfo_o_aluOp_src2_T_18 = {{52{_io_decInfo_o_aluOp_src2_T_16[11]}},_io_decInfo_o_aluOp_src2_T_16}; // @[HELPERS.scala 15:80]
-  wire  _T_7 = 5'h6 == decRes_0; // @[ID.scala 64:21]
   wire  _T_8 = |fct3; // @[ID.scala 125:23]
   wire [4:0] _rsVal_T_2 = io_inst_i[19:15]; // @[HELPERS.scala 15:65]
   wire [63:0] _rsVal_T_4 = {{59{_rsVal_T_2[4]}},_rsVal_T_2}; // @[HELPERS.scala 15:80]
@@ -471,19 +461,6 @@ module ID(
   assign io_debug_o_a0 = io_rfData_i_a0; // @[ID.scala 58:25]
   assign io_debug_o_pc = io_pc_i; // @[ID.scala 55:25]
   assign io_debug_o_inst = io_inst_i; // @[ID.scala 56:25]
-  always @(posedge clock) begin
-    `ifndef SYNTHESIS
-    `ifdef PRINTF_COND
-      if (`PRINTF_COND) begin
-    `endif
-        if (~_T & ~_T_1 & ~_T_2 & ~_T_3 & ~_T_4 & ~_T_5 & ~_T_6 & _T_7 & _T_8 & ~reset) begin
-          $fwrite(32'h80000002,"csr\n"); // @[ID.scala 126:23]
-        end
-    `ifdef PRINTF_COND
-      end
-    `endif
-    `endif // SYNTHESIS
-  end
 endmodule
 module EX(
   input         io_decInfo_i_writeOp_rf_wen,
@@ -1723,8 +1700,6 @@ module TOP(
   wire [31:0] IF_io_inst_i; // @[TOP.scala 31:31]
   wire [63:0] IF_io_pc_o; // @[TOP.scala 31:31]
   wire [31:0] IF_io_inst_o; // @[TOP.scala 31:31]
-  wire  ID_clock; // @[TOP.scala 32:31]
-  wire  ID_reset; // @[TOP.scala 32:31]
   wire [31:0] ID_io_inst_i; // @[TOP.scala 32:31]
   wire [63:0] ID_io_pc_i; // @[TOP.scala 32:31]
   wire [63:0] ID_io_rfData_i_rs1Val; // @[TOP.scala 32:31]
@@ -1905,8 +1880,6 @@ module TOP(
     .io_inst_o(IF_io_inst_o)
   );
   ID ID ( // @[TOP.scala 32:31]
-    .clock(ID_clock),
-    .reset(ID_reset),
     .io_inst_i(ID_io_inst_i),
     .io_pc_i(ID_io_pc_i),
     .io_rfData_i_rs1Val(ID_io_rfData_i_rs1Val),
@@ -2138,8 +2111,6 @@ module TOP(
   assign IF_io_branchOp_i_happen = ID_io_decInfo_o_branchOp_happen; // @[TOP.scala 40:25]
   assign IF_io_branchOp_i_newPC = ID_io_decInfo_o_branchOp_newPC; // @[TOP.scala 40:25]
   assign IF_io_inst_i = Main_Memory_io_inst_o; // @[TOP.scala 41:25]
-  assign ID_clock = clock;
-  assign ID_reset = reset;
   assign ID_io_inst_i = IF_io_inst_o; // @[TOP.scala 47:23]
   assign ID_io_pc_i = IF_io_pc_o; // @[TOP.scala 48:23]
   assign ID_io_rfData_i_rs1Val = Regfile_io_readRes_o_rs1Val; // @[TOP.scala 50:23]

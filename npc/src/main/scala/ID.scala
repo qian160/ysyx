@@ -123,7 +123,7 @@ class ID extends Module{
 
         is(InstType.SYS){           //csr ecall ebreak mret
             when(fct3.orR){         //csr
-                printf("csr\n")
+                //printf("csr\n")
                 io.decInfo_o.writeOp.rf.wen :=  true.B
                 io.decInfo_o.aluOp.src1     :=  csrVal
                 io.decInfo_o.aluOp.src2     :=  0.U
@@ -168,9 +168,5 @@ class ID extends Module{
     //printf(p"src1 = ${Hexadecimal(src1)}, src2 = ${Hexadecimal(src2)}\n")
     //printf("\npc = %x, inst = %x\n",pc, inst)
     //printf("src1 = %x, src2 = %x\n\n\n", io.decInfo_o.aluOp.src1, io.decInfo_o.aluOp.src2)
-    //printf("pc = %x, inst = %x\n", pc, inst)
-    //io.debug_o.exit     :=  inst === CONST.EBREAK
-
-//    val EXIT = Module(new EXIT)
 
 }

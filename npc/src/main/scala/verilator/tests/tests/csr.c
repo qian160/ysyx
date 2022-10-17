@@ -9,9 +9,13 @@ void halt(int code) {
 */
 int main()
 {
-	int j = 0;
-	int n = 10e8;
-	while(n--)j++;
-	halt(j - 10e8);
+	int in = 0x114514, out = 0;
+	__asm__ volatile(
+		"csrw mepc, %1\n\t"
+		"csrr %0, mepc\n\t"
+		:"=r"(out):"r"(in)
+	);
+
+	halt(out - 0x114514);
 	return 0;
 }
