@@ -6,7 +6,6 @@
     1. allocate device number
     2. define a struct with va_arg as its member
 */
-
 #define AM_DEVREG(id, reg, perm, ...) \
   enum { AM_##reg = (id) }; \
   typedef struct { __VA_ARGS__; } AM_##reg##_T;
@@ -22,7 +21,7 @@ AM_DEVREG( 8, INPUT_KEYBRD, RD, bool keydown; int keycode);
 AM_DEVREG( 9, GPU_CONFIG,   RD, bool present, has_accel; int width, height, vmemsz);
 AM_DEVREG(10, GPU_STATUS,   RD, bool ready);
 AM_DEVREG(11, GPU_FBDRAW,   WR, int x, y; void *pixels; int w, h; bool sync);
-AM_DEVREG(12, GPU_MEMCPY,   WR, uint32_t dest; void *src; uint32_t size);
+AM_DEVREG(12, GPU_MEMCPY,   WR, uint32_t dest; void *src; int size);
 AM_DEVREG(13, GPU_RENDER,   WR, uint32_t root);
 AM_DEVREG(14, AUDIO_CONFIG, RD, bool present; int bufsize);
 AM_DEVREG(15, AUDIO_CTRL,   WR, int freq, channels, samples);
