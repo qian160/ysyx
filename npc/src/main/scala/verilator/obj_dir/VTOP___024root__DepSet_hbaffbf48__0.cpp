@@ -154,7 +154,7 @@ VL_INLINE_OPT void VTOP___024root___sequent__TOP__0(VTOP___024root* vlSelf) {
     if (vlSelf->reset) {
         vlSelf->TOP__DOT__Csr__DOT__mstatus = 0ULL;
         vlSelf->TOP__DOT__Csr__DOT__mcause = 0ULL;
-        vlSelf->TOP__DOT__Csr__DOT__mtvec = 0ULL;
+        vlSelf->TOP__DOT__Csr__DOT__mtvec = 0x800011c0ULL;
         vlSelf->TOP__DOT__Csr__DOT__mepc = 0ULL;
         vlSelf->TOP__DOT__Regfile__DOT__registers_29 = 0ULL;
         vlSelf->TOP__DOT__Regfile__DOT__registers_28 = 0ULL;
