@@ -89,11 +89,6 @@ void __am_gpu_fbdraw(AM_GPU_FBDRAW_T *ctl) {
     bestFunc(&fb[ctl -> x + (ctl -> y + row) * W], pixels, ctl -> w); 
     pixels += ctl -> w;
   }
-  for (int row = 0; row < ctl -> h; row++) {
-    pixels -= ctl -> w;
-    bestFunc(&fb[ctl -> x + (ctl -> y + row) * W], pixels, ctl -> w); 
-    
-  }
 }
 
 void __am_gpu_status(AM_GPU_STATUS_T *status) {
