@@ -90,8 +90,9 @@ void __am_gpu_fbdraw(AM_GPU_FBDRAW_T *ctl) {
     pixels += ctl -> w;
   }
   for (int row = 0; row < ctl -> h; row++) {
-    bestFunc(&fb[ctl -> x + (ctl -> y + row) * W], pixels, ctl -> w); 
     pixels -= ctl -> w;
+    bestFunc(&fb[ctl -> x + (ctl -> y + row) * W], pixels, ctl -> w); 
+    
   }
 }
 
