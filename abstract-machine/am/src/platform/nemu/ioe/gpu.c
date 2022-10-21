@@ -85,10 +85,12 @@ void __am_gpu_fbdraw(AM_GPU_FBDRAW_T *ctl) {
   
   */
  //loop unroll seems useless here
+  uint32_t *p = pixels;
   for (int row = 0; row < ctl -> h; row++) {
     bestFunc(&fb[ctl -> x + (ctl -> y + row) * W], pixels, ctl -> w); 
     pixels += ctl -> w;
   }
+  pixels = p;
   for (int row = 0; row < ctl -> h; row++) {
     bestFunc(&fb[ctl -> x + (ctl -> y + row) * W], pixels, ctl -> w); 
     pixels += ctl -> w;
