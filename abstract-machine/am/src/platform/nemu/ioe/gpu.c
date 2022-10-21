@@ -74,17 +74,30 @@ void __am_gpu_fbdraw(AM_GPU_FBDRAW_T *ctl) {
 
   //draw row by row. write to vga frame buffer
   //loop unroll
+  /*             x
+      ------------------------------------
+      |          .  ctl->w               |
+    y |...................               |
+      |          .       . ctl->h        | h
+      |          .........               |
+      ------------------------------------
+                  w
+  
+  */
+  register uint32_t* base = (uint32_t *)&fb[ctl -> x];
+  register uint32_t y_offset = ctl -> y;
+  register uint32_t draw_width = ctl -> w;
   for (int row = 0; row < ctl -> h; row = row + 10) {
-    bestFunc(&fb[ctl -> x + (ctl -> y + row)     * W], pixels, ctl -> w); pixels += ctl -> w;
-    bestFunc(&fb[ctl -> x + (ctl -> y + row + 1) * W], pixels, ctl -> w); pixels += ctl -> w;
-    bestFunc(&fb[ctl -> x + (ctl -> y + row + 2) * W], pixels, ctl -> w); pixels += ctl -> w;
-    bestFunc(&fb[ctl -> x + (ctl -> y + row + 3) * W], pixels, ctl -> w); pixels += ctl -> w;
-    bestFunc(&fb[ctl -> x + (ctl -> y + row + 4) * W], pixels, ctl -> w); pixels += ctl -> w;
-    bestFunc(&fb[ctl -> x + (ctl -> y + row + 5) * W], pixels, ctl -> w); pixels += ctl -> w;
-    bestFunc(&fb[ctl -> x + (ctl -> y + row + 6) * W], pixels, ctl -> w); pixels += ctl -> w;
-    bestFunc(&fb[ctl -> x + (ctl -> y + row + 7) * W], pixels, ctl -> w); pixels += ctl -> w;
-    bestFunc(&fb[ctl -> x + (ctl -> y + row + 8) * W], pixels, ctl -> w); pixels += ctl -> w;
-    bestFunc(&fb[ctl -> x + (ctl -> y + row + 9) * W], pixels, ctl -> w); pixels += ctl -> w;
+    bestFunc(base + (y_offset + row)     * W, pixels, draw_width); pixels += draw_width;
+    bestFunc(base + (y_offset + row + 1) * W, pixels, draw_width); pixels += draw_width;
+    bestFunc(base + (y_offset + row + 2) * W, pixels, draw_width); pixels += draw_width;
+    bestFunc(base + (y_offset + row + 3) * W, pixels, draw_width); pixels += draw_width;
+    bestFunc(base + (y_offset + row + 4) * W, pixels, draw_width); pixels += draw_width;
+    bestFunc(base + (y_offset + row + 5) * W, pixels, draw_width); pixels += draw_width;
+    bestFunc(base + (y_offset + row + 6) * W, pixels, draw_width); pixels += draw_width;
+    bestFunc(base + (y_offset + row + 7) * W, pixels, draw_width); pixels += draw_width;
+    bestFunc(base + (y_offset + row + 8) * W, pixels, draw_width); pixels += draw_width;
+    bestFunc(base + (y_offset + row + 9) * W, pixels, draw_width); pixels += draw_width;
   }
 }
 
