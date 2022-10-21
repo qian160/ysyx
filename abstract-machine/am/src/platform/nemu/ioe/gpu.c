@@ -73,9 +73,18 @@ void __am_gpu_fbdraw(AM_GPU_FBDRAW_T *ctl) {
   void (*bestFunc)(void * dst, const void *src, size_t n) = ctl -> w % 4 == 0 ? pixelcpy16 : ctl -> w % 2 == 0 ? pixelcpy8 : pixelcpy4;
 
   //draw row by row. write to vga frame buffer
-  for (int row = 0; row < ctl -> h; row++) {
-    bestFunc(&fb[ctl -> x + (ctl -> y + row) * W], pixels, ctl -> w);
-    pixels += ctl -> w;
+  //loop unroll
+  for (int row = 0; row < ctl -> h; row = row + 10) {
+    bestFunc(&fb[ctl -> x + (ctl -> y + row)     * W], pixels, ctl -> w); pixels += ctl -> w;
+    bestFunc(&fb[ctl -> x + (ctl -> y + row + 1) * W], pixels, ctl -> w); pixels += ctl -> w;
+    bestFunc(&fb[ctl -> x + (ctl -> y + row + 2) * W], pixels, ctl -> w); pixels += ctl -> w;
+    bestFunc(&fb[ctl -> x + (ctl -> y + row + 3) * W], pixels, ctl -> w); pixels += ctl -> w;
+    bestFunc(&fb[ctl -> x + (ctl -> y + row + 4) * W], pixels, ctl -> w); pixels += ctl -> w;
+    bestFunc(&fb[ctl -> x + (ctl -> y + row + 5) * W], pixels, ctl -> w); pixels += ctl -> w;
+    bestFunc(&fb[ctl -> x + (ctl -> y + row + 6) * W], pixels, ctl -> w); pixels += ctl -> w;
+    bestFunc(&fb[ctl -> x + (ctl -> y + row + 7) * W], pixels, ctl -> w); pixels += ctl -> w;
+    bestFunc(&fb[ctl -> x + (ctl -> y + row + 8) * W], pixels, ctl -> w); pixels += ctl -> w;
+    bestFunc(&fb[ctl -> x + (ctl -> y + row + 9) * W], pixels, ctl -> w); pixels += ctl -> w;
   }
 }
 
