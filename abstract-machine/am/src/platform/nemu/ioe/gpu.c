@@ -73,20 +73,8 @@ void __am_gpu_fbdraw(AM_GPU_FBDRAW_T *ctl) {
   void (*bestFunc)(void * dst, const void *src, size_t n) = ctl -> w % 4 == 0 ? pixelcpy16 : ctl -> w % 2 == 0 ? pixelcpy8 : pixelcpy4;
 
   //draw row by row. write to vga frame buffer
-  //loop unroll
-  /*             x
-      ---------------------------------
-      |          .  ctl->w             |
-    y |...................             |
-      |          .       . ctl->h      | h
-      |          .........             |
-      ---------------------------------
-                  w
-  
-  */
- //loop unroll seems not helpful here...
   for (int row = 0; row < ctl -> h; row++) {
-    bestFunc(&fb[ctl -> x + (ctl -> y + row) * W], pixels, ctl -> w); 
+    bestFunc(&fb[ctl -> x + (ctl -> y + row) * W], pixels, ctl -> w);
     pixels += ctl -> w;
   }
 }

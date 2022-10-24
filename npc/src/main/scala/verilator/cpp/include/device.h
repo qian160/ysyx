@@ -1,11 +1,17 @@
-#ifndef __AMDEV_H__
-#define __AMDEV_H__
-// **MAY SUBJECT TO CHANGE IN THE FUTURE**
+#define DEVICE_BASE 0xa0000000   //string.c: hit bad trap
 
-/*  what it does:
-    1. allocate device number
-    2. define a struct with va_arg as its member
-*/
+#define MMIO_BASE   0xa0000000
+
+#define SERIAL_PORT     (DEVICE_BASE + 0x00003f8)     // size = 8
+#define KBD_ADDR        (DEVICE_BASE + 0x0000060)     // size = 4, stores the key we just pressed
+#define RTC_ADDR        (DEVICE_BASE + 0x0000048)     // size = 8
+#define VGACTL_ADDR     (DEVICE_BASE + 0x0000100)     // size = 8, 0 - 1: height, 2 - 3: width. Left 4 unused
+#define SYNC_ADDR       (VGACTL_ADDR + 4)             // write non-zero value to here will update the screen
+#define AUDIO_ADDR      (DEVICE_BASE + 0x0000200)     // size = 24
+#define DISK_ADDR       (DEVICE_BASE + 0x0000300)     // size = 0x80
+#define FB_ADDR         (MMIO_BASE   + 0x1000000)     // size = 300 * 400 * 4
+#define AUDIO_SBUF_ADDR (MMIO_BASE   + 0x1200000)     // size = 0x10000
+
 #define AM_DEVREG(id, reg, perm, ...) \
   enum { AM_##reg = (id) }; \
   typedef struct { __VA_ARGS__; } AM_##reg##_T;
@@ -21,19 +27,8 @@ AM_DEVREG( 8, INPUT_KEYBRD, RD, bool keydown; int keycode);
 AM_DEVREG( 9, GPU_CONFIG,   RD, bool present, has_accel; int width, height, vmemsz);
 AM_DEVREG(10, GPU_STATUS,   RD, bool ready);
 AM_DEVREG(11, GPU_FBDRAW,   WR, int x, y; void *pixels; int w, h; bool sync);
-AM_DEVREG(12, GPU_MEMCPY,   WR, uint32_t dest; void *src; int size);
+AM_DEVREG(12, GPU_MEMCPY,   WR, uint32_t dest; void *src; uint32_t size);
 AM_DEVREG(13, GPU_RENDER,   WR, uint32_t root);
-AM_DEVREG(14, AUDIO_CONFIG, RD, bool present; int bufsize);
-AM_DEVREG(15, AUDIO_CTRL,   WR, int freq, channels, samples);
-AM_DEVREG(16, AUDIO_STATUS, RD, int count);
-AM_DEVREG(17, AUDIO_PLAY,   WR, Area buf);
-AM_DEVREG(18, DISK_CONFIG,  RD, bool present; int blksz, blkcnt);
-AM_DEVREG(19, DISK_STATUS,  RD, bool ready);
-AM_DEVREG(20, DISK_BLKIO,   WR, bool write; void *buf; int blkno, blkcnt);
-AM_DEVREG(21, NET_CONFIG,   RD, bool present);
-AM_DEVREG(22, NET_STATUS,   RD, int rx_len, tx_len);
-AM_DEVREG(23, NET_TX,       WR, Area buf);
-AM_DEVREG(24, NET_RX,       WR, Area buf);
 
 // Input
 
@@ -73,5 +68,3 @@ struct gpu_canvas {
     struct gpu_texturedesc texture;
   };
 } __attribute__((packed));
-
-#endif

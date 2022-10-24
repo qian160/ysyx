@@ -1,7 +1,6 @@
-#include"common.h"
-#include"sdb.h"
-#include"macro.h"
-#include"conf.h"
+#include"include/common.h"
+#include"include/sdb.h"
+#include"include/macro.h"
 #include<iterator>
 extern VTOP * top;
 
