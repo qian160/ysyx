@@ -6,22 +6,6 @@ import MMIO_SPACE._
 import Util._
 
 class MAIN_MEMORY extends Module{
-    //to simplify call, all these functions' argument list should be the same
-    def serial_handler(is_write: Bool, addr: UInt, wdata: UInt): UInt = {
-        when(is_write & in_serial(addr)){
-            printf("%c", wdata)
-        }   //don't support read
-        0.U     //return value, useless here
-    }
-    def kbd_handler(is_write: Bool, addr: UInt, wdata: UInt) = {}
-    def rtc_handler(is_write: Bool, addr: UInt, wdata: UInt): UInt = {
-        val offset_     =   addr - RTC_BASE
-        val need_update =   (!is_write & offset_ === 4.U & in_rtc(addr))
-        //when(in_rtc(addr)){printf("past time: %d\n", rtc_past_time)}
-        rtc_past_time   :=  Mux(need_update, io.timer_i, rtc_past_time)
-        printf("past time = %d, offset = %d, need = %d\n", rtc_past_time, offset_, need_update);
-        rtc_past_time
-    }
 
     def bswap(a: UInt): UInt        =   Cat(a(7, 0), a(15, 8), a(23, 16), a(31, 24), a(39, 32), a(47, 40), a(55, 48), a(63, 56))
     def in_pmem(addr: UInt):Bool    =   (addr >= CONST.PMEM_START & addr <= CONST.PMEM_END)
@@ -48,6 +32,8 @@ class MAIN_MEMORY extends Module{
     val test        =   RegInit(0.U(64.W))
 
     rtc_past_time   :=  io.timer_i
+    val VGA = Module(new VGA)
+    VGA.io.sync := 0.U
 
     //start accessing memory
     when(in_pmem(io.memOp_i.addr)){
@@ -109,13 +95,6 @@ class MAIN_MEMORY extends Module{
         //maybe lut is faster, we don't need to calculate every time
         //val store_en   =   ((1.U << (1.U << length)) - 1.U)
 
-        val test0 = Wire(UInt(32.W))
-        val test1 = Wire(UInt(32.W))
-        test0   :=  (ram(0))
-        test1   :=  (ram(1))
-        dontTouch(test0)
-        dontTouch(test1)
-
         //if the address is unaligned, this may not work correctly..
         //store with small endian
         when(is_store){
@@ -137,6 +116,10 @@ class MAIN_MEMORY extends Module{
         //timer is updated by cpp
         //io.loadVal_o    :=  rtc_past_time     //this is okay but will delay a cycle and fails difftest
         io.loadVal_o    :=  io.timer_i
+    }.elsewhen(in_vgactl(addr_i)){
+        VGA.io.sync := 1.U
+    }.elsewhen(in_fb(addr_i)){
+        printf("fb\n")
     }
     
     /*
@@ -148,5 +131,25 @@ class MAIN_MEMORY extends Module{
         ))
     }
     */
+
+}
+
+object MAIN_MEMORY extends MAIN_MEMORY{
+    //to simplify call, all these functions' argument list should be the same
+    def serial_handler(is_write: Bool, addr: UInt, wdata: UInt): UInt = {
+        when(is_write & in_serial(addr)){
+            printf("%c", wdata)
+        }   //don't support read
+        0.U     //return value, useless here
+    }
+    def kbd_handler(is_write: Bool, addr: UInt, wdata: UInt) = {}
+    def rtc_handler(is_write: Bool, addr: UInt, wdata: UInt): UInt = {
+        val offset_     =   addr - RTC_BASE
+        val need_update =   (!is_write & offset_ === 4.U & in_rtc(addr))
+        //when(in_rtc(addr)){printf("past time: %d\n", rtc_past_time)}
+        rtc_past_time   :=  Mux(need_update, io.timer_i, rtc_past_time)
+        printf("past time = %d, offset = %d, need = %d\n", rtc_past_time, offset_, need_update);
+        rtc_past_time
+    }
 
 }

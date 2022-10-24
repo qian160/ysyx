@@ -60,7 +60,7 @@ void __am_gpu_config(AM_GPU_CONFIG_T *cfg) {
 
 void __am_gpu_fbdraw(AM_GPU_FBDRAW_T *ctl) {
   if (ctl->sync) {
-    outl(SYNC_ADDR, 114514);    //write to SYNC reg will call update
+    outl(SYNC_ADDR, 114514);    //write to SYNC reg will call vga_update_screen, which will be called in every inst execuateion cycle
   }
   //TODO: improve the performance
   //this seems to be consuming lots of computations......
@@ -73,8 +73,20 @@ void __am_gpu_fbdraw(AM_GPU_FBDRAW_T *ctl) {
   void (*bestFunc)(void * dst, const void *src, size_t n) = ctl -> w % 4 == 0 ? pixelcpy16 : ctl -> w % 2 == 0 ? pixelcpy8 : pixelcpy4;
 
   //draw row by row. write to vga frame buffer
+  //loop unroll
+  /*             x
+      ---------------------------------
+      |          .  ctl->w             |
+    y |...................             |
+      |          .       . ctl->h      | h
+      |          .........             |
+      ---------------------------------
+                      w
+  
+  */
+ //loop unroll seems not helpful here...
   for (int row = 0; row < ctl -> h; row++) {
-    bestFunc(&fb[ctl -> x + (ctl -> y + row) * W], pixels, ctl -> w);
+    bestFunc(&fb[ctl -> x + (ctl -> y + row) * W], pixels, ctl -> w); 
     pixels += ctl -> w;
   }
 }
