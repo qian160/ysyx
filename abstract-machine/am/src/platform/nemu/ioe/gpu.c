@@ -59,14 +59,14 @@ void __am_gpu_config(AM_GPU_CONFIG_T *cfg) {
 }
 
 void __am_gpu_fbdraw(AM_GPU_FBDRAW_T *ctl) {
-//  if (ctl->sync) {
+  if (ctl->sync) {
     outl(SYNC_ADDR, ctl->sync);    //write to SYNC reg will call vga_update_screen, which will be called in every inst execuateion cycle
-//  }
+  }
   //TODO: improve the performance
-  uint32_t* fb __attribute__((unused))     = (uint32_t *)(uintptr_t)FB_ADDR;
-  uint32_t* pixels __attribute__((unused)) = ctl->pixels;
+  uint32_t* fb     = (uint32_t *)(uintptr_t)FB_ADDR;
+  uint32_t* pixels = ctl->pixels;
 
-  if(ctl -> h == 0 || ctl -> w == 0)  return;
+  //if(ctl -> h == 0 || ctl -> w == 0)  return;
 
   //choose the fastest one. This may improve performance in some cases
   void (*drawOneRow)(void * dst, const void *src, size_t n) = ctl -> w % 4 == 0 ? pixelcpy16 : ctl -> w % 2 == 0 ? pixelcpy8 : pixelcpy4;
