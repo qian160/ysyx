@@ -25,7 +25,7 @@ Makefile.%: tests/%.c latest
 
 run: all
 	@cat $(RESULT)
-#	@rm $(RESULT)
+	@rm $(RESULT)
 
 gdb: all
 

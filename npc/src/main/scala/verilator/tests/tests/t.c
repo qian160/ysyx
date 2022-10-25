@@ -9,6 +9,7 @@ void halt(int code) {
 */
 int main()
 {
+	//int z __attribute__((unused)) = SYNC_ADDR;
 	int w __attribute__((unused)) = 1;
-	return 1;
+	return 0;
 }
