@@ -16,7 +16,7 @@ extern void (*difftest_exec)();
 extern void (*difftest_init)(const char *img_file);
 extern uint64_t * npc_timer;
 CPU_state state;
-
+extern void SDL_Exit();
 
 const char *regs[] = {    //names.. add $ prefix to make regex match easier
     "x0",  "ra", "sp",   "gp",  "tp",  "t0",  "t1",  "t2",
@@ -82,7 +82,7 @@ int cmd_q (string arg){
     */
     ostream_iterator<string> out(cout);
     *out++ = Green("Goodbye😀\n");
-
+    SDL_Exit();
     __asm__ volatile(
         "movl $60,  %eax\n\t"
         "xorl %edi, %edi\n\t"
@@ -97,5 +97,11 @@ int cmd_i(string arg) {
     for(int i = 0; i < 32; i++){
         printf("\033[1;33m[%3s] = %-16lx%c\033[0m", regs[i], state.gpr[i], i & 0b1? '\n' : '\t');
     }
+    cout << endl << endl;;
+    cout << _pink << "mepc:      " << top->io_csrData_epc  <<  normal << endl;
+    cout << _pink << "mtvec:     " << top->io_csrData_tvec << normal << endl;
+    cout << _pink << "mcause:    " << top->io_csrData_cause << normal << endl;
+    cout << _pink << "mstatus:   " << top->io_csrData_status << normal << endl;
+    cout << endl;
     return 0;
 }

@@ -7,7 +7,7 @@ import chiseltest._             //test
 import chisel3.util._
 import chisel3.experimental._
 import chisel3.stage._
-import D._
+import Color._
 
 class TOP extends Module{
     //to make tests easier, we expose the inst fetch ports in top, which can be used by verilator and chiseltest

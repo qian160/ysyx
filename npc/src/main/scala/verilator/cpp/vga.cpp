@@ -36,6 +36,8 @@ static uint32_t screen_size() {
 */
 static void *fb = nullptr;
 static uint32_t     vgactl_port_base[2];
+
+static SDL_Window *window = nullptr;
 //渲染器（SDL_Renderer）
 static SDL_Renderer *renderer = nullptr;
 //纹理（SDL_Texture）
@@ -44,8 +46,7 @@ static SDL_Texture  *texture = nullptr;
 static SDL_Surface * helloworld = nullptr;
 
 static void init_screen() {
-    SDL_Window *window = nullptr;
-    char *title = "riscv64-npc";
+    const char *title = "riscv64-npc";
     SDL_Init(SDL_INIT_VIDEO);
     SDL_CreateWindowAndRenderer(
         VGA_W,
@@ -57,9 +58,11 @@ static void init_screen() {
         SDL_TEXTUREACCESS_STATIC, VGA_W, VGA_H);
     
     helloworld = SDL_GetWindowSurface(window);
-    SDL_Surface * temp = SDL_LoadBMP("114514.bmp");
+    SDL_Surface * temp = SDL_LoadBMP("./cpp/114514.bmp");
+    assert(temp);
 
     SDL_BlitSurface(temp, 0, helloworld, 0);
+    SDL_UpdateWindowSurface(window);
 }
 
 //called in device_update
@@ -76,6 +79,25 @@ void vga_update_screen() {
         update_screen();
         vgactl_port_base[1] = 0;
     }
+}
+
+void SDL_Exit(){
+    SDL_FreeSurface(helloworld);
+    helloworld = nullptr;
+
+    //Destroy window
+    SDL_DestroyWindow( window );
+    window   = nullptr;
+
+    SDL_DestroyRenderer(renderer);
+    renderer = nullptr;
+
+    SDL_DestroyTexture(texture);
+    texture  = nullptr;
+
+    //Quit SDL subsystems
+    SDL_Quit();
+
 }
 
 void init_vga() {

@@ -9,9 +9,13 @@
 
 using namespace std;
 
+//dpi-c
 void vga_update(const char* s){
 	cout << s << endl;
 }
+
+extern void SDL_Exit();
+
 vluint64_t TIME = 0;
 unique_ptr<string> img_file(nullptr);
 TestBench<VTOP> tb;				//the test class, contains members
@@ -40,6 +44,7 @@ extern int init_device();
 int main(int argc, char **argv)
 {
 	Verilated::commandArgs(argc, argv);
+	atexit(SDL_Exit);
 	if(argc < 2){
 		cout << Yellow("no image is given, using the old inst rom\n") << endl;
 		img_file.reset(new DEFAULT_IMG);
@@ -50,7 +55,7 @@ int main(int argc, char **argv)
 	//tb.trace("./wave.vcd");		//consumes too much memory
 	IFDEF(DIFFTEST_ENABLE, init_difftest());
 	IFDEF(HAS_DEVICE, init_device());
-	while(1){
+	while(!Verilated::gotFinish()){
 		cout << "(😅)";
 		cmd_info cmd = get_cmd();
 		if(!cmd.name) continue;
@@ -59,8 +64,5 @@ int main(int argc, char **argv)
 			cmd_table[cmd.name].handler(cmd.args);
 		else
 			cout << "unsupported command " << "'" << cmd.name << "'" << endl;
-		if(Verilated::gotFinish()){
-			exit(0);
-		}
 	}
 }
