@@ -241,6 +241,8 @@ VL_ATTR_COLD void VTOP___024root___ctor_var_reset(VTOP___024root* vlSelf) {
     vlSelf->TOP__DOT__Main_Memory__DOT___T_62 = VL_RAND_RESET_Q(64);
     vlSelf->TOP__DOT__Main_Memory__DOT___T_69 = VL_RAND_RESET_I(1);
     vlSelf->TOP__DOT__Main_Memory__DOT___T_74 = VL_RAND_RESET_I(1);
+    vlSelf->TOP__DOT__Main_Memory__DOT___T_77 = VL_RAND_RESET_I(1);
+    VL_RAND_RESET_W(95, vlSelf->TOP__DOT__Main_Memory__DOT___GEN_163);
     vlSelf->TOP__DOT__Main_Memory__DOT__initvar = VL_RAND_RESET_I(32);
     vlSelf->TOP__DOT__Main_Memory__DOT__VGA__DOT__read_width = VL_RAND_RESET_I(1);
     vlSelf->TOP__DOT__Main_Memory__DOT__VGA__DOT__read_height = VL_RAND_RESET_I(1);

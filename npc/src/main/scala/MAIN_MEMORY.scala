@@ -20,6 +20,7 @@ class MAIN_MEMORY extends Module{
     })
 
     val rtc_past_time = RegInit(0.U(64.W))      //how much time has past
+    val vga_ctl       = RegInit(((400 << 16) | 300).U(64.W))
     //to make inst rom and data ram compatible and easy to initialize(loadMemoryFromFileInline), the width is set to be 32 bits
     val ram = Mem(1 << 20, UInt(32.W))  //hope this is enough
     loadMemoryFromFileInline(ram, "/home/s081/Downloads/ysyx-workbench/npc/src/main/scala/img_file")
@@ -29,6 +30,7 @@ class MAIN_MEMORY extends Module{
     val is_store    =   io.memOp_i.isStore
     val addr_i      =   io.memOp_i.addr
     val sdata       =   io.memOp_i.sdata
+    val is_load     =   io.memOp_i.isLoad
     val test        =   RegInit(0.U(64.W))
 
     rtc_past_time   :=  io.timer_i
@@ -117,7 +119,21 @@ class MAIN_MEMORY extends Module{
         //io.loadVal_o    :=  rtc_past_time     //this is okay but will delay a cycle and fails difftest
         io.loadVal_o    :=  io.timer_i
     }.elsewhen(in_vgactl(addr_i)){
-        VGA.io.sync := 1.U
+        val ctl_offset = addr_i - VGACTL_BASE
+        //0-height   2-width    4-sync ?
+        switch(ctl_offset){
+            is(0.U){
+                io.loadVal_o    :=  vga_ctl(15, 0)
+            }
+            is(2.U){
+                io.loadVal_o    :=  vga_ctl(31, 16)
+            }
+            is(4.U){
+                io.loadVal_o    :=  vga_ctl(63, 32)
+                VGA.io.sync     :=  vga_ctl =/= 0.U
+            }
+        }
+        printf("\noffset = %d, pc = %x, vga ctl\n", ctl_offset, io.pc_i)
     }.elsewhen(in_fb(addr_i)){
         printf("fb\n")
     }

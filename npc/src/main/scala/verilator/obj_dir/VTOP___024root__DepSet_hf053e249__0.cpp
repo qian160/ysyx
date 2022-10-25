@@ -83,19 +83,21 @@ VL_INLINE_OPT void VTOP___024root___sequent__TOP__0(VTOP___024root* vlSelf) {
                      & (~ (IData)(vlSelf->reset))))) {
         VL_FWRITEF(0x80000002U,"%c",64,vlSelf->TOP__DOT__ID_io_decInfo_o_memOp_sdata);
     }
+    if (VL_UNLIKELY((((((~ (IData)(vlSelf->TOP__DOT__Main_Memory__DOT___T_2)) 
+                        & (~ (IData)(vlSelf->TOP__DOT__Main_Memory__DOT___T_69))) 
+                       & (~ (IData)(vlSelf->TOP__DOT__Main_Memory__DOT___T_74))) 
+                      & (IData)(vlSelf->TOP__DOT__Main_Memory__DOT___T_77)) 
+                     & (~ (IData)(vlSelf->reset))))) {
+        VL_FWRITEF(0x80000002U,"\noffset = %20#, pc = %x, vga ctl\n",
+                   64,((((QData)((IData)(vlSelf->TOP__DOT__EX__DOT___aluRes_T_191[1U])) 
+                         << 0x20U) | (QData)((IData)(
+                                                     vlSelf->TOP__DOT__EX__DOT___aluRes_T_191[0U]))) 
+                       - 0xa0000100ULL),64,(QData)((IData)(vlSelf->TOP__DOT__IF__DOT__pc)));
+    }
     if (VL_UNLIKELY(((((((~ (IData)(vlSelf->TOP__DOT__Main_Memory__DOT___T_2)) 
                          & (~ (IData)(vlSelf->TOP__DOT__Main_Memory__DOT___T_69))) 
                         & (~ (IData)(vlSelf->TOP__DOT__Main_Memory__DOT___T_74))) 
-                       & (~ ((0xa0000100ULL <= (((QData)((IData)(
-                                                                 vlSelf->TOP__DOT__EX__DOT___aluRes_T_191[1U])) 
-                                                 << 0x20U) 
-                                                | (QData)((IData)(
-                                                                  vlSelf->TOP__DOT__EX__DOT___aluRes_T_191[0U])))) 
-                             & (0xa0000108ULL >= (((QData)((IData)(
-                                                                   vlSelf->TOP__DOT__EX__DOT___aluRes_T_191[1U])) 
-                                                   << 0x20U) 
-                                                  | (QData)((IData)(
-                                                                    vlSelf->TOP__DOT__EX__DOT___aluRes_T_191[0U]))))))) 
+                       & (~ (IData)(vlSelf->TOP__DOT__Main_Memory__DOT___T_77))) 
                       & ((0xb0000000ULL <= (((QData)((IData)(
                                                              vlSelf->TOP__DOT__EX__DOT___aluRes_T_191[1U])) 
                                              << 0x20U) 
@@ -334,7 +336,6 @@ VL_INLINE_OPT void VTOP___024root___sequent__TOP__0(VTOP___024root* vlSelf) {
             vlSelf->TOP__DOT__Regfile__DOT__registers_0 = 0ULL;
         }
     }
-    vlSelf->TOP__DOT__IF__DOT__pc = (IData)(vlSelf->TOP__DOT__IF__DOT___GEN_0);
     if (((IData)(vlSelf->TOP__DOT__Main_Memory__DOT___T_2) 
          & (IData)(vlSelf->TOP__DOT__ID_io_decInfo_o_memOp_isStore))) {
         __Vdlyvval__TOP__DOT__Main_Memory__DOT__ram__v0 
@@ -361,6 +362,7 @@ VL_INLINE_OPT void VTOP___024root___sequent__TOP__0(VTOP___024root* vlSelf) {
                                     - 0x80000000ULL) 
                                    >> 2U)));
     }
+    vlSelf->TOP__DOT__IF__DOT__pc = (IData)(vlSelf->TOP__DOT__IF__DOT___GEN_0);
     if (__Vdlyvset__TOP__DOT__Main_Memory__DOT__ram__v0) {
         vlSelf->TOP__DOT__Main_Memory__DOT__ram[__Vdlyvdim0__TOP__DOT__Main_Memory__DOT__ram__v0] 
             = __Vdlyvval__TOP__DOT__Main_Memory__DOT__ram__v0;
@@ -2644,6 +2646,20 @@ VL_INLINE_OPT void VTOP___024root___sequent__TOP__0(VTOP___024root* vlSelf) {
                                                       << 0x20U) 
                                                      | (QData)((IData)(
                                                                        vlSelf->TOP__DOT__EX__DOT___aluRes_T_191[0U])))));
+    vlSelf->TOP__DOT__Main_Memory__DOT___T_77 = ((0xa0000100ULL 
+                                                  <= 
+                                                  (((QData)((IData)(
+                                                                    vlSelf->TOP__DOT__EX__DOT___aluRes_T_191[1U])) 
+                                                    << 0x20U) 
+                                                   | (QData)((IData)(
+                                                                     vlSelf->TOP__DOT__EX__DOT___aluRes_T_191[0U])))) 
+                                                 & (0xa0000108ULL 
+                                                    >= 
+                                                    (((QData)((IData)(
+                                                                      vlSelf->TOP__DOT__EX__DOT___aluRes_T_191[1U])) 
+                                                      << 0x20U) 
+                                                     | (QData)((IData)(
+                                                                       vlSelf->TOP__DOT__EX__DOT___aluRes_T_191[0U])))));
     vlSelf->TOP__DOT__Main_Memory__DOT__dword = (((QData)((IData)(
                                                                   vlSelf->TOP__DOT__Main_Memory__DOT__ram
                                                                   [
@@ -2673,16 +2689,21 @@ VL_INLINE_OPT void VTOP___024root___sequent__TOP__0(VTOP___024root* vlSelf) {
     if (((~ (IData)(vlSelf->TOP__DOT__Main_Memory__DOT___T_2)) 
          & ((~ (IData)(vlSelf->TOP__DOT__Main_Memory__DOT___T_69)) 
             & ((~ (IData)(vlSelf->TOP__DOT__Main_Memory__DOT___T_74)) 
-               & ((0xa0000100ULL <= (((QData)((IData)(
-                                                      vlSelf->TOP__DOT__EX__DOT___aluRes_T_191[1U])) 
-                                      << 0x20U) | (QData)((IData)(
-                                                                  vlSelf->TOP__DOT__EX__DOT___aluRes_T_191[0U])))) 
-                  & (0xa0000108ULL >= (((QData)((IData)(
-                                                        vlSelf->TOP__DOT__EX__DOT___aluRes_T_191[1U])) 
-                                        << 0x20U) | (QData)((IData)(
-                                                                    vlSelf->TOP__DOT__EX__DOT___aluRes_T_191[0U]))))))))) {
+               & ((IData)(vlSelf->TOP__DOT__Main_Memory__DOT___T_77) 
+                  & ((0ULL != ((((QData)((IData)(vlSelf->TOP__DOT__EX__DOT___aluRes_T_191[1U])) 
+                                 << 0x20U) | (QData)((IData)(
+                                                             vlSelf->TOP__DOT__EX__DOT___aluRes_T_191[0U]))) 
+                               - 0xa0000100ULL)) & 
+                     ((2ULL != ((((QData)((IData)(vlSelf->TOP__DOT__EX__DOT___aluRes_T_191[1U])) 
+                                  << 0x20U) | (QData)((IData)(
+                                                              vlSelf->TOP__DOT__EX__DOT___aluRes_T_191[0U]))) 
+                                - 0xa0000100ULL)) & 
+                      (4ULL == ((((QData)((IData)(vlSelf->TOP__DOT__EX__DOT___aluRes_T_191[1U])) 
+                                  << 0x20U) | (QData)((IData)(
+                                                              vlSelf->TOP__DOT__EX__DOT___aluRes_T_191[0U]))) 
+                                - 0xa0000100ULL))))))))) {
         VTOP___024unit____Vdpiimwrap_vga_update_TOP____024unit(
-                                                               std::string("\nvga test\n"));
+                                                               std::string("\nvga sync...do nothing now\n"));
     }
     VL_EXTEND_WQ(95,64, __Vtemp_hc9c1da9f__0, vlSelf->TOP__DOT__Main_Memory__DOT__dword);
     VL_EXTEND_WQ(95,64, __Vtemp_hfb1bc2e8__0, ((3U 

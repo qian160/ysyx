@@ -86,6 +86,7 @@ VL_MODULE(VTOP___024root) {
     struct {
         CData/*0:0*/ TOP__DOT__Main_Memory__DOT___T_69;
         CData/*0:0*/ TOP__DOT__Main_Memory__DOT___T_74;
+        CData/*0:0*/ TOP__DOT__Main_Memory__DOT___T_77;
         CData/*0:0*/ TOP__DOT__Main_Memory__DOT__VGA__DOT__read_width;
         CData/*0:0*/ TOP__DOT__Main_Memory__DOT__VGA__DOT__read_height;
         CData/*0:0*/ __Vclklast__TOP__clock;
@@ -111,6 +112,7 @@ VL_MODULE(VTOP___024root) {
         VlWide<4>/*127:0*/ TOP__DOT__EX__DOT___aluRes_T_191;
         IData/*31:0*/ TOP__DOT__Main_Memory__DOT__ram_io_inst_o_MPORT_data;
         VlWide<3>/*94:0*/ TOP__DOT__Main_Memory__DOT__loadVal_temp;
+        VlWide<3>/*94:0*/ TOP__DOT__Main_Memory__DOT___GEN_163;
         IData/*31:0*/ TOP__DOT__Main_Memory__DOT__initvar;
         VL_IN64(io_timer_i,63,0);
         VL_OUT64(io_csrData_csrVal,63,0);
@@ -146,10 +148,10 @@ VL_MODULE(VTOP___024root) {
         VL_OUT64(io_regs_25,63,0);
         VL_OUT64(io_regs_26,63,0);
         VL_OUT64(io_regs_27,63,0);
-        VL_OUT64(io_regs_28,63,0);
-        VL_OUT64(io_regs_29,63,0);
     };
     struct {
+        VL_OUT64(io_regs_28,63,0);
+        VL_OUT64(io_regs_29,63,0);
         VL_OUT64(io_regs_30,63,0);
         VL_OUT64(io_regs_31,63,0);
         VL_OUT64(io_pc_o,63,0);
@@ -212,6 +214,8 @@ VL_MODULE(VTOP___024root) {
         QData/*63:0*/ TOP__DOT__Main_Memory__DOT__dword;
         QData/*63:0*/ TOP__DOT__Main_Memory__DOT___T_62;
         VlUnpacked<IData/*31:0*/, 1048576> TOP__DOT__Main_Memory__DOT__ram;
+    };
+    struct {
         VlUnpacked<CData/*0:0*/, 2> __Vm_traceActivity;
     };
 
