@@ -17,7 +17,8 @@
 
 int main()
 {
-	int z __attribute__((unused)) = io_read(AM_GPU_CONFIG).width;
-	int w __attribute__((unused)) = 1;
+	int w __attribute__((unused)) = io_read(AM_GPU_CONFIG).width;
+	int h __attribute__((unused)) = io_read(AM_GPU_CONFIG).height;
+	printf("w = %d\nh = %d\n", w, h);
 	return 0;
 }
