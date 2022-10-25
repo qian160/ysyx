@@ -73,6 +73,7 @@ int cmd_h(string cmd){
     }
     return 0;
 }
+
 int cmd_q (string arg){
     /*      
         iostream's iterator, treats the stream as an array.

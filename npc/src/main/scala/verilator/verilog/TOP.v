@@ -1379,8 +1379,8 @@ module MAIN_MEMORY(
   wire [31:0] _byteMask_T_3 = 2'h2 == io_memOp_i_length ? 32'hffffffff : {{16'd0}, _byteMask_T_1}; // @[Mux.scala 81:58]
   wire [63:0] byteMask = 2'h3 == io_memOp_i_length ? 64'hffffffffffffffff : {{32'd0}, _byteMask_T_3}; // @[Mux.scala 81:58]
   wire [4:0] _mask_T = {offset, 3'h0}; // @[MAIN_MEMORY.scala 76:46]
-  wire [94:0] _GEN_214 = {{31'd0}, byteMask}; // @[MAIN_MEMORY.scala 76:35]
-  wire [94:0] mask = _GEN_214 << _mask_T; // @[MAIN_MEMORY.scala 76:35]
+  wire [94:0] _GEN_230 = {{31'd0}, byteMask}; // @[MAIN_MEMORY.scala 76:35]
+  wire [94:0] mask = _GEN_230 << _mask_T; // @[MAIN_MEMORY.scala 76:35]
   wire [94:0] _GEN_172 = {{31'd0}, dword}; // @[MAIN_MEMORY.scala 85:40]
   wire [94:0] _loadVal_temp_T = _GEN_172 & mask; // @[MAIN_MEMORY.scala 85:40]
   wire [94:0] loadVal_temp = _loadVal_temp_T >> _mask_T; // @[MAIN_MEMORY.scala 85:48]
@@ -1553,11 +1553,13 @@ module MAIN_MEMORY(
   wire  _T_74 = io_memOp_i_addr >= 64'ha0000048 & io_memOp_i_addr <= 64'ha0000050; // @[DEVICE.scala 26:62]
   wire  _T_77 = io_memOp_i_addr >= 64'ha0000100 & io_memOp_i_addr <= 64'ha0000108; // @[DEVICE.scala 27:62]
   wire [63:0] ctl_offset = io_memOp_i_addr - 64'ha0000100; // @[MAIN_MEMORY.scala 122:33]
-  wire [31:0] _GEN_149 = 64'h2 == ctl_offset ? 32'h190 : 32'h0; // @[MAIN_MEMORY.scala 124:27 129:33]
+  wire  _T_78 = 64'h0 == ctl_offset; // @[MAIN_MEMORY.scala 124:27]
+  wire  _T_82 = 64'h2 == ctl_offset; // @[MAIN_MEMORY.scala 124:27]
+  wire [31:0] _GEN_149 = 64'h2 == ctl_offset ? 32'h190 : 32'h0; // @[MAIN_MEMORY.scala 124:27 130:33]
   wire  _GEN_150 = 64'h2 == ctl_offset ? 1'h0 : 64'h4 == ctl_offset; // @[MAIN_MEMORY.scala 124:27 38:17]
   wire [31:0] _GEN_151 = 64'h0 == ctl_offset ? 32'h12c : _GEN_149; // @[MAIN_MEMORY.scala 124:27 126:33]
   wire  _GEN_152 = 64'h0 == ctl_offset ? 1'h0 : _GEN_150; // @[MAIN_MEMORY.scala 124:27 38:17]
-  wire  _T_85 = io_memOp_i_addr >= 64'hb0000000 & io_memOp_i_addr <= 64'hb0075300; // @[DEVICE.scala 30:62]
+  wire  _T_91 = io_memOp_i_addr >= 64'hb0000000 & io_memOp_i_addr <= 64'hb0075300; // @[DEVICE.scala 30:62]
   wire [31:0] _GEN_153 = _T_77 ? _GEN_151 : 32'h0; // @[MAIN_MEMORY.scala 121:34 28:21]
   wire  _GEN_154 = _T_77 & _GEN_152; // @[MAIN_MEMORY.scala 121:34 38:17]
   wire [63:0] _GEN_155 = _T_74 ? io_timer_i : {{32'd0}, _GEN_153}; // @[MAIN_MEMORY.scala 117:31 120:25]
@@ -1566,7 +1568,8 @@ module MAIN_MEMORY(
   wire  _GEN_158 = _T_69 ? 1'h0 : _GEN_156; // @[MAIN_MEMORY.scala 115:34 38:17]
   wire [94:0] _GEN_163 = _T_2 ? loadVal : {{31'd0}, _GEN_157}; // @[MAIN_MEMORY.scala 41:35 93:27]
   wire  _GEN_197 = ~_T_2; // @[MAIN_MEMORY.scala 116:30]
-  wire  _GEN_204 = _GEN_197 & ~_T_69 & ~_T_74; // @[MAIN_MEMORY.scala 136:15]
+  wire  _GEN_204 = _GEN_197 & ~_T_69 & ~_T_74; // @[MAIN_MEMORY.scala 127:23]
+  wire  _GEN_205 = _GEN_197 & ~_T_69 & ~_T_74 & _T_77; // @[MAIN_MEMORY.scala 127:23]
   VGA VGA ( // @[MAIN_MEMORY.scala 37:21]
     .sync(VGA_sync)
   );
@@ -1612,8 +1615,8 @@ module MAIN_MEMORY(
     `ifdef PRINTF_COND
       if (`PRINTF_COND) begin
     `endif
-        if (_GEN_197 & ~_T_69 & ~_T_74 & _T_77 & _T_71) begin
-          $fwrite(32'h80000002,"\noffset = %d, pc = %x, vga ctl\n",ctl_offset,io_pc_i); // @[MAIN_MEMORY.scala 136:15]
+        if (_GEN_197 & ~_T_69 & ~_T_74 & _T_77 & _T_78 & _T_71) begin
+          $fwrite(32'h80000002,"height = %d\n",16'h12c); // @[MAIN_MEMORY.scala 127:23]
         end
     `ifdef PRINTF_COND
       end
@@ -1623,8 +1626,30 @@ module MAIN_MEMORY(
     `ifdef PRINTF_COND
       if (`PRINTF_COND) begin
     `endif
-        if (_GEN_204 & ~_T_77 & _T_85 & _T_71) begin
-          $fwrite(32'h80000002,"fb\n"); // @[MAIN_MEMORY.scala 138:15]
+        if (_GEN_205 & ~_T_78 & _T_82 & _T_71) begin
+          $fwrite(32'h80000002,"width = %d\n",16'h190); // @[MAIN_MEMORY.scala 131:23]
+        end
+    `ifdef PRINTF_COND
+      end
+    `endif
+    `endif // SYNTHESIS
+    `ifndef SYNTHESIS
+    `ifdef PRINTF_COND
+      if (`PRINTF_COND) begin
+    `endif
+        if (_GEN_205 & _T_71) begin
+          $fwrite(32'h80000002,"\noffset = %d, pc = %x, vga ctl\n",ctl_offset,io_pc_i); // @[MAIN_MEMORY.scala 138:15]
+        end
+    `ifdef PRINTF_COND
+      end
+    `endif
+    `endif // SYNTHESIS
+    `ifndef SYNTHESIS
+    `ifdef PRINTF_COND
+      if (`PRINTF_COND) begin
+    `endif
+        if (_GEN_204 & ~_T_77 & _T_91 & _T_71) begin
+          $fwrite(32'h80000002,"fb\n"); // @[MAIN_MEMORY.scala 140:15]
         end
     `ifdef PRINTF_COND
       end

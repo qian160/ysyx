@@ -83,6 +83,35 @@ VL_INLINE_OPT void VTOP___024root___sequent__TOP__0(VTOP___024root* vlSelf) {
                      & (~ (IData)(vlSelf->reset))))) {
         VL_FWRITEF(0x80000002U,"%c",64,vlSelf->TOP__DOT__ID_io_decInfo_o_memOp_sdata);
     }
+    if (VL_UNLIKELY(((((((~ (IData)(vlSelf->TOP__DOT__Main_Memory__DOT___T_2)) 
+                         & (~ (IData)(vlSelf->TOP__DOT__Main_Memory__DOT___T_69))) 
+                        & (~ (IData)(vlSelf->TOP__DOT__Main_Memory__DOT___T_74))) 
+                       & (IData)(vlSelf->TOP__DOT__Main_Memory__DOT___T_77)) 
+                      & (0ULL == ((((QData)((IData)(
+                                                    vlSelf->TOP__DOT__EX__DOT___aluRes_T_191[1U])) 
+                                    << 0x20U) | (QData)((IData)(
+                                                                vlSelf->TOP__DOT__EX__DOT___aluRes_T_191[0U]))) 
+                                  - 0xa0000100ULL))) 
+                     & (~ (IData)(vlSelf->reset))))) {
+        VL_FWRITEF(0x80000002U,"height =   300\n");
+    }
+    if (VL_UNLIKELY((((((((~ (IData)(vlSelf->TOP__DOT__Main_Memory__DOT___T_2)) 
+                          & (~ (IData)(vlSelf->TOP__DOT__Main_Memory__DOT___T_69))) 
+                         & (~ (IData)(vlSelf->TOP__DOT__Main_Memory__DOT___T_74))) 
+                        & (IData)(vlSelf->TOP__DOT__Main_Memory__DOT___T_77)) 
+                       & (0ULL != ((((QData)((IData)(
+                                                     vlSelf->TOP__DOT__EX__DOT___aluRes_T_191[1U])) 
+                                     << 0x20U) | (QData)((IData)(
+                                                                 vlSelf->TOP__DOT__EX__DOT___aluRes_T_191[0U]))) 
+                                   - 0xa0000100ULL))) 
+                      & (2ULL == ((((QData)((IData)(
+                                                    vlSelf->TOP__DOT__EX__DOT___aluRes_T_191[1U])) 
+                                    << 0x20U) | (QData)((IData)(
+                                                                vlSelf->TOP__DOT__EX__DOT___aluRes_T_191[0U]))) 
+                                  - 0xa0000100ULL))) 
+                     & (~ (IData)(vlSelf->reset))))) {
+        VL_FWRITEF(0x80000002U,"width =   400\n");
+    }
     if (VL_UNLIKELY((((((~ (IData)(vlSelf->TOP__DOT__Main_Memory__DOT___T_2)) 
                         & (~ (IData)(vlSelf->TOP__DOT__Main_Memory__DOT___T_69))) 
                        & (~ (IData)(vlSelf->TOP__DOT__Main_Memory__DOT___T_74))) 

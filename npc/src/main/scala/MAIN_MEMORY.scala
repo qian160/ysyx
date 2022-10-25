@@ -124,9 +124,11 @@ class MAIN_MEMORY extends Module{
         switch(ctl_offset){
             is(0.U){
                 io.loadVal_o    :=  vga_ctl(15, 0)
+                printf("height = %d\n", vga_ctl(15, 0))
             }
             is(2.U){
                 io.loadVal_o    :=  vga_ctl(31, 16)
+                printf("width = %d\n", vga_ctl(31, 16))
             }
             is(4.U){
                 io.loadVal_o    :=  vga_ctl(63, 32)
