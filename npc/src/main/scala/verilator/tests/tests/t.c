@@ -17,7 +17,7 @@
 
 int main()
 {
-	//int z __attribute__((unused)) = io_read(VGACTL_ADDR).width;
+	int z __attribute__((unused)) = io_read(AM_GPU_CONFIG).width;
 	int w __attribute__((unused)) = 1;
 	return 0;
 }
