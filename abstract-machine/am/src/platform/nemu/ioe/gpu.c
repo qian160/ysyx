@@ -83,9 +83,11 @@ void __am_gpu_fbdraw(AM_GPU_FBDRAW_T *ctl) {
                       w
   
   */
- //loop unroll seems not helpful here...
-  for (int row = 0; row < ctl -> h; row++) {
+  //loop unroll seems not helpful here...
+  for (int row = 0; row < ctl -> h; row = row + 2) {
     bestFunc(&fb[ctl -> x + (ctl -> y + row) * W], pixels, ctl -> w);
+    pixels += ctl -> w;
+    bestFunc(&fb[ctl -> x + (ctl -> y + row + 1) * W], pixels, ctl -> w);
     pixels += ctl -> w;
   }
   //outl(SYNC_ADDR, ctl->sync);
