@@ -88,8 +88,8 @@ void __am_gpu_fbdraw(AM_GPU_FBDRAW_T *ctl) {
     drawOneRow(&fb[ctl -> x + (ctl -> y + row) * W], pixels, ctl -> w);
     pixels += ctl -> w;
   }
-  if(ctl->sync)
-  outl(SYNC_ADDR, ctl->sync);
+  int old = inl(SYNC_ADDR);
+  outl(SYNC_ADDR, ctl->sync | old);
 }
 
 void __am_gpu_status(AM_GPU_STATUS_T *status) {
