@@ -59,9 +59,9 @@ void __am_gpu_config(AM_GPU_CONFIG_T *cfg) {
 }
 
 void __am_gpu_fbdraw(AM_GPU_FBDRAW_T *ctl) {
-  if (ctl->sync) {
-    outl(SYNC_ADDR, 114514);    //write to SYNC reg will call vga_update_screen, which will be called in every inst execuateion cycle
-  }
+//  if (ctl->sync) {
+    outl(SYNC_ADDR, ctl->sync);    //write to SYNC reg will call vga_update_screen, which will be called in every inst execuateion cycle
+//  }
   //TODO: improve the performance
   uint32_t* fb __attribute__((unused))     = (uint32_t *)(uintptr_t)FB_ADDR;
   uint32_t* pixels __attribute__((unused)) = ctl->pixels;
