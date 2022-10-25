@@ -1,7 +1,8 @@
 #include"include/common.h"
-#include<verilated_vcd_c.h>
 #include"include/macro.h"
 #include"include/sdb.h"
+
+#include<verilated_vcd_c.h>
 #include"verilated_dpi.h"
 #include"VTOP__Dpi.h"
 #include<svdpi.h>
