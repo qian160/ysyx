@@ -63,7 +63,6 @@ void __am_gpu_fbdraw(AM_GPU_FBDRAW_T *ctl) {
     outl(SYNC_ADDR, 114514);    //write to SYNC reg will call vga_update_screen, which will be called in every inst execuateion cycle
   }
   //TODO: improve the performance
-  //this seems to be consuming lots of computations......
   uint32_t* fb __attribute__((unused))     = (uint32_t *)(uintptr_t)FB_ADDR;
   uint32_t* pixels __attribute__((unused)) = ctl->pixels;
 
@@ -86,7 +85,7 @@ void __am_gpu_fbdraw(AM_GPU_FBDRAW_T *ctl) {
   */
  //loop unroll seems not helpful here...
   for (int row = 0; row < ctl -> h; row++) {
-    bestFunc(&fb[ctl -> x + (ctl -> y + row) * W], pixels, ctl -> w); 
+    bestFunc(&fb[ctl -> x + (ctl -> y + row) * W], pixels, ctl -> w);
     pixels += ctl -> w;
   }
 }
