@@ -88,7 +88,7 @@ void __am_gpu_fbdraw(AM_GPU_FBDRAW_T *ctl) {
     bestFunc(&fb[ctl -> x + (ctl -> y + row) * W], pixels, ctl -> w);
     pixels += ctl -> w;
   }
-  outl(SYNC_ADDR, ctl->sync);
+  //outl(SYNC_ADDR, ctl->sync);
 }
 
 void __am_gpu_status(AM_GPU_STATUS_T *status) {
