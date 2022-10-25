@@ -60,7 +60,7 @@ void __am_gpu_config(AM_GPU_CONFIG_T *cfg) {
 
 void __am_gpu_fbdraw(AM_GPU_FBDRAW_T *ctl) {
 //  if (ctl->sync) {
-    outl(SYNC_ADDR, ctl->sync);    //write to SYNC reg will call vga_update_screen, which will be called in every inst execuateion cycle
+//    outl(SYNC_ADDR, ctl->sync);    //write to SYNC reg will call vga_update_screen, which will be called in every inst execuateion cycle
 //  }
   //TODO: improve the performance
   uint32_t* fb     = (uint32_t *)(uintptr_t)FB_ADDR;
@@ -88,7 +88,7 @@ void __am_gpu_fbdraw(AM_GPU_FBDRAW_T *ctl) {
     drawOneRow(&fb[ctl -> x + (ctl -> y + row) * W], pixels, ctl -> w);
     pixels += ctl -> w;
   }
-  //outl(SYNC_ADDR, ctl->sync);
+  outl(SYNC_ADDR, ctl->sync);
 }
 
 void __am_gpu_status(AM_GPU_STATUS_T *status) {
