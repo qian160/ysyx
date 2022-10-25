@@ -14,6 +14,8 @@ static uint32_t screen_size() {
 }
 
 /*
+在SDL_Render对象中有一个视频缓冲区，该缓冲区我们称之为SDL_Surface，它是按照像素存放图像的
+
 把SDL_Window看作是物理像素，把SDL_Renderer看作是存储设置/上下文的地方。
 因此，您创建了一堆资源，并将它们挂在渲染器上；然后在准备就绪时，告诉渲染器将它们放在一起，并将结果发送到窗口。
 
@@ -38,38 +40,45 @@ static void *fb = nullptr;
 static uint32_t     vgactl_port_base[2];
 
 static SDL_Window *window = nullptr;
-//渲染器（SDL_Renderer）
+//渲染器（SDL_Renderer, a buffer where temporarily holds the screen's image imformation but not updated to screen yet
 static SDL_Renderer *renderer = nullptr;
 //纹理（SDL_Texture）
 static SDL_Texture  *texture = nullptr;
 //init
-static SDL_Surface * helloworld = nullptr;
+static SDL_Surface * surface = nullptr;
 
 static void init_screen() {
     const char *title = "riscv64-npc";
     SDL_Init(SDL_INIT_VIDEO);
+    window   = SDL_CreateWindow(title, SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, VGA_W, VGA_H, SDL_WINDOW_SHOWN);
+    renderer = SDL_CreateRenderer(window, 0, SDL_RENDERER_ACCELERATED);
+/*
     SDL_CreateWindowAndRenderer(
         VGA_W,
         VGA_H,
         0, &window, &renderer
     );
-    SDL_SetWindowTitle(window, title);
+*/
+    //SDL_SetWindowTitle(window, title);
     texture = SDL_CreateTexture(renderer, SDL_PIXELFORMAT_ARGB8888,
         SDL_TEXTUREACCESS_STATIC, VGA_W, VGA_H);
     
-    helloworld = SDL_GetWindowSurface(window);
+    surface = SDL_GetWindowSurface(window);
     SDL_Surface * temp = SDL_LoadBMP("./cpp/114514.bmp");
     assert(temp);
 
-    SDL_BlitSurface(temp, 0, helloworld, 0);
+    SDL_BlitSurface(temp, 0, surface, 0);
     SDL_UpdateWindowSurface(window);
 }
 
 //called in device_update
 static inline void update_screen() {
     SDL_UpdateTexture(texture, nullptr, fb, VGA_W * sizeof(uint32_t));
+    //clear up the renderer buffer
     SDL_RenderClear(renderer);
+
     SDL_RenderCopy(renderer, texture, nullptr, nullptr);
+    // 将缓冲区中的内容展示到目标上，也就是 windows 窗口上。
     SDL_RenderPresent(renderer);
 }
 
@@ -82,8 +91,8 @@ void vga_update_screen() {
 }
 
 void SDL_Exit(){
-    SDL_FreeSurface(helloworld);
-    helloworld = nullptr;
+    SDL_FreeSurface(surface);
+    surface = nullptr;
 
     //Destroy window
     SDL_DestroyWindow( window );

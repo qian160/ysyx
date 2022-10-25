@@ -31,10 +31,16 @@ static void init_screen() {
   char title[128];
   sprintf(title, "%s-NEMU", str(__GUEST_ISA__));
   SDL_Init(SDL_INIT_VIDEO);
+  /*
   SDL_CreateWindowAndRenderer(
       SCREEN_W * (MUXDEF(CONFIG_VGA_SIZE_400x300, 2, 1)),
       SCREEN_H * (MUXDEF(CONFIG_VGA_SIZE_400x300, 2, 1)),
       0, &window, &renderer);
+  */
+  window = SDL_CreateWindow(title, SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED,\
+      SCREEN_W * (MUXDEF(CONFIG_VGA_SIZE_400x300, 2, 1)),\
+      SCREEN_H * (MUXDEF(CONFIG_VGA_SIZE_400x300, 2, 1)), SDL_WINDOW_SHOWN);
+  renderer = SDL_CreateRenderer(window, 0, SDL_RENDERER_ACCELERATED);
   SDL_SetWindowTitle(window, title);
   texture = SDL_CreateTexture(renderer, SDL_PIXELFORMAT_ARGB8888,
       SDL_TEXTUREACCESS_STATIC, SCREEN_W, SCREEN_H);
