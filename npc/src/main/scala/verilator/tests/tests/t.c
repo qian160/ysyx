@@ -10,5 +10,5 @@ void halt(int code) {
 int main()
 {
 	int w __attribute__((unused)) = 1;
-	return 0;
+	return 1;
 }
