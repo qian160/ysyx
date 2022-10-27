@@ -26,6 +26,21 @@ static uint32_t *vgactl_port_base = NULL;
 static SDL_Renderer *renderer = NULL;
 static SDL_Texture *texture = NULL;
 
+void vga_update_screen();
+void vga_auto_update()
+{
+  while(1)
+  {
+    static uint64_t last = 0;
+    uint64_t now = get_time();
+    if (now - last < 1000000 / 60) continue;
+    last = now;
+    IFDEF(CONFIG_HAS_VGA, vga_update_screen());
+
+  }
+    return;
+}
+
 static void init_screen() {
   SDL_Window *window = NULL;
   char title[128];
@@ -47,6 +62,8 @@ static void init_screen() {
   SDL_SetWindowTitle(window, title);
   texture = SDL_CreateTexture(renderer, SDL_PIXELFORMAT_ARGB8888,
       SDL_TEXTUREACCESS_STATIC, SCREEN_W, SCREEN_H);
+
+    SDL_CreateThread(vga_auto_update, "vga auto update", NULL);
 }
 
 //called in device_update
