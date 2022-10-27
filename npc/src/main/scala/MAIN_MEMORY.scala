@@ -31,7 +31,8 @@ class MAIN_MEMORY extends Module{
     val addr_i      =   io.memOp_i.addr
     val sdata       =   io.memOp_i.sdata
     val is_load     =   io.memOp_i.is_load
-    val test        =   RegInit(0.U(64.W))
+    val length      =   io.memOp_i.length
+    val unsigned    =   io.memOp_i.unsigned
 
     rtc_past_time   :=  io.timer_i
 
@@ -42,6 +43,7 @@ class MAIN_MEMORY extends Module{
     MMIO_RW.io.read_en  :=  0.U
     MMIO_RW.io.write_en :=  0.U
 
+    val loadVal_temp =   Wire(UInt(64.W))   //without sext
     //start accessing memory
     when(in_pmem(io.memOp_i.addr)){
         /*
@@ -49,8 +51,6 @@ class MAIN_MEMORY extends Module{
             printf("addr %x is in pmem\n", io.memOp_i.addr)
         }*/
         val addr        =   (io.memOp_i.addr - CONST.PMEM_START)  >> 2
-        val unsigned    =   io.memOp_i.unsigned
-        val length      =   io.memOp_i.length
 
         //assuming that the address is aligned, little endian?
         val dword       =   Cat(ram(addr + 1.U), ram(addr))     //the bits are already stored in small endian
@@ -86,15 +86,8 @@ class MAIN_MEMORY extends Module{
             1.set byteMask to 0x00ff000000000000, then use the AND operation to extract the bits there
             2.the bits we get at step 1 is actually weighted(not starting at lsb, the right side), we need to recover it by shifting back
         */
-        val loadVal_temp   =    (dword & mask) >> (offset << 3)       //extract the bits by shifting and masking, then shift back. Not SEXT
-        val loadVal        =    MuxLookup(length, 0.U, Seq(
-            1.U ->  Mux(unsigned, loadVal_temp, SEXT(loadVal_temp, 8,  64)),
-            2.U ->  Mux(unsigned, loadVal_temp, SEXT(loadVal_temp, 16, 64)),
-            4.U ->  Mux(unsigned, loadVal_temp, SEXT(loadVal_temp, 32, 64)),
-            8.U ->  loadVal_temp,
-        ))
+        loadVal_temp    :=    (dword & mask) >> (offset << 3)       //extract the bits by shifting and masking, then shift back. Without SEXT
 
-        io.loadVal_o      :=   loadVal
         val store_en       =   Wire(UInt(8.W))
         val store_en_lut   =   VecInit("b00000001".U, "b00000011".U, "b00001111".U, "b11111111".U)
         store_en          :=   store_en_lut(OHToUInt(length))     //which bytes in the dword block need to be updated
@@ -120,6 +113,14 @@ class MAIN_MEMORY extends Module{
         //SEXT?
         MMIO_RW.io.read_en  :=  is_load
         MMIO_RW.io.write_en :=  is_store
+        loadVal_temp    :=  MMIO_RW.io.rdata
     }
+
+    io.loadVal_o    :=  MuxLookup(length, 0.U, Seq(
+        1.U ->  Mux(unsigned, loadVal_temp, SEXT(loadVal_temp, 8,  64)),
+        2.U ->  Mux(unsigned, loadVal_temp, SEXT(loadVal_temp, 16, 64)),
+        4.U ->  Mux(unsigned, loadVal_temp, SEXT(loadVal_temp, 32, 64)),
+        8.U ->  loadVal_temp,
+    ))
 
 }

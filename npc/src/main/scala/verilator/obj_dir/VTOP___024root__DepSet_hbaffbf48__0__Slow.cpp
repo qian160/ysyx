@@ -194,7 +194,6 @@ VL_ATTR_COLD void VTOP___024root___ctor_var_reset(VTOP___024root* vlSelf) {
     vlSelf->TOP__DOT__Main_Memory__DOT__MMIO_RW_rdata = VL_RAND_RESET_Q(64);
     vlSelf->TOP__DOT__Main_Memory__DOT___T_2 = VL_RAND_RESET_I(1);
     vlSelf->TOP__DOT__Main_Memory__DOT__dword = VL_RAND_RESET_Q(64);
-    VL_RAND_RESET_W(95, vlSelf->TOP__DOT__Main_Memory__DOT__loadVal_temp);
     vlSelf->TOP__DOT__Main_Memory__DOT___store_en_T_3 = VL_RAND_RESET_I(2);
     vlSelf->TOP__DOT__Main_Memory__DOT__store_en = VL_RAND_RESET_I(8);
     vlSelf->TOP__DOT__Main_Memory__DOT___GEN_12 = VL_RAND_RESET_I(8);
@@ -242,6 +241,7 @@ VL_ATTR_COLD void VTOP___024root___ctor_var_reset(VTOP___024root* vlSelf) {
     vlSelf->TOP__DOT__Main_Memory__DOT___GEN_114 = VL_RAND_RESET_I(8);
     vlSelf->TOP__DOT__Main_Memory__DOT___GEN_115 = VL_RAND_RESET_I(8);
     vlSelf->TOP__DOT__Main_Memory__DOT___T_62 = VL_RAND_RESET_Q(64);
+    VL_RAND_RESET_W(95, vlSelf->TOP__DOT__Main_Memory__DOT___GEN_151);
     vlSelf->TOP__DOT__Main_Memory__DOT__initvar = VL_RAND_RESET_I(32);
     vlSelf->__Vfunc_mmio_read__0__Vfuncout = 0;
     for (int __Vi0=0; __Vi0<2; ++__Vi0) {

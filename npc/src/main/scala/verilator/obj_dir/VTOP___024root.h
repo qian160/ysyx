@@ -108,7 +108,7 @@ VL_MODULE(VTOP___024root) {
         VlWide<4>/*127:0*/ TOP__DOT__EX__DOT___aluRes_T_185;
         VlWide<4>/*127:0*/ TOP__DOT__EX__DOT___aluRes_T_191;
         IData/*31:0*/ TOP__DOT__Main_Memory__DOT__ram_io_inst_o_MPORT_data;
-        VlWide<3>/*94:0*/ TOP__DOT__Main_Memory__DOT__loadVal_temp;
+        VlWide<3>/*94:0*/ TOP__DOT__Main_Memory__DOT___GEN_151;
         IData/*31:0*/ TOP__DOT__Main_Memory__DOT__initvar;
         VL_IN64(io_timer_i,63,0);
         VL_OUT64(io_csrData_csrVal,63,0);
