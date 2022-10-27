@@ -25,7 +25,26 @@ static uint32_t *vgactl_port_base = NULL;
 
 static SDL_Renderer *renderer = NULL;
 static SDL_Texture *texture = NULL;
+/*
+// 要注意，nemu只是个指令集模拟器，并不等于真实硬件，
+// 不管你程序写的怎么样到他手里都是变成单线程一句句来执行的。
+// 享受不到多线程的加成。加入多线程之后反而会影响性能
 
+static inline void update_screen();
+int vga_auto_update(void *p)
+{
+  while(1)
+  {
+    static uint64_t last = 0;
+    uint64_t now = get_time();
+    if (now - last < 1000000 / 60) continue;
+    last = now;
+    IFDEF(CONFIG_HAS_VGA, update_screen());
+
+  }
+    return 114514;
+}
+*/
 static void init_screen() {
   SDL_Window *window = NULL;
   char title[128];
@@ -37,6 +56,7 @@ static void init_screen() {
       SCREEN_H * (MUXDEF(CONFIG_VGA_SIZE_400x300, 2, 1)),
       0, &window, &renderer);
   */
+ //window size: always 800 x 600
   window = SDL_CreateWindow(title, SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED,
       SCREEN_W * (MUXDEF(CONFIG_VGA_SIZE_400x300, 2, 1)),
       SCREEN_H * (MUXDEF(CONFIG_VGA_SIZE_400x300, 2, 1)), SDL_WINDOW_SHOWN);
@@ -46,6 +66,8 @@ static void init_screen() {
   SDL_SetWindowTitle(window, title);
   texture = SDL_CreateTexture(renderer, SDL_PIXELFORMAT_ARGB8888,
       SDL_TEXTUREACCESS_STATIC, SCREEN_W, SCREEN_H);
+
+//    SDL_CreateThread(vga_auto_update, "vga auto update", NULL);
 }
 
 //called in device_update
