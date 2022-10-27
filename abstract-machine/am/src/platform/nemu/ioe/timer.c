@@ -1,14 +1,15 @@
 #include <am.h>
 #include <nemu.h>
 
-static uint64_t init_time = 0;
+static uint64_t boot_time = 0;
 
 void __am_timer_init() {
   // the 'ind' will be compiled to 'ld' in asm, remember how lw is implemented in nemu(inst.c):
   // firstly it calls paddr_read. And then pmem_read will find that the address is not in pmem
   // then it will try mmio_read and map_read. After map_read, the call_back function is also called
   //__asm__ volatile("j 0");
-  init_time = ind(RTC_ADDR);
+  boot_time = ind(RTC_ADDR);
+  while(1);
 }
 
 /*  difference between this function and 'rtc_io_handler':
@@ -18,7 +19,7 @@ void __am_timer_init() {
 */
 void __am_timer_uptime(AM_TIMER_UPTIME_T *uptime) {
   uint64_t now = ind(RTC_ADDR);
-  uptime -> us = now - init_time;
+  uptime -> us = now - boot_time;
 }
 
 void __am_timer_rtc(AM_TIMER_RTC_T *rtc) {

@@ -62,7 +62,7 @@ long long mmio_read(long long addr, int len){
         printf("mmio_read:  bad len = %d\n", len);
         assert(0);
     }
-	return 1;
+	return 114514;
 }
 
 void mmio_write(long long addr, int len, long long wdata){
