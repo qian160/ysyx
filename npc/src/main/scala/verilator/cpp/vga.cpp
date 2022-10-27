@@ -2,6 +2,7 @@
 #include"include/common.h"
 #include"include/device.h"
 #include<functional>
+#include<memory>
 
 using handler_t = void(uint64_t offset, uint64_t len , bool is_write);
 extern void add_mmio_map(uint64_t begin, uint64_t end, void *mem, std::function<handler_t> handler);
@@ -44,6 +45,8 @@ static SDL_Texture  *texture = nullptr;
 //
 static SDL_Surface  *surface = nullptr;
 
+
+
 static void init_screen() {
     const char *title = "riscv64-npc";
     SDL_Init(SDL_INIT_VIDEO);
@@ -74,7 +77,7 @@ static inline void update_screen() {
     SDL_RenderClear(renderer);
 
     SDL_RenderCopy(renderer, texture, nullptr, nullptr);
-    // 将缓冲区中的内容展示到目标上，也就是 windows 窗口上。
+    //将缓冲区中的内容展示到目标上，也就是 windows 窗口上。
     SDL_RenderPresent(renderer);
 }
 
@@ -90,21 +93,10 @@ void vga_update_screen() {
 
 void SDL_Exit(){
     SDL_FreeSurface(surface);
-    surface = nullptr;
-
-    //Destroy window
-    SDL_DestroyWindow( window );
-    window   = nullptr;
-
+    SDL_DestroyWindow(window);
     SDL_DestroyRenderer(renderer);
-    renderer = nullptr;
-
     SDL_DestroyTexture(texture);
-    texture  = nullptr;
-
-    //Quit SDL subsystems
     SDL_Quit();
-
 }
 
 void init_vga() {
