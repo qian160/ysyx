@@ -45,7 +45,6 @@ VM_USER_LDLIBS = \
 VM_USER_CLASSES = \
 	device \
 	difftest \
-	keyboard \
 	mmio \
 	sdb \
 	test \
@@ -68,8 +67,6 @@ VPATH += $(VM_USER_DIR)
 device.o: /home/s081/Downloads/ysyx-workbench/npc/src/main/scala/verilator/cpp/device.cpp
 	$(OBJCACHE) $(CXX) $(CXXFLAGS) $(CPPFLAGS) $(OPT_FAST) -c -o $@ $<
 difftest.o: /home/s081/Downloads/ysyx-workbench/npc/src/main/scala/verilator/cpp/difftest.cpp
-	$(OBJCACHE) $(CXX) $(CXXFLAGS) $(CPPFLAGS) $(OPT_FAST) -c -o $@ $<
-keyboard.o: /home/s081/Downloads/ysyx-workbench/npc/src/main/scala/verilator/cpp/keyboard.cpp
 	$(OBJCACHE) $(CXX) $(CXXFLAGS) $(CPPFLAGS) $(OPT_FAST) -c -o $@ $<
 mmio.o: /home/s081/Downloads/ysyx-workbench/npc/src/main/scala/verilator/cpp/mmio.cpp
 	$(OBJCACHE) $(CXX) $(CXXFLAGS) $(CPPFLAGS) $(OPT_FAST) -c -o $@ $<

@@ -19,8 +19,6 @@ f(UP) f(DOWN) f(LEFT) f(RIGHT) f(INSERT) f(DELETE) f(HOME) f(END) f(PAGEUP) f(PA
 
 #define _KEY_NAME(k) _KEY_##k,
 
-//#define MAP(X, Y) X(Y)
-
 enum {
   _KEY_NONE = 0,
   MAP(_KEYS, _KEY_NAME)
