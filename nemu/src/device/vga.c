@@ -33,7 +33,7 @@ int vga_auto_update(void *p)
   {
     static uint64_t last = 0;
     uint64_t now = get_time();
-    if (now - last < 1000000 / 60) continue;
+    if (now - last < 1000000 / 6000) continue;
     last = now;
     IFDEF(CONFIG_HAS_VGA, vga_update_screen());
 
