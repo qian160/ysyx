@@ -54,6 +54,8 @@ int cmd_s(string steps){
         tb.tick();
         IFDEF(DIFFTEST_ENABLE, assert(difftest()));
 #ifdef  HAS_DEVICE
+        /*
+
         //vga
         static uint64_t last = 0;
         uint64_t now = getTime();
@@ -62,7 +64,6 @@ int cmd_s(string steps){
             vga_update_screen();
         }
         //kbd
-        /*
         SDL_Event event;
         while (SDL_PollEvent(&event)) {
             switch (event.type) {
