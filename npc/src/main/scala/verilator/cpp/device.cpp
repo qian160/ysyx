@@ -7,6 +7,7 @@ void * serial_port = nullptr;
 void * rtc_port    = nullptr;
 void * vga_ctl     = nullptr;
 void * vga_fb      = nullptr;
+void * kbd_base    = nullptr;
 
 using handler_t = void(uint64_t offset, uint64_t len , bool is_write);
 
@@ -21,10 +22,6 @@ uint64_t getTime(){
 }
 
 uint64_t boot_time = 0;
-static inline void init_rtc()
-{
-    boot_time = getTime();
-}
 
 static void serial_handler(uint64_t offset, uint64_t len, bool is_write)
 {
@@ -53,19 +50,25 @@ static void rtc_handler(uint64_t offset, uint64_t len, bool is_write)
 
 int init_device()
 {
-    init_vga();
-    init_rtc();
-
+    //serial
     serial_port = malloc(1);             //+1? 1 Byte is enough
     add_mmio_map(SERIAL_PORT, SERIAL_PORT + 8, serial_port, serial_handler);
-
+    //rtc
+    boot_time = getTime();
     rtc_port = malloc(8);
     add_mmio_map(RTC_ADDR, RTC_ADDR + 8, rtc_port, rtc_handler);
-
-    //0: height 2: width 4: sync
+    //vgactl   0: height 2: width 4: sync
     vga_ctl  = malloc(8);
     *(uint64_t*)vga_ctl = VGA_H | VGA_W << 16;
     add_mmio_map(VGACTL_ADDR, VGACTL_ADDR + 8, vga_ctl, nullptr);
+    //vga_fb
+    vga_fb = malloc(FB_SZ);
+    add_mmio_map(FB_ADDR, FB_ADDR + FB_SZ, vga_fb, nullptr);
+
+    init_vga();
+
+    kbd_base = malloc(8);
+    add_mmio_map(KBD_ADDR, KBD_ADDR + 8, kbd_base, nullptr);
 
     return 0;
 }

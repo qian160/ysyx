@@ -208,8 +208,8 @@ static void gpu_status(AM_GPU_STATUS_T *stat) {
 }
 
 static void gpu_memcpy(AM_GPU_MEMCPY_T *params) {
-  char *src = params->src, *dst = to_host(params->dest);
-  for (int i = 0; i < params->size; i++)
+  char *src = params -> src, *dst = to_host(params -> dest);
+  for (int i = 0; i < params -> size; i++)
     dst[i] = src[i];
 }
 

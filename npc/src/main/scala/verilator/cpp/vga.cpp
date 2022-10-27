@@ -23,8 +23,9 @@
 */
 //frame buffer(in mmio space), or pixels. program just need to write into this space.
 //and when needed, renderer will extract the information from fb and sent it to screen
-/*static*/ void *fb = nullptr;
-static uint32_t     vgactl_port_base[2];
+
+extern void * vga_fb;
+extern void * vga_ctl;
 
 static SDL_Window *window = nullptr;
 //渲染器（SDL_Renderer, a buffer where temporarily holds the screen's image imformation but not updated to screen yet
@@ -60,7 +61,7 @@ static void init_screen() {
 
 //called in device_update
 /*static inline */void update_screen() {
-    SDL_UpdateTexture(texture, nullptr, fb, VGA_W * sizeof(uint32_t));
+    SDL_UpdateTexture(texture, nullptr, vga_fb, VGA_W * sizeof(uint32_t));
     //clear up the renderer buffer
     SDL_RenderClear(renderer);
 
@@ -70,10 +71,10 @@ static void init_screen() {
 }
 
 void vga_update_screen() {
-    uint32_t sync = vgactl_port_base[1];
+    uint32_t sync = ((uint32_t*)vga_ctl)[1];
     if (sync != 0) {
         update_screen();
-        vgactl_port_base[1] = 0;
+        ((uint32_t*)vga_ctl)[1] = 0;
     }
 }
 
@@ -97,11 +98,9 @@ void SDL_Exit(){
 }
 
 void init_vga() {
-    vgactl_port_base[0] = (VGA_W << 16) | VGA_H;
-
-    fb = malloc(FB_SZ);
+    *(uint32_t*)vga_ctl = (VGA_W << 16) | VGA_H;
     init_screen();
-    memset(fb, 0, FB_SZ);
+    memset(vga_fb, 0, FB_SZ);
 }
 
 static inline void pixelcpy4(void *dst, const void *src, size_t n) {

@@ -41,7 +41,7 @@ long long mmio_read(long long addr, int len){
     //cout << "mmio read:  addr = " << addr << endl;
     //let chisel do the sext
     mmio_map * map = find_map_by_addr(addr);
-    assert(map);
+    Assert(map, "\nbad mmio address: %llx\n", addr);
     assert(addr >= map -> begin && addr + len <= map -> end);
     uint64_t offset = addr - map -> begin;
     void * base = (uint8_t *)(map -> mem) + offset;
@@ -68,7 +68,7 @@ long long mmio_read(long long addr, int len){
 void mmio_write(long long addr, int len, long long wdata){
     //cout << "mmio write:  addr = " << addr << endl;
 	mmio_map * map = find_map_by_addr(addr);
-    assert(map);
+    Assert(map, "\nbad mmio address: %llx\n", addr);
     assert(addr >= map -> begin && addr + len <= map -> end);
     uint64_t offset = addr - map -> begin;
     void * base = (uint8_t *)(map -> mem) + offset;
