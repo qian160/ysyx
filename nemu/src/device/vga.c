@@ -26,7 +26,7 @@ static uint32_t *vgactl_port_base = NULL;
 static SDL_Renderer *renderer = NULL;
 static SDL_Texture *texture = NULL;
 
-void vga_update_screen();
+void update_screen();
 int vga_auto_update(void *p)
 {
   while(1)
@@ -35,7 +35,7 @@ int vga_auto_update(void *p)
     uint64_t now = get_time();
     if (now - last < 1000000 / 6000) continue;
     last = now;
-    IFDEF(CONFIG_HAS_VGA, vga_update_screen());
+    IFDEF(CONFIG_HAS_VGA, update_screen());
 
   }
     return 114514;
