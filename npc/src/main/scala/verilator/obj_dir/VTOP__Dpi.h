@@ -16,8 +16,10 @@ extern "C" {
 
 
     // DPI IMPORTS
-    // DPI import at /home/s081/Downloads/ysyx-workbench/npc/src/main/scala/verilator/verilog/VGA.sv:1:30
-    extern void vga_update(const char* s);
+    // DPI import at /home/s081/Downloads/ysyx-workbench/npc/src/main/scala/verilator/verilog/MMIO_RW.sv:1:33
+    extern long long mmio_read(long long addr, int len);
+    // DPI import at /home/s081/Downloads/ysyx-workbench/npc/src/main/scala/verilator/verilog/MMIO_RW.sv:2:30
+    extern void mmio_write(long long addr, int len, long long wdata);
 
 #ifdef __cplusplus
 }

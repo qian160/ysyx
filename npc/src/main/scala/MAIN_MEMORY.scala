@@ -27,28 +27,32 @@ class MAIN_MEMORY extends Module{
     io.inst_o       :=  ram((io.pc_i - CONST.PC_INIT) >> 2)
     io.loadVal_o    :=  0.U
 
-    val is_store    =   io.memOp_i.isStore
+    val is_store    =   io.memOp_i.is_store
     val addr_i      =   io.memOp_i.addr
     val sdata       =   io.memOp_i.sdata
-    val is_load     =   io.memOp_i.isLoad
+    val is_load     =   io.memOp_i.is_load
     val test        =   RegInit(0.U(64.W))
 
     rtc_past_time   :=  io.timer_i
-    val VGA = Module(new VGA)
-    VGA.io.sync := 0.U
+
+    val MMIO_RW = Module(new MMIO_RW)
+    MMIO_RW.io.addr     :=  addr_i
+    MMIO_RW.io.length   :=  io.memOp_i.length
+    MMIO_RW.io.wdata    :=  io.memOp_i.sdata
+    MMIO_RW.io.read_en  :=  0.U
+    MMIO_RW.io.write_en :=  0.U
 
     //start accessing memory
     when(in_pmem(io.memOp_i.addr)){
         /*
-        when(io.memOp_i.isLoad | io.memOp_i.isStore){
+        when(io.memOp_i.is_load | io.memOp_i.is_store){
             printf("addr %x is in pmem\n", io.memOp_i.addr)
         }*/
         val addr        =   (io.memOp_i.addr - CONST.PMEM_START)  >> 2
         val unsigned    =   io.memOp_i.unsigned
-        val is_store    =   io.memOp_i.isStore
         val length      =   io.memOp_i.length
 
-        //assuming that the address is aligned, little endian
+        //assuming that the address is aligned, little endian?
         val dword       =   Cat(ram(addr + 1.U), ram(addr))     //the bits are already stored in small endian
 
         val offset  =   io.memOp_i.addr(1, 0)   //mod by 4, get the byte offset in the 32-bit block
@@ -67,10 +71,10 @@ class MAIN_MEMORY extends Module{
         //data is stored with little endian, for example, ram(0)(7, 0) holds the 1st inst's lsb, and ram(0)(31,24) holds the msb
         //but that doesn't seem to be important now. Maybe loading value from section .data will need this
         val byteMask    =   MuxLookup(length, 0.U, Seq(
-            0.U ->  "h00000000000000ff".U,
-            1.U ->  "h000000000000ffff".U,
-            2.U ->  "h00000000ffffffff".U,
-            3.U ->  "hffffffffffffffff".U,
+            1.U ->  "h00000000000000ff".U,
+            2.U ->  "h000000000000ffff".U,
+            4.U ->  "h00000000ffffffff".U,
+            8.U ->  "hffffffffffffffff".U,
         ))
 
         val mask    =   byteMask  << (offset << 3)
@@ -84,16 +88,16 @@ class MAIN_MEMORY extends Module{
         */
         val loadVal_temp   =    (dword & mask) >> (offset << 3)       //extract the bits by shifting and masking, then shift back. Not SEXT
         val loadVal        =    MuxLookup(length, 0.U, Seq(
-            0.U ->  Mux(unsigned, loadVal_temp, SEXT(loadVal_temp, 8,  64)),
-            1.U ->  Mux(unsigned, loadVal_temp, SEXT(loadVal_temp, 16, 64)),
-            2.U ->  Mux(unsigned, loadVal_temp, SEXT(loadVal_temp, 32, 64)),
-            3.U ->  loadVal_temp,
+            1.U ->  Mux(unsigned, loadVal_temp, SEXT(loadVal_temp, 8,  64)),
+            2.U ->  Mux(unsigned, loadVal_temp, SEXT(loadVal_temp, 16, 64)),
+            4.U ->  Mux(unsigned, loadVal_temp, SEXT(loadVal_temp, 32, 64)),
+            8.U ->  loadVal_temp,
         ))
 
         io.loadVal_o      :=   loadVal
         val store_en       =   Wire(UInt(8.W))
         val store_en_lut   =   VecInit("b00000001".U, "b00000011".U, "b00001111".U, "b11111111".U)
-        store_en          :=   store_en_lut(length)     //which bytes in the dword block need to be updated
+        store_en          :=   store_en_lut(OHToUInt(length))     //which bytes in the dword block need to be updated
         //maybe lut is faster, we don't need to calculate every time
         //val store_en   =   ((1.U << (1.U << length)) - 1.U)
 
@@ -112,7 +116,12 @@ class MAIN_MEMORY extends Module{
             ram(addr + 1.U)     :=  temp.asTypeOf(UInt())(63, 32)
             ram(addr)           :=  temp.asTypeOf(UInt())(31, 0)
         }
-    }.elsewhen(in_serial(addr_i)){
+    }.otherwise{
+        //SEXT?
+        MMIO_RW.io.read_en  :=  is_load
+        MMIO_RW.io.write_en :=  is_store
+    }
+    /*.elsewhen(in_serial(addr_i)){
         when(is_store){printf("%c", sdata)}
     }.elsewhen(in_rtc(addr_i)){
         //timer is updated by cpp
@@ -132,13 +141,13 @@ class MAIN_MEMORY extends Module{
             }
             is(4.U){
                 io.loadVal_o    :=  vga_ctl(63, 32)
-                VGA.io.sync     :=  vga_ctl =/= 0.U
             }
         }
         printf("\noffset = %d, pc = %x, vga ctl\n", ctl_offset, io.pc_i)
     }.elsewhen(in_fb(addr_i)){
         printf("fb\n")
     }
+    */
     
     /*
     .otherwise{

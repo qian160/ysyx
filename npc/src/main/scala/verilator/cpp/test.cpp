@@ -5,14 +5,12 @@
 #include<verilated_vcd_c.h>
 #include"verilated_dpi.h"
 #include"VTOP__Dpi.h"
-#include<svdpi.h>
+
+#include<signal.h>
 
 using namespace std;
 
-//dpi-c
-void vga_update(const char* s){
-	cout << s << endl;
-}
+extern VTOP * top;
 
 extern void SDL_Exit();
 
@@ -41,10 +39,17 @@ static inline cmd_info get_cmd()
 
 extern int init_device();
 
+void my_exit(int sig)
+{
+	SDL_Exit();
+	cout << "\nexit" << endl;
+	exit(0);
+}
+
 int main(int argc, char **argv)
 {
 	Verilated::commandArgs(argc, argv);
-	atexit(SDL_Exit);
+	signal(SIGINT, my_exit);
 	if(argc < 2){
 		cout << Yellow("no image is given, using the old inst rom\n") << endl;
 		img_file.reset(new DEFAULT_IMG);

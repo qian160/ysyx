@@ -46,25 +46,3 @@ enum {
   AM_KEY_NONE = 0,
   AM_KEYS(AM_KEY_NAMES)
 };
-
-// GPU
-
-#define AM_GPU_TEXTURE  1
-#define AM_GPU_SUBTREE  2
-#define AM_GPU_NULL     0xffffffff
-
-typedef uint32_t gpuptr_t;
-
-struct gpu_texturedesc {
-  uint16_t w, h;
-  gpuptr_t pixels;
-} __attribute__((packed));
-
-struct gpu_canvas {
-  uint16_t type, w, h, x1, y1, w1, h1;
-  gpuptr_t sibling;
-  union {
-    gpuptr_t child;
-    struct gpu_texturedesc texture;
-  };
-} __attribute__((packed));

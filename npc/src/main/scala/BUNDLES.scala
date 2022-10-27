@@ -59,13 +59,13 @@ class BranchOp extends Bundle{
 }
 
 class MemOp extends Bundle{
-    val isLoad      =   Bool()
-    val isStore     =   Bool()
+    val is_load     =   Bool()
+    val is_store    =   Bool()
     val unsigned    =   Bool()
-    val length      =   UInt(2.W)   //1 2 4 8,  loadOp = Cat(sign, length)
+    val length      =   UInt(4.W)   //1 2 4 8,  loadOp = Cat(sign, length)
     val addr        =   UInt(64.W)
     val sdata       =   UInt(64.W)
-    val sel         =   UInt(8.W)   //byte selection
+    //val sel         =   UInt(8.W)   //byte selection
 }
 
 class Debug_Bundle extends Bundle{

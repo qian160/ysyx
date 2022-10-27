@@ -38,13 +38,9 @@ bool difftest()
     return difftest_checkregs();
 }
 
-uint64_t getTime(){
-    struct timespec now;
-    clock_gettime(CLOCK_MONOTONIC_COARSE, &now);
-    return (now.tv_sec * 1000000 + now.tv_nsec / 1000);
-}
+extern uint64_t getTime();
 
-uint64_t boot_time = getTime();
+extern uint64_t boot_time;
 
 int cmd_s(string steps){
     size_t n = atoi(steps.c_str());

@@ -15,8 +15,8 @@ class MEM extends Module{
     })
     //little endian
 
-    val isLoad      = io.memOp_i.isLoad
-    val isStore     = io.memOp_i.isStore
+    val is_load      = io.memOp_i.is_load
+    val is_store     = io.memOp_i.is_store
 
     val sdata   =   io.memOp_i.sdata
     val addr    =   io.memOp_i.addr
@@ -44,7 +44,7 @@ class MEM extends Module{
     }
 */
     io.writeOp_o            :=  io.writeOp_i
-    io.writeOp_o.rf.wdata   :=  Mux(isLoad, io.loadVal_i, io.writeOp_i.rf.wdata)
+    io.writeOp_o.rf.wdata   :=  Mux(is_load, io.loadVal_i, io.writeOp_i.rf.wdata)
 
 /*
     whne(isStore){

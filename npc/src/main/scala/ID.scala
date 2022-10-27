@@ -74,8 +74,8 @@ class ID extends Module{
             io.decInfo_o.branchOp.happen  :=  Mux(is_jalr, true.B, false.B)
             io.decInfo_o.branchOp.newPC   :=  rs1Val + imm_I(inst)
             //load uses src1 and src2 to calculate the address
-            io.decInfo_o.memOp.isLoad     :=  opcode === Opcode.LOAD
-            io.decInfo_o.memOp.length     :=  fct3(1, 0)
+            io.decInfo_o.memOp.is_load    :=  opcode === Opcode.LOAD
+            io.decInfo_o.memOp.length     :=  UIntToOH(fct3(1, 0))
 
             io.decInfo_o.memOp.unsigned   :=  fct3(2)     //0 to 3 unsigned, signed when fct3 >= 4
 
@@ -112,8 +112,8 @@ class ID extends Module{
             io.decInfo_o.aluOp.src2       :=  4.U(64.W)            
         }
         is(InstType.S){
-            io.decInfo_o.memOp.isStore    :=  true.B
-            io.decInfo_o.memOp.length     :=  fct3
+            io.decInfo_o.memOp.is_store   :=  true.B
+            io.decInfo_o.memOp.length     :=  UIntToOH(fct3)
             io.decInfo_o.memOp.sdata      :=  rs2Val
 
             //use ALU to calculate the address
