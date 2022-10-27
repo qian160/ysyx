@@ -39,7 +39,7 @@ static inline mmio_map* find_map_by_addr(uint64_t addr) {
 //dpic
 extern "C" {
 long long mmio_read(long long addr, int len){
-    //cout << "mmio read:  addr = " << addr << endl;
+    //cout << _pink << "mmio read:  addr = " << addr << normal << endl;
     //let chisel do the sext
     mmio_map * map = find_map_by_addr(addr);
     Assert(map, "bad mmio addr: %llx\n", addr);
@@ -67,7 +67,7 @@ long long mmio_read(long long addr, int len){
 }
 
 void mmio_write(long long addr, int len, long long wdata){
-    //cout << "mmio write:  addr = " << addr << endl;
+    //sscout << _pink << "mmio write:  addr = " << addr << normal << endl;
 	mmio_map * map = find_map_by_addr(addr);
     Assert(map, "bad mmio addr: %llx\n", addr);
     assert(addr >= map -> begin && addr + len <= map -> end);

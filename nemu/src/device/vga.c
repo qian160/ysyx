@@ -37,7 +37,6 @@ static void init_screen() {
       SCREEN_H * (MUXDEF(CONFIG_VGA_SIZE_400x300, 2, 1)),
       0, &window, &renderer);
   */
- //window size: always 800 x 600
   window = SDL_CreateWindow(title, SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED,
       SCREEN_W * (MUXDEF(CONFIG_VGA_SIZE_400x300, 2, 1)),
       SCREEN_H * (MUXDEF(CONFIG_VGA_SIZE_400x300, 2, 1)), SDL_WINDOW_SHOWN);
