@@ -27,7 +27,7 @@ static SDL_Renderer *renderer = NULL;
 static SDL_Texture *texture = NULL;
 
 void vga_update_screen();
-void vga_auto_update()
+void vga_auto_update(void *p)
 {
   while(1)
   {
