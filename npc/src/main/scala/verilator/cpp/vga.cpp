@@ -2,6 +2,7 @@
 #include"include/common.h"
 #include"include/device.h"
 #include<functional>
+#include<memory>
 
 using handler_t = void(uint64_t offset, uint64_t len , bool is_write);
 extern void add_mmio_map(uint64_t begin, uint64_t end, void *mem, std::function<handler_t> handler);
@@ -36,18 +37,20 @@ static void * vga_ctl = nullptr;
 //#define CTL_H       (*(uint16_t*)vga_ctl)
 //#define CTL_SYNC    (*(uint32_t*)(((uint8_t*)(vga_ctl) + 4)))
 
-static SDL_Window   *window = nullptr;
+static SDL_Window   *window   = nullptr;
 //渲染器（SDL_Renderer, a buffer where temporarily holds the screen's image imformation but not updated to screen yet
 static SDL_Renderer *renderer = nullptr;
 //纹理（SDL_Texture）
-static SDL_Texture  *texture = nullptr;
+static SDL_Texture  *texture  = nullptr;
 //
-static SDL_Surface  *surface = nullptr;
+static SDL_Surface  *surface  = nullptr;
+
+
 
 static void init_screen() {
     const char *title = "riscv64-npc";
     SDL_Init(SDL_INIT_VIDEO);
-    window   = SDL_CreateWindow(title, SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, VGA_W, VGA_H, SDL_WINDOW_SHOWN);
+    window   = SDL_CreateWindow(title, SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, VGA_W * 2, VGA_H * 2, SDL_WINDOW_SHOWN);
     renderer = SDL_CreateRenderer(window, 0, SDL_RENDERER_ACCELERATED);
 /*
     SDL_CreateWindowAndRenderer(
@@ -70,11 +73,11 @@ static void init_screen() {
 
 static inline void update_screen() {
     SDL_UpdateTexture(texture, nullptr, vga_fb, VGA_W * sizeof(uint32_t));
-    //clear up the renderer buffer
+    //clear up the renderer buffe
     SDL_RenderClear(renderer);
 
     SDL_RenderCopy(renderer, texture, nullptr, nullptr);
-    // 将缓冲区中的内容展示到目标上，也就是 windows 窗口上。
+    //将缓冲区中的内容展示到目标上，也就是 windows 窗口上。
     SDL_RenderPresent(renderer);
 }
 
@@ -90,25 +93,13 @@ void vga_update_screen() {
 
 void SDL_Exit(){
     SDL_FreeSurface(surface);
-    surface = nullptr;
-
-    //Destroy window
-    SDL_DestroyWindow( window );
-    window   = nullptr;
-
+    SDL_DestroyWindow(window);
     SDL_DestroyRenderer(renderer);
-    renderer = nullptr;
-
     SDL_DestroyTexture(texture);
-    texture  = nullptr;
-
-    //Quit SDL subsystems
     SDL_Quit();
-
 }
 
 void init_vga() {
-    cout << 1 << endl;
     vga_ctl = calloc(8, 1);
     add_mmio_map(VGACTL_ADDR, VGACTL_ADDR + 8, vga_ctl, nullptr);   //set handler = update?
     uint32_t * ctl = (uint32_t *)vga_ctl;
@@ -117,75 +108,4 @@ void init_vga() {
     vga_fb = calloc(FB_SZ, 1);
     add_mmio_map(FB_ADDR, FB_ADDR + FB_SZ, vga_fb, nullptr);        //updating vga is not handler's job
     init_screen();
-    cout << 2 << endl;
-}
-
-static inline void pixelcpy4(void *dst, const void *src, size_t n) {
-  uint32_t *pszDest = (uint32_t *)dst;
-    const uint32_t *pszSource = (uint32_t *)src;
-    if((pszDest!= NULL) && (pszSource!= NULL))
-    {
-        while(n--)
-            *(pszDest++)= *(pszSource++);
-    }
-    return;
-}
-
-static inline void pixelcpy8(void *dst, const void *src, size_t n) {
-    uint64_t *pszDest = (uint64_t *)dst;
-    n = n >> 1;
-    const uint64_t *pszSource = (uint64_t *)src;
-    if((pszDest!= NULL) && (pszSource!= NULL))
-    {
-        while(n--)
-            *(pszDest++)= *(pszSource++);
-    }
-    return;
-}
-
-static inline void pixelcpy16(void *dst, const void *src, size_t n) {
-  __uint128_t *pszDest = (__uint128_t *)dst;
-    n = n >> 2;
-    const __uint128_t *pszSource = (__uint128_t *)src;
-    if((pszDest!= NULL) && (pszSource!= NULL))
-    {
-        while(n--)
-            *(pszDest++)= *(pszSource++);
-    }
-    return;
-}
-
-void __am_gpu_fbdraw(AM_GPU_FBDRAW_T *ctl) {
-//  if (ctl->sync) {
-//    outl(SYNC_ADDR, ctl->sync);    //write to SYNC reg will call vga_update_screen, which will be called in every inst execuateion cycle
-//  }
-    //TODO: improve the performance
-    uint32_t* fb     = (uint32_t *)(uintptr_t)FB_ADDR;
-    uint32_t* pixels = (uint32_t*)ctl->pixels;
-
-    //if(ctl -> h == 0 || ctl -> w == 0)  return;
-
-    //choose the fastest one. This may improve performance in some cases
-    void (*drawOneRow)(void * dst, const void *src, size_t n) = ctl -> w % 4 == 0 ? pixelcpy16 : ctl -> w % 2 == 0 ? pixelcpy8 : pixelcpy4;
-
-    //draw row by row. write to vga frame buffer
-    //loop unroll
-    /*             x
-        ---------------------------------
-        |          .  ctl->w             |
-        y |...................             |
-        |          .       . ctl->h      | h
-        |          .........             |
-        ---------------------------------
-                        w
-    
-  */
-  //loop unroll seems not helpful here...
-    for (int row = 0; row < ctl -> h; row++) {
-        drawOneRow(&fb[ctl -> x + (ctl -> y + row) * VGA_W], pixels, ctl -> w);
-        pixels += ctl -> w;
-    }
-    //printf("%d\n", ctl->sync);
-    if(ctl -> sync)
-        vga_update_screen();
 }

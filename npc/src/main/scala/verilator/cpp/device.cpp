@@ -66,6 +66,5 @@ int init_device()
 
     init_vga();
 
-
     return 0;
 }
