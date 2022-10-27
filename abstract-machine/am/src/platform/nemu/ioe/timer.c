@@ -9,7 +9,6 @@ void __am_timer_init() {
   // then it will try mmio_read and map_read. After map_read, the call_back function is also called
   //__asm__ volatile("j 0");
   boot_time = ind(RTC_ADDR);
-  while(1);
 }
 
 /*  difference between this function and 'rtc_io_handler':
