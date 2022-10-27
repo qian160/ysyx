@@ -2,11 +2,15 @@
 #include"include/common.h"
 #include"include/device.h"
 #include<signal.h>
+#include<functional>
 
 #define concat_temp(x, y) x ## y
 #define concat(x, y) concat_temp(x, y)
 
-extern void * kbd_base;
+using handler_t = void(uint64_t offset, uint64_t len , bool is_write);
+void add_mmio_map(uint64_t begin, uint64_t end, void *mem, std::function<handler_t> handler);
+
+void * kbd_base;
 // f = _KEY_NAME
 #define KEYDOWN_MASK 0x8000
 
@@ -62,24 +66,23 @@ void send_key(uint8_t scancode, bool is_keydown) {
     }
 }
 
-static void i8042_data_io_handler(uint32_t offset, int len, bool is_write) {
+static void i8042_data_io_handler(uint64_t offset, int len, bool is_write) {
     assert(!is_write);
     assert(offset == 0);
     *(uint32_t*)kbd_base = key_dequeue();
 }
 
 void init_i8042() {
+    kbd_base = calloc(8, 1);
+    add_mmio_map(KBD_ADDR, KBD_ADDR + 8, kbd_base, i8042_data_io_handler);
     (*(uint64_t*)kbd_base) = _KEY_NONE;
     init_keymap();
 }
 
 static SDL_mutex *key_queue_lock = NULL;
 
-#define XX(k) [SDL_SCANCODE_##k] = AM_KEY_##k,
-
 static int event_thread(void *args) {
     SDL_Event event;
-
     while (1) {
         SDL_WaitEvent(&event);
         switch (event.type) {
@@ -104,6 +107,7 @@ static int event_thread(void *args) {
     return 0;
 }
 
+//trying to fetch an input(keyboard)
 void __am_input_keybrd(AM_INPUT_KEYBRD_T *kbd) {
     int k = AM_KEY_NONE;
     SDL_CreateThread(event_thread, "event thread", NULL);

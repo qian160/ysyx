@@ -16,6 +16,7 @@ using handler_t = void(uint64_t offset, uint64_t len , bool is_write);
 
 extern void add_mmio_map(uint64_t begin, uint64_t end, void *mem, std::function<handler_t> handler);
 extern void init_vga();
+extern void init_i8042();
 
 
 uint64_t getTime(){
@@ -65,6 +66,7 @@ int init_device()
     add_mmio_map(KBD_ADDR, KBD_ADDR + 8, kbd_base, nullptr);
 
     init_vga();
+    init_i8042();
 
     return 0;
 }
