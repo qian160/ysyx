@@ -4,13 +4,14 @@
 #include<signal.h>
 #include<functional>
 
+void * kbd_base;
+
 #define concat_temp(x, y) x ## y
 #define concat(x, y) concat_temp(x, y)
 
 using handler_t = void(uint64_t offset, uint64_t len , bool is_write);
 void add_mmio_map(uint64_t begin, uint64_t end, void *mem, std::function<handler_t> handler);
 
-void * kbd_base;
 // f = _KEY_NAME
 #define KEYDOWN_MASK 0x8000
 

@@ -6,7 +6,6 @@
 //these devices are simple, so we just put them together here
 void * serial_port = nullptr;
 void * rtc_port    = nullptr;
-void * kbd_base    = nullptr;
 
 //vga is a little complex. So we put these variables in that module instead of here to better modulize
 //extern void * vga_ctl;
@@ -61,9 +60,6 @@ int init_device()
     rtc_port = malloc(8);
     boot_time = getTime();
     add_mmio_map(RTC_ADDR, RTC_ADDR + 8, rtc_port, rtc_handler);
-
-    kbd_base = calloc(8, 1);
-    add_mmio_map(KBD_ADDR, KBD_ADDR + 8, kbd_base, nullptr);
 
     init_vga();
     init_i8042();
