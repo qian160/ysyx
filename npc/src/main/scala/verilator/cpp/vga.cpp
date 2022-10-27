@@ -122,6 +122,7 @@ void init_vga() {
     vga_fb = calloc(FB_SZ, 1);
     add_mmio_map(FB_ADDR, FB_ADDR + FB_SZ, vga_fb, nullptr);        //updating vga is not handler's job
     init_screen();
-    SDL_CreateThread(vga_auto_update_thread, "vga auto update", nullptr);
+    SDL_CreateThread(vga_auto_update_thread, "vga auto update", NULL);
+
 }
 
