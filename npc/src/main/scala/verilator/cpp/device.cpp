@@ -64,6 +64,7 @@ int init_device()
     add_mmio_map(VGACTL_ADDR, VGACTL_ADDR + 8, vga_ctl, nullptr);
 
     vga_fb   = calloc(FB_SZ, 1);
+    add_mmio_map(FB_ADDR, FB_ADDR + FB_SZ, vga_fb, nullptr);
     init_vga();
 
     kbd_base = calloc(8, 1);

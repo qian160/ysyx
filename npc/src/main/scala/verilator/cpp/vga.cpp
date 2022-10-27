@@ -58,8 +58,9 @@ static void init_screen() {
     SDL_UpdateWindowSurface(window);
 }
 
-//called in device_update
-/*static inline */void update_screen() {
+//ne 11ed to be called periodly. we do that in cmd_s
+/*static inline */
+void update_screen() {
     SDL_UpdateTexture(texture, nullptr, fb, VGA_W * sizeof(uint32_t));
     //clear up the renderer buffer
     SDL_RenderClear(renderer);
