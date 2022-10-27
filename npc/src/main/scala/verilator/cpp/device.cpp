@@ -67,6 +67,5 @@ int init_device()
     *(uint64_t*)vga_ctl = VGA_H | VGA_W << 16;
     add_mmio_map(VGACTL_ADDR, VGACTL_ADDR + 8, vga_ctl, nullptr);
 
-
     return 0;
 }
