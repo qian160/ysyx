@@ -31,10 +31,10 @@ int vga_auto_update(void *p)
 {
   while(1)
   {
-    static uint64_t last = 0;
-    uint64_t now = get_time();
-    if (now - last < 10/*1000000 / 60*/) continue;
-    last = now;
+    //static uint64_t last = 0;
+    //uint64_t now = get_time();
+    //if (now - last < 10/*1000000 / 60*/) continue;
+    //last = now;
     IFDEF(CONFIG_HAS_VGA, update_screen());
 
   }
