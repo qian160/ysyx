@@ -3,11 +3,14 @@
 #include<functional>
 #include<time.h>
 
+//these devices are simple, so we just put them together here
 void * serial_port = nullptr;
 void * rtc_port    = nullptr;
-void * vga_ctl     = nullptr;
-void * vga_fb      = nullptr;
 void * kbd_base    = nullptr;
+
+//vga is a little complex. So we put these variables in that module instead of here to better modulize
+//extern void * vga_ctl;
+//extern void * vga_fb;
 
 using handler_t = void(uint64_t offset, uint64_t len , bool is_write);
 
@@ -58,17 +61,10 @@ int init_device()
     boot_time = getTime();
     add_mmio_map(RTC_ADDR, RTC_ADDR + 8, rtc_port, rtc_handler);
 
-    //0: height 2: width 4: sync
-    vga_ctl  = malloc(8);
-    *(uint64_t*)vga_ctl = VGA_H | VGA_W << 16;
-    add_mmio_map(VGACTL_ADDR, VGACTL_ADDR + 8, vga_ctl, nullptr);
-
-    vga_fb   = calloc(FB_SZ, 1);
-    init_vga();
-
     kbd_base = calloc(8, 1);
     add_mmio_map(KBD_ADDR, KBD_ADDR + 8, kbd_base, nullptr);
 
+    init_vga();
 
 
     return 0;

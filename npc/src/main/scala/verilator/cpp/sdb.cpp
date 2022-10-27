@@ -39,20 +39,24 @@ bool difftest()
 }
 
 extern uint64_t getTime();
-
+extern void vga_update_screen();
 extern uint64_t boot_time;
 
 int cmd_s(string steps){
     size_t n = atoi(steps.c_str());
-    //if n is not given, use the default case(step once)
     n = n? n: 1;
     while(n-- && !Verilated::gotFinish()){
         IFDEF(DIFFTEST_ENABLE, difftest_exec());                    //let ref execuate first, to get the new timer
         IFDEF(DIFFTEST_ENABLE, top -> io_timer_i = *npc_timer);
 
-        IFNDEF(DIFFTEST_ENABLE, top->io_timer_i = (getTime() - boot_time));
         tb.tick();
         IFDEF(DIFFTEST_ENABLE, assert(difftest()));
+        static uint64_t last = 0;
+        uint64_t now = getTime();
+        if (now - last >= 1000000 / 60) {
+            last = now;
+            vga_update_screen();
+        }
     }
     return 0;
 }
