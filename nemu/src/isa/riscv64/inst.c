@@ -21,7 +21,7 @@ word_t * getCSR(word_t addr){
     case MEPC:    return &cpu.mepc;
     case MCAUSE:  return &cpu.mcause;
     case MTVEC:   return &cpu.mtvec;
-    default: panic("bad csr addr, pc = %x\n", cpu.pc);
+    default: panic("bad csr addr, pc = %lx\n", cpu.pc);
   }
 }
 
