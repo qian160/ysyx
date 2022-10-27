@@ -26,7 +26,7 @@ static uint32_t *vgactl_port_base = NULL;
 static SDL_Renderer *renderer = NULL;
 static SDL_Texture *texture = NULL;
 
-void update_screen();
+static inline void update_screen();
 int vga_auto_update(void *p)
 {
   while(1)
