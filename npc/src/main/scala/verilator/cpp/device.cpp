@@ -51,8 +51,8 @@ static void rtc_handler(uint64_t offset, uint64_t len, bool is_write)
 int init_device()
 {
 
-    serial_port = malloc(1);
-    add_mmio_map(SERIAL_PORT, SERIAL_PORT + 1, serial_port, serial_handler);
+    serial_port = malloc(1);             //+1? 1 Byte is enough
+    add_mmio_map(SERIAL_PORT, SERIAL_PORT + 8, serial_port, serial_handler);
 
     rtc_port = malloc(8);
     boot_time = getTime();

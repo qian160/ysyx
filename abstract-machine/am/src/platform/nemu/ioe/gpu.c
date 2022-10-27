@@ -59,39 +59,24 @@ void __am_gpu_config(AM_GPU_CONFIG_T *cfg) {
 }
 
 void __am_gpu_fbdraw(AM_GPU_FBDRAW_T *ctl) {
-//  if (ctl->sync) {
-//    outl(SYNC_ADDR, ctl->sync);    //write to SYNC reg will call vga_update_screen, which will be called in every inst execuateion cycle
-//  }
+  if (ctl->sync) {
+    outl(SYNC_ADDR, 114514);    //write to SYNC reg will call update
+  }
   //TODO: improve the performance
-  uint32_t* fb     = (uint32_t *)(uintptr_t)FB_ADDR;
-  uint32_t* pixels = ctl->pixels;
+  //this seems to be consuming lots of computations......
+  uint32_t* fb __attribute__((unused))     = (uint32_t *)(uintptr_t)FB_ADDR;
+  uint32_t* pixels __attribute__((unused)) = ctl->pixels;
 
-  //if(ctl -> h == 0 || ctl -> w == 0)  return;
+  if(ctl -> h == 0 || ctl -> w == 0)  return;
 
   //choose the fastest one. This may improve performance in some cases
-  void (*drawOneRow)(void * dst, const void *src, size_t n) = ctl -> w % 4 == 0 ? pixelcpy16 : ctl -> w % 2 == 0 ? pixelcpy8 : pixelcpy4;
+  void (*bestFunc)(void * dst, const void *src, size_t n) = ctl -> w % 4 == 0 ? pixelcpy16 : ctl -> w % 2 == 0 ? pixelcpy8 : pixelcpy4;
 
   //draw row by row. write to vga frame buffer
-  //loop unroll
-  /*             x
-      ---------------------------------
-      |          .  ctl->w             |
-    y |...................             |
-      |          .       . ctl->h      | h
-      |          .........             |
-      ---------------------------------
-                      w
-  
-  */
-  //loop unroll seems not helpful here...
   for (int row = 0; row < ctl -> h; row++) {
-    drawOneRow(&fb[ctl -> x + (ctl -> y + row) * W], pixels, ctl -> w);
+    bestFunc(&fb[ctl -> x + (ctl -> y + row) * W], pixels, ctl -> w);
     pixels += ctl -> w;
   }
-  //printf("%d\n", ctl->sync);
-  if(ctl -> sync)  \
-    outl(SYNC_ADDR, ctl->sync);
-
 }
 
 void __am_gpu_status(AM_GPU_STATUS_T *status) {

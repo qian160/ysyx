@@ -139,14 +139,13 @@ static inline void pixelcpy16(void *dst, const void *src, size_t n) {
     return;
 }
 
-//user api
 void __am_gpu_fbdraw(AM_GPU_FBDRAW_T *ctl) {
 //  if (ctl->sync) {
 //    outl(SYNC_ADDR, ctl->sync);    //write to SYNC reg will call vga_update_screen, which will be called in every inst execuateion cycle
 //  }
     //TODO: improve the performance
     uint32_t* fb     = (uint32_t *)(uintptr_t)FB_ADDR;
-    uint32_t* pixels = (uint32_t*)ctl -> pixels;
+    uint32_t* pixels = (uint32_t*)ctl->pixels;
 
     //if(ctl -> h == 0 || ctl -> w == 0)  return;
 
@@ -154,17 +153,18 @@ void __am_gpu_fbdraw(AM_GPU_FBDRAW_T *ctl) {
     void (*drawOneRow)(void * dst, const void *src, size_t n) = ctl -> w % 4 == 0 ? pixelcpy16 : ctl -> w % 2 == 0 ? pixelcpy8 : pixelcpy4;
 
     //draw row by row. write to vga frame buffer
+    //loop unroll
     /*             x
         ---------------------------------
         |          .  ctl->w             |
-    y   |...................             |
+        y |...................             |
         |          .       . ctl->h      | h
         |          .........             |
         ---------------------------------
                         w
     
-    */
-    //loop unroll seems not helpful here...
+  */
+  //loop unroll seems not helpful here...
     for (int row = 0; row < ctl -> h; row++) {
         drawOneRow(&fb[ctl -> x + (ctl -> y + row) * VGA_W], pixels, ctl -> w);
         pixels += ctl -> w;
