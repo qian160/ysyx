@@ -40,6 +40,7 @@ VM_USER_CFLAGS = \
 VM_USER_LDLIBS = \
 	-ldl \
 	-lSDL2 \
+	-lpthread \
 
 # User .cpp files (from .cpp's on Verilator command line)
 VM_USER_CLASSES = \

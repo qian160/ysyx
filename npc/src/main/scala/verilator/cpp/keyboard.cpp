@@ -1,8 +1,9 @@
 #include<SDL2/SDL.h>
 #include"include/common.h"
 #include"include/device.h"
-#include<signal.h>
 #include<functional>
+#include<thread>
+#include<future>
 
 void * kbd_base;
 
@@ -55,7 +56,6 @@ static uint32_t key_dequeue() {
     if (key_f != key_r) {
         key = key_queue[key_f];
         key_f = (key_f + 1) % KEY_QUEUE_LEN;
-        kill(getpid(), SIGUSR1);
     }
     return key;
 }
@@ -67,20 +67,7 @@ void send_key(uint8_t scancode, bool is_keydown) {
     }
 }
 
-static void i8042_data_io_handler(uint64_t offset, int len, bool is_write) {
-    assert(!is_write);
-    assert(offset == 0);
-    *(uint32_t*)kbd_base = key_dequeue();
-}
-
-void init_i8042() {
-    kbd_base = calloc(8, 1);
-    add_mmio_map(KBD_ADDR, KBD_ADDR + 8, kbd_base, i8042_data_io_handler);
-    (*(uint64_t*)kbd_base) = _KEY_NONE;
-    init_keymap();
-}
-
-static SDL_mutex *key_queue_lock = NULL;
+static SDL_mutex *key_queue_lock = nullptr;
 
 static int event_thread(void *args) {
     SDL_Event event;
@@ -99,28 +86,43 @@ static int event_thread(void *args) {
                     key_queue[key_r] = am_code;
                     key_r = (key_r + 1) % KEY_QUEUE_LEN;
                     SDL_UnlockMutex(key_queue_lock);
-                    kill(getpid(), SIGUSR1);
                 }
-            break;
+                break;
             }
         }
     }
     return 0;
 }
 
-//trying to fetch an input(keyboard)
-void __am_input_keybrd(AM_INPUT_KEYBRD_T *kbd) {
-    int k = AM_KEY_NONE;
-    SDL_CreateThread(event_thread, "event thread", NULL);
-
-    key_queue_lock = SDL_CreateMutex();
-    SDL_LockMutex(key_queue_lock);
-    if (key_f != key_r) {
-        k = key_queue[key_f];
-        key_f = (key_f + 1) % KEY_QUEUE_LEN;
-    }
-    SDL_UnlockMutex(key_queue_lock);
-
-    kbd->keydown = (k & KEYDOWN_MASK ? true : false);
-    kbd->keycode = k & ~KEYDOWN_MASK;
+static void i8042_data_io_handler(uint64_t offset, int len, bool is_write) {
+    assert(!is_write);
+    assert(offset == 0);
+    *(uint32_t*)kbd_base = key_dequeue();
 }
+
+
+void init_i8042() {
+    kbd_base = calloc(8, 1);
+    add_mmio_map(KBD_ADDR, KBD_ADDR + 8, kbd_base, i8042_data_io_handler);
+    (*(uint64_t*)kbd_base) = _KEY_NONE;
+    init_keymap();
+    key_queue_lock = SDL_CreateMutex();
+    SDL_CreateThread(event_thread, "event thread", NULL);
+}
+
+
+//trying to fetch an input(keyboard)
+//checked in cmd_s also
+//user api?
+/*
+void __am_input_keybrd(AM_INPUT_KEYBRD_T *kbd) {
+    cout << "??" << endl;
+    kbd->keydown = 0;
+    kbd->keycode = AM_KEY_NONE;
+    uint32_t state = *(uint32_t*)kbd_base;
+    kbd -> keycode = state & ~KEYDOWN_MASK;
+    if ((state & KEYDOWN_MASK) != 0){
+        kbd->keydown = true;
+    }
+}
+*/

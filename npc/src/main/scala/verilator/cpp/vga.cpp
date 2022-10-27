@@ -45,8 +45,6 @@ static SDL_Texture  *texture  = nullptr;
 //
 static SDL_Surface  *surface  = nullptr;
 
-
-
 static void init_screen() {
     const char *title = "riscv64-npc";
     SDL_Init(SDL_INIT_VIDEO);
@@ -100,6 +98,21 @@ void SDL_Exit(){
     SDL_Quit();
 }
 
+extern uint64_t getTime();
+int vga_auto_update_thread(void * args)
+{
+    while(1)
+    {
+        static uint64_t last = 0;
+        uint64_t now = getTime();
+        if (now - last >= 1000000 / 60) {
+            last = now;
+            vga_update_screen();
+        }
+    }
+    return 114514;
+}
+
 void init_vga() {
     vga_ctl = calloc(8, 1);
     add_mmio_map(VGACTL_ADDR, VGACTL_ADDR + 8, vga_ctl, nullptr);   //set handler = update?
@@ -109,4 +122,6 @@ void init_vga() {
     vga_fb = calloc(FB_SZ, 1);
     add_mmio_map(FB_ADDR, FB_ADDR + FB_SZ, vga_fb, nullptr);        //updating vga is not handler's job
     init_screen();
+    SDL_CreateThread(vga_auto_update_thread, "vga auto update", nullptr);
 }
+

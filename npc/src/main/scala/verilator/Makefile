@@ -3,7 +3,7 @@
 HOME   = $(shell pwd)
 VSRC   = $(addprefix $(HOME)/verilog/, $(shell ls ./verilog | grep \.\*v))
 CPPSRC = $(addprefix $(HOME)/cpp/, $(shell ls ./cpp | grep cpp))
-VFLAGS = --cc --exe --trace -Wno-lint --build --top TOP -LDFLAGS -ldl -LDFLAGS -lSDL2
+VFLAGS = --cc --exe --trace -Wno-lint --build --top TOP -LDFLAGS -ldl -LDFLAGS -lSDL2 -LDFLAGS -lpthread
 
 DEPS   = $(CPPSRC:.cpp=.d)
 OBJS   = $(CPPSRC:.cpp=.o)	
