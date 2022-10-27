@@ -23,9 +23,8 @@
 */
 //frame buffer(in mmio space), or pixels. program just need to write into this space.
 //and when needed, renderer will extract the information from fb and sent it to screen
-
-extern void * vga_fb;
-extern void * vga_ctl;
+/*static*/ void *fb = nullptr;
+static uint32_t     vgactl_port_base[2];
 
 static SDL_Window *window = nullptr;
 //渲染器（SDL_Renderer, a buffer where temporarily holds the screen's image imformation but not updated to screen yet
@@ -61,7 +60,7 @@ static void init_screen() {
 
 //called in device_update
 /*static inline */void update_screen() {
-    SDL_UpdateTexture(texture, nullptr, vga_fb, VGA_W * sizeof(uint32_t));
+    SDL_UpdateTexture(texture, nullptr, fb, VGA_W * sizeof(uint32_t));
     //clear up the renderer buffer
     SDL_RenderClear(renderer);
 
@@ -71,10 +70,10 @@ static void init_screen() {
 }
 
 void vga_update_screen() {
-    uint32_t sync = ((uint32_t*)vga_ctl)[1];
+    uint32_t sync = vgactl_port_base[1];
     if (sync != 0) {
         update_screen();
-        ((uint32_t*)vga_ctl)[1] = 0;
+        vgactl_port_base[1] = 0;
     }
 }
 
@@ -98,9 +97,11 @@ void SDL_Exit(){
 }
 
 void init_vga() {
-    *(uint32_t*)vga_ctl = (VGA_W << 16) | VGA_H;
+    vgactl_port_base[0] = (VGA_W << 16) | VGA_H;
+
+    fb = malloc(FB_SZ);
     init_screen();
-    memset(vga_fb, 0, FB_SZ);
+    memset(fb, 0, FB_SZ);
 }
 
 static inline void pixelcpy4(void *dst, const void *src, size_t n) {
@@ -138,13 +139,14 @@ static inline void pixelcpy16(void *dst, const void *src, size_t n) {
     return;
 }
 
+//user api
 void __am_gpu_fbdraw(AM_GPU_FBDRAW_T *ctl) {
 //  if (ctl->sync) {
 //    outl(SYNC_ADDR, ctl->sync);    //write to SYNC reg will call vga_update_screen, which will be called in every inst execuateion cycle
 //  }
     //TODO: improve the performance
     uint32_t* fb     = (uint32_t *)(uintptr_t)FB_ADDR;
-    uint32_t* pixels = (uint32_t*)ctl->pixels;
+    uint32_t* pixels = (uint32_t*)ctl -> pixels;
 
     //if(ctl -> h == 0 || ctl -> w == 0)  return;
 
@@ -152,18 +154,17 @@ void __am_gpu_fbdraw(AM_GPU_FBDRAW_T *ctl) {
     void (*drawOneRow)(void * dst, const void *src, size_t n) = ctl -> w % 4 == 0 ? pixelcpy16 : ctl -> w % 2 == 0 ? pixelcpy8 : pixelcpy4;
 
     //draw row by row. write to vga frame buffer
-    //loop unroll
     /*             x
         ---------------------------------
         |          .  ctl->w             |
-        y |...................             |
+    y   |...................             |
         |          .       . ctl->h      | h
         |          .........             |
         ---------------------------------
                         w
     
-  */
-  //loop unroll seems not helpful here...
+    */
+    //loop unroll seems not helpful here...
     for (int row = 0; row < ctl -> h; row++) {
         drawOneRow(&fb[ctl -> x + (ctl -> y + row) * VGA_W], pixels, ctl -> w);
         pixels += ctl -> w;

@@ -7,7 +7,7 @@ VFLAGS = --cc --exe --trace -Wno-lint --build --top TOP -LDFLAGS -ldl -LDFLAGS -
 
 DEPS   = $(CPPSRC:.cpp=.d)
 OBJS   = $(CPPSRC:.cpp=.o)	
-CPPFLAGS    = -I./obj_dir -I./cpp/include
+CPPFLAGS    = -I./obj_dir -I./cpp/include #-std=c++17
 DIFFTEST    = $(NEMU_HOME)/build/riscv64-nemu-interpreter-so
  
 LLVM_FLAGS += $(shell llvm-config --ldflags)
@@ -28,7 +28,7 @@ COLOR_NONE  = \033[0m
 
 .cpp/%.o:.cpp/%.cpp
 	@echo [g++] $@
-	@g++ -c $@  #-o ./cpp/$@
+	@g++ -c $@ -std=c++17 #-o ./cpp/$@
 
 gen:
 	make -C ./asm gen

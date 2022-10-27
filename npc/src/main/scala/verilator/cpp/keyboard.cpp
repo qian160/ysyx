@@ -1,8 +1,12 @@
 #include<SDL2/SDL.h>
 #include"include/common.h"
 #include"include/device.h"
-/*
-// Note that this is not the standard
+#include<signal.h>
+
+#define concat_temp(x, y) x ## y
+#define concat(x, y) concat_temp(x, y)
+
+extern void * kbd_base;
 // f = _KEY_NAME
 #define KEYDOWN_MASK 0x8000
 
@@ -17,6 +21,8 @@ f(UP) f(DOWN) f(LEFT) f(RIGHT) f(INSERT) f(DELETE) f(HOME) f(END) f(PAGEUP) f(PA
 
 #define _KEY_NAME(k) _KEY_##k,
 
+#define MAP(x, y) x(y)
+
 enum {
     _KEY_NONE = 0,
     MAP(_KEYS, _KEY_NAME)
@@ -26,7 +32,7 @@ enum {
 static uint32_t keymap[256] = {};
 
 static void init_keymap() {
-  MAP(_KEYS, SDL_KEYMAP)
+    MAP(_KEYS, SDL_KEYMAP);
 }
 
 #define KEY_QUEUE_LEN 1024
@@ -34,48 +40,82 @@ static int key_queue[KEY_QUEUE_LEN] = {};
 static int key_f = 0, key_r = 0;    //front, rear
 
 static void key_enqueue(uint32_t am_scancode) {
-  key_queue[key_r] = am_scancode;
-  key_r = (key_r + 1) % KEY_QUEUE_LEN;
-  Assert(key_r != key_f, "key queue overflow!");
+    key_queue[key_r] = am_scancode;
+    key_r = (key_r + 1) % KEY_QUEUE_LEN;
+    Assert(key_r != key_f, "key queue overflow!");
 }
 
 static uint32_t key_dequeue() {
-  uint32_t key = _KEY_NONE;
-  if (key_f != key_r) {
-    key = key_queue[key_f];
-    key_f = (key_f + 1) % KEY_QUEUE_LEN;
-  }
-  return key;
+    uint32_t key = _KEY_NONE;
+    if (key_f != key_r) {
+        key = key_queue[key_f];
+        key_f = (key_f + 1) % KEY_QUEUE_LEN;
+        kill(getpid(), SIGUSR1);
+    }
+    return key;
 }
 
 void send_key(uint8_t scancode, bool is_keydown) {
-  if (keymap[scancode] != _KEY_NONE) {
-    uint32_t am_scancode = keymap[scancode] | (is_keydown ? KEYDOWN_MASK : 0);
-    key_enqueue(am_scancode);
-  }
+    if (keymap[scancode] != _KEY_NONE) {
+        uint32_t am_scancode = keymap[scancode] | (is_keydown ? KEYDOWN_MASK : 0);
+        key_enqueue(am_scancode);
+    }
 }
-#else // !CONFIG_TARGET_AM
-#define _KEY_NONE 0
-
-static uint32_t key_dequeue() {
-  AM_INPUT_KEYBRD_T ev = io_read(AM_INPUT_KEYBRD);
-  uint32_t am_scancode = ev.keycode | (ev.keydown ? KEYDOWN_MASK : 0);
-  return am_scancode;
-}
-#endif
-
-static uint32_t *i8042_data_port_base = NULL;
 
 static void i8042_data_io_handler(uint32_t offset, int len, bool is_write) {
-  assert(!is_write);
-  assert(offset == 0);
-  i8042_data_port_base[0] = key_dequeue();
+    assert(!is_write);
+    assert(offset == 0);
+    *(uint32_t*)kbd_base = key_dequeue();
 }
 
 void init_i8042() {
-  i8042_data_port_base = (uint32_t *)new_space(4);
-  i8042_data_port_base[0] = _KEY_NONE;
-  add_mmio_map("keyboard", CONFIG_I8042_DATA_MMIO, i8042_data_port_base, 4, i8042_data_io_handler);
-  init_keymap();
+    (*(uint64_t*)kbd_base) = _KEY_NONE;
+    init_keymap();
 }
-*/
+
+static SDL_mutex *key_queue_lock = NULL;
+
+#define XX(k) [SDL_SCANCODE_##k] = AM_KEY_##k,
+
+static int event_thread(void *args) {
+    SDL_Event event;
+
+    while (1) {
+        SDL_WaitEvent(&event);
+        switch (event.type) {
+            case SDL_QUIT: exit(0);
+            case SDL_KEYDOWN:
+            case SDL_KEYUP: {
+                SDL_Keysym k = event.key.keysym;
+                int keydown = event.key.type == SDL_KEYDOWN;
+                int scancode = k.scancode;
+                if (keymap[scancode] != 0) {
+                    int am_code = keymap[scancode] | (keydown ? KEYDOWN_MASK : 0);
+                    SDL_LockMutex(key_queue_lock);
+                    key_queue[key_r] = am_code;
+                    key_r = (key_r + 1) % KEY_QUEUE_LEN;
+                    SDL_UnlockMutex(key_queue_lock);
+                    kill(getpid(), SIGUSR1);
+                }
+            break;
+            }
+        }
+    }
+    return 0;
+}
+
+void __am_input_keybrd(AM_INPUT_KEYBRD_T *kbd) {
+    int k = AM_KEY_NONE;
+    SDL_CreateThread(event_thread, "event thread", NULL);
+
+    key_queue_lock = SDL_CreateMutex();
+    SDL_LockMutex(key_queue_lock);
+    if (key_f != key_r) {
+        k = key_queue[key_f];
+        key_f = (key_f + 1) % KEY_QUEUE_LEN;
+    }
+    SDL_UnlockMutex(key_queue_lock);
+
+    kbd->keydown = (k & KEYDOWN_MASK ? true : false);
+    kbd->keycode = k & ~KEYDOWN_MASK;
+}
