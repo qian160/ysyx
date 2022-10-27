@@ -38,8 +38,7 @@ static inline mmio_map* find_map_by_addr(uint64_t addr) {
 
 extern "C" {
 long long mmio_read(long long addr, int len){
-    cout << "mmio read:  addr = " << addr << endl;
-    cout << "len = " << len << endl;
+    //cout << "mmio read:  addr = " << addr << endl;
     //let chisel do the sext
     mmio_map * map = find_map_by_addr(addr);
     assert(map);
@@ -67,7 +66,7 @@ long long mmio_read(long long addr, int len){
 }
 
 void mmio_write(long long addr, int len, long long wdata){
-    cout << "mmio write:  addr = " << addr << endl;
+    //cout << "mmio write:  addr = " << addr << endl;
 	mmio_map * map = find_map_by_addr(addr);
     assert(map);
     assert(addr >= map -> begin && addr + len <= map -> end);

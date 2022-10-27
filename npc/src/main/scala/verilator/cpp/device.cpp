@@ -29,7 +29,7 @@ static inline void init_rtc()
 static void serial_handler(uint64_t offset, uint64_t len, bool is_write)
 {
     if(is_write){
-        cout << ((char*)serial_port)[0] << endl;
+        cout << ((char*)serial_port)[0];
     }
     else
     {
