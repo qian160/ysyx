@@ -2,6 +2,7 @@
 #include"include/sdb.h"
 #include"include/macro.h"
 #include<iterator>
+#include<SDL2/SDL.h>
 extern VTOP * top;
 
 enum { DIFFTEST_TO_DUT, DIFFTEST_TO_REF };
@@ -41,6 +42,7 @@ bool difftest()
 extern uint64_t getTime();
 extern void vga_update_screen();
 extern uint64_t boot_time;
+extern void send_key(uint8_t scancode, bool is_keydown);
 
 int cmd_s(string steps){
     size_t n = atoi(steps.c_str());
@@ -51,13 +53,33 @@ int cmd_s(string steps){
 
         tb.tick();
         IFDEF(DIFFTEST_ENABLE, assert(difftest()));
+#ifdef  HAS_DEVICE
         static uint64_t last = 0;
         uint64_t now = getTime();
         if (now - last >= 1000000 / 60) {
             last = now;
             vga_update_screen();
         }
+
+        SDL_Event event;
+        while (SDL_PollEvent(&event)) {
+            switch (event.type) {
+                case SDL_QUIT:  exit(0);
+
+                // If a key was pressed
+                case SDL_KEYDOWN: case SDL_KEYUP: {
+                    uint8_t k = event.key.keysym.scancode;
+                    bool is_keydown = (event.key.type == SDL_KEYDOWN);
+                    send_key(k, is_keydown);
+                    break;
+                }
+
+                default: break;
+            }
+        }
+#endif
     }
+
     return 0;
 }
 

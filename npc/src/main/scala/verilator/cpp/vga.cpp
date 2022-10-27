@@ -79,6 +79,7 @@ static inline void update_screen() {
     SDL_RenderCopy(renderer, texture, nullptr, nullptr);
     //将缓冲区中的内容展示到目标上，也就是 windows 窗口上。
     SDL_RenderPresent(renderer);
+    
 }
 
 //need to be called periodly. we do that in cmd_s

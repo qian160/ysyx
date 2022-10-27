@@ -6,7 +6,6 @@
 //these devices are simple, so we just put them together here
 void * serial_port = nullptr;
 void * rtc_port    = nullptr;
-void * kbd_base    = nullptr;
 
 //vga is a little complex. So we put these variables in that module instead of here to better modulize
 //extern void * vga_ctl;
@@ -16,6 +15,7 @@ using handler_t = void(uint64_t offset, uint64_t len , bool is_write);
 
 extern void add_mmio_map(uint64_t begin, uint64_t end, void *mem, std::function<handler_t> handler);
 extern void init_vga();
+extern void init_i8042();
 
 
 uint64_t getTime(){
@@ -61,10 +61,8 @@ int init_device()
     boot_time = getTime();
     add_mmio_map(RTC_ADDR, RTC_ADDR + 8, rtc_port, rtc_handler);
 
-    kbd_base = calloc(8, 1);
-    add_mmio_map(KBD_ADDR, KBD_ADDR + 8, kbd_base, nullptr);
-
     init_vga();
+    init_i8042();
 
     return 0;
 }
