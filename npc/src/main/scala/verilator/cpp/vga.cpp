@@ -37,20 +37,20 @@ static void * vga_ctl = nullptr;
 //#define CTL_H       (*(uint16_t*)vga_ctl)
 //#define CTL_SYNC    (*(uint32_t*)(((uint8_t*)(vga_ctl) + 4)))
 
-static SDL_Window   *window = nullptr;
+static SDL_Window   *window   = nullptr;
 //渲染器（SDL_Renderer, a buffer where temporarily holds the screen's image imformation but not updated to screen yet
 static SDL_Renderer *renderer = nullptr;
 //纹理（SDL_Texture）
-static SDL_Texture  *texture = nullptr;
+static SDL_Texture  *texture  = nullptr;
 //
-static SDL_Surface  *surface = nullptr;
+static SDL_Surface  *surface  = nullptr;
 
 
 
 static void init_screen() {
     const char *title = "riscv64-npc";
     SDL_Init(SDL_INIT_VIDEO);
-    window   = SDL_CreateWindow(title, SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, VGA_W, VGA_H, SDL_WINDOW_SHOWN);
+    window   = SDL_CreateWindow(title, SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, VGA_W * 2, VGA_H * 2, SDL_WINDOW_SHOWN);
     renderer = SDL_CreateRenderer(window, 0, SDL_RENDERER_ACCELERATED);
 /*
     SDL_CreateWindowAndRenderer(
@@ -73,7 +73,7 @@ static void init_screen() {
 
 static inline void update_screen() {
     SDL_UpdateTexture(texture, nullptr, vga_fb, VGA_W * sizeof(uint32_t));
-    //clear up the renderer buffer
+    //clear up the renderer buffe
     SDL_RenderClear(renderer);
 
     SDL_RenderCopy(renderer, texture, nullptr, nullptr);
