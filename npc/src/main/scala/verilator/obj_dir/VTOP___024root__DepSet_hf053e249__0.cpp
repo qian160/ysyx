@@ -2654,6 +2654,8 @@ VL_INLINE_OPT void VTOP___024root___sequent__TOP__0(VTOP___024root* vlSelf) {
                                                                & (IData)(vlSelf->TOP__DOT__ID__DOT___GEN_112)), vlSelf->__Vfunc_mmio_read__0__Vfuncout);
         vlSelf->TOP__DOT__Main_Memory__DOT__MMIO_RW_rdata 
             = vlSelf->__Vfunc_mmio_read__0__Vfuncout;
+    } else {
+        vlSelf->TOP__DOT__Main_Memory__DOT__MMIO_RW_rdata = 0ULL;
     }
     if ((1U & (IData)(vlSelf->TOP__DOT__Main_Memory__DOT__store_en))) {
         vlSelf->TOP__DOT__Main_Memory__DOT___GEN_16 
