@@ -28,9 +28,6 @@ menu "My config"
     default y
     help
 	This is very beautiful, but also consumes a lot of memory
-    config REF
-    bool "Use NEMU as a ref, just print some informations after inst's execuation"
-    default n
 
     menu "Trace"
 	config ITRACE_ENABLE
