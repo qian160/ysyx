@@ -5,18 +5,18 @@ import Util._
 
 class MEM extends Module{
     val io = IO(new Bundle{
-        val writeRfOp_i = Input(new WriteRfOp)
+        val writeOp_i   = Input(new WriteOp)
         val memOp_i     = Input(new MemOp)
         val loadVal_i   = Input(UInt(64.W))
 
-        val writeRfOp_o = Output(new WriteRfOp)
+        val writeOp_o   = Output(new WriteOp)
         val debug_i     = Input (new Debug_Bundle)
         val debug_o     = Output(new Debug_Bundle)
     })
     //little endian
 
-    val isLoad      = io.memOp_i.isLoad
-    val isStore     = io.memOp_i.isStore
+    val is_load      = io.memOp_i.is_load
+    val is_store     = io.memOp_i.is_store
 
     val sdata   =   io.memOp_i.sdata
     val addr    =   io.memOp_i.addr
@@ -43,8 +43,8 @@ class MEM extends Module{
         printf("[x%d]   <=  0x%x\n",io.writeRfOp_i.rd,  io.loadVal_i)
     }
 */
-    io.writeRfOp_o          :=  io.writeRfOp_i
-    io.writeRfOp_o.wdata    :=  Mux(isLoad, io.loadVal_i, io.writeRfOp_i.wdata)
+    io.writeOp_o            :=  io.writeOp_i
+    io.writeOp_o.rf.wdata   :=  Mux(is_load, io.loadVal_i, io.writeOp_i.rf.wdata)
 
 /*
     whne(isStore){

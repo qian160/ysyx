@@ -12,7 +12,11 @@
 #define XLEN  8
 #endif
 
+<<<<<<< HEAD
 //sp will be the argument directly past to handle, so no need to store
+=======
+//sp(x2) will be the argument directly past to handle, so no need to store
+>>>>>>> npc
 #define REGS(f) \
       f( 1)       f( 3) f( 4) f( 5) f( 6) f( 7) f( 8) f( 9) \
 f(10) f(11) f(12) f(13) f(14) f(15) f(16) f(17) f(18) f(19) \
@@ -33,9 +37,9 @@ f(30) f(31)
 __am_asm_trap:
   addi sp, sp, -CONTEXT_SIZE
 
-  MAP(REGS, PUSH)
+  MAP(REGS, PUSH)       # save the context
 
-  csrr t0, mcause
+  csrr t0, mcause       # need to comment this TO PASS DIFFTEST
   csrr t1, mstatus
   csrr t2, mepc
 
@@ -54,9 +58,9 @@ __am_asm_trap:
   LOAD t1, OFFSET_STATUS(sp)
   LOAD t2, OFFSET_EPC(sp)
   csrw mstatus, t1
-  csrw mepc, t2
+  csrw mepc, t2         # epc could be changed in that handler
 
-  MAP(REGS, POP)
+  MAP(REGS, POP)        # restore the context
 
   addi sp, sp, CONTEXT_SIZE
   mret

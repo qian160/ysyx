@@ -1,4 +1,3 @@
- 
 module DEBUG(
    input   exit,
    input   [63: 0]  pc,

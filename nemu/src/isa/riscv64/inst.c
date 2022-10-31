@@ -21,7 +21,11 @@ word_t * getCSR(word_t addr){
     case MEPC:    return &cpu.mepc;
     case MCAUSE:  return &cpu.mcause;
     case MTVEC:   return &cpu.mtvec;
+<<<<<<< HEAD
     default: panic("bad csr addr\n");
+=======
+    default: panic("bad csr addr, pc = %lx\n", cpu.pc);
+>>>>>>> npc
   }
 }
 
@@ -297,7 +301,11 @@ static int decode_exec(Decode *D) {
     }
   }
   R(0) = 0; // reset $zero to 0
+<<<<<<< HEAD
   //Assert( D-> dnpc != D -> pc, "dead loop at 0x%lx\n", cpu.pc);
+=======
+  Assert( D-> dnpc != D -> pc, "dead loop at 0x%lx\n", cpu.pc);
+>>>>>>> npc
   //IFDEF(CONFIG_REF, Log("\nwdata = 0x%lx\npc = 0x%8lx, inst = 0x%08x,  rd = %d\n", opcode == BRANCH? 0: R(rd), D->pc, inst, rd));
   return 0;
 }

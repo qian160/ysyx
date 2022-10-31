@@ -6,10 +6,10 @@ import AluOPT._
 
 class EX extends Module{
     val io = IO(new Bundle{
-        val decInfo_i     = Input(new DecodeInfo)
+        val decInfo_i   = Input(new DecodeInfo)
 
-        val writeRfOp_o   = Output(new WriteRfOp)
-        val memOp_o       = Output(new MemOp)
+        val writeOp_o   = Output(new WriteOp)
+        val memOp_o     = Output(new MemOp)
 
         val debug_i     = Input (new Debug_Bundle)
         val debug_o     = Output(new Debug_Bundle)
@@ -57,8 +57,8 @@ class EX extends Module{
         )
     )
 
-    io.writeRfOp_o        :=  io.decInfo_i.writeRfOp
-    io.writeRfOp_o.wdata  :=  aluRes
+    io.writeOp_o          :=  io.decInfo_i.writeOp
+    io.writeOp_o.rf.wdata :=  aluRes
 
     io.memOp_o            :=  io.decInfo_i.memOp
     io.memOp_o.addr       :=  aluRes

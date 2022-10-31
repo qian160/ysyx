@@ -34,6 +34,15 @@
         "trap.h": "c",
         "host.h": "c",
         "limits": "c",
+<<<<<<< HEAD
         "isa.h": "c"
+=======
+        "isa.h": "c",
+        "proc.h": "c",
+        "files.h": "c",
+        "fs.h": "c",
+        "syscall.h": "c",
+        "protocol.h": "c"
+>>>>>>> npc
     }
 }

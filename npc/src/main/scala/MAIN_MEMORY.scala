@@ -6,22 +6,6 @@ import MMIO_SPACE._
 import Util._
 
 class MAIN_MEMORY extends Module{
-    //to simplify call, all these functions' argument list should be the same
-    def serial_handler(is_write: Bool, addr: UInt, wdata: UInt): UInt = {
-        when(is_write & in_serial(addr)){
-            printf("%c", wdata)
-        }   //don't support read
-        0.U     //return value, useless here
-    }
-    def kbd_handler(is_write: Bool, addr: UInt, wdata: UInt) = {}
-    def rtc_handler(is_write: Bool, addr: UInt, wdata: UInt): UInt = {
-        val offset_     =   addr - RTC_BASE
-        val need_update =   (!is_write & offset_ === 4.U & in_rtc(addr))
-        //when(in_rtc(addr)){printf("past time: %d\n", rtc_past_time)}
-        rtc_past_time   :=  Mux(need_update, io.timer_i, rtc_past_time)
-        printf("past time = %d, offset = %d, need = %d\n", rtc_past_time, offset_, need_update);
-        rtc_past_time
-    }
 
     def bswap(a: UInt): UInt        =   Cat(a(7, 0), a(15, 8), a(23, 16), a(31, 24), a(39, 32), a(47, 40), a(55, 48), a(63, 56))
     def in_pmem(addr: UInt):Bool    =   (addr >= CONST.PMEM_START & addr <= CONST.PMEM_END)
@@ -36,31 +20,39 @@ class MAIN_MEMORY extends Module{
     })
 
     val rtc_past_time = RegInit(0.U(64.W))      //how much time has past
+    val vga_ctl       = RegInit(((400 << 16) | 300).U(64.W))
     //to make inst rom and data ram compatible and easy to initialize(loadMemoryFromFileInline), the width is set to be 32 bits
     val ram = Mem(1 << 20, UInt(32.W))  //hope this is enough
     loadMemoryFromFileInline(ram, "/home/s081/Downloads/ysyx-workbench/npc/src/main/scala/img_file")
     io.inst_o       :=  ram((io.pc_i - CONST.PC_INIT) >> 2)
     io.loadVal_o    :=  0.U
 
-    val is_store    =   io.memOp_i.isStore
+    val is_store    =   io.memOp_i.is_store
     val addr_i      =   io.memOp_i.addr
     val sdata       =   io.memOp_i.sdata
-    val test        =   RegInit(0.U(64.W))
+    val is_load     =   io.memOp_i.is_load
+    val length      =   io.memOp_i.length
+    val unsigned    =   io.memOp_i.unsigned
 
     rtc_past_time   :=  io.timer_i
 
+    val MMIO_RW = Module(new MMIO_RW)
+    MMIO_RW.io.addr     :=  addr_i
+    MMIO_RW.io.length   :=  io.memOp_i.length
+    MMIO_RW.io.wdata    :=  io.memOp_i.sdata
+    MMIO_RW.io.read_en  :=  0.U
+    MMIO_RW.io.write_en :=  0.U
+
+    val loadVal_temp =   Wire(UInt(64.W))   //without sext
     //start accessing memory
     when(in_pmem(io.memOp_i.addr)){
         /*
-        when(io.memOp_i.isLoad | io.memOp_i.isStore){
+        when(io.memOp_i.is_load | io.memOp_i.is_store){
             printf("addr %x is in pmem\n", io.memOp_i.addr)
         }*/
         val addr        =   (io.memOp_i.addr - CONST.PMEM_START)  >> 2
-        val unsigned    =   io.memOp_i.unsigned
-        val is_store    =   io.memOp_i.isStore
-        val length      =   io.memOp_i.length
 
-        //assuming that the address is aligned, little endian
+        //assuming that the address is aligned, little endian?
         val dword       =   Cat(ram(addr + 1.U), ram(addr))     //the bits are already stored in small endian
 
         val offset  =   io.memOp_i.addr(1, 0)   //mod by 4, get the byte offset in the 32-bit block
@@ -79,10 +71,10 @@ class MAIN_MEMORY extends Module{
         //data is stored with little endian, for example, ram(0)(7, 0) holds the 1st inst's lsb, and ram(0)(31,24) holds the msb
         //but that doesn't seem to be important now. Maybe loading value from section .data will need this
         val byteMask    =   MuxLookup(length, 0.U, Seq(
-            0.U ->  "h00000000000000ff".U,
-            1.U ->  "h000000000000ffff".U,
-            2.U ->  "h00000000ffffffff".U,
-            3.U ->  "hffffffffffffffff".U,
+            1.U ->  "h00000000000000ff".U,
+            2.U ->  "h000000000000ffff".U,
+            4.U ->  "h00000000ffffffff".U,
+            8.U ->  "hffffffffffffffff".U,
         ))
 
         val mask    =   byteMask  << (offset << 3)
@@ -94,27 +86,13 @@ class MAIN_MEMORY extends Module{
             1.set byteMask to 0x00ff000000000000, then use the AND operation to extract the bits there
             2.the bits we get at step 1 is actually weighted(not starting at lsb, the right side), we need to recover it by shifting back
         */
-        val loadVal_temp   =    (dword & mask) >> (offset << 3)       //extract the bits by shifting and masking, then shift back. Not SEXT
-        val loadVal        =    MuxLookup(length, 0.U, Seq(
-            0.U ->  Mux(unsigned, loadVal_temp, SEXT(loadVal_temp, 8,  64)),
-            1.U ->  Mux(unsigned, loadVal_temp, SEXT(loadVal_temp, 16, 64)),
-            2.U ->  Mux(unsigned, loadVal_temp, SEXT(loadVal_temp, 32, 64)),
-            3.U ->  loadVal_temp,
-        ))
+        loadVal_temp    :=    (dword & mask) >> (offset << 3)       //extract the bits by shifting and masking, then shift back. Without SEXT
 
-        io.loadVal_o      :=   loadVal
         val store_en       =   Wire(UInt(8.W))
         val store_en_lut   =   VecInit("b00000001".U, "b00000011".U, "b00001111".U, "b11111111".U)
-        store_en          :=   store_en_lut(length)     //which bytes in the dword block need to be updated
+        store_en          :=   store_en_lut(OHToUInt(length))     //which bytes in the dword block need to be updated
         //maybe lut is faster, we don't need to calculate every time
         //val store_en   =   ((1.U << (1.U << length)) - 1.U)
-
-        val test0 = Wire(UInt(32.W))
-        val test1 = Wire(UInt(32.W))
-        test0   :=  (ram(0))
-        test1   :=  (ram(1))
-        dontTouch(test0)
-        dontTouch(test1)
 
         //if the address is unaligned, this may not work correctly..
         //store with small endian
@@ -131,22 +109,18 @@ class MAIN_MEMORY extends Module{
             ram(addr + 1.U)     :=  temp.asTypeOf(UInt())(63, 32)
             ram(addr)           :=  temp.asTypeOf(UInt())(31, 0)
         }
-    }.elsewhen(in_serial(addr_i)){
-        when(is_store){printf("%c", sdata)}
-    }.elsewhen(in_rtc(addr_i)){
-        //timer is updated by cpp
-        //io.loadVal_o    :=  rtc_past_time     //this is okay but will delay a cycle and fails difftest
-        io.loadVal_o    :=  io.timer_i
+    }.otherwise{
+        //SEXT?
+        MMIO_RW.io.read_en  :=  is_load
+        MMIO_RW.io.write_en :=  is_store
+        loadVal_temp    :=  MMIO_RW.io.rdata
     }
-    
-    /*
-    .otherwise{
-        io.loadVal_o    :=  PriorityMux(Seq(
-            (in_serial(addr_i),     serial_handler(is_store, addr_i, sdata)),
-            (in_rtc(addr_i),        rtc_handler(is_store, addr_i, sdata)),
-            (true.B,                0.U)
-        ))
-    }
-    */
+
+    io.loadVal_o    :=  MuxLookup(length, 0.U, Seq(
+        1.U ->  Mux(unsigned, loadVal_temp, SEXT(loadVal_temp, 8,  64)),
+        2.U ->  Mux(unsigned, loadVal_temp, SEXT(loadVal_temp, 16, 64)),
+        4.U ->  Mux(unsigned, loadVal_temp, SEXT(loadVal_temp, 32, 64)),
+        8.U ->  loadVal_temp,
+    ))
 
 }
