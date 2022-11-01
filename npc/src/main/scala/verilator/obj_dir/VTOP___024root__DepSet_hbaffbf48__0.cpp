@@ -14,89 +14,86 @@ VL_INLINE_OPT void VTOP___024root___combo__TOP__0(VTOP___024root* vlSelf) {
     // Body
     vlSelf->TOP__DOT__IF__DOT___GEN_0 = ((IData)(vlSelf->reset)
                                           ? 0x80000000ULL
-                                          : (((7U != (IData)(vlSelf->TOP__DOT__ID__DOT__decRes_0)) 
-                                              & ((1U 
-                                                  == (IData)(vlSelf->TOP__DOT__ID__DOT__decRes_0))
+                                          : (((IData)(vlSelf->TOP__DOT__ID_io_stall_req_o)
+                                               ? 1U
+                                               : 0U)
+                                              ? (QData)((IData)(vlSelf->TOP__DOT__IF__DOT__pc))
+                                              : ((IData)(vlSelf->TOP__DOT__ID_io_decInfo_o_branchOp_happen)
                                                   ? 
-                                                 (0x67U 
-                                                  == 
-                                                  (0x7fU 
-                                                   & vlSelf->TOP__DOT__Main_Memory__DOT__ram_io_inst_o_MPORT_data))
-                                                  : (IData)(vlSelf->TOP__DOT__ID__DOT___GEN_83)))
-                                              ? ((7U 
-                                                  == (IData)(vlSelf->TOP__DOT__ID__DOT__decRes_0))
-                                                  ? 0ULL
-                                                  : 
-                                                 ((1U 
+                                                 ((7U 
                                                    == (IData)(vlSelf->TOP__DOT__ID__DOT__decRes_0))
-                                                   ? 
-                                                  (vlSelf->TOP__DOT__Regfile_io_readRes_o_rs1Val 
-                                                   + vlSelf->TOP__DOT__ID__DOT__immI)
+                                                   ? 0ULL
                                                    : 
-                                                  ((0U 
+                                                  ((1U 
                                                     == (IData)(vlSelf->TOP__DOT__ID__DOT__decRes_0))
-                                                    ? 0ULL
+                                                    ? 
+                                                   (vlSelf->TOP__DOT__ID__DOT__rs1Val 
+                                                    + vlSelf->TOP__DOT__ID__DOT___io_decInfo_o_aluOp_src2_T_4)
                                                     : 
-                                                   ((3U 
+                                                   ((0U 
                                                      == (IData)(vlSelf->TOP__DOT__ID__DOT__decRes_0))
-                                                     ? 
-                                                    ((QData)((IData)(vlSelf->TOP__DOT__IF__DOT__pc)) 
-                                                     + 
-                                                     (((- (QData)((IData)(
-                                                                          (1U 
-                                                                           & ((IData)(vlSelf->TOP__DOT__ID__DOT___io_decInfo_o_branchOp_newPC_T_13) 
-                                                                              >> 0xcU))))) 
-                                                       << 0xdU) 
-                                                      | (QData)((IData)(vlSelf->TOP__DOT__ID__DOT___io_decInfo_o_branchOp_newPC_T_13))))
+                                                     ? 0ULL
                                                      : 
-                                                    ((2U 
+                                                    ((3U 
                                                       == (IData)(vlSelf->TOP__DOT__ID__DOT__decRes_0))
-                                                      ? 0ULL
+                                                      ? 
+                                                     (vlSelf->TOP__DOT__IF_ID__DOT__pc 
+                                                      + 
+                                                      (((- (QData)((IData)(
+                                                                           (1U 
+                                                                            & ((IData)(vlSelf->TOP__DOT__ID__DOT___io_decInfo_o_branchOp_newPC_T_13) 
+                                                                               >> 0xcU))))) 
+                                                        << 0xdU) 
+                                                       | (QData)((IData)(vlSelf->TOP__DOT__ID__DOT___io_decInfo_o_branchOp_newPC_T_13))))
                                                       : 
-                                                     ((4U 
+                                                     ((2U 
                                                        == (IData)(vlSelf->TOP__DOT__ID__DOT__decRes_0))
-                                                       ? 
-                                                      ((QData)((IData)(vlSelf->TOP__DOT__IF__DOT__pc)) 
-                                                       + 
-                                                       (((- (QData)((IData)(
-                                                                            (1U 
-                                                                             & (vlSelf->TOP__DOT__ID__DOT___io_decInfo_o_branchOp_newPC_T_24 
-                                                                                >> 0x14U))))) 
-                                                         << 0x15U) 
-                                                        | (QData)((IData)(vlSelf->TOP__DOT__ID__DOT___io_decInfo_o_branchOp_newPC_T_24))))
+                                                       ? 0ULL
                                                        : 
-                                                      ((5U 
+                                                      ((4U 
                                                         == (IData)(vlSelf->TOP__DOT__ID__DOT__decRes_0))
-                                                        ? 0ULL
+                                                        ? 
+                                                       (vlSelf->TOP__DOT__IF_ID__DOT__pc 
+                                                        + 
+                                                        (((- (QData)((IData)(
+                                                                             (1U 
+                                                                              & (vlSelf->TOP__DOT__ID__DOT___io_decInfo_o_branchOp_newPC_T_24 
+                                                                                >> 0x14U))))) 
+                                                          << 0x15U) 
+                                                         | (QData)((IData)(vlSelf->TOP__DOT__ID__DOT___io_decInfo_o_branchOp_newPC_T_24))))
                                                         : 
-                                                       ((6U 
+                                                       ((5U 
                                                          == (IData)(vlSelf->TOP__DOT__ID__DOT__decRes_0))
-                                                         ? 
-                                                        ((0U 
-                                                          != 
-                                                          (7U 
-                                                           & (vlSelf->TOP__DOT__Main_Memory__DOT__ram_io_inst_o_MPORT_data 
-                                                              >> 0xcU)))
-                                                          ? 0ULL
-                                                          : 
-                                                         ((2U 
-                                                           == 
-                                                           (3U 
-                                                            & (vlSelf->TOP__DOT__Main_Memory__DOT__ram_io_inst_o_MPORT_data 
-                                                               >> 0x14U)))
-                                                           ? vlSelf->TOP__DOT__Csr__DOT__mepc
+                                                         ? 0ULL
+                                                         : 
+                                                        ((6U 
+                                                          == (IData)(vlSelf->TOP__DOT__ID__DOT__decRes_0))
+                                                          ? 
+                                                         ((0U 
+                                                           != 
+                                                           (7U 
+                                                            & (vlSelf->TOP__DOT__IF_ID__DOT__inst 
+                                                               >> 0xcU)))
+                                                           ? 0ULL
                                                            : 
-                                                          ((0U 
+                                                          ((2U 
                                                             == 
                                                             (3U 
-                                                             & (vlSelf->TOP__DOT__Main_Memory__DOT__ram_io_inst_o_MPORT_data 
+                                                             & (vlSelf->TOP__DOT__IF_ID__DOT__inst 
                                                                 >> 0x14U)))
-                                                            ? vlSelf->TOP__DOT__Csr__DOT__mtvec
-                                                            : 0ULL)))
-                                                         : 0ULL))))))))
-                                              : (QData)((IData)(
-                                                                ((IData)(4U) 
-                                                                 + vlSelf->TOP__DOT__IF__DOT__pc)))));
+                                                            ? vlSelf->TOP__DOT__Csr__DOT__mepc
+                                                            : 
+                                                           ((0U 
+                                                             == 
+                                                             (3U 
+                                                              & (vlSelf->TOP__DOT__IF_ID__DOT__inst 
+                                                                 >> 0x14U)))
+                                                             ? vlSelf->TOP__DOT__Csr__DOT__mtvec
+                                                             : 0ULL)))
+                                                          : 0ULL))))))))
+                                                  : (QData)((IData)(
+                                                                    ((IData)(4U) 
+                                                                     + vlSelf->TOP__DOT__IF__DOT__pc))))));
 }
 
 void VTOP___024root___sequent__TOP__0(VTOP___024root* vlSelf);

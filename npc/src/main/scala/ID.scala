@@ -12,32 +12,61 @@ class ID extends Module{
     def imm_B(inst: UInt) = SEXT(Cat(inst(31), inst(7), inst(30,25), inst(11,8), 0.U(1.W)), 13, 64)
 
     val io = IO(new Bundle{
-        val inst_i        =   Input(UInt(32.W))
-        val pc_i          =   Input(UInt(64.W))
-        val rfData_i      =   Input(new RegSource)
-        val csrData_i     =   Input(new CsrData)
+        val inst_i      =   Input(UInt(32.W))
+        val fwd_i       =   Input(new Forward)
+        val pc_i        =   Input(UInt(64.W))
+        val rfData_i    =   Input(new RegSource)
+        val csrData_i   =   Input(new CsrData)
 
-        val readOp_o      =   Output(new ReadOp)
-        val decInfo_o     =   Output(new DecodeInfo)
+        val readOp_o    =   Output(new ReadOp)
+        val decInfo_o   =   Output(new DecodeInfo)
+        val stall_req_o =   Output(Bool())
+        val flush_req_o =   Output(Bool())
 
-        val debug_o       =   Output(new Debug_Bundle)
+        val debug_o     =   Output(new Debug_Bundle)
     })
-    //to make test easier, we use cpp to load inst, not verilog or chisel
+    //alias
+    val inst     =  io.inst_i
+    val pc       =  io.pc_i
+    val rs1      =  inst(19, 15)
+    val rs2      =  inst(24, 20)
+    val csrAddr  =  inst(31, 20)
+    val rd       =  inst(11, 7)
+    //bypass
+    val rs1Val   = PriorityMux(Seq(
+        (rs1 === 0.U,                  0.U),
+        (rs1 === io.fwd_i.ex.rf.rd,    io.fwd_i.ex.rf.wdata),
+        (rs1 === io.fwd_i.mem.rf.rd,   io.fwd_i.mem.rf.wdata),
+        (rs1 === io.fwd_i.wb.rf.rd,    io.fwd_i.wb.rf.wdata),
+        (true.B,                       io.rfData_i.rs1Val)
+    ))
+    val rs2Val   = PriorityMux(Seq(
+        (rs2 === 0.U,                  0.U),
+        (rs2 === io.fwd_i.ex.rf.rd,    io.fwd_i.ex.rf.wdata),
+        (rs2 === io.fwd_i.mem.rf.rd,   io.fwd_i.mem.rf.wdata),
+        (rs2 === io.fwd_i.wb.rf.rd,    io.fwd_i.wb.rf.wdata),
+        (true.B,                       io.rfData_i.rs2Val)
+    ))
 
-    val inst     = io.inst_i
-    val pc       = /*RegNext*/(io.pc_i)
+    val csrVal   = PriorityMux(Seq(
+        (csrAddr === io.fwd_i.wb.csr.addr,      io.fwd_i.wb.csr.wdata),
+        (csrAddr === io.fwd_i.mem.csr.addr,     io.fwd_i.mem.csr.wdata),
+        (csrAddr === io.fwd_i.ex.csr.addr,      io.fwd_i.ex.csr.wdata),
+        (true.B,                                io.csrData_i.csrVal)
+    ))
+    //sometimes the imm field will be interpreted as rs1 and rs2 and unexpectedly triggared the stall
+    //io.stall_req_o    :=  (io.fwd_i.prev_is_load & (io.fwd_i.prev_rd === rs1 | io.fwd_i.prev_rd === rs2))
+    io.flush_req_o    :=  io.decInfo_o.branchOp.happen
+    io.stall_req_o    :=  0.U
+    val prev_is_load    =   io.fwd_i.prev_is_load
+    val prev_rd         =   io.fwd_i.prev_rd
 
     val decRes   = ListLookup(inst, DecTable.defaultDec, DecTable.decMap)     //returns list(instType,opt)
     val instType = decRes(DecTable.TYPE)    //R I S B J U SYS
     val op       = decRes(DecTable.OPT)     //sometimes useless,like InstType.B
 
-    val rs1Val   = io.rfData_i.rs1Val
-    val rs2Val   = io.rfData_i.rs2Val
-    val csrVal   = io.csrData_i.csrVal
-
     val opcode  =   inst(6, 0)
     val fct3    =   inst(14, 12)
-    val csrAddr =   inst(31, 20)
 
     //default
     io.decInfo_o                    := 0.U.asTypeOf(new DecodeInfo)
@@ -54,13 +83,15 @@ class ID extends Module{
 
     io.debug_o.pc       :=  pc
     io.debug_o.inst     :=  inst
-    //io.debug_o.gpr      :=  io.rfData.gpr
-    io.debug_o.a0       :=  io.rfData_i.a0
+    io.debug_o.a0       :=  PriorityMux(Seq(
+        (10.U === io.fwd_i.ex.rf.rd,    io.fwd_i.ex.rf.wdata),
+        (10.U === io.fwd_i.mem.rf.rd,   io.fwd_i.mem.rf.wdata),
+        (10.U === io.fwd_i.wb.rf.rd,    io.fwd_i.wb.rf.wdata),
+        (true.B,                       io.rfData_i.a0)
+    ))
     io.debug_o.exit     :=  false.B
 
     val immI = imm_I(inst)
-    dontTouch(immI)
-
     switch(instType){//R I U S B J
         is(InstType.BAD){
             io.debug_o.exit   :=  inst.andR     //not nop
@@ -79,15 +110,18 @@ class ID extends Module{
 
             io.decInfo_o.memOp.unsigned   :=  fct3(2)     //0 to 3 unsigned, signed when fct3 >= 4
 
+            io.stall_req_o  :=  prev_is_load & (prev_rd  === rs1)
+
         }
         is(InstType.R){
             io.decInfo_o.aluOp.src1       :=  rs1Val
             io.decInfo_o.aluOp.src2       :=  rs2Val
             io.decInfo_o.writeOp.rf.wen   :=  true.B
 
-            //io.decInfo.aluOp.src1   :=  
+            io.stall_req_o  :=  prev_is_load & (prev_rd  === rs1 | prev_rd === rs2)
         }
         is(InstType.B){
+            io.decInfo_o.writeOp.rf.rd    := 0.U
             io.decInfo_o.branchOp.newPC   :=  pc + imm_B(inst)
             io.decInfo_o.branchOp.happen  :=  MuxLookup(fct3, false.B, Seq(
                 Fct3.BEQ     ->  (rs1Val  === rs2Val),
@@ -97,6 +131,8 @@ class ID extends Module{
                 Fct3.BLTU    ->  (rs1Val   <  rs2Val),
                 Fct3.BGEU    ->  (rs1Val   >= rs2Val),
             ))
+
+            io.stall_req_o  :=  prev_is_load & (prev_rd  === rs1 | prev_rd === rs2)
         }
         is(InstType.U){     //lui auipc
             io.decInfo_o.aluOp.src1       :=  Mux(opcode === Opcode.LUI, 0.U, pc)
@@ -119,6 +155,8 @@ class ID extends Module{
             //use ALU to calculate the address
             io.decInfo_o.aluOp.src1       :=  rs1Val
             io.decInfo_o.aluOp.src2       :=  imm_S(inst)
+
+            io.stall_req_o  :=  prev_is_load & prev_rd  === rs1
         }
 
         is(InstType.SYS){           //csr ecall ebreak mret

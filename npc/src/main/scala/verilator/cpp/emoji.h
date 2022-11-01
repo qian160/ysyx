@@ -1,0 +1,23 @@
+#include<unordered_map>
+static std::unordered_map<std::string, std::string> emojis {
+	{"smile", 			"😀"},
+	{"sweat",			"😅"},
+	{"laugh", 			"😄"},
+	{"cool",  			"😎"},
+	{"crying", 			"😭"},
+	{"laugh_tear",		"🤣"},
+	{"cold",			"🥶"},
+	{"angry",			"😡"},
+	{"smile_hearts",	"🥰"},
+	{"hot",				"🥵"},
+	{"party",			"🥳"},
+	{"dizzy",			"😵"},
+	{"tired",			"😫"},
+	{"screaming",		"😱"},
+	{"sleepy",			"😴"},
+	{"poo",				"💩"},
+	{"alien",			"👽"},
+	{"robot",			"🤖"},
+	{"drooling",		"🤤"},
+	{"clown",			"🤡"},
+};

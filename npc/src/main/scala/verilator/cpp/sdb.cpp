@@ -99,7 +99,6 @@ int cmd_h(string cmd){
     }
     return 0;
 }
-
 int cmd_q (string arg){
     /*      
         iostream's iterator, treats the stream as an array.
@@ -130,5 +129,18 @@ int cmd_i(string arg) {
     cout << _pink << "mcause:    " << top->io_csrData_cause << normal << endl;
     cout << _pink << "mstatus:   " << top->io_csrData_status << normal << endl;
     cout << endl;
+    return 0;
+}
+
+int cmd_b(string arg){
+    uint64_t addr;
+    sscanf(arg.c_str(), "%lx", &addr);
+    while(1)
+    {
+        if(top -> io_pc_o == addr)
+            break;
+        cout << "pc = " << top -> io_pc_o << endl;
+        cmd_s("1");
+    }
     return 0;
 }

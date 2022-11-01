@@ -3,7 +3,6 @@
 #include"include/device.h"
 #include<functional>
 #include<memory>
-#include<thread>
 
 using handler_t = void(uint64_t offset, uint64_t len , bool is_write);
 extern void add_mmio_map(uint64_t begin, uint64_t end, void *mem, std::function<handler_t> handler);
@@ -100,7 +99,6 @@ void SDL_Exit(){
 }
 
 extern uint64_t getTime();
-
 int vga_auto_update_thread(void * args)
 {
     while(1)

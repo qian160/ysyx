@@ -32,7 +32,6 @@ class MAIN_MEMORY extends Module{
     val is_load     =   io.memOp_i.is_load
     val length      =   io.memOp_i.length
     val unsigned    =   io.memOp_i.unsigned
-    val loadVal_temp =   Wire(UInt(64.W))   //without sext
 
     rtc_past_time   :=  io.timer_i
 
@@ -43,6 +42,7 @@ class MAIN_MEMORY extends Module{
     MMIO_RW.io.read_en  :=  0.U
     MMIO_RW.io.write_en :=  0.U
 
+    val loadVal_temp =   Wire(UInt(64.W))   //without sext
     //start accessing memory
     when(in_pmem(io.memOp_i.addr)){
         /*

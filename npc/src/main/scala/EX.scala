@@ -6,17 +6,19 @@ import AluOPT._
 
 class EX extends Module{
     val io = IO(new Bundle{
-        val decInfo_i   = Input(new DecodeInfo)
+        val decInfo_i   =   Input(new DecodeInfo)
 
-        val writeOp_o   = Output(new WriteOp)
-        val memOp_o     = Output(new MemOp)
+        val writeOp_o   =   Output(new WriteOp)
+        val memOp_o     =   Output(new MemOp)
+        val ex_fwd_o    =   Output(new Forward_Info)
 
-        val debug_i     = Input (new Debug_Bundle)
-        val debug_o     = Output(new Debug_Bundle)
+        val debug_i     =   Input (new Debug_Bundle)
+        val debug_o     =   Output(new Debug_Bundle)
     })
 
     val src1 = io.decInfo_i.aluOp.src1
     val src2 = io.decInfo_i.aluOp.src2
+
     val aluRes  = Wire(UInt(64.W))
     aluRes  := MuxLookup(io.decInfo_i.aluOp.opt, src1 + src2, Seq(
         SUB     ->  (src1 - src2),
@@ -63,15 +65,13 @@ class EX extends Module{
     io.memOp_o            :=  io.decInfo_i.memOp
     io.memOp_o.addr       :=  aluRes
 
-    //printf("alures = %x\n", aluRes)
-/*
-    switch(io.decInfo.instType){
-        is(InstType.I){
-            io.writeRfOp.wen  = true.B
+    //disable bypass at load
+    io.ex_fwd_o.rf.rd       :=  Mux(io.memOp_o.is_load, 0.U,  io.decInfo_i.writeOp.rf.rd)
+    io.ex_fwd_o.rf.wdata    :=  aluRes
 
-        }
-    }
-*/
+    io.ex_fwd_o.csr.addr    :=  io.writeOp_o.csr.waddr
+    io.ex_fwd_o.csr.wdata   :=  io.writeOp_o.csr.wdata
+
     io.debug_o  :=  io.debug_i
 
 }

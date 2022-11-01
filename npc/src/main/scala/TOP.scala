@@ -27,7 +27,7 @@ class TOP extends Module{
         val src2      = Output(UInt(64.W))
 
     })
-
+    //comb logic, pipeline stages
     val IF          =   Module(new IF)
     val ID          =   Module(new ID)
     val EX          =   Module(new EX)
@@ -36,31 +36,58 @@ class TOP extends Module{
     val Regfile     =   Module(new Regfile)
     val Csr         =   Module(new CSR)
     val Main_Memory =   Module(new MAIN_MEMORY)
+    val Control     =   Module(new CONTROL)
+
+    //pipeline registers
+    val IF_ID   =   Module(new IF_ID)
+    val ID_EX   =   Module(new ID_EX)
+    val EX_MEM  =   Module(new EX_MEM)
+    val MEM_WB  =   Module(new MEM_WB)
 
     IF.io.branchOp_i    :=  ID.io.decInfo_o.branchOp
     IF.io.inst_i        :=  Main_Memory.io.inst_o
+
+    IF_ID.io.inst_i     :=  IF.io.inst_o
+    IF_ID.io.pc_i       :=  IF.io.pc_o
 
     Main_Memory.io.pc_i     :=  IF.io.pc_o
     Main_Memory.io.timer_i  :=  io.timer_i
     Main_Memory.io.memOp_i  :=  MEM.io.memOp_i
 
-    ID.io.inst_i      :=  IF.io.inst_o
-    ID.io.pc_i        :=  IF.io.pc_o
+    ID.io.inst_i      :=  IF_ID.io.inst_o
+    ID.io.pc_i        :=  IF_ID.io.pc_o
     ID.io.csrData_i   :=  Csr.io.csrData_o
     ID.io.rfData_i    :=  Regfile.io.readRes_o
+    //bypass
+    ID.io.fwd_i.ex    :=  EX.io.ex_fwd_o
+    ID.io.fwd_i.mem   :=  MEM.io.mem_fwd_o
+    ID.io.fwd_i.wb    :=  WB.io.wb_fwd_o
+
+    ID.io.fwd_i.prev_is_load    :=  EX.io.memOp_o.is_load
+    ID.io.fwd_i.prev_rd         :=  EX.io.writeOp_o.rf.rd
+
+    ID_EX.io.debug_i    :=  ID.io.debug_o
+    ID_EX.io.decInfo_i  :=  ID.io.decInfo_o
 
     Regfile.io.readRfOp_i     :=  ID.io.readOp_o
     Regfile.io.writeRfOp_i    :=  WB.io.writeOp_o.rf
     //read
     Csr.io.csrAddr_i    :=  ID.io.readOp_o.csrAddr
     Csr.io.writeOp_i    :=  WB.io.writeOp_o.csr
-    EX.io.decInfo_i     :=  ID.io.decInfo_o
 
-    MEM.io.writeOp_i    :=  EX.io.writeOp_o
-    MEM.io.memOp_i      :=  EX.io.memOp_o
+    EX.io.decInfo_i     :=  ID_EX.io.decInfo_o
+
+    EX_MEM.io.writeOp_i :=  EX.io.writeOp_o
+    EX_MEM.io.memOp_i   :=  EX.io.memOp_o
+    EX_MEM.io.debug_i   :=  EX.io.debug_o
+
+    MEM.io.writeOp_i    :=  EX_MEM.io.writeOp_o
+    MEM.io.memOp_i      :=  EX_MEM.io.memOp_o
     MEM.io.loadVal_i    :=  Main_Memory.io.loadVal_o
 
-    WB.io.writeOp_i     :=  MEM.io.writeOp_o
+    MEM_WB.io.writeOp_i :=  MEM.io.writeOp_o
+
+    WB.io.writeOp_i     :=  MEM_WB.io.writeOp_o
 
     //TOP module's output, for debug use and also to avoid dce
     io.o1       :=  WB.io.writeOp_o.rf.wdata
@@ -73,9 +100,29 @@ class TOP extends Module{
     io.csrData  :=  Csr.io.csrData_o
 
     dontTouch(io.csrData)
-
     dontTouch(io.regs)
 
+    IF.io.ctrl_i.flush      :=  Control.io.flush_o(0)
+    IF.io.ctrl_i.stall      :=  Control.io.stall_o(0)
+
+    IF_ID.io.ctrl_i.flush   :=  Control.io.flush_o(1)
+    IF_ID.io.ctrl_i.stall   :=  Control.io.stall_o(1)
+
+    ID_EX.io.ctrl_i.flush   :=  Control.io.flush_o(2)
+    ID_EX.io.ctrl_i.stall   :=  Control.io.stall_o(2)
+
+    EX_MEM.io.ctrl_i.flush  :=  Control.io.flush_o(3)
+    EX_MEM.io.ctrl_i.stall  :=  Control.io.stall_o(3)
+
+    MEM_WB.io.ctrl_i.flush  :=  Control.io.flush_o(4)
+    MEM_WB.io.ctrl_i.stall  :=  Control.io.stall_o(4)
+
+    Control.io.id_flush_req :=  ID.io.flush_req_o
+    Control.io.id_stall_req :=  ID.io.stall_req_o
+    Control.io.ex_stall_req :=  0.U
+
+
+    //debug
     EX.io. debug_i  :=  ID.io.debug_o
     MEM.io.debug_i  :=  EX.io.debug_o
     WB.io.debug     :=  MEM.io.debug_o

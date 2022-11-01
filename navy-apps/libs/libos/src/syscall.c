@@ -98,9 +98,14 @@ int _gettimeofday(struct timeval *tv, struct timezone *tz) {
   return _syscall_(SYS_gettimeofday, tv, tz, 0);
 }
 
+<<<<<<< HEAD
+int _execve(const char *fname, char * const argv[], char *const envp[]) {
+  _exit(SYS_execve);
+=======
 //extern void naive_uload(PCB * pcb, const char *filename);
 
 int _execve(const char *fname, char * const argv[], char *const envp[]) {
+>>>>>>> npc
   return 0;
 }
 

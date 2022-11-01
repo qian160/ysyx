@@ -8,6 +8,7 @@ object CONST{
 
     val PMEM_START  = "h80000000".U
     val PMEM_END    = "h87ffffff".U
+    val NOP         = "h00000013".U(32.W)
 }
 
 object Fct3 {

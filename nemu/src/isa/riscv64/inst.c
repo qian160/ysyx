@@ -220,13 +220,13 @@ static int decode_exec(Decode *D) {
       word_t imm_I = immI(inst);
       IFDEF(CONFIG_REF, printf("\n\npc:  0x%lx, base = 0x%lx, offset = %ld\n", D -> pc, R(rs1), imm_I));
       switch(fct3){
-        case(0x0):  R(rd) = SEXT(Mr(R(rs1) + imm_I, 1), 8);     break;  //lb
-        case(0x1):  R(rd) = SEXT(Mr(R(rs1) + imm_I, 2), 16);    break;  //lh
-        case(0x2):  R(rd) = SEXT(Mr(R(rs1) + imm_I, 4), 32);    break;  //lw
-        case(0x3):  R(rd) = Mr(R(rs1) + imm_I, 8);              break;  //ld
-        case(0x4):  R(rd) = Mr(R(rs1) + imm_I, 1);              break;  //lbu
-        case(0x5):  R(rd) = Mr(R(rs1) + imm_I, 2);              break;  //lhu
-        case(0x6):  R(rd) = Mr(R(rs1) + imm_I, 4);              break;  //lwu
+        case(0x0):  R(rd) = SEXT(Mr(R(rs1) + imm_I, 1), 8);   IFDEF(CONFIG_REF, printf("lb:  [x%d] <=  0x%lx\n", rd, R(rd)));  break;  //lb
+        case(0x1):  R(rd) = SEXT(Mr(R(rs1) + imm_I, 2), 16);  IFDEF(CONFIG_REF, printf("lh:  [x%d] <=  0x%lx\n", rd, R(rd)));  break;  //lh
+        case(0x2):  R(rd) = SEXT(Mr(R(rs1) + imm_I, 4), 32);  IFDEF(CONFIG_REF, printf("lw:  [x%d] <=  0x%lx\n", rd, R(rd)));  break;  //lw
+        case(0x3):  R(rd) = Mr(R(rs1) + imm_I, 8);            IFDEF(CONFIG_REF, printf("ld:  [x%d] <=  0x%lx\n", rd, R(rd)));  break;  //ld
+        case(0x4):  R(rd) = Mr(R(rs1) + imm_I, 1);            IFDEF(CONFIG_REF, printf("lbu: [x%d] <=  0x%lx\n", rd, R(rd)));  break;  //lbu
+        case(0x5):  R(rd) = Mr(R(rs1) + imm_I, 2);            IFDEF(CONFIG_REF, printf("lhu: [x%d] <=  0x%lx\n", rd, R(rd)));  break;  //lhu
+        case(0x6):  R(rd) = Mr(R(rs1) + imm_I, 4);            IFDEF(CONFIG_REF, printf("lwu: [x%d] <=  0x%lx\n", rd, R(rd)));  break;  //lwu
         default:    panic("bad inst\n");
       }
       break;
@@ -237,10 +237,10 @@ static int decode_exec(Decode *D) {
       word_t imm_S = immS(inst);
       IFDEF(CONFIG_REF, printf("\n\npc:  0x%lx, base = 0x%lx, offset = %ld\n", D -> pc, R(rs1), imm_S));
       switch(fct3){
-        case(0x0):  Mw(R(rs1) + imm_S, 1, R(rs2));   break;
-        case(0x1):  Mw(R(rs1) + imm_S, 2, R(rs2));   break;
-        case(0x2):  Mw(R(rs1) + imm_S, 4, R(rs2));   break;
-        case(0x3):  Mw(R(rs1) + imm_S, 8, R(rs2));   break;
+        case(0x0):  Mw(R(rs1) + imm_S, 1, R(rs2));  IFDEF(CONFIG_REF, printf("sb: 0x%lx   =>  pmem[0x%lx]\n", R(rs2), R(rs1) + imm_S ));      break;
+        case(0x1):  Mw(R(rs1) + imm_S, 2, R(rs2));  IFDEF(CONFIG_REF, printf("sh: 0x%lx   =>  pmem[0x%lx]\n", R(rs2), R(rs1) + imm_S ));      break;
+        case(0x2):  Mw(R(rs1) + imm_S, 4, R(rs2));  IFDEF(CONFIG_REF, printf("sw: 0x%lx   =>  pmem[0x%lx]\n", R(rs2), R(rs1) + imm_S ));      break;
+        case(0x3):  Mw(R(rs1) + imm_S, 8, R(rs2));  IFDEF(CONFIG_REF, printf("sd: 0x%lx   =>  pmem[0x%lx]\n", R(rs2), R(rs1) + imm_S ));      break;
         default:    panic("bad inst\n");
       }
       break;
@@ -292,12 +292,13 @@ static int decode_exec(Decode *D) {
         case(CSRRCI): R(rd) = *getCSR(immI(inst));    *getCSR(immI(inst)) &= ~SEXT(rs1, 5);     break;
 
       }
+    //NEMUTRAP(D->pc, R(10)); break;  //r(10) is a0,  ecall has the same opcode! need to improved, but there will never be an ecall
       break;
     }
   }
   R(0) = 0; // reset $zero to 0
-  // dead loop check. sometimes useful, but this affect the performance.(since this is checked in each inst cycle)
-  // Assert( D-> dnpc != D -> pc, "dead loop at 0x%lx\n", cpu.pc);
+  Assert( D-> dnpc != D -> pc, "dead loop at 0x%lx\n", cpu.pc);
+  //IFDEF(CONFIG_REF, Log("\nwdata = 0x%lx\npc = 0x%8lx, inst = 0x%08x,  rd = %d\n", opcode == BRANCH? 0: R(rd), D->pc, inst, rd));
   return 0;
 }
 
