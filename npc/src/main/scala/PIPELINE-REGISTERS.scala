@@ -85,17 +85,21 @@ class MEM_WB extends Module {
     val io = IO(new Bundle {
         val ctrl_i      =   Input(new Ctrl)
         val writeOp_i   =   Input(new WriteOp)
+        val debug_i     =   Input(new Debug_Bundle)
+        val debug_o     =   Output(new Debug_Bundle)
         val writeOp_o   =   Output(new WriteOp)
     })
 
     val writeOp =   RegNext(io.writeOp_i, 0.U.asTypeOf(new WriteOp))
-
+    val debug   =   RegNext(io.debug_i, 0.U.asTypeOf(new Debug_Bundle))
     when(io.ctrl_i.flush){
         writeOp :=  0.U.asTypeOf(new WriteOp)
+        debug   :=  0.U.asTypeOf(new Debug_Bundle)
     }.elsewhen(io.ctrl_i.stall){
         writeOp :=  writeOp
+        debug   :=  debug
     }
 
     io.writeOp_o    :=  writeOp
-
+    io.debug_o      :=  debug
 }

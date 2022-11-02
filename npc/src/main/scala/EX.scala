@@ -59,6 +59,8 @@ class EX extends Module{
         )
     )
 
+    dontTouch(aluRes)
+
     io.writeOp_o          :=  io.decInfo_i.writeOp
     io.writeOp_o.rf.wdata :=  aluRes
 
@@ -66,7 +68,8 @@ class EX extends Module{
     io.memOp_o.addr       :=  aluRes
 
     //disable bypass at load
-    io.ex_fwd_o.rf.rd       :=  Mux(io.memOp_o.is_load, 0.U,  io.decInfo_i.writeOp.rf.rd)
+    val is_calculating_on_address = RegNext(io.memOp_o.is_load)
+    io.ex_fwd_o.rf.rd       :=  Mux(io.memOp_o.is_load | is_calculating_on_address, 0.U,  io.decInfo_i.writeOp.rf.rd)
     io.ex_fwd_o.rf.wdata    :=  aluRes
 
     io.ex_fwd_o.csr.addr    :=  io.writeOp_o.csr.waddr

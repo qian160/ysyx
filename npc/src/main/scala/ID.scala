@@ -56,6 +56,9 @@ class ID extends Module{
     ))
     //sometimes the imm field will be interpreted as rs1 and rs2 and unexpectedly triggared the stall
     //io.stall_req_o    :=  (io.fwd_i.prev_is_load & (io.fwd_i.prev_rd === rs1 | io.fwd_i.prev_rd === rs2))
+    when(io.stall_req_o){
+        printf("stall at %x\n", pc)
+    }
     io.flush_req_o    :=  io.decInfo_o.branchOp.happen
     io.stall_req_o    :=  0.U
     val prev_is_load    =   io.fwd_i.prev_is_load
@@ -121,7 +124,7 @@ class ID extends Module{
             io.stall_req_o  :=  prev_is_load & (prev_rd  === rs1 | prev_rd === rs2)
         }
         is(InstType.B){
-            io.decInfo_o.writeOp.rf.rd    := 0.U
+            io.decInfo_o.writeOp.rf.rd    :=  0.U
             io.decInfo_o.branchOp.newPC   :=  pc + imm_B(inst)
             io.decInfo_o.branchOp.happen  :=  MuxLookup(fct3, false.B, Seq(
                 Fct3.BEQ     ->  (rs1Val  === rs2Val),
@@ -156,7 +159,7 @@ class ID extends Module{
             io.decInfo_o.aluOp.src1       :=  rs1Val
             io.decInfo_o.aluOp.src2       :=  imm_S(inst)
 
-            io.stall_req_o  :=  prev_is_load & prev_rd  === rs1
+            io.stall_req_o  :=  prev_is_load & (prev_rd  === rs1 | prev_rd === rs2)
         }
 
         is(InstType.SYS){           //csr ecall ebreak mret

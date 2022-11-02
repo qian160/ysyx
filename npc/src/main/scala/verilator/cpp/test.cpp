@@ -61,6 +61,7 @@ int main(int argc, char **argv)
 	IFDEF(DIFFTEST_ENABLE, init_difftest());
 	IFDEF(HAS_DEVICE, init_device());
 	while(!Verilated::gotFinish()){
+		// IF's pc
 		cout << _green << "(0x" << top -> io_pc_o << ")" << normal;
 		cmd_info cmd = get_cmd();
 		if(!cmd.name) continue;

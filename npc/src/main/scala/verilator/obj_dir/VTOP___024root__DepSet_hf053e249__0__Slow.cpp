@@ -87,7 +87,6 @@ VL_ATTR_COLD void VTOP___024root___settle__TOP__0(VTOP___024root* vlSelf) {
     vlSelf->io_regs_7 = vlSelf->TOP__DOT__Regfile__DOT__registers_7;
     vlSelf->io_regs_8 = vlSelf->TOP__DOT__Regfile__DOT__registers_8;
     vlSelf->io_regs_9 = vlSelf->TOP__DOT__Regfile__DOT__registers_9;
-    vlSelf->io_regs_10 = vlSelf->TOP__DOT__Regfile__DOT__registers_10;
     vlSelf->io_regs_11 = vlSelf->TOP__DOT__Regfile__DOT__registers_11;
     vlSelf->io_regs_12 = vlSelf->TOP__DOT__Regfile__DOT__registers_12;
     vlSelf->io_regs_13 = vlSelf->TOP__DOT__Regfile__DOT__registers_13;
@@ -109,6 +108,19 @@ VL_ATTR_COLD void VTOP___024root___settle__TOP__0(VTOP___024root* vlSelf) {
     vlSelf->io_regs_29 = vlSelf->TOP__DOT__Regfile__DOT__registers_29;
     vlSelf->io_regs_30 = vlSelf->TOP__DOT__Regfile__DOT__registers_30;
     vlSelf->io_regs_31 = vlSelf->TOP__DOT__Regfile__DOT__registers_31;
+    if (VL_UNLIKELY(vlSelf->TOP__DOT__MEM_WB__DOT__debug_exit)) {
+        if ((0ULL != vlSelf->TOP__DOT__MEM_WB__DOT__debug_a0)) {
+            VL_WRITEF("\n\n hit \033[1;31mbad\033[0m trap at pc = %x, inst = 0x%8x\n\nexit value = %x\n\n\n",
+                      64,vlSelf->TOP__DOT__MEM_WB__DOT__debug_pc,
+                      32,vlSelf->TOP__DOT__MEM_WB__DOT__debug_inst,
+                      64,vlSelf->TOP__DOT__MEM_WB__DOT__debug_a0);
+        } else {
+            VL_WRITEF("\n\n hit \033[1;32mgood\033[0m trap at pc = %x, inst = 0x%8x\n",
+                      64,vlSelf->TOP__DOT__MEM_WB__DOT__debug_pc,
+                      32,vlSelf->TOP__DOT__MEM_WB__DOT__debug_inst);
+        }
+        VL_FINISH_MT("/home/s081/Downloads/ysyx-workbench/npc/src/main/scala/verilator/verilog/DEBUG.v", 17, "");
+    }
     vlSelf->TOP__DOT__EX__DOT___aluRes_T_126 = VL_DIV_III(32, (IData)(vlSelf->TOP__DOT__ID_EX__DOT__decInfo_aluOp_src1), (IData)(vlSelf->TOP__DOT__ID_EX__DOT__decInfo_aluOp_src2));
     vlSelf->TOP__DOT__EX__DOT___aluRes_T_133 = VL_MODDIV_III(32, (IData)(vlSelf->TOP__DOT__ID_EX__DOT__decInfo_aluOp_src1), (IData)(vlSelf->TOP__DOT__ID_EX__DOT__decInfo_aluOp_src2));
     vlSelf->TOP__DOT__EX__DOT___aluRes_T_77 = VL_SHIFTRS_III(32,32,5, (IData)(vlSelf->TOP__DOT__ID_EX__DOT__decInfo_aluOp_src1), 
@@ -140,7 +152,6 @@ VL_ATTR_COLD void VTOP___024root___settle__TOP__0(VTOP___024root* vlSelf) {
         = (((IData)((0U != (3U & ((IData)(vlSelf->TOP__DOT__EX_MEM__DOT__memOp_length) 
                                   >> 2U)))) << 1U) 
            | (IData)((0U != (0xaU & (IData)(vlSelf->TOP__DOT__EX_MEM__DOT__memOp_length)))));
-    vlSelf->io_o1 = vlSelf->TOP__DOT__MEM_WB__DOT__writeOp_rf_wdata;
     vlSelf->io_o2 = vlSelf->TOP__DOT__MEM_WB__DOT__writeOp_csr_wdata;
     if ((0x305U == (IData)(vlSelf->TOP__DOT__MEM_WB__DOT__writeOp_csr_waddr))) {
         vlSelf->TOP__DOT__Csr__DOT___GEN_1 = vlSelf->TOP__DOT__MEM_WB__DOT__writeOp_csr_wdata;
@@ -156,7 +167,14 @@ VL_ATTR_COLD void VTOP___024root___settle__TOP__0(VTOP___024root* vlSelf) {
                                                  <= vlSelf->TOP__DOT__EX_MEM__DOT__memOp_addr) 
                                                 & (0x87ffffffULL 
                                                    >= vlSelf->TOP__DOT__EX_MEM__DOT__memOp_addr));
-    vlSelf->TOP__DOT__EX_io_ex_fwd_o_rf_rd = ((IData)(vlSelf->TOP__DOT__ID_EX__DOT__decInfo_memOp_is_load)
+    vlSelf->io_regs_10 = vlSelf->TOP__DOT__Regfile__DOT__registers_10;
+    vlSelf->io_o1 = vlSelf->TOP__DOT__MEM_WB__DOT__writeOp_rf_wdata;
+    vlSelf->io_pc_o = (QData)((IData)(vlSelf->TOP__DOT__IF__DOT__pc));
+    vlSelf->TOP__DOT__MEM_io_mem_fwd_o_rf_rd = ((IData)(vlSelf->TOP__DOT__EX_MEM__DOT__memOp_is_store)
+                                                 ? 0U
+                                                 : (IData)(vlSelf->TOP__DOT__EX_MEM__DOT__writeOp_rf_rd));
+    vlSelf->TOP__DOT__EX_io_ex_fwd_o_rf_rd = (((IData)(vlSelf->TOP__DOT__ID_EX__DOT__decInfo_memOp_is_load) 
+                                               | (IData)(vlSelf->TOP__DOT__EX__DOT__is_calculating_on_address))
                                                ? 0U
                                                : (IData)(vlSelf->TOP__DOT__ID_EX__DOT__decInfo_writeOp_rf_rd));
     vlSelf->TOP__DOT__ID__DOT___io_decInfo_o_branchOp_newPC_T_13 
@@ -276,10 +294,6 @@ VL_ATTR_COLD void VTOP___024root___settle__TOP__0(VTOP___024root* vlSelf) {
                                                                 & vlSelf->TOP__DOT__IF_ID__DOT__inst))
                                                                ? 0x17U
                                                                : 0U)))))))))))))));
-    vlSelf->TOP__DOT__ID__DOT___io_stall_req_o_T = 
-        ((IData)(vlSelf->TOP__DOT__ID_EX__DOT__decInfo_writeOp_rf_rd) 
-         == (0x1fU & (vlSelf->TOP__DOT__IF_ID__DOT__inst 
-                      >> 0xfU)));
     vlSelf->TOP__DOT__Csr_io_csrData_o_csrVal = ((0x305U 
                                                   == 
                                                   (vlSelf->TOP__DOT__IF_ID__DOT__inst 
@@ -304,6 +318,10 @@ VL_ATTR_COLD void VTOP___024root___settle__TOP__0(VTOP___024root* vlSelf) {
                                                       >> 0x14U))
                                                      ? vlSelf->TOP__DOT__Csr__DOT__mepc
                                                      : 0ULL))));
+    vlSelf->TOP__DOT__ID__DOT___io_stall_req_o_T = 
+        ((IData)(vlSelf->TOP__DOT__ID_EX__DOT__decInfo_writeOp_rf_rd) 
+         == (0x1fU & (vlSelf->TOP__DOT__IF_ID__DOT__inst 
+                      >> 0xfU)));
     vlSelf->TOP__DOT__Regfile__DOT___GEN_109 = ((0xdU 
                                                  == 
                                                  (0x1fU 
@@ -576,7 +594,6 @@ VL_ATTR_COLD void VTOP___024root___settle__TOP__0(VTOP___024root* vlSelf) {
                                                                 & vlSelf->TOP__DOT__IF_ID__DOT__inst))
                                                                ? 6U
                                                                : 7U)))))))))))))));
-    vlSelf->io_pc_o = (QData)((IData)(vlSelf->TOP__DOT__IF__DOT__pc));
     vlSelf->TOP__DOT__Main_Memory__DOT__dword = (((QData)((IData)(
                                                                   vlSelf->TOP__DOT__Main_Memory__DOT__ram
                                                                   [
@@ -858,6 +875,12 @@ VL_ATTR_COLD void VTOP___024root___settle__TOP__0(VTOP___024root* vlSelf) {
                                                   == (IData)(vlSelf->TOP__DOT__ID_EX__DOT__decInfo_writeOp_csr_waddr))
                                                   ? vlSelf->TOP__DOT__ID_EX__DOT__decInfo_writeOp_csr_wdata
                                                   : vlSelf->TOP__DOT__Csr_io_csrData_o_csrVal)));
+    vlSelf->TOP__DOT__ID__DOT___io_stall_req_o_T_5 
+        = ((IData)(vlSelf->TOP__DOT__ID_EX__DOT__decInfo_memOp_is_load) 
+           & ((IData)(vlSelf->TOP__DOT__ID__DOT___io_stall_req_o_T) 
+              | ((IData)(vlSelf->TOP__DOT__ID_EX__DOT__decInfo_writeOp_rf_rd) 
+                 == (0x1fU & (vlSelf->TOP__DOT__IF_ID__DOT__inst 
+                              >> 0x14U)))));
     vlSelf->TOP__DOT__Regfile__DOT___GEN_122 = ((0x1aU 
                                                  == 
                                                  (0x1fU 
@@ -2108,7 +2131,7 @@ VL_ATTR_COLD void VTOP___024root___settle__TOP__0(VTOP___024root* vlSelf) {
                                                    (0x1fU 
                                                     & (vlSelf->TOP__DOT__IF_ID__DOT__inst 
                                                        >> 0x14U)) 
-                                                   == (IData)(vlSelf->TOP__DOT__EX_MEM__DOT__writeOp_rf_rd))
+                                                   == (IData)(vlSelf->TOP__DOT__MEM_io_mem_fwd_o_rf_rd))
                                                    ? vlSelf->TOP__DOT__MEM_io_writeOp_o_rf_wdata
                                                    : 
                                                   (((0x1fU 
@@ -2165,7 +2188,7 @@ VL_ATTR_COLD void VTOP___024root___settle__TOP__0(VTOP___024root* vlSelf) {
                                                    (0x1fU 
                                                     & (vlSelf->TOP__DOT__IF_ID__DOT__inst 
                                                        >> 0xfU)) 
-                                                   == (IData)(vlSelf->TOP__DOT__EX_MEM__DOT__writeOp_rf_rd))
+                                                   == (IData)(vlSelf->TOP__DOT__MEM_io_mem_fwd_o_rf_rd))
                                                    ? vlSelf->TOP__DOT__MEM_io_writeOp_o_rf_wdata
                                                    : 
                                                   (((0x1fU 
@@ -2267,64 +2290,6 @@ VL_ATTR_COLD void VTOP___024root___settle__TOP__0(VTOP___024root* vlSelf) {
         vlSelf->TOP__DOT__Main_Memory__DOT___GEN_63 
             = (0xffU & (IData)(vlSelf->TOP__DOT__Main_Memory__DOT___GEN_47));
     }
-    if (VL_UNLIKELY(((7U == (IData)(vlSelf->TOP__DOT__ID__DOT__decRes_0))
-                      ? (0xffffffffU == vlSelf->TOP__DOT__IF_ID__DOT__inst)
-                      : ((1U != (IData)(vlSelf->TOP__DOT__ID__DOT__decRes_0)) 
-                         & ((0U != (IData)(vlSelf->TOP__DOT__ID__DOT__decRes_0)) 
-                            & ((3U != (IData)(vlSelf->TOP__DOT__ID__DOT__decRes_0)) 
-                               & ((2U != (IData)(vlSelf->TOP__DOT__ID__DOT__decRes_0)) 
-                                  & ((4U != (IData)(vlSelf->TOP__DOT__ID__DOT__decRes_0)) 
-                                     & ((5U != (IData)(vlSelf->TOP__DOT__ID__DOT__decRes_0)) 
-                                        & ((6U == (IData)(vlSelf->TOP__DOT__ID__DOT__decRes_0)) 
-                                           & ((~ (IData)(
-                                                         (0U 
-                                                          != 
-                                                          (7U 
-                                                           & (vlSelf->TOP__DOT__IF_ID__DOT__inst 
-                                                              >> 0xcU))))) 
-                                              & ((2U 
-                                                  != 
-                                                  (3U 
-                                                   & (vlSelf->TOP__DOT__IF_ID__DOT__inst 
-                                                      >> 0x14U))) 
-                                                 & (IData)(
-                                                           ((0x100000U 
-                                                             == 
-                                                             (0x300000U 
-                                                              & vlSelf->TOP__DOT__IF_ID__DOT__inst)) 
-                                                            & (0U 
-                                                               != 
-                                                               (3U 
-                                                                & (vlSelf->TOP__DOT__IF_ID__DOT__inst 
-                                                                   >> 0x14U))))))))))))))))) {
-        if ((0ULL != ((0xaU == (IData)(vlSelf->TOP__DOT__EX_io_ex_fwd_o_rf_rd))
-                       ? (((QData)((IData)(vlSelf->TOP__DOT__EX__DOT___aluRes_T_191[1U])) 
-                           << 0x20U) | (QData)((IData)(
-                                                       vlSelf->TOP__DOT__EX__DOT___aluRes_T_191[0U])))
-                       : ((0xaU == (IData)(vlSelf->TOP__DOT__EX_MEM__DOT__writeOp_rf_rd))
-                           ? vlSelf->TOP__DOT__MEM_io_writeOp_o_rf_wdata
-                           : ((0xaU == (IData)(vlSelf->TOP__DOT__MEM_WB__DOT__writeOp_rf_rd))
-                               ? vlSelf->TOP__DOT__MEM_WB__DOT__writeOp_rf_wdata
-                               : vlSelf->TOP__DOT__Regfile__DOT__registers_10))))) {
-            VL_WRITEF("\n\n hit \033[1;31mbad\033[0m trap at pc = %x, inst = 0x%8x\n\nexit value = %x\n\n\n",
-                      64,vlSelf->TOP__DOT__IF_ID__DOT__pc,
-                      32,vlSelf->TOP__DOT__IF_ID__DOT__inst,
-                      64,((0xaU == (IData)(vlSelf->TOP__DOT__EX_io_ex_fwd_o_rf_rd))
-                           ? (((QData)((IData)(vlSelf->TOP__DOT__EX__DOT___aluRes_T_191[1U])) 
-                               << 0x20U) | (QData)((IData)(
-                                                           vlSelf->TOP__DOT__EX__DOT___aluRes_T_191[0U])))
-                           : ((0xaU == (IData)(vlSelf->TOP__DOT__EX_MEM__DOT__writeOp_rf_rd))
-                               ? vlSelf->TOP__DOT__MEM_io_writeOp_o_rf_wdata
-                               : ((0xaU == (IData)(vlSelf->TOP__DOT__MEM_WB__DOT__writeOp_rf_rd))
-                                   ? vlSelf->TOP__DOT__MEM_WB__DOT__writeOp_rf_wdata
-                                   : vlSelf->TOP__DOT__Regfile__DOT__registers_10))));
-        } else {
-            VL_WRITEF("\n\n hit \033[1;32mgood\033[0m trap at pc = %x, inst = 0x%8x\n",
-                      64,vlSelf->TOP__DOT__IF_ID__DOT__pc,
-                      32,vlSelf->TOP__DOT__IF_ID__DOT__inst);
-        }
-        VL_FINISH_MT("/home/s081/Downloads/ysyx-workbench/npc/src/main/scala/verilator/verilog/DEBUG.v", 17, "");
-    }
     vlSelf->TOP__DOT__ID_io_stall_req_o = ((7U != (IData)(vlSelf->TOP__DOT__ID__DOT__decRes_0)) 
                                            & ((1U == (IData)(vlSelf->TOP__DOT__ID__DOT__decRes_0))
                                                ? ((IData)(vlSelf->TOP__DOT__ID_EX__DOT__decInfo_memOp_is_load) 
@@ -2346,14 +2311,7 @@ VL_ATTR_COLD void VTOP___024root___settle__TOP__0(VTOP___024root* vlSelf) {
                                                    : 
                                                   ((3U 
                                                     == (IData)(vlSelf->TOP__DOT__ID__DOT__decRes_0))
-                                                    ? 
-                                                   ((IData)(vlSelf->TOP__DOT__ID_EX__DOT__decInfo_memOp_is_load) 
-                                                    & ((IData)(vlSelf->TOP__DOT__ID__DOT___io_stall_req_o_T) 
-                                                       | ((IData)(vlSelf->TOP__DOT__ID_EX__DOT__decInfo_writeOp_rf_rd) 
-                                                          == 
-                                                          (0x1fU 
-                                                           & (vlSelf->TOP__DOT__IF_ID__DOT__inst 
-                                                              >> 0x14U)))))
+                                                    ? (IData)(vlSelf->TOP__DOT__ID__DOT___io_stall_req_o_T_5)
                                                     : 
                                                    ((2U 
                                                      != (IData)(vlSelf->TOP__DOT__ID__DOT__decRes_0)) 
@@ -2361,12 +2319,7 @@ VL_ATTR_COLD void VTOP___024root___settle__TOP__0(VTOP___024root* vlSelf) {
                                                         != (IData)(vlSelf->TOP__DOT__ID__DOT__decRes_0)) 
                                                        & ((5U 
                                                            == (IData)(vlSelf->TOP__DOT__ID__DOT__decRes_0)) 
-                                                          & ((IData)(vlSelf->TOP__DOT__ID_EX__DOT__decInfo_memOp_is_load) 
-                                                             & ((IData)(vlSelf->TOP__DOT__ID_EX__DOT__decInfo_writeOp_rf_rd) 
-                                                                == 
-                                                                (0x1fU 
-                                                                 & (vlSelf->TOP__DOT__IF_ID__DOT__inst 
-                                                                    >> 0xfU)))))))))));
+                                                          & (IData)(vlSelf->TOP__DOT__ID__DOT___io_stall_req_o_T_5))))))));
     vlSelf->TOP__DOT__ID__DOT__rs2Val = ((0U == (0x1fU 
                                                  & (vlSelf->TOP__DOT__IF_ID__DOT__inst 
                                                     >> 0x14U)))

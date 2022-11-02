@@ -139,7 +139,7 @@ int cmd_b(string arg){
     {
         if(top -> io_pc_o == addr)
             break;
-        cout << "pc = " << top -> io_pc_o << endl;
+        cout << "cmd_b: pc = " << top -> io_pc_o << endl;
         cmd_s("1");
     }
     return 0;

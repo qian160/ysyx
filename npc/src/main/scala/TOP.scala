@@ -86,6 +86,7 @@ class TOP extends Module{
     MEM.io.loadVal_i    :=  Main_Memory.io.loadVal_o
 
     MEM_WB.io.writeOp_i :=  MEM.io.writeOp_o
+    MEM_WB.io.debug_i   :=  MEM.io.debug_o
 
     WB.io.writeOp_i     :=  MEM_WB.io.writeOp_o
 
@@ -123,9 +124,9 @@ class TOP extends Module{
 
 
     //debug
-    EX.io. debug_i  :=  ID.io.debug_o
-    MEM.io.debug_i  :=  EX.io.debug_o
-    WB.io.debug     :=  MEM.io.debug_o
+    EX.io. debug_i  :=  ID_EX.io.debug_o
+    MEM.io.debug_i  :=  EX_MEM.io.debug_o
+    WB.io.debug_i   :=  MEM_WB.io.debug_o
 }
 
 object Gen {
