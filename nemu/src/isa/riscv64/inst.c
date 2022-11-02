@@ -228,7 +228,7 @@ static int decode_exec(Decode *D) {
         case(0x6):  R(rd) = Mr(R(rs1) + imm_I, 4);            IFDEF(CONFIG_REF, printf("lwu: [x%d] <=  0x%lx\n", rd, R(rd)));  break;  //lwu
         default:    panic("bad inst\n");
       }
-      printf("(0x%lx)  load addr = %lx, data = %lx\n", cpu.pc, R(rs1) + imm_I, R(rd));
+      printf("(0x%lx)  load addr  = %016lx, data = %016lx\n", cpu.pc, R(rs1) + imm_I, R(rd));
       break;
     }
 
@@ -243,7 +243,7 @@ static int decode_exec(Decode *D) {
         case(0x3):  Mw(R(rs1) + imm_S, 8, R(rs2));  IFDEF(CONFIG_REF, printf("sd: 0x%lx   =>  pmem[0x%lx]\n", R(rs2), R(rs1) + imm_S ));      break;
         default:    panic("bad inst\n");
       }
-      printf("(0x%lx)  store addr = %lx, data = %lx\n", cpu.pc, R(rs1) + imm_S, R(rs2));
+      printf("(0x%lx)  store addr = %016lx, data = %016lx\n", cpu.pc, R(rs1) + imm_S, R(rs2));
       break;
     }
 
