@@ -20,7 +20,7 @@ static char* rl_gets() {
   */
   char promt[20];
 //  const char promt_fmt[36];  
-  sprintf(promt, "(%lx)", cpu.pc);
+  sprintf(promt, "\33[0;32m(%lx)\33[0m", cpu.pc);
 //          printf(ANSI_FMT("%s %s <0x%lx>\n", ANSI_FG_YELLOW), s, f.name, f.address);
 
   printf(ANSI_FMT("%s", ANSI_FG_GREEN), promt);
