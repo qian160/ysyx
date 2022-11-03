@@ -6,12 +6,6 @@ static int is_batch_mode __attribute__((unused)) = false;
 void init_regex();
 void init_wp_pool();
 
-static char prompt[36];
-void init_prompt()
-{
-  sprintf(prompt, "\33[0;32m(%lx)\33[0m", cpu.pc);
-}
-
 /* We use the `readline' library to provide more flexibility to read from stdin. */
 static char* rl_gets() {
   /*
@@ -24,6 +18,8 @@ static char* rl_gets() {
 
   line_read = readline("(nemu) ");
   */
+  char prompt[36];
+  sprintf(prompt, "\33[0;32m(%lx)\33[0m", cpu.pc);
 
   char * line_read = readline(prompt);
   if (line_read && *line_read) {
@@ -43,7 +39,6 @@ void sdb_mainloop() {   //get command
     cmd_c(NULL);
     return;
   }
-  init_prompt();
   for (char *str; (str = rl_gets()) != NULL; ) {
     char *str_end = str + strlen(str);
     /* extract the first token as the command */
