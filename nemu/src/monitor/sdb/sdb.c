@@ -19,7 +19,11 @@ static char* rl_gets() {
   line_read = readline("(nemu) ");
   */
   char promt[20];
+//  const char promt_fmt[36];  
   sprintf(promt, "(%lx)", cpu.pc);
+//          printf(ANSI_FMT("%s %s <0x%lx>\n", ANSI_FG_YELLOW), s, f.name, f.address);
+
+  printf(ANSI_FMT("%s", ANSI_FG_GREEN), promt);
   char * line_read = readline(promt);
   if (line_read && *line_read) {
     add_history(line_read);
