@@ -43,7 +43,7 @@ void sdb_mainloop() {   //get command
     cmd_c(NULL);
     return;
   }
-
+  init_prompt();
   for (char *str; (str = rl_gets()) != NULL; ) {
     char *str_end = str + strlen(str);
     /* extract the first token as the command */
