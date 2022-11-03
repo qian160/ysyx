@@ -417,8 +417,9 @@ void VTOP___024root__trace_chg_sub_0(VTOP___024root* vlSelf, VerilatedVcd* trace
                                              ? 1U : (IData)(vlSelf->TOP__DOT__ID__DOT___decRes_T_248)))),5);
         tracep->chgBit(oldp+56,(((7U != (IData)(vlSelf->TOP__DOT__ID__DOT__decRes_0)) 
                                  & ((1U == (IData)(vlSelf->TOP__DOT__ID__DOT__decRes_0)) 
-                                    & (3U == (0x7fU 
-                                              & vlSelf->TOP__DOT__IF_ID__DOT__inst))))));
+                                    & ((3U == (0x7fU 
+                                               & vlSelf->TOP__DOT__IF_ID__DOT__inst)) 
+                                       & (~ (IData)(vlSelf->TOP__DOT__ID_io_stall_req_o)))))));
         tracep->chgBit(oldp+57,(((7U != (IData)(vlSelf->TOP__DOT__ID__DOT__decRes_0)) 
                                  & ((1U != (IData)(vlSelf->TOP__DOT__ID__DOT__decRes_0)) 
                                     & ((0U != (IData)(vlSelf->TOP__DOT__ID__DOT__decRes_0)) 
@@ -426,8 +427,9 @@ void VTOP___024root__trace_chg_sub_0(VTOP___024root* vlSelf, VerilatedVcd* trace
                                           & ((2U != (IData)(vlSelf->TOP__DOT__ID__DOT__decRes_0)) 
                                              & ((4U 
                                                  != (IData)(vlSelf->TOP__DOT__ID__DOT__decRes_0)) 
-                                                & (5U 
-                                                   == (IData)(vlSelf->TOP__DOT__ID__DOT__decRes_0))))))))));
+                                                & ((5U 
+                                                    == (IData)(vlSelf->TOP__DOT__ID__DOT__decRes_0)) 
+                                                   & (~ (IData)(vlSelf->TOP__DOT__ID_io_stall_req_o)))))))))));
         tracep->chgBit(oldp+58,(((7U != (IData)(vlSelf->TOP__DOT__ID__DOT__decRes_0)) 
                                  & ((1U == (IData)(vlSelf->TOP__DOT__ID__DOT__decRes_0)) 
                                     & (vlSelf->TOP__DOT__IF_ID__DOT__inst 
@@ -760,8 +762,7 @@ void VTOP___024root__trace_chg_sub_0(VTOP___024root* vlSelf, VerilatedVcd* trace
         tracep->chgBit(oldp+212,(((IData)(vlSelf->TOP__DOT__Main_Memory__DOT___T_2) 
                                   & (IData)(vlSelf->TOP__DOT__EX_MEM__DOT__memOp_is_store))));
         tracep->chgIData(oldp+213,((IData)(vlSelf->TOP__DOT__Main_Memory__DOT___T_62)),32);
-        tracep->chgBit(oldp+214,(((~ (IData)(vlSelf->TOP__DOT__Main_Memory__DOT___T_2)) 
-                                  & (IData)(vlSelf->TOP__DOT__EX_MEM__DOT__memOp_is_load))));
+        tracep->chgBit(oldp+214,(vlSelf->TOP__DOT__Main_Memory__DOT__MMIO_RW_read_en));
         tracep->chgBit(oldp+215,(((~ (IData)(vlSelf->TOP__DOT__Main_Memory__DOT___T_2)) 
                                   & (IData)(vlSelf->TOP__DOT__EX_MEM__DOT__memOp_is_store))));
         tracep->chgQData(oldp+216,(vlSelf->TOP__DOT__Main_Memory__DOT__MMIO_RW_rdata),64);

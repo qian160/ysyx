@@ -1,1 +1,0 @@
-#define DIFFTEST_ENABLE 1

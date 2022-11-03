@@ -1347,15 +1347,17 @@ VL_ATTR_COLD void VTOP___024root__trace_full_sub_0(VTOP___024root* vlSelf, Veril
                                           ? 1U : (IData)(vlSelf->TOP__DOT__ID__DOT___decRes_T_248)))),5);
     tracep->fullBit(oldp+57,(((7U != (IData)(vlSelf->TOP__DOT__ID__DOT__decRes_0)) 
                               & ((1U == (IData)(vlSelf->TOP__DOT__ID__DOT__decRes_0)) 
-                                 & (3U == (0x7fU & vlSelf->TOP__DOT__IF_ID__DOT__inst))))));
+                                 & ((3U == (0x7fU & vlSelf->TOP__DOT__IF_ID__DOT__inst)) 
+                                    & (~ (IData)(vlSelf->TOP__DOT__ID_io_stall_req_o)))))));
     tracep->fullBit(oldp+58,(((7U != (IData)(vlSelf->TOP__DOT__ID__DOT__decRes_0)) 
                               & ((1U != (IData)(vlSelf->TOP__DOT__ID__DOT__decRes_0)) 
                                  & ((0U != (IData)(vlSelf->TOP__DOT__ID__DOT__decRes_0)) 
                                     & ((3U != (IData)(vlSelf->TOP__DOT__ID__DOT__decRes_0)) 
                                        & ((2U != (IData)(vlSelf->TOP__DOT__ID__DOT__decRes_0)) 
                                           & ((4U != (IData)(vlSelf->TOP__DOT__ID__DOT__decRes_0)) 
-                                             & (5U 
-                                                == (IData)(vlSelf->TOP__DOT__ID__DOT__decRes_0))))))))));
+                                             & ((5U 
+                                                 == (IData)(vlSelf->TOP__DOT__ID__DOT__decRes_0)) 
+                                                & (~ (IData)(vlSelf->TOP__DOT__ID_io_stall_req_o)))))))))));
     tracep->fullBit(oldp+59,(((7U != (IData)(vlSelf->TOP__DOT__ID__DOT__decRes_0)) 
                               & ((1U == (IData)(vlSelf->TOP__DOT__ID__DOT__decRes_0)) 
                                  & (vlSelf->TOP__DOT__IF_ID__DOT__inst 
@@ -1672,8 +1674,7 @@ VL_ATTR_COLD void VTOP___024root__trace_full_sub_0(VTOP___024root* vlSelf, Veril
     tracep->fullBit(oldp+213,(((IData)(vlSelf->TOP__DOT__Main_Memory__DOT___T_2) 
                                & (IData)(vlSelf->TOP__DOT__EX_MEM__DOT__memOp_is_store))));
     tracep->fullIData(oldp+214,((IData)(vlSelf->TOP__DOT__Main_Memory__DOT___T_62)),32);
-    tracep->fullBit(oldp+215,(((~ (IData)(vlSelf->TOP__DOT__Main_Memory__DOT___T_2)) 
-                               & (IData)(vlSelf->TOP__DOT__EX_MEM__DOT__memOp_is_load))));
+    tracep->fullBit(oldp+215,(vlSelf->TOP__DOT__Main_Memory__DOT__MMIO_RW_read_en));
     tracep->fullBit(oldp+216,(((~ (IData)(vlSelf->TOP__DOT__Main_Memory__DOT___T_2)) 
                                & (IData)(vlSelf->TOP__DOT__EX_MEM__DOT__memOp_is_store))));
     tracep->fullQData(oldp+217,(vlSelf->TOP__DOT__Main_Memory__DOT__MMIO_RW_rdata),64);

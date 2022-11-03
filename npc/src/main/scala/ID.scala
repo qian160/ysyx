@@ -101,16 +101,17 @@ class ID extends Module{
         is(InstType.BAD){
             io.debug_o.exit   :=  inst.andR     //not nop
         }
-        is(InstType.I){ //likely jalr, load, rv32i-arith, rv64i-arith
+        is(InstType.I){ //special cases: jalr, load
             io.decInfo_o.writeOp.rf.wen    :=  true.B
             val is_jalr =   opcode  === Opcode.JALR
 
             io.decInfo_o.aluOp.src1   :=  Mux(is_jalr, pc,        rs1Val)
             io.decInfo_o.aluOp.src2   :=  Mux(is_jalr, 4.U(64.W), imm_I(inst))
-            io.decInfo_o.branchOp.happen  :=  Mux(is_jalr, true.B, false.B)
+            //if stalled, we can't tell whether the branch is true, because our result is based on old operands. Just wait and see
+            io.decInfo_o.branchOp.happen  :=  Mux(is_jalr & ~io.stall_req_o, true.B, false.B)
             io.decInfo_o.branchOp.newPC   :=  rs1Val + imm_I(inst)
             //load uses src1 and src2 to calculate the address
-            io.decInfo_o.memOp.is_load    :=  opcode === Opcode.LOAD
+            io.decInfo_o.memOp.is_load    :=  (opcode === Opcode.LOAD & ~io.stall_req_o)
             io.decInfo_o.memOp.length     :=  UIntToOH(fct3(1, 0))
 
             io.decInfo_o.memOp.unsigned   :=  fct3(2)     //0 to 3 unsigned, signed when fct3 >= 4
@@ -148,18 +149,18 @@ class ID extends Module{
             io.decInfo_o.aluOp.src2       :=  imm_U(inst)
             io.decInfo_o.writeOp.rf.wen   :=  true.B
         }
-        is(InstType.J){     //jal
+        is(InstType.J){     //jal only
             io.decInfo_o.writeOp.rf.wen   :=  true.B
             io.decInfo_o.branchOp.happen  :=  true.B
             io.decInfo_o.branchOp.newPC   :=  pc + imm_J(inst)
             //link address
             io.decInfo_o.aluOp.src1       :=  pc
-            io.decInfo_o.aluOp.src2       :=  4.U(64.W)            
+            io.decInfo_o.aluOp.src2       :=  4.U(64.W)
         }
         is(InstType.S){
             //avoid incorrect bypass(imm being interpreted as rd)
             io.decInfo_o.writeOp.rf.rd    :=  0.U
-            io.decInfo_o.memOp.is_store   :=  true.B
+            io.decInfo_o.memOp.is_store   :=  ~io.stall_req_o
             io.decInfo_o.memOp.length     :=  UIntToOH(fct3)
             io.decInfo_o.memOp.sdata      :=  rs2Val
 

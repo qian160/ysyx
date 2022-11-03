@@ -18,10 +18,15 @@ class IF extends Module{
     val pc  =  RegInit(CONST.PC_INIT)
 
     /*
-        stall and branch could both arrive. Like this:
-            lbu     a5, 0(a5)
-            bnez    a5, ...
-        solution:   latch the branch signal. Otherwise we will lose it in the next cycle
+    (flush is not used here though...)
+    some special cases:
+        1.stall/flush and branch both arrive
+            lbu     *a5*, 0(a5)
+            bnez    *a5*, ...
+        solution:   This is caused by branch/jump after load. Here stall is the most important signal because the other 2 signals
+                    are given based on incorrect operands and thus make the result unreliable
+                    So we just take stall as valid. As for the other 2 signals, just wait and see in the next cycle
+
     */
     val branch_latch    =   RegNext(io.branchOp_i.happen & io.ctrl_i.stall, 0.U)
     val newPC_latch     =   RegNext(io.branchOp_i.newPC, 0.U)

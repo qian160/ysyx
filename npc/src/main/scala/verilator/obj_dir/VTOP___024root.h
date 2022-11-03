@@ -38,6 +38,7 @@ VL_MODULE(VTOP___024root) {
         CData/*0:0*/ TOP__DOT__ID__DOT___io_stall_req_o_T;
         CData/*0:0*/ TOP__DOT__ID__DOT___io_stall_req_o_T_5;
         CData/*0:0*/ TOP__DOT__ID__DOT___GEN_75;
+        CData/*0:0*/ TOP__DOT__Main_Memory__DOT__MMIO_RW_read_en;
         CData/*0:0*/ TOP__DOT__Main_Memory__DOT___T_2;
         CData/*1:0*/ TOP__DOT__Main_Memory__DOT___store_en_T_3;
         CData/*7:0*/ TOP__DOT__Main_Memory__DOT__store_en;
@@ -81,9 +82,9 @@ VL_MODULE(VTOP___024root) {
         CData/*7:0*/ TOP__DOT__Main_Memory__DOT___GEN_109;
         CData/*7:0*/ TOP__DOT__Main_Memory__DOT___GEN_110;
         CData/*7:0*/ TOP__DOT__Main_Memory__DOT___GEN_111;
-        CData/*7:0*/ TOP__DOT__Main_Memory__DOT___GEN_112;
     };
     struct {
+        CData/*7:0*/ TOP__DOT__Main_Memory__DOT___GEN_112;
         CData/*7:0*/ TOP__DOT__Main_Memory__DOT___GEN_113;
         CData/*7:0*/ TOP__DOT__Main_Memory__DOT___GEN_114;
         CData/*7:0*/ TOP__DOT__Main_Memory__DOT___GEN_115;
@@ -147,9 +148,9 @@ VL_MODULE(VTOP___024root) {
         VL_OUT64(io_csrData_status,63,0);
         VL_OUT64(io_regs_0,63,0);
         VL_OUT64(io_regs_1,63,0);
-        VL_OUT64(io_regs_2,63,0);
     };
     struct {
+        VL_OUT64(io_regs_2,63,0);
         VL_OUT64(io_regs_3,63,0);
         VL_OUT64(io_regs_4,63,0);
         VL_OUT64(io_regs_5,63,0);
@@ -213,9 +214,9 @@ VL_MODULE(VTOP___024root) {
         QData/*63:0*/ TOP__DOT__Regfile__DOT__registers_15;
         QData/*63:0*/ TOP__DOT__Regfile__DOT__registers_16;
         QData/*63:0*/ TOP__DOT__Regfile__DOT__registers_17;
-        QData/*63:0*/ TOP__DOT__Regfile__DOT__registers_18;
     };
     struct {
+        QData/*63:0*/ TOP__DOT__Regfile__DOT__registers_18;
         QData/*63:0*/ TOP__DOT__Regfile__DOT__registers_19;
         QData/*63:0*/ TOP__DOT__Regfile__DOT__registers_20;
         QData/*63:0*/ TOP__DOT__Regfile__DOT__registers_21;

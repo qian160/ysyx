@@ -45,8 +45,8 @@ void my_exit(int sig)
 {
 	SDL_Exit();
 	cout << endl;
-	cout << Green("total insts: ") << dec << nr_inst << endl; 
-	cout << Green("ipc:         ") << static_cast<double>(valid_inst) / static_cast<double>(nr_inst) << endl;
+	cout << Magenta("total insts: ") << dec << nr_inst << endl; 
+	cout << Magenta("        ipc: ") << static_cast<double>(valid_inst) / static_cast<double>(nr_inst) << endl;
 	exit(0);
 
     __asm__ volatile(
