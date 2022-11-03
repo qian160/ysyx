@@ -218,6 +218,7 @@ static int decode_exec(Decode *D) {
     case(LOAD):{
       D -> decInfo.type = TYPE_I;
       word_t imm_I = immI(inst);
+      printf("(0x%lx)  load addr  = %016lx", cpu.pc, R(rs1) + imm_I);
       switch(fct3){
         case(0x0):  R(rd) = SEXT(Mr(R(rs1) + imm_I, 1), 8);   IFDEF(CONFIG_REF, printf("lb:  [x%d] <=  0x%lx\n", rd, R(rd)));  break;  //lb
         case(0x1):  R(rd) = SEXT(Mr(R(rs1) + imm_I, 2), 16);  IFDEF(CONFIG_REF, printf("lh:  [x%d] <=  0x%lx\n", rd, R(rd)));  break;  //lh
@@ -228,7 +229,7 @@ static int decode_exec(Decode *D) {
         case(0x6):  R(rd) = Mr(R(rs1) + imm_I, 4);            IFDEF(CONFIG_REF, printf("lwu: [x%d] <=  0x%lx\n", rd, R(rd)));  break;  //lwu
         default:    panic("bad inst\n");
       }
-      printf("(0x%lx)  load addr  = %016lx, data = %016lx\n", cpu.pc, R(rs1) + imm_I, R(rd));
+      printf(", data = %016lx\n", R(rd));
       break;
     }
 

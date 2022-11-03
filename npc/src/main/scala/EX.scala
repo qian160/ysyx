@@ -7,7 +7,7 @@ import AluOPT._
 class EX extends Module{
     val io = IO(new Bundle{
         val decInfo_i   =   Input(new DecodeInfo)
-
+        val id_is_stalled_i     =   Input(Bool())     //meaning we are cauclulating on old value when this signal is high
         val writeOp_o   =   Output(new WriteOp)
         val memOp_o     =   Output(new MemOp)
         val ex_fwd_o    =   Output(new Forward_Info)
@@ -67,9 +67,18 @@ class EX extends Module{
     io.memOp_o            :=  io.decInfo_i.memOp
     io.memOp_o.addr       :=  aluRes
 
-    //disable bypass at load
-    val is_calculating_on_address = RegNext(io.memOp_o.is_load)
-    io.ex_fwd_o.rf.rd       :=  Mux(io.memOp_o.is_load | is_calculating_on_address, 0.U,  io.decInfo_i.writeOp.rf.rd)
+    //disable bypass at load or the 'read after load' hazard
+    /*for example:
+        ld x1, 0(x2):   IF      ID      EX      MEM     WB
+        mv x2, x1:              IF      ID  ->  EX(*)   MEM     WB
+        (stalled)
+        mv x2, x1:                      IF      ID(mux) EX      MEM     WB
+
+        the 2nd inst need to be stalled. However, while stalling, the old value is also
+        passed to EX and being calculated. And the bypass from EX in the next cycle is thus incorrect
+
+    */
+    io.ex_fwd_o.rf.rd       :=  Mux(io.memOp_o.is_load | io.id_is_stalled_i, 0.U,  io.decInfo_i.writeOp.rf.rd)
     io.ex_fwd_o.rf.wdata    :=  aluRes
 
     io.ex_fwd_o.csr.addr    :=  io.writeOp_o.csr.waddr

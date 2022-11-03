@@ -38,12 +38,22 @@ static inline cmd_info get_cmd()
 }
 
 extern int init_device();
+extern uint64_t nr_inst;
+extern uint64_t valid_inst;
 
 void my_exit(int sig)
 {
 	SDL_Exit();
-	cout << "\nexit" << endl;
+	cout << endl;
+	cout << Green("total insts: ") << dec << nr_inst << endl; 
+	cout << Green("ipc:         ") << static_cast<double>(valid_inst) / static_cast<double>(nr_inst) << endl;
 	exit(0);
+
+    __asm__ volatile(
+        "movl $60,  %eax\n\t"
+        "xorl %edi, %edi\n\t"
+        "syscall\n"
+    );
 }
 
 int main(int argc, char **argv)
@@ -71,4 +81,5 @@ int main(int argc, char **argv)
 		else
 			cout << "unsupported command " << "'" << cmd.name << "'" << endl;
 	}
+	my_exit(114514);
 }

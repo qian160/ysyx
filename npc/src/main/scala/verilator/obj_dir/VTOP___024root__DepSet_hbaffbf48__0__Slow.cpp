@@ -61,6 +61,8 @@ VL_ATTR_COLD void VTOP___024root___ctor_var_reset(VTOP___024root* vlSelf) {
     vlSelf->io_csrData_tvec = VL_RAND_RESET_Q(64);
     vlSelf->io_csrData_cause = VL_RAND_RESET_Q(64);
     vlSelf->io_csrData_status = VL_RAND_RESET_Q(64);
+    vlSelf->io_stall_o = VL_RAND_RESET_I(5);
+    vlSelf->io_flush_o = VL_RAND_RESET_I(5);
     vlSelf->io_regs_0 = VL_RAND_RESET_Q(64);
     vlSelf->io_regs_1 = VL_RAND_RESET_Q(64);
     vlSelf->io_regs_2 = VL_RAND_RESET_Q(64);
@@ -129,8 +131,8 @@ VL_ATTR_COLD void VTOP___024root___ctor_var_reset(VTOP___024root* vlSelf) {
     vlSelf->TOP__DOT__ID__DOT___io_decInfo_o_branchOp_newPC_T_24 = VL_RAND_RESET_I(21);
     vlSelf->TOP__DOT__ID__DOT___io_decInfo_o_aluOp_src2_T_16 = VL_RAND_RESET_I(12);
     vlSelf->TOP__DOT__ID__DOT__rsVal = VL_RAND_RESET_Q(64);
-    vlSelf->TOP__DOT__ID__DOT___GEN_90 = VL_RAND_RESET_I(1);
-    VL_RAND_RESET_W(76, vlSelf->TOP__DOT__ID__DOT___GEN_117);
+    vlSelf->TOP__DOT__ID__DOT___GEN_75 = VL_RAND_RESET_I(1);
+    VL_RAND_RESET_W(76, vlSelf->TOP__DOT__ID__DOT___GEN_120);
     VL_RAND_RESET_W(128, vlSelf->TOP__DOT__EX__DOT___aluRes_T_13);
     VL_RAND_RESET_W(128, vlSelf->TOP__DOT__EX__DOT___aluRes_T_15);
     vlSelf->TOP__DOT__EX__DOT___aluRes_T_34 = VL_RAND_RESET_I(32);
@@ -144,7 +146,6 @@ VL_ATTR_COLD void VTOP___024root___ctor_var_reset(VTOP___024root* vlSelf) {
     VL_RAND_RESET_W(128, vlSelf->TOP__DOT__EX__DOT___aluRes_T_169);
     VL_RAND_RESET_W(128, vlSelf->TOP__DOT__EX__DOT___aluRes_T_187);
     VL_RAND_RESET_W(128, vlSelf->TOP__DOT__EX__DOT___aluRes_T_191);
-    vlSelf->TOP__DOT__EX__DOT__is_calculating_on_address = VL_RAND_RESET_I(1);
     vlSelf->TOP__DOT__Regfile__DOT__registers_0 = VL_RAND_RESET_Q(64);
     vlSelf->TOP__DOT__Regfile__DOT__registers_1 = VL_RAND_RESET_Q(64);
     vlSelf->TOP__DOT__Regfile__DOT__registers_2 = VL_RAND_RESET_Q(64);
@@ -262,6 +263,7 @@ VL_ATTR_COLD void VTOP___024root___ctor_var_reset(VTOP___024root* vlSelf) {
     vlSelf->TOP__DOT__ID_EX__DOT__debug_a0 = VL_RAND_RESET_Q(64);
     vlSelf->TOP__DOT__ID_EX__DOT__debug_pc = VL_RAND_RESET_Q(64);
     vlSelf->TOP__DOT__ID_EX__DOT__debug_inst = VL_RAND_RESET_I(32);
+    vlSelf->TOP__DOT__ID_EX__DOT__stall = VL_RAND_RESET_I(1);
     vlSelf->TOP__DOT__EX_MEM__DOT__writeOp_rf_wen = VL_RAND_RESET_I(1);
     vlSelf->TOP__DOT__EX_MEM__DOT__writeOp_rf_rd = VL_RAND_RESET_I(5);
     vlSelf->TOP__DOT__EX_MEM__DOT__writeOp_rf_wdata = VL_RAND_RESET_Q(64);

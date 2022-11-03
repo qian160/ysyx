@@ -31,23 +31,29 @@ class ID_EX extends Module {
         val ctrl_i      =   Input(new Ctrl)
         val decInfo_i   =   Input(new DecodeInfo)
         val debug_i     =   Input(new Debug_Bundle)
+        val id_is_stalled_i =   Input(Bool())
+        val id_is_stalled_o =   Output(Bool())
 
         val decInfo_o   =   Output(new DecodeInfo)
         val debug_o     =   Output(new Debug_Bundle)
     })
     val decInfo =   RegNext(io.decInfo_i, 0.U.asTypeOf(new DecodeInfo))
     val debug   =   RegNext(io.debug_i, 0.U.asTypeOf(new Debug_Bundle))
+    val stall   =   RegNext(io.id_is_stalled_i, false.B)
 
     when(io.ctrl_i.flush){
         decInfo :=  0.U.asTypeOf(new DecodeInfo)
         debug   :=  0.U.asTypeOf(new Debug_Bundle)
+        stall   :=  0.U
     }.elsewhen(io.ctrl_i.stall){
         decInfo :=  decInfo
         debug   :=  debug
+        stall   :=  stall
     }
 
     io.decInfo_o    :=  decInfo
     io.debug_o      :=  debug
+    io.id_is_stalled_o  :=  stall
 }
 
 class EX_MEM extends Module {

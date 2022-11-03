@@ -17,11 +17,20 @@ class IF extends Module{
     //loadMemoryFromFileInline(inst_rom, "/home/s081/Downloads/ysyx-workbench/npc/src/main/scala/inst_rom")
     val pc  =  RegInit(CONST.PC_INIT)
 
+    /*
+        stall and branch could both arrive. Like this:
+            lbu     a5, 0(a5)
+            bnez    a5, ...
+        solution:   latch the branch signal. Otherwise we will lose it in the next cycle
+    */
+    val branch_latch    =   RegNext(io.branchOp_i.happen & io.ctrl_i.stall, 0.U)
+    val newPC_latch     =   RegNext(io.branchOp_i.newPC, 0.U)
     pc :=   PriorityMux(Seq(
         //(reset.asBool(),        CONST.PC_INIT),
         (io.ctrl_i.stall,       pc),
         //(io.ctrl_i.flush,       CONST.PC_INIT),
         (io.branchOp_i.happen,  io.branchOp_i.newPC),
+        //(branch_latch,          newPC_latch),
         (true.B,                pc + 4.U)
     ))
 

@@ -13,6 +13,8 @@ VTOP::VTOP(VerilatedContext* _vcontextp__, const char* _vcname__)
     : vlSymsp{new VTOP__Syms(_vcontextp__, _vcname__, this)}
     , clock{vlSymsp->TOP.clock}
     , reset{vlSymsp->TOP.reset}
+    , io_stall_o{vlSymsp->TOP.io_stall_o}
+    , io_flush_o{vlSymsp->TOP.io_flush_o}
     , io_inst_o{vlSymsp->TOP.io_inst_o}
     , io_timer_i{vlSymsp->TOP.io_timer_i}
     , io_csrData_csrVal{vlSymsp->TOP.io_csrData_csrVal}

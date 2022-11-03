@@ -56,9 +56,11 @@ class ID extends Module{
     ))
     //sometimes the imm field will be interpreted as rs1 and rs2 and unexpectedly triggared the stall
     //io.stall_req_o    :=  (io.fwd_i.prev_is_load & (io.fwd_i.prev_rd === rs1 | io.fwd_i.prev_rd === rs2))
+    
     when(io.stall_req_o){
         printf("stall at %x\n", pc)
     }
+    
     io.flush_req_o    :=  io.decInfo_o.branchOp.happen
     io.stall_req_o    :=  0.U
     val prev_is_load    =   io.fwd_i.prev_is_load
@@ -124,9 +126,12 @@ class ID extends Module{
             io.stall_req_o  :=  prev_is_load & (prev_rd  === rs1 | prev_rd === rs2)
         }
         is(InstType.B){
+            //when stall happens, the branch signal can't be given, since the op
+            //solution: clear the branch signal when stall. this is done by & (~stall)
             io.decInfo_o.writeOp.rf.rd    :=  0.U
             io.decInfo_o.branchOp.newPC   :=  pc + imm_B(inst)
-            io.decInfo_o.branchOp.happen  :=  MuxLookup(fct3, false.B, Seq(
+
+            val likely_branch = MuxLookup(fct3, false.B, Seq(
                 Fct3.BEQ     ->  (rs1Val  === rs2Val),
                 Fct3.BNE     ->  (rs1Val  =/= rs2Val),
                 Fct3.BLT     ->  (rs1Val.asSInt   <   rs2Val.asSInt),
@@ -135,6 +140,7 @@ class ID extends Module{
                 Fct3.BGEU    ->  (rs1Val   >= rs2Val),
             ))
 
+            io.decInfo_o.branchOp.happen  :=  likely_branch & (~io.stall_req_o)
             io.stall_req_o  :=  prev_is_load & (prev_rd  === rs1 | prev_rd === rs2)
         }
         is(InstType.U){     //lui auipc
@@ -151,6 +157,8 @@ class ID extends Module{
             io.decInfo_o.aluOp.src2       :=  4.U(64.W)            
         }
         is(InstType.S){
+            //avoid incorrect bypass(imm being interpreted as rd)
+            io.decInfo_o.writeOp.rf.rd    :=  0.U
             io.decInfo_o.memOp.is_store   :=  true.B
             io.decInfo_o.memOp.length     :=  UIntToOH(fct3)
             io.decInfo_o.memOp.sdata      :=  rs2Val
