@@ -1,10 +1,5 @@
 import chisel3._
 import chisel3.util._
-<<<<<<< HEAD
-import chisel3.util.HasBlackBoxResource
-import chisel3.util.HasBlackBoxInline
-=======
->>>>>>> npc
 
 object countLeadingZeros
 {
@@ -19,11 +14,7 @@ object Util{
     def ZEXT(a:UInt, from: Int, to: Int): UInt = a(from - 1, 0).pad(to)
 }
 
-<<<<<<< HEAD
-object D{       //debug
-=======
 object Color{
->>>>>>> npc
     //usage: println(D.xx + "foo" + D.ed)
     val red     = "\u001b[1;31m" //1: background color(none)
     val green   = "\u001b[1;32m"

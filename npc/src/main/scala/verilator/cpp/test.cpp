@@ -38,12 +38,22 @@ static inline cmd_info get_cmd()
 }
 
 extern int init_device();
+extern uint64_t nr_inst;
+extern uint64_t valid_inst;
 
 void my_exit(int sig)
 {
 	SDL_Exit();
-	cout << "\nexit" << endl;
+	cout << endl;
+	cout << Magenta("total insts: ") << dec << nr_inst << endl; 
+	cout << Magenta("        ipc: ") << static_cast<double>(valid_inst) / static_cast<double>(nr_inst) << endl;
 	exit(0);
+
+    __asm__ volatile(
+        "movl $60,  %eax\n\t"
+        "xorl %edi, %edi\n\t"
+        "syscall\n"
+    );
 }
 
 int main(int argc, char **argv)
@@ -57,11 +67,12 @@ int main(int argc, char **argv)
 	else
 		img_file.reset(new string(TEST_PATH + string(argv[1]) + string("-riscv64-npc.bin")));
 	tb.reset();
-	//tb.trace("./wave.vcd");		//consumes too much memory
+	tb.trace("./wave.vcd");		//consumes too much memory
 	IFDEF(DIFFTEST_ENABLE, init_difftest());
 	IFDEF(HAS_DEVICE, init_device());
 	while(!Verilated::gotFinish()){
-		cout << "(😅)";
+		// IF's pc
+		cout << _green << "(0x" << top -> io_pc_o << ")" << normal;
 		cmd_info cmd = get_cmd();
 		if(!cmd.name) continue;
 
@@ -70,4 +81,5 @@ int main(int argc, char **argv)
 		else
 			cout << "unsupported command " << "'" << cmd.name << "'" << endl;
 	}
+	my_exit(114514);
 }

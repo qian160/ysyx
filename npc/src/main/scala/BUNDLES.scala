@@ -75,3 +75,38 @@ class Debug_Bundle extends Bundle{
     val inst    =   UInt(32.W)
     //val gpr     =   Vec(32, UInt(64.W))
 }
+
+class Rf_Forward_info extends Bundle{
+    val rd      =   UInt(5.W)
+    val wdata   =   UInt(64.W)
+}
+
+class CSR_Forward_info extends Bundle{
+    val addr    =   UInt(12.W)
+    val wdata   =   UInt(64.W)
+}
+
+class Rf_Forward extends Bundle{
+    val ex  = new Rf_Forward_info
+    val mem = new Rf_Forward_info
+    val wb  = new Rf_Forward_info
+}
+
+class Forward_Info extends Bundle{
+    val csr =   new CSR_Forward_info
+    val rf  =   new Rf_Forward_info
+}
+
+class Forward extends Bundle{
+    val ex  =   new Forward_Info
+    val mem =   new Forward_Info
+    val wb  =   new Forward_Info
+
+    val prev_rd =   UInt(5.W)
+    val prev_is_load    = Bool()
+}
+
+class Ctrl extends Bundle{
+    val stall   =   Bool()
+    val flush   =   Bool()
+}

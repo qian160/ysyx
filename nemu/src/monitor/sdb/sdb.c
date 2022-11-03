@@ -18,7 +18,10 @@ static char* rl_gets() {
 
   line_read = readline("(nemu) ");
   */
-  char * line_read = readline(ANSI_FMT("(nemu)",ANSI_FG_PINK));
+  char prompt[36];
+  sprintf(prompt, "\33[0;32m(%lx)\33[0m", cpu.pc);
+
+  char * line_read = readline(prompt);
   if (line_read && *line_read) {
     add_history(line_read);
   }

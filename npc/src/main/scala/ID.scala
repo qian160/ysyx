@@ -12,66 +12,66 @@ class ID extends Module{
     def imm_B(inst: UInt) = SEXT(Cat(inst(31), inst(7), inst(30,25), inst(11,8), 0.U(1.W)), 13, 64)
 
     val io = IO(new Bundle{
-        val inst_i        =   Input(UInt(32.W))
-        val pc_i          =   Input(UInt(64.W))
-<<<<<<< HEAD
-        val regVal_i      =   Input(new ReadRes)
+        val inst_i      =   Input(UInt(32.W))
+        val fwd_i       =   Input(new Forward)
+        val pc_i        =   Input(UInt(64.W))
+        val rfData_i    =   Input(new RegSource)
+        val csrData_i   =   Input(new CsrData)
 
-        val readRfOp_o    =   Output(new ReadRfOp)
-=======
-        val rfData_i      =   Input(new RegSource)
-        val csrData_i     =   Input(new CsrData)
+        val readOp_o    =   Output(new ReadOp)
+        val decInfo_o   =   Output(new DecodeInfo)
+        val stall_req_o =   Output(Bool())
+        val flush_req_o =   Output(Bool())
 
-        val readOp_o      =   Output(new ReadOp)
->>>>>>> npc
-        val decInfo_o     =   Output(new DecodeInfo)
-
-        val debug_o       =   Output(new Debug_Bundle)
+        val debug_o     =   Output(new Debug_Bundle)
     })
-    //to make test easier, we use cpp to load inst, not verilog or chisel
+    //alias
+    val inst     =  io.inst_i
+    val pc       =  io.pc_i
+    val rs1      =  inst(19, 15)
+    val rs2      =  inst(24, 20)
+    val csrAddr  =  inst(31, 20)
+    val rd       =  inst(11, 7)
+    //bypass
+    val rs1Val   = PriorityMux(Seq(
+        (rs1 === 0.U,                  0.U),
+        (rs1 === io.fwd_i.ex.rf.rd,    io.fwd_i.ex.rf.wdata),
+        (rs1 === io.fwd_i.mem.rf.rd,   io.fwd_i.mem.rf.wdata),
+        (rs1 === io.fwd_i.wb.rf.rd,    io.fwd_i.wb.rf.wdata),
+        (true.B,                       io.rfData_i.rs1Val)
+    ))
+    val rs2Val   = PriorityMux(Seq(
+        (rs2 === 0.U,                  0.U),
+        (rs2 === io.fwd_i.ex.rf.rd,    io.fwd_i.ex.rf.wdata),
+        (rs2 === io.fwd_i.mem.rf.rd,   io.fwd_i.mem.rf.wdata),
+        (rs2 === io.fwd_i.wb.rf.rd,    io.fwd_i.wb.rf.wdata),
+        (true.B,                       io.rfData_i.rs2Val)
+    ))
 
-    val inst     = io.inst_i
-    val pc       = /*RegNext*/(io.pc_i)
+    val csrVal   = PriorityMux(Seq(
+        (csrAddr === io.fwd_i.wb.csr.addr,      io.fwd_i.wb.csr.wdata),
+        (csrAddr === io.fwd_i.mem.csr.addr,     io.fwd_i.mem.csr.wdata),
+        (csrAddr === io.fwd_i.ex.csr.addr,      io.fwd_i.ex.csr.wdata),
+        (true.B,                                io.csrData_i.csrVal)
+    ))
+    //sometimes the imm field will be interpreted as rs1 and rs2 and unexpectedly triggared the stall
+    //io.stall_req_o    :=  (io.fwd_i.prev_is_load & (io.fwd_i.prev_rd === rs1 | io.fwd_i.prev_rd === rs2))
+    
+    when(io.stall_req_o){
+        printf("stall at %x\n", pc)
+    }
+    
+    io.flush_req_o    :=  io.decInfo_o.branchOp.happen
+    io.stall_req_o    :=  0.U
+    val prev_is_load    =   io.fwd_i.prev_is_load
+    val prev_rd         =   io.fwd_i.prev_rd
 
-<<<<<<< HEAD
-
-
-=======
->>>>>>> npc
     val decRes   = ListLookup(inst, DecTable.defaultDec, DecTable.decMap)     //returns list(instType,opt)
     val instType = decRes(DecTable.TYPE)    //R I S B J U SYS
     val op       = decRes(DecTable.OPT)     //sometimes useless,like InstType.B
 
-<<<<<<< HEAD
-    val rs1Val   = io.regVal_i.rs1Val
-    val rs2Val   = io.regVal_i.rs2Val
-
     val opcode  =   inst(6, 0)
     val fct3    =   inst(14, 12)
-
-    //default
-    io.decInfo_o                  := 0.U.asTypeOf(new DecodeInfo)
-    io.decInfo_o.aluOp.src1       := rs1Val
-    io.decInfo_o.aluOp.src2       := rs2Val
-    io.decInfo_o.instType         := instType
-    io.decInfo_o.writeRfOp.rd     := inst(11, 7)
-    io.decInfo_o.aluOp.opt        := op
-    //read rf
-    io.readRfOp_o.rs1   := inst(19, 15)
-    io.readRfOp_o.rs2   := inst(24, 20)
-
-    io.debug_o.pc       :=  pc
-    io.debug_o.inst     :=  inst
-    //io.debug_o.gpr      :=  io.regVal.gpr
-    io.debug_o.a0       :=  io.regVal_i.a0
-=======
-    val rs1Val   = io.rfData_i.rs1Val
-    val rs2Val   = io.rfData_i.rs2Val
-    val csrVal   = io.csrData_i.csrVal
-
-    val opcode  =   inst(6, 0)
-    val fct3    =   inst(14, 12)
-    val csrAddr =   inst(31, 20)
 
     //default
     io.decInfo_o                    := 0.U.asTypeOf(new DecodeInfo)
@@ -88,56 +88,51 @@ class ID extends Module{
 
     io.debug_o.pc       :=  pc
     io.debug_o.inst     :=  inst
-    //io.debug_o.gpr      :=  io.rfData.gpr
-    io.debug_o.a0       :=  io.rfData_i.a0
->>>>>>> npc
+    io.debug_o.a0       :=  PriorityMux(Seq(
+        (10.U === io.fwd_i.ex.rf.rd,    io.fwd_i.ex.rf.wdata),
+        (10.U === io.fwd_i.mem.rf.rd,   io.fwd_i.mem.rf.wdata),
+        (10.U === io.fwd_i.wb.rf.rd,    io.fwd_i.wb.rf.wdata),
+        (true.B,                       io.rfData_i.a0)
+    ))
     io.debug_o.exit     :=  false.B
 
     val immI = imm_I(inst)
-    dontTouch(immI)
-
     switch(instType){//R I U S B J
         is(InstType.BAD){
             io.debug_o.exit   :=  inst.andR     //not nop
         }
-        is(InstType.I){ //likely jalr, load, rv32i-arith, rv64i-arith
-<<<<<<< HEAD
-            io.decInfo_o.writeRfOp.wen    :=  true.B
-=======
+        is(InstType.I){ //special cases: jalr, load
             io.decInfo_o.writeOp.rf.wen    :=  true.B
->>>>>>> npc
             val is_jalr =   opcode  === Opcode.JALR
 
             io.decInfo_o.aluOp.src1   :=  Mux(is_jalr, pc,        rs1Val)
             io.decInfo_o.aluOp.src2   :=  Mux(is_jalr, 4.U(64.W), imm_I(inst))
-            io.decInfo_o.branchOp.happen  :=  Mux(is_jalr, true.B, false.B)
+            //if stalled, we can't tell whether the branch is true, because our result is based on old operands. Just wait and see
+            io.decInfo_o.branchOp.happen  :=  Mux(is_jalr & ~io.stall_req_o, true.B, false.B)
             io.decInfo_o.branchOp.newPC   :=  rs1Val + imm_I(inst)
             //load uses src1 and src2 to calculate the address
-<<<<<<< HEAD
-            io.decInfo_o.memOp.isLoad     :=  opcode === Opcode.LOAD
-            io.decInfo_o.memOp.length     :=  fct3(1, 0)
-=======
-            io.decInfo_o.memOp.is_load    :=  opcode === Opcode.LOAD
+            io.decInfo_o.memOp.is_load    :=  (opcode === Opcode.LOAD & ~io.stall_req_o)
             io.decInfo_o.memOp.length     :=  UIntToOH(fct3(1, 0))
->>>>>>> npc
 
             io.decInfo_o.memOp.unsigned   :=  fct3(2)     //0 to 3 unsigned, signed when fct3 >= 4
+
+            io.stall_req_o  :=  prev_is_load & (prev_rd  === rs1)
 
         }
         is(InstType.R){
             io.decInfo_o.aluOp.src1       :=  rs1Val
             io.decInfo_o.aluOp.src2       :=  rs2Val
-<<<<<<< HEAD
-            io.decInfo_o.writeRfOp.wen    :=  true.B
-=======
             io.decInfo_o.writeOp.rf.wen   :=  true.B
->>>>>>> npc
 
-            //io.decInfo.aluOp.src1   :=  
+            io.stall_req_o  :=  prev_is_load & (prev_rd  === rs1 | prev_rd === rs2)
         }
         is(InstType.B){
+            //when stall happens, the branch signal can't be given, since the op
+            //solution: clear the branch signal when stall. this is done by & (~stall)
+            io.decInfo_o.writeOp.rf.rd    :=  0.U
             io.decInfo_o.branchOp.newPC   :=  pc + imm_B(inst)
-            io.decInfo_o.branchOp.happen  :=  MuxLookup(fct3, false.B, Seq(
+
+            val likely_branch = MuxLookup(fct3, false.B, Seq(
                 Fct3.BEQ     ->  (rs1Val  === rs2Val),
                 Fct3.BNE     ->  (rs1Val  =/= rs2Val),
                 Fct3.BLT     ->  (rs1Val.asSInt   <   rs2Val.asSInt),
@@ -145,60 +140,37 @@ class ID extends Module{
                 Fct3.BLTU    ->  (rs1Val   <  rs2Val),
                 Fct3.BGEU    ->  (rs1Val   >= rs2Val),
             ))
+
+            io.decInfo_o.branchOp.happen  :=  likely_branch & (~io.stall_req_o)
+            io.stall_req_o  :=  prev_is_load & (prev_rd  === rs1 | prev_rd === rs2)
         }
         is(InstType.U){     //lui auipc
             io.decInfo_o.aluOp.src1       :=  Mux(opcode === Opcode.LUI, 0.U, pc)
             io.decInfo_o.aluOp.src2       :=  imm_U(inst)
-<<<<<<< HEAD
-            io.decInfo_o.writeRfOp.wen    :=  true.B
-        }
-        is(InstType.J){     //jal
-            io.decInfo_o.writeRfOp.wen    :=  true.B
-            io.decInfo_o.branchOp.happen  :=  true.B
-            io.decInfo_o.branchOp.newPC   :=  pc + imm_J(inst)
-            //printf("raw data = %x\n", Cat(inst(31), inst(19,12), inst(20), inst(30,21), 0.U(1.W)))
-            //printf("imm = %x, target at %x\n", imm_J(inst), pc + imm_J(inst))
-=======
             io.decInfo_o.writeOp.rf.wen   :=  true.B
         }
-        is(InstType.J){     //jal
+        is(InstType.J){     //jal only
             io.decInfo_o.writeOp.rf.wen   :=  true.B
             io.decInfo_o.branchOp.happen  :=  true.B
             io.decInfo_o.branchOp.newPC   :=  pc + imm_J(inst)
->>>>>>> npc
             //link address
             io.decInfo_o.aluOp.src1       :=  pc
-            io.decInfo_o.aluOp.src2       :=  4.U(64.W)            
+            io.decInfo_o.aluOp.src2       :=  4.U(64.W)
         }
         is(InstType.S){
-<<<<<<< HEAD
-            io.decInfo_o.memOp.isStore    :=  true.B
-            io.decInfo_o.memOp.length     :=  fct3
-            io.decInfo_o.memOp.sdata      :=  rs2Val
-            /*
-            io.decInfo.memOp.sel        :=  MuxLookup(fct3, 0.U, Seq(
-                0.U ->  "b00000001".U,      //2 ^ 1 - 1
-                1.U ->  "b00000011".U,      //2 ^ 2 - 1 
-                2.U ->  "b00001111".U,      //2 ^ 4 - 1
-                3.U ->  "b11111111".U,      //2 ^ 8 - 1
-            ))
-            io.decInfo.memOp.sel        :=  ((1.U << (1.U << fct3)) - 1.U) << ((rs1Val + imm_S(inst)) % 8.U)      //sel is decided by both width and addr
-            */
-=======
-            io.decInfo_o.memOp.is_store   :=  true.B
+            //avoid incorrect bypass(imm being interpreted as rd)
+            io.decInfo_o.writeOp.rf.rd    :=  0.U
+            io.decInfo_o.memOp.is_store   :=  ~io.stall_req_o
             io.decInfo_o.memOp.length     :=  UIntToOH(fct3)
             io.decInfo_o.memOp.sdata      :=  rs2Val
 
->>>>>>> npc
             //use ALU to calculate the address
             io.decInfo_o.aluOp.src1       :=  rs1Val
             io.decInfo_o.aluOp.src2       :=  imm_S(inst)
+
+            io.stall_req_o  :=  prev_is_load & (prev_rd  === rs1 | prev_rd === rs2)
         }
 
-<<<<<<< HEAD
-        is(InstType.SYS){
-            io.debug_o.exit :=  true.B
-=======
         is(InstType.SYS){           //csr ecall ebreak mret
             when(fct3.orR){         //csr
                 //printf("csr\n")
@@ -236,7 +208,6 @@ class ID extends Module{
                 }
             }
 
->>>>>>> npc
         }
     }
 
@@ -247,12 +218,5 @@ class ID extends Module{
     //printf(p"src1 = ${Hexadecimal(src1)}, src2 = ${Hexadecimal(src2)}\n")
     //printf("\npc = %x, inst = %x\n",pc, inst)
     //printf("src1 = %x, src2 = %x\n\n\n", io.decInfo_o.aluOp.src1, io.decInfo_o.aluOp.src2)
-<<<<<<< HEAD
-    //printf("pc = %x, inst = %x\n", pc, inst)
-    //io.debug_o.exit     :=  inst === CONST.EBREAK
-
-//    val EXIT = Module(new EXIT)
-=======
->>>>>>> npc
 
 }

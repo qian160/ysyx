@@ -21,11 +21,7 @@ word_t * getCSR(word_t addr){
     case MEPC:    return &cpu.mepc;
     case MCAUSE:  return &cpu.mcause;
     case MTVEC:   return &cpu.mtvec;
-<<<<<<< HEAD
-    default: panic("bad csr addr\n");
-=======
     default: panic("bad csr addr, pc = %lx\n", cpu.pc);
->>>>>>> npc
   }
 }
 
@@ -222,7 +218,6 @@ static int decode_exec(Decode *D) {
     case(LOAD):{
       D -> decInfo.type = TYPE_I;
       word_t imm_I = immI(inst);
-      IFDEF(CONFIG_REF, printf("\n\npc:  0x%lx, base = 0x%lx, offset = %ld\n", D -> pc, R(rs1), imm_I));
       switch(fct3){
         case(0x0):  R(rd) = SEXT(Mr(R(rs1) + imm_I, 1), 8);   IFDEF(CONFIG_REF, printf("lb:  [x%d] <=  0x%lx\n", rd, R(rd)));  break;  //lb
         case(0x1):  R(rd) = SEXT(Mr(R(rs1) + imm_I, 2), 16);  IFDEF(CONFIG_REF, printf("lh:  [x%d] <=  0x%lx\n", rd, R(rd)));  break;  //lh
@@ -239,7 +234,6 @@ static int decode_exec(Decode *D) {
     case(STORE):{
       D -> decInfo.type = TYPE_S;
       word_t imm_S = immS(inst);
-      IFDEF(CONFIG_REF, printf("\n\npc:  0x%lx, base = 0x%lx, offset = %ld\n", D -> pc, R(rs1), imm_S));
       switch(fct3){
         case(0x0):  Mw(R(rs1) + imm_S, 1, R(rs2));  IFDEF(CONFIG_REF, printf("sb: 0x%lx   =>  pmem[0x%lx]\n", R(rs2), R(rs1) + imm_S ));      break;
         case(0x1):  Mw(R(rs1) + imm_S, 2, R(rs2));  IFDEF(CONFIG_REF, printf("sh: 0x%lx   =>  pmem[0x%lx]\n", R(rs2), R(rs1) + imm_S ));      break;
@@ -301,11 +295,7 @@ static int decode_exec(Decode *D) {
     }
   }
   R(0) = 0; // reset $zero to 0
-<<<<<<< HEAD
-  //Assert( D-> dnpc != D -> pc, "dead loop at 0x%lx\n", cpu.pc);
-=======
   Assert( D-> dnpc != D -> pc, "dead loop at 0x%lx\n", cpu.pc);
->>>>>>> npc
   //IFDEF(CONFIG_REF, Log("\nwdata = 0x%lx\npc = 0x%8lx, inst = 0x%08x,  rd = %d\n", opcode == BRANCH? 0: R(rd), D->pc, inst, rd));
   return 0;
 }

@@ -18,7 +18,7 @@ class CSR extends Module{
     val mepc    =   RegInit(0.U(64.W))
     val mcause  =   RegInit(0.U(64.W))
     val mstatus =   RegInit(0.U(64.W))
-    val mtvec   =   RegInit("h800011c0".U(64.W))    //__am_asm_trap offered by nanos
+    val mtvec   =   RegInit("h114514".U(64.W))    //not implemented yet...
 
     val wdata   =   io.writeOp_i.wdata
 

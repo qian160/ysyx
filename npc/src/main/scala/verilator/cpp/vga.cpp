@@ -92,9 +92,9 @@ void vga_update_screen() {
 
 void SDL_Exit(){
     SDL_FreeSurface(surface);
-    SDL_DestroyWindow(window);
     SDL_DestroyRenderer(renderer);
     SDL_DestroyTexture(texture);
+    SDL_DestroyWindow(window);
     SDL_Quit();
 }
 

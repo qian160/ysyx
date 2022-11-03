@@ -6,17 +6,19 @@ import AluOPT._
 
 class EX extends Module{
     val io = IO(new Bundle{
-        val decInfo_i   = Input(new DecodeInfo)
+        val decInfo_i   =   Input(new DecodeInfo)
+        val id_is_stalled_i     =   Input(Bool())     //meaning we are cauclulating on old value when this signal is high
+        val writeOp_o   =   Output(new WriteOp)
+        val memOp_o     =   Output(new MemOp)
+        val ex_fwd_o    =   Output(new Forward_Info)
 
-        val writeOp_o   = Output(new WriteOp)
-        val memOp_o     = Output(new MemOp)
-
-        val debug_i     = Input (new Debug_Bundle)
-        val debug_o     = Output(new Debug_Bundle)
+        val debug_i     =   Input (new Debug_Bundle)
+        val debug_o     =   Output(new Debug_Bundle)
     })
 
     val src1 = io.decInfo_i.aluOp.src1
     val src2 = io.decInfo_i.aluOp.src2
+
     val aluRes  = Wire(UInt(64.W))
     aluRes  := MuxLookup(io.decInfo_i.aluOp.opt, src1 + src2, Seq(
         SUB     ->  (src1 - src2),
@@ -57,21 +59,31 @@ class EX extends Module{
         )
     )
 
+    dontTouch(aluRes)
+
     io.writeOp_o          :=  io.decInfo_i.writeOp
     io.writeOp_o.rf.wdata :=  aluRes
 
     io.memOp_o            :=  io.decInfo_i.memOp
     io.memOp_o.addr       :=  aluRes
 
-    //printf("alures = %x\n", aluRes)
-/*
-    switch(io.decInfo.instType){
-        is(InstType.I){
-            io.writeRfOp.wen  = true.B
+    //disable bypass at load or the 'read after load' hazard
+    /*for example:
+        ld x1, 0(x2):   IF      ID      EX      MEM     WB
+        mv x2, x1:              IF      ID  ->  EX(*)   MEM     WB
+        (stalled)
+        mv x2, x1:                      IF      ID(mux) EX      MEM     WB
 
-        }
-    }
-*/
+        the 2nd inst need to be stalled. However, while stalling, the old value is also
+        passed to EX and being calculated. And the bypass from EX in the next cycle is thus incorrect
+
+    */
+    io.ex_fwd_o.rf.rd       :=  Mux(io.memOp_o.is_load | io.id_is_stalled_i, 0.U,  io.decInfo_i.writeOp.rf.rd)
+    io.ex_fwd_o.rf.wdata    :=  aluRes
+
+    io.ex_fwd_o.csr.addr    :=  io.writeOp_o.csr.waddr
+    io.ex_fwd_o.csr.wdata   :=  io.writeOp_o.csr.wdata
+
     io.debug_o  :=  io.debug_i
 
 }

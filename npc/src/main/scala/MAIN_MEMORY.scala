@@ -2,7 +2,6 @@ import chisel3._
 import chisel3.util._
 import chisel3.util.experimental._
 
-import MMIO_SPACE._
 import Util._
 
 class MAIN_MEMORY extends Module{
@@ -11,16 +10,13 @@ class MAIN_MEMORY extends Module{
     def in_pmem(addr: UInt):Bool    =   (addr >= CONST.PMEM_START & addr <= CONST.PMEM_END)
 
     val io = IO(new Bundle{
-        val timer_i   = Input(UInt(64.W))       //from TOP(cpp Input)
-        val pc_i      = Input(UInt(64.W))
+        val timer_i   = Input(UInt(64.W))       //from TOP(cpp Input). Ignored now
+        val pc_i      = Input(UInt(64.W))       //from IF
         val memOp_i   = Input(new MemOp)
 
         val inst_o    = Output(UInt(32.W))
         val loadVal_o = Output(UInt(64.W))
     })
-
-    val rtc_past_time = RegInit(0.U(64.W))      //how much time has past
-    val vga_ctl       = RegInit(((400 << 16) | 300).U(64.W))
     //to make inst rom and data ram compatible and easy to initialize(loadMemoryFromFileInline), the width is set to be 32 bits
     val ram = Mem(1 << 20, UInt(32.W))  //hope this is enough
     loadMemoryFromFileInline(ram, "/home/s081/Downloads/ysyx-workbench/npc/src/main/scala/img_file")
@@ -34,8 +30,6 @@ class MAIN_MEMORY extends Module{
     val length      =   io.memOp_i.length
     val unsigned    =   io.memOp_i.unsigned
 
-    rtc_past_time   :=  io.timer_i
-
     val MMIO_RW = Module(new MMIO_RW)
     MMIO_RW.io.addr     :=  addr_i
     MMIO_RW.io.length   :=  io.memOp_i.length
@@ -45,7 +39,7 @@ class MAIN_MEMORY extends Module{
 
     val loadVal_temp =   Wire(UInt(64.W))   //without sext
     //start accessing memory
-    when(in_pmem(io.memOp_i.addr)){
+    when(in_pmem(addr_i)){
         /*
         when(io.memOp_i.is_load | io.memOp_i.is_store){
             printf("addr %x is in pmem\n", io.memOp_i.addr)

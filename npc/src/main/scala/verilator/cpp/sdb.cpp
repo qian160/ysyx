@@ -17,7 +17,7 @@ extern void (*difftest_exec)();
 extern void (*difftest_init)(const char *img_file);
 extern uint64_t * npc_timer;
 CPU_state state;
-extern void SDL_Exit();
+extern void my_exit(int);
 
 const char *regs[] = {    //names.. add $ prefix to make regex match easier
     "x0",  "ra", "sp",   "gp",  "tp",  "t0",  "t1",  "t2",
@@ -44,6 +44,9 @@ extern void vga_update_screen();
 extern uint64_t boot_time;
 extern void send_key(uint8_t scancode, bool is_keydown);
 
+
+uint64_t nr_inst = 0;
+uint64_t valid_inst = 0;
 int cmd_s(string steps){
     size_t n = atoi(steps.c_str());
     n = n? n: 1;
@@ -53,6 +56,8 @@ int cmd_s(string steps){
 
         tb.tick();
         IFDEF(DIFFTEST_ENABLE, assert(difftest()));
+        nr_inst++;
+        if(!top->io_stall_o & !top->io_flush_o) valid_inst++;
 #ifdef  HAS_DEVICE
         /*
 
@@ -94,7 +99,7 @@ int cmd_c(string args){
 
 int cmd_h(string cmd){
     for(auto i :cmd_table){
-        cout.width(8);
+        //cout.width(8);
         cout << i.first << " - " << i.second.description << " - " << i.second.Usage << endl;
     }
     return 0;
@@ -108,13 +113,7 @@ int cmd_q (string arg){
     */
     ostream_iterator<string> out(cout);
     *out++ = Green("Goodbye😀\n");
-    SDL_Exit();
-    __asm__ volatile(
-        "movl $60,  %eax\n\t"
-        "xorl %edi, %edi\n\t"
-        "syscall\n"
-    );
-
+    my_exit(114514);
     return 114514;
 }
 
@@ -129,5 +128,18 @@ int cmd_i(string arg) {
     cout << _pink << "mcause:    " << top->io_csrData_cause << normal << endl;
     cout << _pink << "mstatus:   " << top->io_csrData_status << normal << endl;
     cout << endl;
+    return 0;
+}
+
+int cmd_b(string arg){
+    uint64_t addr;
+    sscanf(arg.c_str(), "%lx", &addr);
+    while(1)
+    {
+        if(top -> io_pc_o == addr)
+            break;
+        cout << "cmd_b: pc = " << top -> io_pc_o << endl;
+        cmd_s("1");
+    }
     return 0;
 }
