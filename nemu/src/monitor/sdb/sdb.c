@@ -18,7 +18,7 @@ static char* rl_gets() {
 
   line_read = readline("(nemu) ");
   */
-  char promt[20];
+  char promt[36];
 //  const char promt_fmt[36];  
   sprintf(promt, "\33[0;32m(%lx)\33[0m", cpu.pc);
 //          printf(ANSI_FMT("%s %s <0x%lx>\n", ANSI_FG_YELLOW), s, f.name, f.address);
