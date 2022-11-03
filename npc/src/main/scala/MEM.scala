@@ -21,7 +21,7 @@ class MEM extends Module{
 
     val sdata   =   io.memOp_i.sdata
     val addr    =   io.memOp_i.addr
-
+/*
     when(is_load){
         printf("(%x):   load addr  = %x, data = %x\n", io.debug_i.pc, addr, io.loadVal_i)
     }
@@ -29,7 +29,7 @@ class MEM extends Module{
     when(is_store){
         printf("(%x):   store addr = %x, data = %x\n", io.debug_i.pc, addr, sdata)
     }
-
+*/
     io.writeOp_o            :=  io.writeOp_i
     io.writeOp_o.rf.wdata   :=  Mux(is_load, io.loadVal_i, io.writeOp_i.rf.wdata)
 

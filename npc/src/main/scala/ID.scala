@@ -56,11 +56,11 @@ class ID extends Module{
     ))
     //sometimes the imm field will be interpreted as rs1 and rs2 and unexpectedly triggared the stall
     //io.stall_req_o    :=  (io.fwd_i.prev_is_load & (io.fwd_i.prev_rd === rs1 | io.fwd_i.prev_rd === rs2))
-    
+/*
     when(io.stall_req_o){
         printf("stall at %x\n", pc)
     }
-    
+*/
     io.flush_req_o    :=  io.decInfo_o.branchOp.happen
     io.stall_req_o    :=  0.U
     val prev_is_load    =   io.fwd_i.prev_is_load

@@ -68,8 +68,6 @@ end // initial
 `endif // SYNTHESIS
 endmodule
 module ID(
-  input         clock,
-  input         reset,
   input  [31:0] io_inst_i,
   input  [11:0] io_fwd_i_ex_csr_addr,
   input  [63:0] io_fwd_i_ex_csr_wdata,
@@ -379,7 +377,7 @@ module ID(
   wire [7:0] _io_decInfo_o_memOp_length_T_2 = 8'h1 << fct3; // @[OneHot.scala 57:35]
   wire [11:0] _io_decInfo_o_aluOp_src2_T_16 = {io_inst_i[31:25],io_inst_i[11:7]}; // @[HELPERS.scala 13:65]
   wire [63:0] _io_decInfo_o_aluOp_src2_T_18 = {{52{_io_decInfo_o_aluOp_src2_T_16[11]}},_io_decInfo_o_aluOp_src2_T_16}; // @[HELPERS.scala 13:80]
-  wire  _T_10 = |fct3; // @[ID.scala 175:23]
+  wire  _T_8 = |fct3; // @[ID.scala 175:23]
   wire [4:0] _rsVal_T_2 = io_inst_i[19:15]; // @[HELPERS.scala 13:65]
   wire [63:0] _rsVal_T_4 = {{59{_rsVal_T_2[4]}},_rsVal_T_2}; // @[HELPERS.scala 13:80]
   wire [63:0] rsVal = fct3[2] ? _rsVal_T_4 : rs1Val; // @[ID.scala 183:38]
@@ -422,7 +420,7 @@ module ID(
   wire [63:0] _GEN_35 = 5'h5 == decRes_0 ? rs1Val : _GEN_23; // @[ID.scala 100:21 168:43]
   wire [63:0] _GEN_36 = 5'h5 == decRes_0 ? _io_decInfo_o_aluOp_src2_T_18 : _GEN_24; // @[ID.scala 100:21 169:43]
   wire  _GEN_37 = 5'h5 == decRes_0 & _io_stall_req_o_T_5; // @[ID.scala 100:21 171:29 65:23]
-  wire  _GEN_38 = 5'h5 == decRes_0 ? 1'h0 : 5'h6 == decRes_0 & _T_10; // @[ID.scala 100:21 77:37]
+  wire  _GEN_38 = 5'h5 == decRes_0 ? 1'h0 : 5'h6 == decRes_0 & _T_8; // @[ID.scala 100:21 77:37]
   wire [63:0] _GEN_39 = 5'h5 == decRes_0 ? 64'h0 : _GEN_25; // @[ID.scala 100:21 77:37]
   wire  _GEN_40 = 5'h5 == decRes_0 ? 1'h0 : 5'h6 == decRes_0 & _GEN_17; // @[ID.scala 100:21 77:37]
   wire  _GEN_41 = 5'h5 == decRes_0 ? 1'h0 : 5'h6 == decRes_0 & _GEN_18; // @[ID.scala 100:21 77:37]
@@ -527,19 +525,6 @@ module ID(
   assign io_debug_o_a0 = _io_debug_o_a0_T ? io_fwd_i_ex_rf_wdata : _io_debug_o_a0_T_4; // @[Mux.scala 47:70]
   assign io_debug_o_pc = io_pc_i; // @[ID.scala 89:25]
   assign io_debug_o_inst = io_inst_i; // @[ID.scala 90:25]
-  always @(posedge clock) begin
-    `ifndef SYNTHESIS
-    `ifdef PRINTF_COND
-      if (`PRINTF_COND) begin
-    `endif
-        if (io_stall_req_o & ~reset) begin
-          $fwrite(32'h80000002,"stall at %x\n",io_pc_i); // @[ID.scala 61:15]
-        end
-    `ifdef PRINTF_COND
-      end
-    `endif
-    `endif // SYNTHESIS
-  end
 endmodule
 module EX(
   input         io_decInfo_i_writeOp_rf_wen,
@@ -680,8 +665,6 @@ module EX(
   assign io_debug_o_inst = io_debug_i_inst; // @[EX.scala 87:17]
 endmodule
 module MEM(
-  input         clock,
-  input         reset,
   input         io_writeOp_i_rf_wen,
   input  [4:0]  io_writeOp_i_rf_rd,
   input  [63:0] io_writeOp_i_rf_wdata,
@@ -714,7 +697,6 @@ module MEM(
   output [63:0] io_debug_o_pc,
   output [31:0] io_debug_o_inst
 );
-  wire  _T_1 = ~reset; // @[MEM.scala 26:15]
   assign io_writeOp_o_rf_wen = io_writeOp_i_rf_wen; // @[MEM.scala 33:29]
   assign io_writeOp_o_rf_rd = io_writeOp_i_rf_rd; // @[MEM.scala 33:29]
   assign io_writeOp_o_rf_wdata = io_memOp_i_is_load ? io_loadVal_i : io_writeOp_i_rf_wdata; // @[MEM.scala 34:36]
@@ -729,30 +711,6 @@ module MEM(
   assign io_debug_o_a0 = io_debug_i_a0; // @[MEM.scala 36:21]
   assign io_debug_o_pc = io_debug_i_pc; // @[MEM.scala 36:21]
   assign io_debug_o_inst = io_debug_i_inst; // @[MEM.scala 36:21]
-  always @(posedge clock) begin
-    `ifndef SYNTHESIS
-    `ifdef PRINTF_COND
-      if (`PRINTF_COND) begin
-    `endif
-        if (io_memOp_i_is_load & ~reset) begin
-          $fwrite(32'h80000002,"(%x):   load addr  = %x, data = %x\n",io_debug_i_pc,io_memOp_i_addr,io_loadVal_i); // @[MEM.scala 26:15]
-        end
-    `ifdef PRINTF_COND
-      end
-    `endif
-    `endif // SYNTHESIS
-    `ifndef SYNTHESIS
-    `ifdef PRINTF_COND
-      if (`PRINTF_COND) begin
-    `endif
-        if (io_memOp_i_is_store & _T_1) begin
-          $fwrite(32'h80000002,"(%x):   store addr = %x, data = %x\n",io_debug_i_pc,io_memOp_i_addr,io_memOp_i_sdata); // @[MEM.scala 30:15]
-        end
-    `ifdef PRINTF_COND
-      end
-    `endif
-    `endif // SYNTHESIS
-  end
 endmodule
 module WB(
   input         io_writeOp_i_rf_wen,
@@ -2703,8 +2661,6 @@ module TOP(
   wire [31:0] IF_io_inst_i; // @[TOP.scala 33:31]
   wire [63:0] IF_io_pc_o; // @[TOP.scala 33:31]
   wire [31:0] IF_io_inst_o; // @[TOP.scala 33:31]
-  wire  ID_clock; // @[TOP.scala 34:31]
-  wire  ID_reset; // @[TOP.scala 34:31]
   wire [31:0] ID_io_inst_i; // @[TOP.scala 34:31]
   wire [11:0] ID_io_fwd_i_ex_csr_addr; // @[TOP.scala 34:31]
   wire [63:0] ID_io_fwd_i_ex_csr_wdata; // @[TOP.scala 34:31]
@@ -2789,8 +2745,6 @@ module TOP(
   wire [63:0] EX_io_debug_o_a0; // @[TOP.scala 35:31]
   wire [63:0] EX_io_debug_o_pc; // @[TOP.scala 35:31]
   wire [31:0] EX_io_debug_o_inst; // @[TOP.scala 35:31]
-  wire  MEM_clock; // @[TOP.scala 36:31]
-  wire  MEM_reset; // @[TOP.scala 36:31]
   wire  MEM_io_writeOp_i_rf_wen; // @[TOP.scala 36:31]
   wire [4:0] MEM_io_writeOp_i_rf_rd; // @[TOP.scala 36:31]
   wire [63:0] MEM_io_writeOp_i_rf_wdata; // @[TOP.scala 36:31]
@@ -3028,8 +2982,6 @@ module TOP(
     .io_inst_o(IF_io_inst_o)
   );
   ID ID ( // @[TOP.scala 34:31]
-    .clock(ID_clock),
-    .reset(ID_reset),
     .io_inst_i(ID_io_inst_i),
     .io_fwd_i_ex_csr_addr(ID_io_fwd_i_ex_csr_addr),
     .io_fwd_i_ex_csr_wdata(ID_io_fwd_i_ex_csr_wdata),
@@ -3118,8 +3070,6 @@ module TOP(
     .io_debug_o_inst(EX_io_debug_o_inst)
   );
   MEM MEM ( // @[TOP.scala 36:31]
-    .clock(MEM_clock),
-    .reset(MEM_reset),
     .io_writeOp_i_rf_wen(MEM_io_writeOp_i_rf_wen),
     .io_writeOp_i_rf_rd(MEM_io_writeOp_i_rf_rd),
     .io_writeOp_i_rf_wdata(MEM_io_writeOp_i_rf_wdata),
@@ -3416,8 +3366,6 @@ module TOP(
   assign IF_io_branchOp_i_happen = ID_io_decInfo_o_branchOp_happen; // @[TOP.scala 49:25]
   assign IF_io_branchOp_i_newPC = ID_io_decInfo_o_branchOp_newPC; // @[TOP.scala 49:25]
   assign IF_io_inst_i = Main_Memory_io_inst_o; // @[TOP.scala 50:25]
-  assign ID_clock = clock;
-  assign ID_reset = reset;
   assign ID_io_inst_i = IF_ID_io_inst_o; // @[TOP.scala 59:23]
   assign ID_io_fwd_i_ex_csr_addr = EX_io_ex_fwd_o_csr_addr; // @[TOP.scala 64:23]
   assign ID_io_fwd_i_ex_csr_wdata = EX_io_ex_fwd_o_csr_wdata; // @[TOP.scala 64:23]
@@ -3458,8 +3406,6 @@ module TOP(
   assign EX_io_debug_i_a0 = ID_EX_io_debug_o_a0; // @[TOP.scala 136:21]
   assign EX_io_debug_i_pc = ID_EX_io_debug_o_pc; // @[TOP.scala 136:21]
   assign EX_io_debug_i_inst = ID_EX_io_debug_o_inst; // @[TOP.scala 136:21]
-  assign MEM_clock = clock;
-  assign MEM_reset = reset;
   assign MEM_io_writeOp_i_rf_wen = EX_MEM_io_writeOp_o_rf_wen; // @[TOP.scala 88:25]
   assign MEM_io_writeOp_i_rf_rd = EX_MEM_io_writeOp_o_rf_rd; // @[TOP.scala 88:25]
   assign MEM_io_writeOp_i_rf_wdata = EX_MEM_io_writeOp_o_rf_wdata; // @[TOP.scala 88:25]

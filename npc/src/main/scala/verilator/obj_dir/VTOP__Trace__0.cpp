@@ -762,7 +762,8 @@ void VTOP___024root__trace_chg_sub_0(VTOP___024root* vlSelf, VerilatedVcd* trace
         tracep->chgBit(oldp+212,(((IData)(vlSelf->TOP__DOT__Main_Memory__DOT___T_2) 
                                   & (IData)(vlSelf->TOP__DOT__EX_MEM__DOT__memOp_is_store))));
         tracep->chgIData(oldp+213,((IData)(vlSelf->TOP__DOT__Main_Memory__DOT___T_62)),32);
-        tracep->chgBit(oldp+214,(vlSelf->TOP__DOT__Main_Memory__DOT__MMIO_RW_read_en));
+        tracep->chgBit(oldp+214,(((~ (IData)(vlSelf->TOP__DOT__Main_Memory__DOT___T_2)) 
+                                  & (IData)(vlSelf->TOP__DOT__EX_MEM__DOT__memOp_is_load))));
         tracep->chgBit(oldp+215,(((~ (IData)(vlSelf->TOP__DOT__Main_Memory__DOT___T_2)) 
                                   & (IData)(vlSelf->TOP__DOT__EX_MEM__DOT__memOp_is_store))));
         tracep->chgQData(oldp+216,(vlSelf->TOP__DOT__Main_Memory__DOT__MMIO_RW_rdata),64);

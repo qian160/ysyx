@@ -192,7 +192,6 @@ VL_ATTR_COLD void VTOP___024root___ctor_var_reset(VTOP___024root* vlSelf) {
         vlSelf->TOP__DOT__Main_Memory__DOT__ram[__Vi0] = VL_RAND_RESET_I(32);
     }
     vlSelf->TOP__DOT__Main_Memory__DOT__ram_io_inst_o_MPORT_data = VL_RAND_RESET_I(32);
-    vlSelf->TOP__DOT__Main_Memory__DOT__MMIO_RW_read_en = VL_RAND_RESET_I(1);
     vlSelf->TOP__DOT__Main_Memory__DOT__MMIO_RW_rdata = VL_RAND_RESET_Q(64);
     vlSelf->TOP__DOT__Main_Memory__DOT___T_2 = VL_RAND_RESET_I(1);
     vlSelf->TOP__DOT__Main_Memory__DOT__dword = VL_RAND_RESET_Q(64);

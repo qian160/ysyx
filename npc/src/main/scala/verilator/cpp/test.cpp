@@ -67,7 +67,7 @@ int main(int argc, char **argv)
 	else
 		img_file.reset(new string(TEST_PATH + string(argv[1]) + string("-riscv64-npc.bin")));
 	tb.reset();
-	tb.trace("./wave.vcd");		//consumes too much memory
+	//tb.trace("./wave.vcd");		//consumes too much memory
 	IFDEF(DIFFTEST_ENABLE, init_difftest());
 	IFDEF(HAS_DEVICE, init_device());
 	while(!Verilated::gotFinish()){
