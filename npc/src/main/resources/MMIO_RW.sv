@@ -20,7 +20,7 @@ always @(*) begin
         //$display("mmio_read(%x, %x)", read_en, addr, length);
         rdata   =  mmio_read(addr, length);
     end
-    //avoid comb latch
+    //avoid comb latch... just keep this as a habit
     else
         rdata   =  64'd0;
 end
