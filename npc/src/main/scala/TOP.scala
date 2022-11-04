@@ -28,6 +28,9 @@ class TOP extends Module{
         val src1      = Output(UInt(64.W))
         val src2      = Output(UInt(64.W))
 
+        val nr_branch_o =   Output(UInt(64.W))
+        val nr_taken_o  =   Output(UInt(64.W))
+
     })
     //comb logic, pipeline stages
     val IF          =   Module(new IF)
@@ -130,6 +133,11 @@ class TOP extends Module{
     //used to help calculating ipc
     io.stall_o  :=  Control.io.stall_o
     io.flush_o  :=  Control.io.flush_o
+
+    io.nr_taken_o   :=  ID.io.nr_taken_o
+    io.nr_branch_o  :=  ID.io.nr_branch_o
+    dontTouch(io.nr_branch_o)
+    dontTouch(io.nr_taken_o)
     dontTouch(io.stall_o)
     dontTouch(io.flush_o)
     //debug

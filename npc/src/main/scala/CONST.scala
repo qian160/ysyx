@@ -113,6 +113,8 @@ object Opcode {
 
     val LOAD    =   "b0000011".U
     val ARITH_I =   "b0010011".U
+
+    val BRANCH  =   "b1100011".U
 }
 
 object SYS_INST {   // inst[21, 20]

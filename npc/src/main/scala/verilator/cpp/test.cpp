@@ -44,9 +44,13 @@ extern uint64_t valid_inst;
 void my_exit(int sig)
 {
 	SDL_Exit();
+	uint64_t & nr_branch = top -> io_nr_branch_o;
+	uint64_t & nr_taken  = top -> io_nr_taken_o;
+	cout.setf(ios_base::dec, ios_base::basefield);
 	cout << endl;
-	cout << Green("total insts: ") << dec << nr_inst << endl; 
-	cout << Green("        ipc: ") << static_cast<double>(valid_inst) / static_cast<double>(nr_inst) << endl;
+	cout << Green("total insts: ") << nr_inst << endl; 
+	cout << Green("        ipc: ") << (double)valid_inst / (double)nr_inst << endl;
+	cout << Green("branch rate: ") << (double)nr_taken / (double)nr_branch <<" (" << nr_taken << " / " << nr_branch << ")" << endl;
 	//todo: add cache hit rate, branch predictor accuracy
 	exit(0);
     __asm__ volatile(

@@ -1,8 +1,13 @@
 import chisel3._
 import chisel3.util._
-import chisel3.util.experimental._
+import Util._
+import Opcode._
 
 class IF extends Module{
+    def is_branch(inst: UInt) = {
+        //jump don't need to predict
+        OPCODE(inst) === BRANCH
+    }
     val io = IO(new Bundle{
         val ctrl_i      =   Input(new Ctrl)
         val branchOp_i  =   Input(new BranchOp)
@@ -11,10 +16,6 @@ class IF extends Module{
         val inst_o      =   Output(UInt(32.W))
     })
 
-    //val inst_rom    =  /*SyncRead*/Mem(0x800, UInt(32.W))  //should be enough...
-    //SyncRead will cause the "delay slot"
-    //in chisel test and verilator, the path will be different
-    //loadMemoryFromFileInline(inst_rom, "/home/s081/Downloads/ysyx-workbench/npc/src/main/scala/inst_rom")
     val pc  =  RegInit(CONST.PC_INIT)
 
     /*
@@ -28,18 +29,41 @@ class IF extends Module{
                     So we just take stall as valid. As for the other 2 signals, just wait and see in the next cycle
 
     */
-    val branch_latch    =   RegNext(io.branchOp_i.happen & io.ctrl_i.stall, 0.U)
-    val newPC_latch     =   RegNext(io.branchOp_i.newPC, 0.U)
+
+//--------------------------------------------------------------
+    /*
+        use gshare with 12 bits' index
+        each predictor is a 2-bit counter, 00, 01 not taken,  10, 11 taken. So just check the high bit
+
+        how about BTB miss?
+        add a 'hit' signal in BTB's output port. The target in the cache is only used when *taken and hit*
+    */
+    val BTB = RegInit(VecInit(Seq.fill(1 << 12)(0.U.asTypeOf(new BTB_entry))))
+    val local_index =   pc(11, 0)
+    val history     =   RegInit(0.U(12.W))
+    val which_prd   =   local_index | history
+    val predictor   =   RegInit(VecInit(Seq.fill(1 << 12)(0.U(2.W))))
+    val valid       =   BTB(which_prd).valid
+    //history makes an influence on the prediction now
+    val prediction  =   predictor(which_prd)(1)
+
     pc :=   PriorityMux(Seq(
         //(reset.asBool(),        CONST.PC_INIT),
         (io.ctrl_i.stall,       pc),
         //(io.ctrl_i.flush,       CONST.PC_INIT),
         (io.branchOp_i.happen,  io.branchOp_i.newPC),
-        //(branch_latch,          newPC_latch),
+        (prediction & valid,    BTB(which_prd).target),
         (true.B,                pc + 4.U)
     ))
+
 
     io.pc_o :=  pc
     //io.inst_o   :=  inst_rom(pc >> 2)
     io.inst_o   :=  io.inst_i
+}
+
+class BTB_entry extends Bundle{
+    val pc      =   UInt(64.W)
+    val valid   =   Bool()
+    val target  =   UInt(64.W)
 }

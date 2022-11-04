@@ -3,12 +3,6 @@ import chisel3.util._
 import Util._
 
 class ID extends Module{
-    def imm_I(inst: UInt) = SEXT(inst(31,20), 12, 64)
-    def imm_J(inst: UInt) = SEXT(Cat(inst(31), inst(19,12), inst(20), inst(30,21), 0.U(1.W)),21, 64)
-    def imm_U(inst: UInt) = SEXT(inst(31,12), 20, 64) << 12
-    def imm_S(inst: UInt) = SEXT(Cat(inst(31,25), inst(11,7)), 12, 64)
-    def imm_B(inst: UInt) = SEXT(Cat(inst(31), inst(7), inst(30,25), inst(11,8), 0.U(1.W)), 13, 64)
-
     val io = IO(new Bundle{
         val inst_i      =   Input(UInt(32.W))
         val fwd_i       =   Input(new Forward)
@@ -22,6 +16,8 @@ class ID extends Module{
         val flush_req_o =   Output(Bool())
 
         val debug_o     =   Output(new Debug_Bundle)
+        val nr_branch_o =   Output(UInt(64.W))
+        val nr_taken_o  =   Output(UInt(64.W))
     })
     //alias
     val inst     =  io.inst_i
@@ -30,6 +26,9 @@ class ID extends Module{
     val rs2      =  inst(24, 20)
     val csrAddr  =  inst(31, 20)
     val rd       =  inst(11, 7)
+
+    val nr_branch   =   RegInit(0.U(64.W))
+    val nr_taken    =   RegInit(0.U(64.W))
     //bypass
     val rs1Val   = PriorityMux(Seq(
         (rs1 === 0.U,                  0.U),
@@ -141,6 +140,13 @@ class ID extends Module{
 
             io.decInfo_o.branchOp.happen  :=  likely_branch & (~io.stall_req_o)
             io.stall_req_o  :=  prev_is_load & (prev_rd  === rs1 | prev_rd === rs2)
+
+            when(io.decInfo_o.branchOp.happen){
+                nr_taken := nr_taken + 1.U
+            }
+            when(~io.stall_req_o){
+                nr_branch   :=  nr_branch + 1.U
+            }
         }
         is(InstType.U){     //lui auipc
             io.decInfo_o.aluOp.src1       :=  Mux(opcode === Opcode.LUI, 0.U, pc)
@@ -210,6 +216,8 @@ class ID extends Module{
         }
     }
 
+    io.nr_branch_o  :=  nr_branch
+    io.nr_taken_o   :=  nr_taken
     //debug print info
     //val src1 = io.decInfo_o.aluOp.src1
     //val src2 = io.decInfo_o.aluOp.src2
