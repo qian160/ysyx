@@ -45,10 +45,10 @@ void my_exit(int sig)
 {
 	SDL_Exit();
 	cout << endl;
-	cout << Magenta("total insts: ") << dec << nr_inst << endl; 
-	cout << Magenta("        ipc: ") << static_cast<double>(valid_inst) / static_cast<double>(nr_inst) << endl;
+	cout << Green("total insts: ") << dec << nr_inst << endl; 
+	cout << Green("        ipc: ") << static_cast<double>(valid_inst) / static_cast<double>(nr_inst) << endl;
+	//todo: add cache hit rate, branch predictor accuracy
 	exit(0);
-
     __asm__ volatile(
         "movl $60,  %eax\n\t"
         "xorl %edi, %edi\n\t"
@@ -67,8 +67,8 @@ int main(int argc, char **argv)
 	else
 		img_file.reset(new string(TEST_PATH + string(argv[1]) + string("-riscv64-npc.bin")));
 	tb.reset();
-	//tb.trace("./wave.vcd");		//consumes too much memory
-	IFDEF(DIFFTEST_ENABLE, init_difftest());
+	IFDEF(TRACE_VCD, tb.trace("./wave.vcd"));		//consumes too much memory
+	IFDEF(DIFFTEST_ENABLE, init_difftest());		//almost impossible to use now...
 	IFDEF(HAS_DEVICE, init_device());
 	while(!Verilated::gotFinish()){
 		// IF's pc

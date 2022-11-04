@@ -4,9 +4,7 @@ import Util._
 
 class ID extends Module{
     def imm_I(inst: UInt) = SEXT(inst(31,20), 12, 64)
-//    def imm_J(inst: UInt) = SEXT(Cat(inst(31), inst(19,12), inst(20), inst(30,21), 0.U(1.W)),13, 64)
     def imm_J(inst: UInt) = SEXT(Cat(inst(31), inst(19,12), inst(20), inst(30,21), 0.U(1.W)),21, 64)
-    //def imm_U(inst: UInt) = SEXT(inst(31,12), 20, 64)
     def imm_U(inst: UInt) = SEXT(inst(31,12), 20, 64) << 12
     def imm_S(inst: UInt) = SEXT(Cat(inst(31,25), inst(11,7)), 12, 64)
     def imm_B(inst: UInt) = SEXT(Cat(inst(31), inst(7), inst(30,25), inst(11,8), 0.U(1.W)), 13, 64)
@@ -127,8 +125,8 @@ class ID extends Module{
             io.stall_req_o  :=  prev_is_load & (prev_rd  === rs1 | prev_rd === rs2)
         }
         is(InstType.B){
-            //when stall happens, the branch signal can't be given, since the result is based on incorrect operands
-            //solution: clear the branch signal when stall. this is done by & (~stall)
+            //when stall happens, branch result is in fact not sure, since it's calculated based on incorrect operands
+            //solution: always clear the branch signal when stall. this is done by & (~stall)
             io.decInfo_o.writeOp.rf.rd    :=  0.U
             io.decInfo_o.branchOp.newPC   :=  pc + imm_B(inst)
 
