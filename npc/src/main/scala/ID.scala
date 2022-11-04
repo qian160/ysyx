@@ -127,7 +127,7 @@ class ID extends Module{
             io.stall_req_o  :=  prev_is_load & (prev_rd  === rs1 | prev_rd === rs2)
         }
         is(InstType.B){
-            //when stall happens, the branch signal can't be given, since the op
+            //when stall happens, the branch signal can't be given, since the result is based on incorrect operands
             //solution: clear the branch signal when stall. this is done by & (~stall)
             io.decInfo_o.writeOp.rf.rd    :=  0.U
             io.decInfo_o.branchOp.newPC   :=  pc + imm_B(inst)
@@ -160,6 +160,7 @@ class ID extends Module{
         is(InstType.S){
             //avoid incorrect bypass(imm being interpreted as rd)
             io.decInfo_o.writeOp.rf.rd    :=  0.U
+            //when stalled, clear the store bit, otherwise the incorrect address would cause bugs in MEM
             io.decInfo_o.memOp.is_store   :=  ~io.stall_req_o
             io.decInfo_o.memOp.length     :=  UIntToOH(fct3)
             io.decInfo_o.memOp.sdata      :=  rs2Val
@@ -212,8 +213,8 @@ class ID extends Module{
     }
 
     //debug print info
-    val src1 = io.decInfo_o.aluOp.src1
-    val src2 = io.decInfo_o.aluOp.src2
+    //val src1 = io.decInfo_o.aluOp.src1
+    //val src2 = io.decInfo_o.aluOp.src2
 
     //printf(p"src1 = ${Hexadecimal(src1)}, src2 = ${Hexadecimal(src2)}\n")
     //printf("\npc = %x, inst = %x\n",pc, inst)
