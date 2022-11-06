@@ -71,7 +71,7 @@ static int cmd_info(char * args){
     char * reg_name = strtok(NULL, " ");
     if( arg == NULL) 
     {
-        printf(ANSI_FMT("too few argument!\n", ANSI_FG_PINK));
+        isa_reg_display();
         return 0;
     }
     if(streq(arg, "r") && !reg_name)

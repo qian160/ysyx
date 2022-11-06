@@ -49,7 +49,7 @@ class DecodeInfo extends Bundle{
     val instType    = UInt(5.W)
     val writeOp     = new WriteOp
     val aluOp       = new AluOp
-    val branchOp    = new BranchOp
+    //val branchOp    = new BranchOp
     val memOp       = new MemOp
 }
 
@@ -109,4 +109,31 @@ class Forward extends Bundle{
 class Ctrl extends Bundle{
     val stall   =   Bool()
     val flush   =   Bool()
+}
+
+class Update_PredictorOp extends Bundle{
+    val is_jump     =   Bool()
+    val is_branch   =   Bool()
+    val prediction  =   Bool()
+    val taken       =   Bool()
+    val pc          =   UInt(64.W)
+    val btb_index   =   UInt(12.W)
+    val bpb_index   =   UInt(12.W)
+    val target      =   UInt(64.W)
+}
+//subset of Update_PredictorOp
+class Jump_result extends Bundle{
+    val is_jump =   Bool()
+    val target  =   UInt(64.W)
+    val pc      =   UInt(64.W)
+    val btb_index   =   UInt(12.W)
+}
+
+class Branch_result extends Bundle{
+    val is_branch   =   Bool()
+    val prediction  =   Bool()
+    val bpb_index   =   UInt(12.W)
+    val pc          =   UInt(64.W)
+    val target      =   UInt(64.W)
+    val taken       =   UInt(64.W)
 }

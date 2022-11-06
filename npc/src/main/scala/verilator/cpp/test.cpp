@@ -51,6 +51,7 @@ void my_exit(int sig)
 	cout << Green("total insts: ") << nr_inst << endl; 
 	cout << Green("        ipc: ") << (double)valid_inst / (double)nr_inst << endl;
 	cout << Green("branch rate: ") << (double)nr_taken / (double)nr_branch <<" (" << nr_taken << " / " << nr_branch << ")" << endl;
+	cout << Green("bp accuracy: ") << endl;
 	//todo: add cache hit rate, branch predictor accuracy
 	exit(0);
     __asm__ volatile(
@@ -71,9 +72,10 @@ int main(int argc, char **argv)
 	else
 		img_file.reset(new string(TEST_PATH + string(argv[1]) + string("-riscv64-npc.bin")));
 	tb.reset();
-	IFDEF(TRACE_VCD, tb.trace("./wave.vcd"));		//consumes too much memory
+	IFDEF(TRACE_EN, tb.trace("./wave.vcd"));		//consumes too much memory
 	IFDEF(DIFFTEST_ENABLE, init_difftest());		//almost impossible to use now...
 	IFDEF(HAS_DEVICE, init_device());
+	tb.trace("./wave.vcd");
 	while(!Verilated::gotFinish()){
 		// IF's pc
 		cout << _green << "(0x" << top -> io_pc_o << ")" << normal;

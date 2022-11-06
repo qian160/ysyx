@@ -85,5 +85,4 @@ class EX extends Module{
     io.ex_fwd_o.csr.wdata   :=  io.writeOp_o.csr.wdata
 
     io.debug_o  :=  io.debug_i
-
 }

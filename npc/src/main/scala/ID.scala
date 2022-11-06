@@ -18,6 +18,9 @@ class ID extends Module{
         val debug_o     =   Output(new Debug_Bundle)
         val nr_branch_o =   Output(UInt(64.W))
         val nr_taken_o  =   Output(UInt(64.W))
+
+        val predict_result_i        =   Input(new Update_PredictorOp)
+        val update_PredictorOp_o    =   Output(new Update_PredictorOp)
     })
     //alias
     val inst     =  io.inst_i
@@ -51,15 +54,22 @@ class ID extends Module{
         (csrAddr === io.fwd_i.ex.csr.addr,      io.fwd_i.ex.csr.wdata),
         (true.B,                                io.csrData_i.csrVal)
     ))
-    //sometimes the imm field will be interpreted as rs1 and rs2 and unexpectedly triggared the stall
+    //sometimes the imm field will be interpreted as rs1 and rs2 and unexpectedly triggared the stall. So dont use this
     //io.stall_req_o    :=  (io.fwd_i.prev_is_load & (io.fwd_i.prev_rd === rs1 | io.fwd_i.prev_rd === rs2))
 /*
     when(io.stall_req_o){
         printf("stall at %x\n", pc)
     }
 */
-    io.flush_req_o    :=  io.decInfo_o.branchOp.happen
-    io.stall_req_o    :=  0.U
+//    io.flush_req_o    :=  io.decInfo_o.branchOp.happen
+    val predict_taken   =   io.predict_result_i.prediction
+    val actual_taken    =   io.update_PredictorOp_o.taken
+    dontTouch(predict_taken)
+    dontTouch(actual_taken)
+    val predict_fail    =   actual_taken =/= predict_taken
+    dontTouch(predict_fail)
+    io.flush_req_o      :=  predict_fail
+    io.stall_req_o      :=  0.U
     val prev_is_load    =   io.fwd_i.prev_is_load
     val prev_rd         =   io.fwd_i.prev_rd
 
@@ -71,13 +81,15 @@ class ID extends Module{
     val fct3    =   inst(14, 12)
 
     //default
-    io.decInfo_o                    := 0.U.asTypeOf(new DecodeInfo)
-    io.decInfo_o.aluOp.src1         := rs1Val
-    io.decInfo_o.aluOp.src2         := rs2Val
-    io.decInfo_o.instType           := instType
-    io.decInfo_o.writeOp.rf.rd      := inst(11, 7)
-    io.decInfo_o.writeOp.csr.waddr  := csrAddr
-    io.decInfo_o.aluOp.opt          := op
+    io.decInfo_o                    :=  0.U.asTypeOf(new DecodeInfo)
+    io.decInfo_o.aluOp.src1         :=  rs1Val
+    io.decInfo_o.aluOp.src2         :=  rs2Val
+    io.decInfo_o.instType           :=  instType
+    io.decInfo_o.writeOp.rf.rd      :=  inst(11, 7)
+    io.decInfo_o.writeOp.csr.waddr  :=  csrAddr
+    io.decInfo_o.aluOp.opt          :=  op
+    io.update_PredictorOp_o         :=  io.predict_result_i
+
     //read rf
     io.readOp_o.rs1     := inst(19, 15)
     io.readOp_o.rs2     := inst(24, 20)
@@ -89,7 +101,7 @@ class ID extends Module{
         (10.U === io.fwd_i.ex.rf.rd,    io.fwd_i.ex.rf.wdata),
         (10.U === io.fwd_i.mem.rf.rd,   io.fwd_i.mem.rf.wdata),
         (10.U === io.fwd_i.wb.rf.rd,    io.fwd_i.wb.rf.wdata),
-        (true.B,                       io.rfData_i.a0)
+        (true.B,                        io.rfData_i.a0)
     ))
     io.debug_o.exit     :=  false.B
 
@@ -105,8 +117,11 @@ class ID extends Module{
             io.decInfo_o.aluOp.src1   :=  Mux(is_jalr, pc,        rs1Val)
             io.decInfo_o.aluOp.src2   :=  Mux(is_jalr, 4.U(64.W), imm_I(inst))
             //if stalled, we can't tell whether the branch is true, because our result is based on old operands. Just wait and see
-            io.decInfo_o.branchOp.happen  :=  Mux(is_jalr & ~io.stall_req_o, true.B, false.B)
-            io.decInfo_o.branchOp.newPC   :=  rs1Val + imm_I(inst)
+//          io.decInfo_o.branchOp.happen  :=  Mux(is_jalr & ~io.stall_req_o, true.B, false.B)
+            io.update_PredictorOp_o.taken   :=  Mux(is_jalr & ~io.stall_req_o, true.B, false.B)
+            val jalr_target =   rs1Val + imm_I(inst)
+//          io.decInfo_o.branchOp.newPC   :=  jalr_target
+            io.update_PredictorOp_o.target  :=  jalr_target
             //load uses src1 and src2 to calculate the address
             io.decInfo_o.memOp.is_load    :=  (opcode === Opcode.LOAD & ~io.stall_req_o)
             io.decInfo_o.memOp.length     :=  UIntToOH(fct3(1, 0))
@@ -114,6 +129,8 @@ class ID extends Module{
             io.decInfo_o.memOp.unsigned   :=  fct3(2)     //0 to 3 unsigned, signed when fct3 >= 4
 
             io.stall_req_o  :=  prev_is_load & (prev_rd  === rs1)
+
+            io.update_PredictorOp_o.target  :=  jalr_target
 
         }
         is(InstType.R){
@@ -127,8 +144,8 @@ class ID extends Module{
             //when stall happens, branch result is in fact not sure, since it's calculated based on incorrect operands
             //solution: always clear the branch signal when stall. this is done by & (~stall)
             io.decInfo_o.writeOp.rf.rd    :=  0.U
-            io.decInfo_o.branchOp.newPC   :=  pc + imm_B(inst)
-
+//            io.decInfo_o.branchOp.newPC   :=  pc + imm_B(inst)
+            io.update_PredictorOp_o.target  :=  pc + imm_B(inst)
             val likely_branch = MuxLookup(fct3, false.B, Seq(
                 Fct3.BEQ     ->  (rs1Val  === rs2Val),
                 Fct3.BNE     ->  (rs1Val  =/= rs2Val),
@@ -138,10 +155,13 @@ class ID extends Module{
                 Fct3.BGEU    ->  (rs1Val   >= rs2Val),
             ))
 
-            io.decInfo_o.branchOp.happen  :=  likely_branch & (~io.stall_req_o)
+//            io.decInfo_o.branchOp.happen  :=  likely_branch & (~io.stall_req_o)
+            // when stalled, set taken = prediction to make IF's prediction not fail. otherwise IF's next pc and BTB, BPB could be damaged an
+            io.update_PredictorOp_o.taken   :=  Mux(io.stall_req_o, io.predict_result_i.prediction, likely_branch & (~io.stall_req_o))
             io.stall_req_o  :=  prev_is_load & (prev_rd  === rs1 | prev_rd === rs2)
 
-            when(io.decInfo_o.branchOp.happen){
+//            when(io.decInfo_o.branchOp.happen){
+            when(io.update_PredictorOp_o.taken){
                 nr_taken := nr_taken + 1.U
             }
             when(~io.stall_req_o){
@@ -154,9 +174,13 @@ class ID extends Module{
             io.decInfo_o.writeOp.rf.wen   :=  true.B
         }
         is(InstType.J){     //jal only
-            io.decInfo_o.writeOp.rf.wen   :=  true.B
-            io.decInfo_o.branchOp.happen  :=  true.B
-            io.decInfo_o.branchOp.newPC   :=  pc + imm_J(inst)
+            io.decInfo_o.writeOp.rf.wen     :=  true.B
+//            io.decInfo_o.branchOp.happen  :=  true.B
+            io.update_PredictorOp_o.taken   :=  true.B
+            val jal_target  =   pc + imm_J(inst)
+//            io.decInfo_o.branchOp.newPC   :=  jal_target
+            io.update_PredictorOp_o.target  := jal_target
+
             //link address
             io.decInfo_o.aluOp.src1       :=  pc
             io.decInfo_o.aluOp.src2       :=  4.U(64.W)
@@ -197,12 +221,17 @@ class ID extends Module{
                 val inst_p2 =   inst(21, 20)
                 switch(inst_p2){
                     is(SYS_INST.mret){
-                        io.decInfo_o.branchOp.happen    :=  true.B
-                        io.decInfo_o.branchOp.newPC     :=  io.csrData_i.epc       // + 4 is performed by exception handler code
+//                        io.decInfo_o.branchOp.happen    :=  true.B
+//                        io.decInfo_o.branchOp.newPC     :=  io.csrData_i.epc       // + 4 is performed by exception handler code
+                        io.update_PredictorOp_o.taken   :=  true.B
+                        io.update_PredictorOp_o.target  :=  io.csrData_i.epc
                     }
                     is(SYS_INST.ecall){
-                        io.decInfo_o.branchOp.happen    :=  true.B
-                        io.decInfo_o.branchOp.newPC     :=  io.csrData_i.tvec
+//                        io.decInfo_o.branchOp.happen    :=  true.B
+//                        io.decInfo_o.branchOp.newPC     :=  io.csrData_i.tvec
+                        io.update_PredictorOp_o.taken   :=  true.B
+                        io.update_PredictorOp_o.target  :=  io.csrData_i.tvec
+
                         io.decInfo_o.writeOp.csr.wen    :=  true.B
                         io.decInfo_o.writeOp.csr.waddr  :=  0x305.U
                         io.decInfo_o.writeOp.csr.wdata  :=  pc

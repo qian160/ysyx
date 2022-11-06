@@ -10,6 +10,9 @@ MAIN = Gen
 
 TEST = Test
 
+sbt:
+	sbt -J-Xss1024m
+
 run:
 	sbt "runMain $(MAIN) $(SBT_ARGS)"
 
