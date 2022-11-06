@@ -47,6 +47,8 @@ class IF extends Module{
     val prev_predict       =   io.update_PredictorOp_i.prediction       // predict branch
     val prev_taken         =   io.update_PredictorOp_i.taken            // actual branch
     val prev_is_branch     =   io.update_PredictorOp_i.is_branch        // need to do something
+    val prev_is_jump       =   io.update_PredictorOp_i.is_jump
+
     val branch_target      =   io.update_PredictorOp_i.target
     val branch_or_jump_pc  =   io.update_PredictorOp_i.pc               // the pc of that b/j inst
 
@@ -95,7 +97,7 @@ class IF extends Module{
     io.predict_result_o.is_branch   :=  is_branch
     io.predict_result_o.is_jump     :=  is_jump
     io.predict_result_o.pc          :=  pc
-    io.predict_result_o.prediction  :=  Mux(is_jump, 1.U, predict_taken)
+    io.predict_result_o.prediction  :=  Mux(is_jump, 0.U, predict_taken)    // ID will set taken = 1, this makes prediction fail, thus next PC will become the variable 'correct_target'
     io.predict_result_o.bpb_index   :=  hash_index
     // btb: use hash_index or pc_low? It seems that barget has nothing to be with global behavior...
     io.predict_result_o.btb_index   :=  pc_low
@@ -107,7 +109,6 @@ class IF extends Module{
 
     //branch
     //flush is given by ID, just check whether the prediction is right and update the date structure
-    val prev_is_jump    =   io.update_PredictorOp_i.is_jump
     when(prev_is_branch){
         history :=  (history << 1.U) | prev_taken
         //printf("%x\n", history)
@@ -137,8 +138,8 @@ class IF extends Module{
         printf("predict hit at %x. Taken = %d\n", branch_or_jump_pc, prev_taken)
     }
 */
-    when(prev_is_branch){printf("(%x):   branch, target = %x\n", branch_or_jump_pc, branch_target)}
-    when(prev_is_branch){printf("(%x):   jump,   target = %x\n", branch_or_jump_pc, branch_target)}
+    when(prev_is_branch){printf("(%x):   branch, target = %x, %d\n", branch_or_jump_pc, branch_target, prev_taken)}
+    when(prev_is_jump  ){printf("(%x):   jump,   target = %x, %d\n", branch_or_jump_pc, branch_target, prev_taken)}
 }
 
 class BTB_entry extends Bundle{

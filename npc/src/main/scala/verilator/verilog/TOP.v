@@ -30,168 +30,168 @@ module IF(
   reg [31:0] _RAND_4;
   reg [31:0] _RAND_5;
 `endif // RANDOMIZE_REG_INIT
-  reg [63:0] BTB_pc [0:4095]; // @[IF.scala 61:20]
-  wire  BTB_pc_valid_MPORT_en; // @[IF.scala 61:20]
-  wire [11:0] BTB_pc_valid_MPORT_addr; // @[IF.scala 61:20]
-  wire [63:0] BTB_pc_valid_MPORT_data; // @[IF.scala 61:20]
-  wire  BTB_pc_valid_MPORT_1_en; // @[IF.scala 61:20]
-  wire [11:0] BTB_pc_valid_MPORT_1_addr; // @[IF.scala 61:20]
-  wire [63:0] BTB_pc_valid_MPORT_1_data; // @[IF.scala 61:20]
-  wire  BTB_pc_predict_target_MPORT_en; // @[IF.scala 61:20]
-  wire [11:0] BTB_pc_predict_target_MPORT_addr; // @[IF.scala 61:20]
-  wire [63:0] BTB_pc_predict_target_MPORT_data; // @[IF.scala 61:20]
-  wire [63:0] BTB_pc_MPORT_data; // @[IF.scala 61:20]
-  wire [11:0] BTB_pc_MPORT_addr; // @[IF.scala 61:20]
-  wire  BTB_pc_MPORT_mask; // @[IF.scala 61:20]
-  wire  BTB_pc_MPORT_en; // @[IF.scala 61:20]
-  wire [63:0] BTB_pc_MPORT_1_data; // @[IF.scala 61:20]
-  wire [11:0] BTB_pc_MPORT_1_addr; // @[IF.scala 61:20]
-  wire  BTB_pc_MPORT_1_mask; // @[IF.scala 61:20]
-  wire  BTB_pc_MPORT_1_en; // @[IF.scala 61:20]
-  wire [63:0] BTB_pc_MPORT_2_data; // @[IF.scala 61:20]
-  wire [11:0] BTB_pc_MPORT_2_addr; // @[IF.scala 61:20]
-  wire  BTB_pc_MPORT_2_mask; // @[IF.scala 61:20]
-  wire  BTB_pc_MPORT_2_en; // @[IF.scala 61:20]
-  wire [63:0] BTB_pc_MPORT_10_data; // @[IF.scala 61:20]
-  wire [11:0] BTB_pc_MPORT_10_addr; // @[IF.scala 61:20]
-  wire  BTB_pc_MPORT_10_mask; // @[IF.scala 61:20]
-  wire  BTB_pc_MPORT_10_en; // @[IF.scala 61:20]
-  wire [63:0] BTB_pc_MPORT_11_data; // @[IF.scala 61:20]
-  wire [11:0] BTB_pc_MPORT_11_addr; // @[IF.scala 61:20]
-  wire  BTB_pc_MPORT_11_mask; // @[IF.scala 61:20]
-  wire  BTB_pc_MPORT_11_en; // @[IF.scala 61:20]
-  wire [63:0] BTB_pc_MPORT_12_data; // @[IF.scala 61:20]
-  wire [11:0] BTB_pc_MPORT_12_addr; // @[IF.scala 61:20]
-  wire  BTB_pc_MPORT_12_mask; // @[IF.scala 61:20]
-  wire  BTB_pc_MPORT_12_en; // @[IF.scala 61:20]
-  reg  BTB_valid [0:4095]; // @[IF.scala 61:20]
-  wire  BTB_valid_valid_MPORT_en; // @[IF.scala 61:20]
-  wire [11:0] BTB_valid_valid_MPORT_addr; // @[IF.scala 61:20]
-  wire  BTB_valid_valid_MPORT_data; // @[IF.scala 61:20]
-  wire  BTB_valid_valid_MPORT_1_en; // @[IF.scala 61:20]
-  wire [11:0] BTB_valid_valid_MPORT_1_addr; // @[IF.scala 61:20]
-  wire  BTB_valid_valid_MPORT_1_data; // @[IF.scala 61:20]
-  wire  BTB_valid_predict_target_MPORT_en; // @[IF.scala 61:20]
-  wire [11:0] BTB_valid_predict_target_MPORT_addr; // @[IF.scala 61:20]
-  wire  BTB_valid_predict_target_MPORT_data; // @[IF.scala 61:20]
-  wire  BTB_valid_MPORT_data; // @[IF.scala 61:20]
-  wire [11:0] BTB_valid_MPORT_addr; // @[IF.scala 61:20]
-  wire  BTB_valid_MPORT_mask; // @[IF.scala 61:20]
-  wire  BTB_valid_MPORT_en; // @[IF.scala 61:20]
-  wire  BTB_valid_MPORT_1_data; // @[IF.scala 61:20]
-  wire [11:0] BTB_valid_MPORT_1_addr; // @[IF.scala 61:20]
-  wire  BTB_valid_MPORT_1_mask; // @[IF.scala 61:20]
-  wire  BTB_valid_MPORT_1_en; // @[IF.scala 61:20]
-  wire  BTB_valid_MPORT_2_data; // @[IF.scala 61:20]
-  wire [11:0] BTB_valid_MPORT_2_addr; // @[IF.scala 61:20]
-  wire  BTB_valid_MPORT_2_mask; // @[IF.scala 61:20]
-  wire  BTB_valid_MPORT_2_en; // @[IF.scala 61:20]
-  wire  BTB_valid_MPORT_10_data; // @[IF.scala 61:20]
-  wire [11:0] BTB_valid_MPORT_10_addr; // @[IF.scala 61:20]
-  wire  BTB_valid_MPORT_10_mask; // @[IF.scala 61:20]
-  wire  BTB_valid_MPORT_10_en; // @[IF.scala 61:20]
-  wire  BTB_valid_MPORT_11_data; // @[IF.scala 61:20]
-  wire [11:0] BTB_valid_MPORT_11_addr; // @[IF.scala 61:20]
-  wire  BTB_valid_MPORT_11_mask; // @[IF.scala 61:20]
-  wire  BTB_valid_MPORT_11_en; // @[IF.scala 61:20]
-  wire  BTB_valid_MPORT_12_data; // @[IF.scala 61:20]
-  wire [11:0] BTB_valid_MPORT_12_addr; // @[IF.scala 61:20]
-  wire  BTB_valid_MPORT_12_mask; // @[IF.scala 61:20]
-  wire  BTB_valid_MPORT_12_en; // @[IF.scala 61:20]
-  reg [63:0] BTB_target [0:4095]; // @[IF.scala 61:20]
-  wire  BTB_target_valid_MPORT_en; // @[IF.scala 61:20]
-  wire [11:0] BTB_target_valid_MPORT_addr; // @[IF.scala 61:20]
-  wire [63:0] BTB_target_valid_MPORT_data; // @[IF.scala 61:20]
-  wire  BTB_target_valid_MPORT_1_en; // @[IF.scala 61:20]
-  wire [11:0] BTB_target_valid_MPORT_1_addr; // @[IF.scala 61:20]
-  wire [63:0] BTB_target_valid_MPORT_1_data; // @[IF.scala 61:20]
-  wire  BTB_target_predict_target_MPORT_en; // @[IF.scala 61:20]
-  wire [11:0] BTB_target_predict_target_MPORT_addr; // @[IF.scala 61:20]
-  wire [63:0] BTB_target_predict_target_MPORT_data; // @[IF.scala 61:20]
-  wire [63:0] BTB_target_MPORT_data; // @[IF.scala 61:20]
-  wire [11:0] BTB_target_MPORT_addr; // @[IF.scala 61:20]
-  wire  BTB_target_MPORT_mask; // @[IF.scala 61:20]
-  wire  BTB_target_MPORT_en; // @[IF.scala 61:20]
-  wire [63:0] BTB_target_MPORT_1_data; // @[IF.scala 61:20]
-  wire [11:0] BTB_target_MPORT_1_addr; // @[IF.scala 61:20]
-  wire  BTB_target_MPORT_1_mask; // @[IF.scala 61:20]
-  wire  BTB_target_MPORT_1_en; // @[IF.scala 61:20]
-  wire [63:0] BTB_target_MPORT_2_data; // @[IF.scala 61:20]
-  wire [11:0] BTB_target_MPORT_2_addr; // @[IF.scala 61:20]
-  wire  BTB_target_MPORT_2_mask; // @[IF.scala 61:20]
-  wire  BTB_target_MPORT_2_en; // @[IF.scala 61:20]
-  wire [63:0] BTB_target_MPORT_10_data; // @[IF.scala 61:20]
-  wire [11:0] BTB_target_MPORT_10_addr; // @[IF.scala 61:20]
-  wire  BTB_target_MPORT_10_mask; // @[IF.scala 61:20]
-  wire  BTB_target_MPORT_10_en; // @[IF.scala 61:20]
-  wire [63:0] BTB_target_MPORT_11_data; // @[IF.scala 61:20]
-  wire [11:0] BTB_target_MPORT_11_addr; // @[IF.scala 61:20]
-  wire  BTB_target_MPORT_11_mask; // @[IF.scala 61:20]
-  wire  BTB_target_MPORT_11_en; // @[IF.scala 61:20]
-  wire [63:0] BTB_target_MPORT_12_data; // @[IF.scala 61:20]
-  wire [11:0] BTB_target_MPORT_12_addr; // @[IF.scala 61:20]
-  wire  BTB_target_MPORT_12_mask; // @[IF.scala 61:20]
-  wire  BTB_target_MPORT_12_en; // @[IF.scala 61:20]
-  reg [1:0] BPB [0:4095]; // @[IF.scala 62:20]
-  wire  BPB_predict_taken_MPORT_en; // @[IF.scala 62:20]
-  wire [11:0] BPB_predict_taken_MPORT_addr; // @[IF.scala 62:20]
-  wire [1:0] BPB_predict_taken_MPORT_data; // @[IF.scala 62:20]
-  wire  BPB_MPORT_4_en; // @[IF.scala 62:20]
-  wire [11:0] BPB_MPORT_4_addr; // @[IF.scala 62:20]
-  wire [1:0] BPB_MPORT_4_data; // @[IF.scala 62:20]
-  wire  BPB_MPORT_5_en; // @[IF.scala 62:20]
-  wire [11:0] BPB_MPORT_5_addr; // @[IF.scala 62:20]
-  wire [1:0] BPB_MPORT_5_data; // @[IF.scala 62:20]
-  wire  BPB_MPORT_6_en; // @[IF.scala 62:20]
-  wire [11:0] BPB_MPORT_6_addr; // @[IF.scala 62:20]
-  wire [1:0] BPB_MPORT_6_data; // @[IF.scala 62:20]
-  wire  BPB_MPORT_7_en; // @[IF.scala 62:20]
-  wire [11:0] BPB_MPORT_7_addr; // @[IF.scala 62:20]
-  wire [1:0] BPB_MPORT_7_data; // @[IF.scala 62:20]
-  wire  BPB_MPORT_8_en; // @[IF.scala 62:20]
-  wire [11:0] BPB_MPORT_8_addr; // @[IF.scala 62:20]
-  wire [1:0] BPB_MPORT_8_data; // @[IF.scala 62:20]
-  wire  BPB_MPORT_9_en; // @[IF.scala 62:20]
-  wire [11:0] BPB_MPORT_9_addr; // @[IF.scala 62:20]
-  wire [1:0] BPB_MPORT_9_data; // @[IF.scala 62:20]
-  wire [1:0] BPB_MPORT_3_data; // @[IF.scala 62:20]
-  wire [11:0] BPB_MPORT_3_addr; // @[IF.scala 62:20]
-  wire  BPB_MPORT_3_mask; // @[IF.scala 62:20]
-  wire  BPB_MPORT_3_en; // @[IF.scala 62:20]
+  reg [63:0] BTB_pc [0:4095]; // @[IF.scala 63:20]
+  wire  BTB_pc_valid_MPORT_en; // @[IF.scala 63:20]
+  wire [11:0] BTB_pc_valid_MPORT_addr; // @[IF.scala 63:20]
+  wire [63:0] BTB_pc_valid_MPORT_data; // @[IF.scala 63:20]
+  wire  BTB_pc_valid_MPORT_1_en; // @[IF.scala 63:20]
+  wire [11:0] BTB_pc_valid_MPORT_1_addr; // @[IF.scala 63:20]
+  wire [63:0] BTB_pc_valid_MPORT_1_data; // @[IF.scala 63:20]
+  wire  BTB_pc_predict_target_MPORT_en; // @[IF.scala 63:20]
+  wire [11:0] BTB_pc_predict_target_MPORT_addr; // @[IF.scala 63:20]
+  wire [63:0] BTB_pc_predict_target_MPORT_data; // @[IF.scala 63:20]
+  wire [63:0] BTB_pc_MPORT_data; // @[IF.scala 63:20]
+  wire [11:0] BTB_pc_MPORT_addr; // @[IF.scala 63:20]
+  wire  BTB_pc_MPORT_mask; // @[IF.scala 63:20]
+  wire  BTB_pc_MPORT_en; // @[IF.scala 63:20]
+  wire [63:0] BTB_pc_MPORT_1_data; // @[IF.scala 63:20]
+  wire [11:0] BTB_pc_MPORT_1_addr; // @[IF.scala 63:20]
+  wire  BTB_pc_MPORT_1_mask; // @[IF.scala 63:20]
+  wire  BTB_pc_MPORT_1_en; // @[IF.scala 63:20]
+  wire [63:0] BTB_pc_MPORT_2_data; // @[IF.scala 63:20]
+  wire [11:0] BTB_pc_MPORT_2_addr; // @[IF.scala 63:20]
+  wire  BTB_pc_MPORT_2_mask; // @[IF.scala 63:20]
+  wire  BTB_pc_MPORT_2_en; // @[IF.scala 63:20]
+  wire [63:0] BTB_pc_MPORT_10_data; // @[IF.scala 63:20]
+  wire [11:0] BTB_pc_MPORT_10_addr; // @[IF.scala 63:20]
+  wire  BTB_pc_MPORT_10_mask; // @[IF.scala 63:20]
+  wire  BTB_pc_MPORT_10_en; // @[IF.scala 63:20]
+  wire [63:0] BTB_pc_MPORT_11_data; // @[IF.scala 63:20]
+  wire [11:0] BTB_pc_MPORT_11_addr; // @[IF.scala 63:20]
+  wire  BTB_pc_MPORT_11_mask; // @[IF.scala 63:20]
+  wire  BTB_pc_MPORT_11_en; // @[IF.scala 63:20]
+  wire [63:0] BTB_pc_MPORT_12_data; // @[IF.scala 63:20]
+  wire [11:0] BTB_pc_MPORT_12_addr; // @[IF.scala 63:20]
+  wire  BTB_pc_MPORT_12_mask; // @[IF.scala 63:20]
+  wire  BTB_pc_MPORT_12_en; // @[IF.scala 63:20]
+  reg  BTB_valid [0:4095]; // @[IF.scala 63:20]
+  wire  BTB_valid_valid_MPORT_en; // @[IF.scala 63:20]
+  wire [11:0] BTB_valid_valid_MPORT_addr; // @[IF.scala 63:20]
+  wire  BTB_valid_valid_MPORT_data; // @[IF.scala 63:20]
+  wire  BTB_valid_valid_MPORT_1_en; // @[IF.scala 63:20]
+  wire [11:0] BTB_valid_valid_MPORT_1_addr; // @[IF.scala 63:20]
+  wire  BTB_valid_valid_MPORT_1_data; // @[IF.scala 63:20]
+  wire  BTB_valid_predict_target_MPORT_en; // @[IF.scala 63:20]
+  wire [11:0] BTB_valid_predict_target_MPORT_addr; // @[IF.scala 63:20]
+  wire  BTB_valid_predict_target_MPORT_data; // @[IF.scala 63:20]
+  wire  BTB_valid_MPORT_data; // @[IF.scala 63:20]
+  wire [11:0] BTB_valid_MPORT_addr; // @[IF.scala 63:20]
+  wire  BTB_valid_MPORT_mask; // @[IF.scala 63:20]
+  wire  BTB_valid_MPORT_en; // @[IF.scala 63:20]
+  wire  BTB_valid_MPORT_1_data; // @[IF.scala 63:20]
+  wire [11:0] BTB_valid_MPORT_1_addr; // @[IF.scala 63:20]
+  wire  BTB_valid_MPORT_1_mask; // @[IF.scala 63:20]
+  wire  BTB_valid_MPORT_1_en; // @[IF.scala 63:20]
+  wire  BTB_valid_MPORT_2_data; // @[IF.scala 63:20]
+  wire [11:0] BTB_valid_MPORT_2_addr; // @[IF.scala 63:20]
+  wire  BTB_valid_MPORT_2_mask; // @[IF.scala 63:20]
+  wire  BTB_valid_MPORT_2_en; // @[IF.scala 63:20]
+  wire  BTB_valid_MPORT_10_data; // @[IF.scala 63:20]
+  wire [11:0] BTB_valid_MPORT_10_addr; // @[IF.scala 63:20]
+  wire  BTB_valid_MPORT_10_mask; // @[IF.scala 63:20]
+  wire  BTB_valid_MPORT_10_en; // @[IF.scala 63:20]
+  wire  BTB_valid_MPORT_11_data; // @[IF.scala 63:20]
+  wire [11:0] BTB_valid_MPORT_11_addr; // @[IF.scala 63:20]
+  wire  BTB_valid_MPORT_11_mask; // @[IF.scala 63:20]
+  wire  BTB_valid_MPORT_11_en; // @[IF.scala 63:20]
+  wire  BTB_valid_MPORT_12_data; // @[IF.scala 63:20]
+  wire [11:0] BTB_valid_MPORT_12_addr; // @[IF.scala 63:20]
+  wire  BTB_valid_MPORT_12_mask; // @[IF.scala 63:20]
+  wire  BTB_valid_MPORT_12_en; // @[IF.scala 63:20]
+  reg [63:0] BTB_target [0:4095]; // @[IF.scala 63:20]
+  wire  BTB_target_valid_MPORT_en; // @[IF.scala 63:20]
+  wire [11:0] BTB_target_valid_MPORT_addr; // @[IF.scala 63:20]
+  wire [63:0] BTB_target_valid_MPORT_data; // @[IF.scala 63:20]
+  wire  BTB_target_valid_MPORT_1_en; // @[IF.scala 63:20]
+  wire [11:0] BTB_target_valid_MPORT_1_addr; // @[IF.scala 63:20]
+  wire [63:0] BTB_target_valid_MPORT_1_data; // @[IF.scala 63:20]
+  wire  BTB_target_predict_target_MPORT_en; // @[IF.scala 63:20]
+  wire [11:0] BTB_target_predict_target_MPORT_addr; // @[IF.scala 63:20]
+  wire [63:0] BTB_target_predict_target_MPORT_data; // @[IF.scala 63:20]
+  wire [63:0] BTB_target_MPORT_data; // @[IF.scala 63:20]
+  wire [11:0] BTB_target_MPORT_addr; // @[IF.scala 63:20]
+  wire  BTB_target_MPORT_mask; // @[IF.scala 63:20]
+  wire  BTB_target_MPORT_en; // @[IF.scala 63:20]
+  wire [63:0] BTB_target_MPORT_1_data; // @[IF.scala 63:20]
+  wire [11:0] BTB_target_MPORT_1_addr; // @[IF.scala 63:20]
+  wire  BTB_target_MPORT_1_mask; // @[IF.scala 63:20]
+  wire  BTB_target_MPORT_1_en; // @[IF.scala 63:20]
+  wire [63:0] BTB_target_MPORT_2_data; // @[IF.scala 63:20]
+  wire [11:0] BTB_target_MPORT_2_addr; // @[IF.scala 63:20]
+  wire  BTB_target_MPORT_2_mask; // @[IF.scala 63:20]
+  wire  BTB_target_MPORT_2_en; // @[IF.scala 63:20]
+  wire [63:0] BTB_target_MPORT_10_data; // @[IF.scala 63:20]
+  wire [11:0] BTB_target_MPORT_10_addr; // @[IF.scala 63:20]
+  wire  BTB_target_MPORT_10_mask; // @[IF.scala 63:20]
+  wire  BTB_target_MPORT_10_en; // @[IF.scala 63:20]
+  wire [63:0] BTB_target_MPORT_11_data; // @[IF.scala 63:20]
+  wire [11:0] BTB_target_MPORT_11_addr; // @[IF.scala 63:20]
+  wire  BTB_target_MPORT_11_mask; // @[IF.scala 63:20]
+  wire  BTB_target_MPORT_11_en; // @[IF.scala 63:20]
+  wire [63:0] BTB_target_MPORT_12_data; // @[IF.scala 63:20]
+  wire [11:0] BTB_target_MPORT_12_addr; // @[IF.scala 63:20]
+  wire  BTB_target_MPORT_12_mask; // @[IF.scala 63:20]
+  wire  BTB_target_MPORT_12_en; // @[IF.scala 63:20]
+  reg [1:0] BPB [0:4095]; // @[IF.scala 64:20]
+  wire  BPB_predict_taken_MPORT_en; // @[IF.scala 64:20]
+  wire [11:0] BPB_predict_taken_MPORT_addr; // @[IF.scala 64:20]
+  wire [1:0] BPB_predict_taken_MPORT_data; // @[IF.scala 64:20]
+  wire  BPB_MPORT_4_en; // @[IF.scala 64:20]
+  wire [11:0] BPB_MPORT_4_addr; // @[IF.scala 64:20]
+  wire [1:0] BPB_MPORT_4_data; // @[IF.scala 64:20]
+  wire  BPB_MPORT_5_en; // @[IF.scala 64:20]
+  wire [11:0] BPB_MPORT_5_addr; // @[IF.scala 64:20]
+  wire [1:0] BPB_MPORT_5_data; // @[IF.scala 64:20]
+  wire  BPB_MPORT_6_en; // @[IF.scala 64:20]
+  wire [11:0] BPB_MPORT_6_addr; // @[IF.scala 64:20]
+  wire [1:0] BPB_MPORT_6_data; // @[IF.scala 64:20]
+  wire  BPB_MPORT_7_en; // @[IF.scala 64:20]
+  wire [11:0] BPB_MPORT_7_addr; // @[IF.scala 64:20]
+  wire [1:0] BPB_MPORT_7_data; // @[IF.scala 64:20]
+  wire  BPB_MPORT_8_en; // @[IF.scala 64:20]
+  wire [11:0] BPB_MPORT_8_addr; // @[IF.scala 64:20]
+  wire [1:0] BPB_MPORT_8_data; // @[IF.scala 64:20]
+  wire  BPB_MPORT_9_en; // @[IF.scala 64:20]
+  wire [11:0] BPB_MPORT_9_addr; // @[IF.scala 64:20]
+  wire [1:0] BPB_MPORT_9_data; // @[IF.scala 64:20]
+  wire [1:0] BPB_MPORT_3_data; // @[IF.scala 64:20]
+  wire [11:0] BPB_MPORT_3_addr; // @[IF.scala 64:20]
+  wire  BPB_MPORT_3_mask; // @[IF.scala 64:20]
+  wire  BPB_MPORT_3_en; // @[IF.scala 64:20]
   reg [31:0] pc; // @[IF.scala 41:23]
   wire [6:0] opcode = io_inst_i[6:0]; // @[HELPERS.scala 16:35]
-  wire  predict_fail = io_update_PredictorOp_i_prediction != io_update_PredictorOp_i_taken; // @[IF.scala 53:45]
-  reg [11:0] history; // @[IF.scala 63:32]
-  wire [11:0] pc_low = pc[11:0]; // @[IF.scala 65:27]
-  wire [63:0] _GEN_17 = {{32'd0}, pc}; // @[IF.scala 67:68]
-  wire  valid = BTB_valid_valid_MPORT_data & BTB_pc_valid_MPORT_1_data == _GEN_17; // @[IF.scala 67:47]
-  wire  predict_taken = BPB_predict_taken_MPORT_data[1]; // @[IF.scala 70:43]
-  wire  _pc_T = predict_taken & valid; // @[IF.scala 85:24]
-  wire [31:0] _pc_T_2 = pc + 32'h4; // @[IF.scala 86:36]
+  wire  predict_fail = io_update_PredictorOp_i_prediction != io_update_PredictorOp_i_taken; // @[IF.scala 55:45]
+  reg [11:0] history; // @[IF.scala 65:32]
+  wire [11:0] pc_low = pc[11:0]; // @[IF.scala 67:27]
+  wire [63:0] _GEN_17 = {{32'd0}, pc}; // @[IF.scala 69:68]
+  wire  valid = BTB_valid_valid_MPORT_data & BTB_pc_valid_MPORT_1_data == _GEN_17; // @[IF.scala 69:47]
+  wire  predict_taken = BPB_predict_taken_MPORT_data[1]; // @[IF.scala 72:43]
+  wire  _pc_T = predict_taken & valid; // @[IF.scala 87:24]
+  wire [31:0] _pc_T_2 = pc + 32'h4; // @[IF.scala 88:36]
   wire [63:0] _pc_T_3 = _pc_T ? BTB_target_predict_target_MPORT_data : {{32'd0}, _pc_T_2}; // @[Mux.scala 47:70]
   wire [63:0] _pc_T_4 = predict_fail ? io_update_PredictorOp_i_target : _pc_T_3; // @[Mux.scala 47:70]
   wire [63:0] _pc_T_5 = io_ctrl_i_stall ? {{32'd0}, pc} : _pc_T_4; // @[Mux.scala 47:70]
-  wire  is_jump = opcode == 7'h6f | opcode == 7'h67; // @[IF.scala 93:40]
-  wire [12:0] _history_T = {history, 1'h0}; // @[IF.scala 112:30]
-  wire [12:0] _GEN_18 = {{12'd0}, io_update_PredictorOp_i_taken}; // @[IF.scala 112:38]
-  wire [12:0] _history_T_1 = _history_T | _GEN_18; // @[IF.scala 112:38]
-  wire [1:0] _T_2 = BPB_MPORT_6_data + 2'h1; // @[IF.scala 121:72]
-  wire [1:0] _T_3 = BPB_MPORT_4_data == 2'h3 ? BPB_MPORT_5_data : _T_2; // @[IF.scala 121:16]
-  wire [1:0] _T_6 = BPB_MPORT_9_data - 2'h1; // @[IF.scala 123:72]
-  wire [1:0] _T_7 = BPB_MPORT_7_data == 2'h0 ? BPB_MPORT_8_data : _T_6; // @[IF.scala 123:16]
-  wire [12:0] _GEN_0 = io_update_PredictorOp_i_is_branch ? _history_T_1 : {{1'd0}, history}; // @[IF.scala 111:25 112:17 63:32]
-  wire  _T_10 = ~reset; // @[IF.scala 140:32]
-  wire [63:0] _GEN_19 = reset ? 64'h80000000 : _pc_T_5; // @[IF.scala 41:{23,23} 79:8]
-  wire [12:0] _GEN_20 = reset ? 13'h0 : _GEN_0; // @[IF.scala 63:{32,32}]
+  wire  is_jump = opcode == 7'h6f | opcode == 7'h67; // @[IF.scala 95:40]
+  wire [12:0] _history_T = {history, 1'h0}; // @[IF.scala 113:30]
+  wire [12:0] _GEN_18 = {{12'd0}, io_update_PredictorOp_i_taken}; // @[IF.scala 113:38]
+  wire [12:0] _history_T_1 = _history_T | _GEN_18; // @[IF.scala 113:38]
+  wire [1:0] _T_2 = BPB_MPORT_6_data + 2'h1; // @[IF.scala 122:72]
+  wire [1:0] _T_3 = BPB_MPORT_4_data == 2'h3 ? BPB_MPORT_5_data : _T_2; // @[IF.scala 122:16]
+  wire [1:0] _T_6 = BPB_MPORT_9_data - 2'h1; // @[IF.scala 124:72]
+  wire [1:0] _T_7 = BPB_MPORT_7_data == 2'h0 ? BPB_MPORT_8_data : _T_6; // @[IF.scala 124:16]
+  wire [12:0] _GEN_0 = io_update_PredictorOp_i_is_branch ? _history_T_1 : {{1'd0}, history}; // @[IF.scala 112:25 113:17 65:32]
+  wire  _T_10 = ~reset; // @[IF.scala 141:32]
+  wire [63:0] _GEN_19 = reset ? 64'h80000000 : _pc_T_5; // @[IF.scala 41:{23,23} 81:8]
+  wire [12:0] _GEN_20 = reset ? 13'h0 : _GEN_0; // @[IF.scala 65:{32,32}]
   assign BTB_pc_valid_MPORT_en = 1'h1;
   assign BTB_pc_valid_MPORT_addr = pc_low | history;
-  assign BTB_pc_valid_MPORT_data = BTB_pc[BTB_pc_valid_MPORT_addr]; // @[IF.scala 61:20]
+  assign BTB_pc_valid_MPORT_data = BTB_pc[BTB_pc_valid_MPORT_addr]; // @[IF.scala 63:20]
   assign BTB_pc_valid_MPORT_1_en = 1'h1;
   assign BTB_pc_valid_MPORT_1_addr = pc_low | history;
-  assign BTB_pc_valid_MPORT_1_data = BTB_pc[BTB_pc_valid_MPORT_1_addr]; // @[IF.scala 61:20]
+  assign BTB_pc_valid_MPORT_1_data = BTB_pc[BTB_pc_valid_MPORT_1_addr]; // @[IF.scala 63:20]
   assign BTB_pc_predict_target_MPORT_en = 1'h1;
   assign BTB_pc_predict_target_MPORT_addr = pc_low | history;
-  assign BTB_pc_predict_target_MPORT_data = BTB_pc[BTB_pc_predict_target_MPORT_addr]; // @[IF.scala 61:20]
+  assign BTB_pc_predict_target_MPORT_data = BTB_pc[BTB_pc_predict_target_MPORT_addr]; // @[IF.scala 63:20]
   assign BTB_pc_MPORT_data = 64'h0;
   assign BTB_pc_MPORT_addr = io_update_PredictorOp_i_btb_index;
   assign BTB_pc_MPORT_mask = 1'h0;
@@ -218,13 +218,13 @@ module IF(
   assign BTB_pc_MPORT_12_en = io_update_PredictorOp_i_is_jump;
   assign BTB_valid_valid_MPORT_en = 1'h1;
   assign BTB_valid_valid_MPORT_addr = pc_low | history;
-  assign BTB_valid_valid_MPORT_data = BTB_valid[BTB_valid_valid_MPORT_addr]; // @[IF.scala 61:20]
+  assign BTB_valid_valid_MPORT_data = BTB_valid[BTB_valid_valid_MPORT_addr]; // @[IF.scala 63:20]
   assign BTB_valid_valid_MPORT_1_en = 1'h1;
   assign BTB_valid_valid_MPORT_1_addr = pc_low | history;
-  assign BTB_valid_valid_MPORT_1_data = BTB_valid[BTB_valid_valid_MPORT_1_addr]; // @[IF.scala 61:20]
+  assign BTB_valid_valid_MPORT_1_data = BTB_valid[BTB_valid_valid_MPORT_1_addr]; // @[IF.scala 63:20]
   assign BTB_valid_predict_target_MPORT_en = 1'h1;
   assign BTB_valid_predict_target_MPORT_addr = pc_low | history;
-  assign BTB_valid_predict_target_MPORT_data = BTB_valid[BTB_valid_predict_target_MPORT_addr]; // @[IF.scala 61:20]
+  assign BTB_valid_predict_target_MPORT_data = BTB_valid[BTB_valid_predict_target_MPORT_addr]; // @[IF.scala 63:20]
   assign BTB_valid_MPORT_data = 1'h1;
   assign BTB_valid_MPORT_addr = io_update_PredictorOp_i_btb_index;
   assign BTB_valid_MPORT_mask = 1'h1;
@@ -251,13 +251,13 @@ module IF(
   assign BTB_valid_MPORT_12_en = io_update_PredictorOp_i_is_jump;
   assign BTB_target_valid_MPORT_en = 1'h1;
   assign BTB_target_valid_MPORT_addr = pc_low | history;
-  assign BTB_target_valid_MPORT_data = BTB_target[BTB_target_valid_MPORT_addr]; // @[IF.scala 61:20]
+  assign BTB_target_valid_MPORT_data = BTB_target[BTB_target_valid_MPORT_addr]; // @[IF.scala 63:20]
   assign BTB_target_valid_MPORT_1_en = 1'h1;
   assign BTB_target_valid_MPORT_1_addr = pc_low | history;
-  assign BTB_target_valid_MPORT_1_data = BTB_target[BTB_target_valid_MPORT_1_addr]; // @[IF.scala 61:20]
+  assign BTB_target_valid_MPORT_1_data = BTB_target[BTB_target_valid_MPORT_1_addr]; // @[IF.scala 63:20]
   assign BTB_target_predict_target_MPORT_en = 1'h1;
   assign BTB_target_predict_target_MPORT_addr = pc_low | history;
-  assign BTB_target_predict_target_MPORT_data = BTB_target[BTB_target_predict_target_MPORT_addr]; // @[IF.scala 61:20]
+  assign BTB_target_predict_target_MPORT_data = BTB_target[BTB_target_predict_target_MPORT_addr]; // @[IF.scala 63:20]
   assign BTB_target_MPORT_data = 64'h0;
   assign BTB_target_MPORT_addr = io_update_PredictorOp_i_btb_index;
   assign BTB_target_MPORT_mask = 1'h0;
@@ -284,104 +284,104 @@ module IF(
   assign BTB_target_MPORT_12_en = io_update_PredictorOp_i_is_jump;
   assign BPB_predict_taken_MPORT_en = 1'h1;
   assign BPB_predict_taken_MPORT_addr = pc_low | history;
-  assign BPB_predict_taken_MPORT_data = BPB[BPB_predict_taken_MPORT_addr]; // @[IF.scala 62:20]
+  assign BPB_predict_taken_MPORT_data = BPB[BPB_predict_taken_MPORT_addr]; // @[IF.scala 64:20]
   assign BPB_MPORT_4_en = io_update_PredictorOp_i_is_branch;
   assign BPB_MPORT_4_addr = io_update_PredictorOp_i_bpb_index;
-  assign BPB_MPORT_4_data = BPB[BPB_MPORT_4_addr]; // @[IF.scala 62:20]
+  assign BPB_MPORT_4_data = BPB[BPB_MPORT_4_addr]; // @[IF.scala 64:20]
   assign BPB_MPORT_5_en = io_update_PredictorOp_i_is_branch;
   assign BPB_MPORT_5_addr = io_update_PredictorOp_i_bpb_index;
-  assign BPB_MPORT_5_data = BPB[BPB_MPORT_5_addr]; // @[IF.scala 62:20]
+  assign BPB_MPORT_5_data = BPB[BPB_MPORT_5_addr]; // @[IF.scala 64:20]
   assign BPB_MPORT_6_en = io_update_PredictorOp_i_is_branch;
   assign BPB_MPORT_6_addr = io_update_PredictorOp_i_bpb_index;
-  assign BPB_MPORT_6_data = BPB[BPB_MPORT_6_addr]; // @[IF.scala 62:20]
+  assign BPB_MPORT_6_data = BPB[BPB_MPORT_6_addr]; // @[IF.scala 64:20]
   assign BPB_MPORT_7_en = io_update_PredictorOp_i_is_branch;
   assign BPB_MPORT_7_addr = io_update_PredictorOp_i_bpb_index;
-  assign BPB_MPORT_7_data = BPB[BPB_MPORT_7_addr]; // @[IF.scala 62:20]
+  assign BPB_MPORT_7_data = BPB[BPB_MPORT_7_addr]; // @[IF.scala 64:20]
   assign BPB_MPORT_8_en = io_update_PredictorOp_i_is_branch;
   assign BPB_MPORT_8_addr = io_update_PredictorOp_i_bpb_index;
-  assign BPB_MPORT_8_data = BPB[BPB_MPORT_8_addr]; // @[IF.scala 62:20]
+  assign BPB_MPORT_8_data = BPB[BPB_MPORT_8_addr]; // @[IF.scala 64:20]
   assign BPB_MPORT_9_en = io_update_PredictorOp_i_is_branch;
   assign BPB_MPORT_9_addr = io_update_PredictorOp_i_bpb_index;
-  assign BPB_MPORT_9_data = BPB[BPB_MPORT_9_addr]; // @[IF.scala 62:20]
+  assign BPB_MPORT_9_data = BPB[BPB_MPORT_9_addr]; // @[IF.scala 64:20]
   assign BPB_MPORT_3_data = io_update_PredictorOp_i_taken ? _T_3 : _T_7;
   assign BPB_MPORT_3_addr = io_update_PredictorOp_i_bpb_index;
   assign BPB_MPORT_3_mask = 1'h1;
   assign BPB_MPORT_3_en = io_update_PredictorOp_i_is_branch;
-  assign io_pc_o = {{32'd0}, pc}; // @[IF.scala 89:13]
-  assign io_inst_o = io_inst_i; // @[IF.scala 91:17]
-  assign io_predict_result_o_is_jump = opcode == 7'h6f | opcode == 7'h67; // @[IF.scala 93:40]
-  assign io_predict_result_o_is_branch = opcode == 7'h63; // @[IF.scala 94:32]
-  assign io_predict_result_o_prediction = is_jump | predict_taken; // @[IF.scala 98:44]
-  assign io_predict_result_o_pc = {{32'd0}, pc}; // @[IF.scala 97:37]
-  assign io_predict_result_o_btb_index = pc[11:0]; // @[IF.scala 65:27]
-  assign io_predict_result_o_bpb_index = pc_low | history; // @[IF.scala 66:32]
+  assign io_pc_o = {{32'd0}, pc}; // @[IF.scala 91:13]
+  assign io_inst_o = io_inst_i; // @[IF.scala 93:17]
+  assign io_predict_result_o_is_jump = opcode == 7'h6f | opcode == 7'h67; // @[IF.scala 95:40]
+  assign io_predict_result_o_is_branch = opcode == 7'h63; // @[IF.scala 96:32]
+  assign io_predict_result_o_prediction = is_jump ? 1'h0 : predict_taken; // @[IF.scala 100:44]
+  assign io_predict_result_o_pc = {{32'd0}, pc}; // @[IF.scala 99:37]
+  assign io_predict_result_o_btb_index = pc[11:0]; // @[IF.scala 67:27]
+  assign io_predict_result_o_bpb_index = pc_low | history; // @[IF.scala 68:32]
   always @(posedge clock) begin
     if (BTB_pc_MPORT_en & BTB_pc_MPORT_mask) begin
-      BTB_pc[BTB_pc_MPORT_addr] <= BTB_pc_MPORT_data; // @[IF.scala 61:20]
+      BTB_pc[BTB_pc_MPORT_addr] <= BTB_pc_MPORT_data; // @[IF.scala 63:20]
     end
     if (BTB_pc_MPORT_1_en & BTB_pc_MPORT_1_mask) begin
-      BTB_pc[BTB_pc_MPORT_1_addr] <= BTB_pc_MPORT_1_data; // @[IF.scala 61:20]
+      BTB_pc[BTB_pc_MPORT_1_addr] <= BTB_pc_MPORT_1_data; // @[IF.scala 63:20]
     end
     if (BTB_pc_MPORT_2_en & BTB_pc_MPORT_2_mask) begin
-      BTB_pc[BTB_pc_MPORT_2_addr] <= BTB_pc_MPORT_2_data; // @[IF.scala 61:20]
+      BTB_pc[BTB_pc_MPORT_2_addr] <= BTB_pc_MPORT_2_data; // @[IF.scala 63:20]
     end
     if (BTB_pc_MPORT_10_en & BTB_pc_MPORT_10_mask) begin
-      BTB_pc[BTB_pc_MPORT_10_addr] <= BTB_pc_MPORT_10_data; // @[IF.scala 61:20]
+      BTB_pc[BTB_pc_MPORT_10_addr] <= BTB_pc_MPORT_10_data; // @[IF.scala 63:20]
     end
     if (BTB_pc_MPORT_11_en & BTB_pc_MPORT_11_mask) begin
-      BTB_pc[BTB_pc_MPORT_11_addr] <= BTB_pc_MPORT_11_data; // @[IF.scala 61:20]
+      BTB_pc[BTB_pc_MPORT_11_addr] <= BTB_pc_MPORT_11_data; // @[IF.scala 63:20]
     end
     if (BTB_pc_MPORT_12_en & BTB_pc_MPORT_12_mask) begin
-      BTB_pc[BTB_pc_MPORT_12_addr] <= BTB_pc_MPORT_12_data; // @[IF.scala 61:20]
+      BTB_pc[BTB_pc_MPORT_12_addr] <= BTB_pc_MPORT_12_data; // @[IF.scala 63:20]
     end
     if (BTB_valid_MPORT_en & BTB_valid_MPORT_mask) begin
-      BTB_valid[BTB_valid_MPORT_addr] <= BTB_valid_MPORT_data; // @[IF.scala 61:20]
+      BTB_valid[BTB_valid_MPORT_addr] <= BTB_valid_MPORT_data; // @[IF.scala 63:20]
     end
     if (BTB_valid_MPORT_1_en & BTB_valid_MPORT_1_mask) begin
-      BTB_valid[BTB_valid_MPORT_1_addr] <= BTB_valid_MPORT_1_data; // @[IF.scala 61:20]
+      BTB_valid[BTB_valid_MPORT_1_addr] <= BTB_valid_MPORT_1_data; // @[IF.scala 63:20]
     end
     if (BTB_valid_MPORT_2_en & BTB_valid_MPORT_2_mask) begin
-      BTB_valid[BTB_valid_MPORT_2_addr] <= BTB_valid_MPORT_2_data; // @[IF.scala 61:20]
+      BTB_valid[BTB_valid_MPORT_2_addr] <= BTB_valid_MPORT_2_data; // @[IF.scala 63:20]
     end
     if (BTB_valid_MPORT_10_en & BTB_valid_MPORT_10_mask) begin
-      BTB_valid[BTB_valid_MPORT_10_addr] <= BTB_valid_MPORT_10_data; // @[IF.scala 61:20]
+      BTB_valid[BTB_valid_MPORT_10_addr] <= BTB_valid_MPORT_10_data; // @[IF.scala 63:20]
     end
     if (BTB_valid_MPORT_11_en & BTB_valid_MPORT_11_mask) begin
-      BTB_valid[BTB_valid_MPORT_11_addr] <= BTB_valid_MPORT_11_data; // @[IF.scala 61:20]
+      BTB_valid[BTB_valid_MPORT_11_addr] <= BTB_valid_MPORT_11_data; // @[IF.scala 63:20]
     end
     if (BTB_valid_MPORT_12_en & BTB_valid_MPORT_12_mask) begin
-      BTB_valid[BTB_valid_MPORT_12_addr] <= BTB_valid_MPORT_12_data; // @[IF.scala 61:20]
+      BTB_valid[BTB_valid_MPORT_12_addr] <= BTB_valid_MPORT_12_data; // @[IF.scala 63:20]
     end
     if (BTB_target_MPORT_en & BTB_target_MPORT_mask) begin
-      BTB_target[BTB_target_MPORT_addr] <= BTB_target_MPORT_data; // @[IF.scala 61:20]
+      BTB_target[BTB_target_MPORT_addr] <= BTB_target_MPORT_data; // @[IF.scala 63:20]
     end
     if (BTB_target_MPORT_1_en & BTB_target_MPORT_1_mask) begin
-      BTB_target[BTB_target_MPORT_1_addr] <= BTB_target_MPORT_1_data; // @[IF.scala 61:20]
+      BTB_target[BTB_target_MPORT_1_addr] <= BTB_target_MPORT_1_data; // @[IF.scala 63:20]
     end
     if (BTB_target_MPORT_2_en & BTB_target_MPORT_2_mask) begin
-      BTB_target[BTB_target_MPORT_2_addr] <= BTB_target_MPORT_2_data; // @[IF.scala 61:20]
+      BTB_target[BTB_target_MPORT_2_addr] <= BTB_target_MPORT_2_data; // @[IF.scala 63:20]
     end
     if (BTB_target_MPORT_10_en & BTB_target_MPORT_10_mask) begin
-      BTB_target[BTB_target_MPORT_10_addr] <= BTB_target_MPORT_10_data; // @[IF.scala 61:20]
+      BTB_target[BTB_target_MPORT_10_addr] <= BTB_target_MPORT_10_data; // @[IF.scala 63:20]
     end
     if (BTB_target_MPORT_11_en & BTB_target_MPORT_11_mask) begin
-      BTB_target[BTB_target_MPORT_11_addr] <= BTB_target_MPORT_11_data; // @[IF.scala 61:20]
+      BTB_target[BTB_target_MPORT_11_addr] <= BTB_target_MPORT_11_data; // @[IF.scala 63:20]
     end
     if (BTB_target_MPORT_12_en & BTB_target_MPORT_12_mask) begin
-      BTB_target[BTB_target_MPORT_12_addr] <= BTB_target_MPORT_12_data; // @[IF.scala 61:20]
+      BTB_target[BTB_target_MPORT_12_addr] <= BTB_target_MPORT_12_data; // @[IF.scala 63:20]
     end
     if (BPB_MPORT_3_en & BPB_MPORT_3_mask) begin
-      BPB[BPB_MPORT_3_addr] <= BPB_MPORT_3_data; // @[IF.scala 62:20]
+      BPB[BPB_MPORT_3_addr] <= BPB_MPORT_3_data; // @[IF.scala 64:20]
     end
-    pc <= _GEN_19[31:0]; // @[IF.scala 41:{23,23} 79:8]
-    history <= _GEN_20[11:0]; // @[IF.scala 63:{32,32}]
+    pc <= _GEN_19[31:0]; // @[IF.scala 41:{23,23} 81:8]
+    history <= _GEN_20[11:0]; // @[IF.scala 65:{32,32}]
     `ifndef SYNTHESIS
     `ifdef PRINTF_COND
       if (`PRINTF_COND) begin
     `endif
         if (io_update_PredictorOp_i_is_branch & ~reset) begin
-          $fwrite(32'h80000002,"(%x):   branch, target = %x\n",io_update_PredictorOp_i_pc,io_update_PredictorOp_i_target
-            ); // @[IF.scala 140:32]
+          $fwrite(32'h80000002,"(%x):   branch, target = %x, %d\n",io_update_PredictorOp_i_pc,
+            io_update_PredictorOp_i_target,io_update_PredictorOp_i_taken); // @[IF.scala 141:32]
         end
     `ifdef PRINTF_COND
       end
@@ -391,9 +391,9 @@ module IF(
     `ifdef PRINTF_COND
       if (`PRINTF_COND) begin
     `endif
-        if (io_update_PredictorOp_i_is_branch & _T_10) begin
-          $fwrite(32'h80000002,"(%x):   jump,   target = %x\n",io_update_PredictorOp_i_pc,io_update_PredictorOp_i_target
-            ); // @[IF.scala 141:32]
+        if (io_update_PredictorOp_i_is_jump & _T_10) begin
+          $fwrite(32'h80000002,"(%x):   jump,   target = %x, %d\n",io_update_PredictorOp_i_pc,
+            io_update_PredictorOp_i_target,io_update_PredictorOp_i_taken); // @[IF.scala 142:32]
         end
     `ifdef PRINTF_COND
       end
@@ -847,7 +847,7 @@ module ID(
   wire [63:0] _GEN_44 = 5'h5 == decRes_0 ? 64'h0 : _GEN_30; // @[ID.scala 105:21 87:29]
   wire [11:0] _GEN_45 = 5'h5 == decRes_0 ? csrAddr : _GEN_31; // @[ID.scala 105:21 84:37]
   wire  _GEN_46 = 5'h5 == decRes_0 ? 1'h0 : 5'h6 == decRes_0 & _GEN_23; // @[ID.scala 105:21 102:25]
-  wire  _GEN_47 = 5'h4 == decRes_0 | _GEN_40; // @[ID.scala 105:21 172:43]
+  wire  _GEN_47 = 5'h4 == decRes_0 | _GEN_40; // @[ID.scala 105:21 172:45]
   wire  _GEN_48 = 5'h4 == decRes_0 | _GEN_43; // @[ID.scala 105:21 174:45]
   wire [63:0] _GEN_49 = 5'h4 == decRes_0 ? jal_target : _GEN_44; // @[ID.scala 105:21 177:45]
   wire [63:0] _GEN_50 = 5'h4 == decRes_0 ? io_pc_i : _GEN_37; // @[ID.scala 105:21 180:43]

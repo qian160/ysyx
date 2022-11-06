@@ -169,7 +169,7 @@ class ID extends Module{
             io.decInfo_o.writeOp.rf.wen   :=  true.B
         }
         is(InstType.J){     //jal only
-            io.decInfo_o.writeOp.rf.wen   :=  true.B
+            io.decInfo_o.writeOp.rf.wen     :=  true.B
 //            io.decInfo_o.branchOp.happen  :=  true.B
             io.update_PredictorOp_o.taken   :=  true.B
             val jal_target  =   pc + imm_J(inst)

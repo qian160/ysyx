@@ -247,7 +247,6 @@ static int decode_exec(Decode *D) {
     case(BRANCH):{
       D -> decInfo.type = TYPE_B;
       word_t target = D->pc + immB(inst);
-      //printf("branch\b");
       switch(fct3){
         case(0x0):  D -> dnpc =          R(rs1) ==          R(rs2) ? target : D -> dnpc;  break;
         case(0x1):  D -> dnpc =          R(rs1) !=          R(rs2) ? target : D -> dnpc;  break;
@@ -257,11 +256,12 @@ static int decode_exec(Decode *D) {
         case(0x7):  D -> dnpc =          R(rs1) >=          R(rs2) ? target : D -> dnpc;  break;
         default:    panic("bad inst\n");
       }
+      printf("(%lx): branch, target = %lx, %d", cpu.pc, target, D -> dnpc == target);
       break;
     }
 
-    case(JAL):    D->decInfo.type = TYPE_J;    R(rd) = linkAddr; D -> dnpc = D -> pc + immJ(inst);     break;
-    case(JALR):   D->decInfo.type = TYPE_I;    D -> dnpc = R(rs1) + immI(inst); R(rd) = linkAddr;      break;   //R(rd)=xxx must be execuated later!!!!!!!! or the jump target may be wrong(when rs1 = rd)
+    case(JAL):    D->decInfo.type = TYPE_J;    R(rd) = linkAddr; D -> dnpc = D -> pc + immJ(inst);     printf("(%lx): jump, target = %lx, %d", cpu.pc, cpu.pc + immJ(inst), D->dnpc == cpu.pc + immJ(inst));break;
+    case(JALR):   D->decInfo.type = TYPE_I;    D -> dnpc = R(rs1) + immI(inst); R(rd) = linkAddr;      printf("(%lx): jump, target = %lx, %d", cpu.pc, R(rs1) + immI(inst),  D->dnpc == R(rs1) + immI(inst));break;   //R(rd)=xxx must be execuated later!!!!!!!! or the jump target may be wrong(when rs1 = rd)
     case(AUIPC):  D->decInfo.type = TYPE_U;    R(rd) = D -> pc + immU(inst);  break;
     case(LUI):    D->decInfo.type = TYPE_U;    R(rd) = immU(inst);            break;
     case(SYS):{
