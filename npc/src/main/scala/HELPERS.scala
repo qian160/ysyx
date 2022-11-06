@@ -12,6 +12,19 @@ object Util{
     //pad: add prefix 0s or 1s according to the data type
     def SEXT(a:UInt, from: Int, to: Int): UInt = a(from - 1, 0).asSInt.pad(to).asUInt
     def ZEXT(a:UInt, from: Int, to: Int): UInt = a(from - 1, 0).pad(to)
+
+    def OPCODE(inst: UInt)  = inst(6, 0)
+    def RD(inst: UInt)      = inst(11, 7)
+    def FUNCT3(inst: UInt)  = inst(14, 12)
+    def RS1(inst: UInt)     = inst(19, 15)
+    def RS2(inst: UInt)     = inst(24, 20)
+
+    def imm_I(inst: UInt) = SEXT(inst(31,20), 12, 64)
+    def imm_J(inst: UInt) = SEXT(Cat(inst(31), inst(19,12), inst(20), inst(30,21), 0.U(1.W)),21, 64)
+    def imm_U(inst: UInt) = SEXT(inst(31,12), 20, 64) << 12
+    def imm_S(inst: UInt) = SEXT(Cat(inst(31,25), inst(11,7)), 12, 64)
+    def imm_B(inst: UInt) = SEXT(Cat(inst(31), inst(7), inst(30,25), inst(11,8), 0.U(1.W)), 13, 64)
+
 }
 
 object Color{

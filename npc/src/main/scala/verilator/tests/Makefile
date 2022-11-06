@@ -1,5 +1,9 @@
 .PHONY: all run gdb clean latest $(ALL) test
 
+# to make life easy we just use nemu's code, npc's code is not completely 
+# implemented.
+# so after being compiled, we need to rename the file as xxx-npc.bin
+
 RESULT = .result
 $(shell > $(RESULT))
 

@@ -28,6 +28,9 @@ class TOP extends Module{
         val src1      = Output(UInt(64.W))
         val src2      = Output(UInt(64.W))
 
+        val nr_branch_o =   Output(UInt(64.W))
+        val nr_taken_o  =   Output(UInt(64.W))
+
     })
     //comb logic, pipeline stages
     val IF          =   Module(new IF)
@@ -46,11 +49,15 @@ class TOP extends Module{
     val EX_MEM  =   Module(new EX_MEM)
     val MEM_WB  =   Module(new MEM_WB)
 
-    IF.io.branchOp_i    :=  ID.io.decInfo_o.branchOp
+//    IF.io.branchOp_i    :=  ID.io.decInfo_o.branchOp
     IF.io.inst_i        :=  Main_Memory.io.inst_o
+    IF.io.update_PredictorOp_i  :=  ID.io.update_PredictorOp_o
+//    IF.io.id_jump_result_i      :=  ID.io.update_PredictorOp_o
+//    IF.io.ex_branch_result_i    :=  EX.io.update_PredictorOp_o
 
     IF_ID.io.inst_i     :=  IF.io.inst_o
     IF_ID.io.pc_i       :=  IF.io.pc_o
+    IF_ID.io.predict_result_i   :=  IF.io.predict_result_o
 
     Main_Memory.io.pc_i     :=  IF.io.pc_o
     Main_Memory.io.timer_i  :=  io.timer_i
@@ -60,6 +67,8 @@ class TOP extends Module{
     ID.io.pc_i        :=  IF_ID.io.pc_o
     ID.io.csrData_i   :=  Csr.io.csrData_o
     ID.io.rfData_i    :=  Regfile.io.readRes_o
+    ID.io.predict_result_i  :=  IF_ID.io.predict_result_o
+
     //bypass
     ID.io.fwd_i.ex    :=  EX.io.ex_fwd_o
     ID.io.fwd_i.mem   :=  MEM.io.mem_fwd_o
@@ -71,6 +80,7 @@ class TOP extends Module{
     ID_EX.io.debug_i    :=  ID.io.debug_o
     ID_EX.io.decInfo_i  :=  ID.io.decInfo_o
     ID_EX.io.id_is_stalled_i    :=  ID.io.stall_req_o
+    //ID_EX.io.update_PredictorOp_i   :=  ID.io.update_PredictorOp_o
 
     Regfile.io.readRfOp_i     :=  ID.io.readOp_o
     Regfile.io.writeRfOp_i    :=  WB.io.writeOp_o.rf
@@ -80,6 +90,7 @@ class TOP extends Module{
 
     EX.io.decInfo_i     :=  ID_EX.io.decInfo_o
     EX.io.id_is_stalled_i   :=  ID_EX.io.id_is_stalled_o
+//    EX.io.update_PredictorOp_i  :=  ID_EX.io.update_PredictorOp_o
 
     EX_MEM.io.writeOp_i :=  EX.io.writeOp_o
     EX_MEM.io.memOp_i   :=  EX.io.memOp_o
@@ -130,6 +141,11 @@ class TOP extends Module{
     //used to help calculating ipc
     io.stall_o  :=  Control.io.stall_o
     io.flush_o  :=  Control.io.flush_o
+
+    io.nr_taken_o   :=  ID.io.nr_taken_o
+    io.nr_branch_o  :=  ID.io.nr_branch_o
+    dontTouch(io.nr_branch_o)
+    dontTouch(io.nr_taken_o)
     dontTouch(io.stall_o)
     dontTouch(io.flush_o)
     //debug

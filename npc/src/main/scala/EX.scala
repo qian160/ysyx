@@ -7,7 +7,8 @@ import AluOPT._
 class EX extends Module{
     val io = IO(new Bundle{
         val decInfo_i   =   Input(new DecodeInfo)
-        val id_is_stalled_i     =   Input(Bool())     //meaning we are cauclulating on old value when this signal is high
+        //it may be a load inst, so use bypass from MEM(EX is dealing with the stalled operand, which is incorrect)
+        val id_is_stalled_i     =   Input(Bool())
         val writeOp_o   =   Output(new WriteOp)
         val memOp_o     =   Output(new MemOp)
         val ex_fwd_o    =   Output(new Forward_Info)
@@ -41,9 +42,8 @@ class EX extends Module{
         SRLW    ->  SEXT((src1(31, 0) >> src2(4,0))(31,0), 32, 64),
         SRAW    ->  SEXT((src1(31, 0).asSInt >> src2(4,0)).asUInt, 32, 64),
 
-        //temp
+        //div should be pipelined
         MULHSU  ->  ((src1.asSInt * src2).asUInt)(127, 64),
-
         MULH    ->  ((src1.asSInt * src2.asSInt).asUInt)(127, 64),
         DIV     ->  (src1.asSInt / src2.asSInt).asUInt,
         DIVU    ->  (src1 / src2),
@@ -85,5 +85,4 @@ class EX extends Module{
     io.ex_fwd_o.csr.wdata   :=  io.writeOp_o.csr.wdata
 
     io.debug_o  :=  io.debug_i
-
 }

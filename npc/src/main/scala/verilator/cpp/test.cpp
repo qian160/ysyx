@@ -44,11 +44,15 @@ extern uint64_t valid_inst;
 void my_exit(int sig)
 {
 	SDL_Exit();
+	uint64_t & nr_branch = top -> io_nr_branch_o;
+	uint64_t & nr_taken  = top -> io_nr_taken_o;
+	cout.setf(ios_base::dec, ios_base::basefield);
 	cout << endl;
-	cout << Magenta("total insts: ") << dec << nr_inst << endl; 
-	cout << Magenta("        ipc: ") << static_cast<double>(valid_inst) / static_cast<double>(nr_inst) << endl;
+	cout << Green("total insts: ") << nr_inst << endl; 
+	cout << Green("        ipc: ") << (double)valid_inst / (double)nr_inst << endl;
+	cout << Green("branch rate: ") << (double)nr_taken / (double)nr_branch <<" (" << nr_taken << " / " << nr_branch << ")" << endl;
+	//todo: add cache hit rate, branch predictor accuracy
 	exit(0);
-
     __asm__ volatile(
         "movl $60,  %eax\n\t"
         "xorl %edi, %edi\n\t"
@@ -67,8 +71,8 @@ int main(int argc, char **argv)
 	else
 		img_file.reset(new string(TEST_PATH + string(argv[1]) + string("-riscv64-npc.bin")));
 	tb.reset();
-	tb.trace("./wave.vcd");		//consumes too much memory
-	IFDEF(DIFFTEST_ENABLE, init_difftest());
+	IFDEF(TRACE_VCD, tb.trace("./wave.vcd"));		//consumes too much memory
+	IFDEF(DIFFTEST_ENABLE, init_difftest());		//almost impossible to use now...
 	IFDEF(HAS_DEVICE, init_device());
 	while(!Verilated::gotFinish()){
 		// IF's pc

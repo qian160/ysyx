@@ -84,7 +84,7 @@ static inline void update_screen() {
 void vga_update_screen() {
     uint32_t * ctl = (uint32_t *)vga_ctl;
     uint32_t sync = ctl[1];
-    if (sync != 0) {
+    if (sync) {
         update_screen();
         ctl[1] = 0;
     }
@@ -98,6 +98,7 @@ void SDL_Exit(){
     SDL_Quit();
 }
 
+#define FPS 60
 extern uint64_t getTime();
 int vga_auto_update_thread(void * args)
 {
@@ -105,7 +106,7 @@ int vga_auto_update_thread(void * args)
     {
         static uint64_t last = 0;
         uint64_t now = getTime();
-        if (now - last >= 1000000 / 60) {
+        if (now - last >= 1000000 / FPS) {
             last = now;
             vga_update_screen();
         }
