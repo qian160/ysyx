@@ -256,7 +256,7 @@ static int decode_exec(Decode *D) {
         case(0x7):  D -> dnpc =          R(rs1) >=          R(rs2) ? target : D -> dnpc;  break;
         default:    panic("bad inst\n");
       }
-      printf("(%lx): branch,  target = %lx, %d\n", cpu.pc, target, D -> dnpc == target);
+      printf("(%lx): branch, target = %lx, %d\n", cpu.pc, target, D -> dnpc == target);
       break;
     }
 
