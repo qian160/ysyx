@@ -260,8 +260,8 @@ static int decode_exec(Decode *D) {
       break;
     }
 
-    case(JAL):    D->decInfo.type = TYPE_J;    R(rd) = linkAddr; D -> dnpc = D -> pc + immJ(inst);     printf("(%lx): jump,   target = %lx, %d\n", cpu.pc, cpu.pc + immJ(inst), D->dnpc == cpu.pc + immJ(inst));break;
-    case(JALR):   D->decInfo.type = TYPE_I;    D -> dnpc = R(rs1) + immI(inst); R(rd) = linkAddr;      printf("(%lx): jump,   target = %lx, %d\n", cpu.pc, R(rs1) + immI(inst),  D->dnpc == R(rs1) + immI(inst));break;   //R(rd)=xxx must be execuated later!!!!!!!! or the jump target may be wrong(when rs1 = rd)
+    case(JAL):    D->decInfo.type = TYPE_J;    R(rd) = linkAddr; D -> dnpc = D -> pc + immJ(inst);     printf("(%lx): jump,     target = %lx, %d\n", cpu.pc, cpu.pc + immJ(inst), D->dnpc == cpu.pc + immJ(inst));break;
+    case(JALR):   D->decInfo.type = TYPE_I;    D -> dnpc = R(rs1) + immI(inst); R(rd) = linkAddr;      printf("(%lx): jump,     target = %lx, %d\n", cpu.pc, R(rs1) + immI(inst),  D->dnpc == R(rs1) + immI(inst));break;   //R(rd)=xxx must be execuated later!!!!!!!! or the jump target may be wrong(when rs1 = rd)
     case(AUIPC):  D->decInfo.type = TYPE_U;    R(rd) = D -> pc + immU(inst);  break;
     case(LUI):    D->decInfo.type = TYPE_U;    R(rd) = immU(inst);            break;
     case(SYS):{
