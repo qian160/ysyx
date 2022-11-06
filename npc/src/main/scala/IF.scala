@@ -50,11 +50,14 @@ class IF extends Module{
     val prev_is_jump       =   io.update_PredictorOp_i.is_jump
 
     val branch_target      =   io.update_PredictorOp_i.target
-    val branch_or_jump_pc  =   io.update_PredictorOp_i.pc               // the pc of that b/j inst
+    val branch_pc          =   io.update_PredictorOp_i.pc               // the pc of that b/j inst
 
-    val predict_fail       =   prev_predict =/= prev_taken
+    val prev_predict_fail  =   prev_predict =/= prev_taken
 
-    val correct_target  =   io.update_PredictorOp_i.target
+    val is_jump            =   opcode === JAL | opcode === JALR
+    val is_branch          =   opcode === BRANCH
+    // when prediction fails
+    val correct_target     =   Mux(prev_taken, branch_target, branch_pc + 4.U)
     val btb_index   =   io.update_PredictorOp_i.btb_index
     val bpb_index   =   io.update_PredictorOp_i.bpb_index
     // Branch Predict/Target Buffer
@@ -66,10 +69,10 @@ class IF extends Module{
 
     val pc_low      =   pc(11, 0)
     val hash_index  =   pc_low | history
-    val valid       =   BTB(hash_index).valid & BTB(hash_index).pc === pc
+    val btb_valid   =   BTB(hash_index).valid & BTB(hash_index).pc === pc
     //if not valid, meaning that we don't know the target yet. So just make no prediction, and after a cycle the target will be computed and passed back
-
-    val predict_taken  =   BPB(hash_index)(1)
+    // only make predictions on branch
+    val predict_taken  =   (is_branch & BPB(hash_index)(1)) | (is_jump & btb_valid)
     val predict_target =   BTB(hash_index).target
 
 /*
@@ -79,28 +82,24 @@ class IF extends Module{
     at first nop will be fetched, but not later
 */
     pc :=   PriorityMux(Seq(
-        //(reset.asBool(),        CONST.PC_INIT),
         (io.ctrl_i.stall,       pc),
-        //(io.ctrl_i.flush,       CONST.PC_INIT),
-        (predict_fail,          correct_target),
-        //ID branchop(jal) and ex branchop (b, jalr). branchop need to be substituted
-        (predict_taken & valid, predict_target),
+        (prev_predict_fail,     correct_target),
+        (predict_taken,         predict_target),
         (true.B,                pc + 4.U)
     ))
 
     io.pc_o :=  pc
     //io.inst_o   :=  inst_rom(pc >> 2)
-    io.inst_o   :=  io.inst_i
+    io.inst_o   :=  inst
 
-    val is_jump     =   opcode === JAL | opcode === JALR
-    val is_branch   =   opcode === BRANCH
+
     io.predict_result_o.is_branch   :=  is_branch
     io.predict_result_o.is_jump     :=  is_jump
     io.predict_result_o.pc          :=  pc
-    io.predict_result_o.prediction  :=  Mux(is_jump, 0.U, predict_taken)    // ID will set taken = 1, this makes prediction fail, thus next PC will become the variable 'correct_target'
+    io.predict_result_o.prediction  :=  predict_taken           // ID will set taken = 1, this makes prediction fail, thus next PC will become the variable 'correct_target'
     io.predict_result_o.bpb_index   :=  hash_index
     // btb: use hash_index or pc_low? It seems that barget has nothing to be with global behavior...
-    io.predict_result_o.btb_index   :=  pc_low
+    io.predict_result_o.btb_index   :=  hash_index
     io.predict_result_o.taken       :=  DontCare                // let ID determine this
     io.predict_result_o.target      :=  DontCare
 
@@ -109,11 +108,11 @@ class IF extends Module{
 
     //branch
     //flush is given by ID, just check whether the prediction is right and update the date structure
-    when(prev_is_branch){
+    when(prev_is_branch & ~io.ctrl_i.stall){
         history :=  (history << 1.U) | prev_taken
         //printf("%x\n", history)
         BTB(btb_index).valid    :=  1.U
-        BTB(btb_index).pc       :=  branch_or_jump_pc
+        BTB(btb_index).pc       :=  branch_pc
         BTB(btb_index).target   :=  correct_target
 
         // 2-bit saturating counter. Jump doesn't need to update this
@@ -125,21 +124,19 @@ class IF extends Module{
         )
     }
 
-    when(prev_is_jump){
+    when(prev_is_jump & ~io.ctrl_i.stall){
         BTB(btb_index).valid    :=  1.U
-        BTB(btb_index).pc       :=  branch_or_jump_pc
+        BTB(btb_index).pc       :=  branch_pc
         BTB(btb_index).target   :=  correct_target
     }
 /*
-    when(predict_fail)
+    when(prev_predict_fail & ~io.ctrl_i.stall)
     {
-        printf("predict fail at %x. Taken should be %d\n", branch_or_jump_pc, prev_taken)
-    }.elsewhen(prev_is_branch){
-        printf("predict hit at %x. Taken = %d\n", branch_or_jump_pc, prev_taken)
+        printf("predict fail at %x. Taken should be %d\n", branch_pc, prev_taken)
     }
 */
-    when(prev_is_branch){printf("(%x):   branch, target = %x, %d\n", branch_or_jump_pc, branch_target, prev_taken)}
-    when(prev_is_jump  ){printf("(%x):   jump,   target = %x, %d\n", branch_or_jump_pc, branch_target, prev_taken)}
+    when(prev_is_branch & ~io.ctrl_i.stall){printf("(%x):   branch, target = %x, %d\n", branch_pc, branch_target, prev_taken)}
+    when(prev_is_jump   & ~io.ctrl_i.stall){printf("(%x):   jump,   target = %x, %d\n", branch_pc, branch_target, prev_taken)}
 }
 
 class BTB_entry extends Bundle{

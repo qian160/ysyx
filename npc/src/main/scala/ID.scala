@@ -62,7 +62,12 @@ class ID extends Module{
     }
 */
 //    io.flush_req_o    :=  io.decInfo_o.branchOp.happen
-    val predict_fail    =   io.predict_result_i.taken =/= io.predict_result_i.prediction
+    val predict_taken   =   io.predict_result_i.prediction
+    val actual_taken    =   io.update_PredictorOp_o.taken
+    dontTouch(predict_taken)
+    dontTouch(actual_taken)
+    val predict_fail    =   actual_taken =/= predict_taken
+    dontTouch(predict_fail)
     io.flush_req_o      :=  predict_fail
     io.stall_req_o      :=  0.U
     val prev_is_load    =   io.fwd_i.prev_is_load
@@ -76,15 +81,14 @@ class ID extends Module{
     val fct3    =   inst(14, 12)
 
     //default
-    io.decInfo_o                    := 0.U.asTypeOf(new DecodeInfo)
-    io.decInfo_o.aluOp.src1         := rs1Val
-    io.decInfo_o.aluOp.src2         := rs2Val
-    io.decInfo_o.instType           := instType
-    io.decInfo_o.writeOp.rf.rd      := inst(11, 7)
-    io.decInfo_o.writeOp.csr.waddr  := csrAddr
-    io.decInfo_o.aluOp.opt          := op
-
-    io.update_PredictorOp_o :=  io.predict_result_i
+    io.decInfo_o                    :=  0.U.asTypeOf(new DecodeInfo)
+    io.decInfo_o.aluOp.src1         :=  rs1Val
+    io.decInfo_o.aluOp.src2         :=  rs2Val
+    io.decInfo_o.instType           :=  instType
+    io.decInfo_o.writeOp.rf.rd      :=  inst(11, 7)
+    io.decInfo_o.writeOp.csr.waddr  :=  csrAddr
+    io.decInfo_o.aluOp.opt          :=  op
+    io.update_PredictorOp_o         :=  io.predict_result_i
 
     //read rf
     io.readOp_o.rs1     := inst(19, 15)
@@ -152,7 +156,8 @@ class ID extends Module{
             ))
 
 //            io.decInfo_o.branchOp.happen  :=  likely_branch & (~io.stall_req_o)
-            io.update_PredictorOp_o.taken   :=  likely_branch & (~io.stall_req_o)
+            // when stalled, set taken = prediction to make IF's prediction not fail. otherwise IF's next pc and BTB, BPB could be damaged an
+            io.update_PredictorOp_o.taken   :=  Mux(io.stall_req_o, io.predict_result_i.prediction, likely_branch & (~io.stall_req_o))
             io.stall_req_o  :=  prev_is_load & (prev_rd  === rs1 | prev_rd === rs2)
 
 //            when(io.decInfo_o.branchOp.happen){
