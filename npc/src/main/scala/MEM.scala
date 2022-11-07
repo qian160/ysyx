@@ -23,11 +23,11 @@ class MEM extends Module{
     val addr    =   io.memOp_i.addr
 /*
     when(is_load){
-        printf("(%x):   load addr  = %x, data = %x\n", io.debug_i.pc, addr, io.loadVal_i)
+        printf("(%x):   [x%d]   <=  %x (Mem[%x])\n", io.debug_i.pc(31, 0), io.writeOp_i.rf.rd, io.loadVal_i, addr(31, 0))
     }
 
     when(is_store){
-        printf("(%x):   store addr = %x, data = %x\n", io.debug_i.pc, addr, sdata)
+        printf("(%x):   %x  =>  Mem[%x]\n", io.debug_i.pc(31, 0), sdata, addr(31, 0))
     }
 */
     io.writeOp_o            :=  io.writeOp_i

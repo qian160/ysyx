@@ -30,6 +30,7 @@ class TOP extends Module{
 
         val nr_branch_o =   Output(UInt(64.W))
         val nr_taken_o  =   Output(UInt(64.W))
+        val success_cnt_o   =   Output(UInt(64.W))
 
     })
     //comb logic, pipeline stages
@@ -147,6 +148,7 @@ class TOP extends Module{
 
     io.nr_taken_o   :=  ID.io.nr_taken_o
     io.nr_branch_o  :=  ID.io.nr_branch_o
+    io.success_cnt_o    :=  IF.io.success_cnt_o
     dontTouch(io.nr_branch_o)
     dontTouch(io.nr_taken_o)
     dontTouch(io.stall_o)
@@ -161,8 +163,9 @@ object Gen {
     def main(args:Array[String]) : Unit = {
         println(Yellow("Generate Verilog..."))
         //println(getVerilogString(new seg_scan))
-        (new chisel3.stage.ChiselStage).emitVerilog(new TOP, Array("--target-dir", "src/main/scala/verilator/verilog/"))      //--target-dir , --no-dce
-        //(new chisel3.stage.ChiselStage).execute(args, Seq(ChiselGeneratorAnnotation(() => new TOP)))
+        val my_args = Array("--target-dir", "src/main/scala/verilator/verilog/")
+        (new chisel3.stage.ChiselStage).emitVerilog(new TOP, my_args)      //--target-dir , --no-dce
+        //(new chisel3.stage.ChiselStage).execute(my_args, Seq(ChiselGeneratorAnnotation(() => new TOP)))
 
         println(Green("Done"))
 

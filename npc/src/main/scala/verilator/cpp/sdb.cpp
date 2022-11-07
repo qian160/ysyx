@@ -44,7 +44,6 @@ extern void vga_update_screen();
 extern uint64_t boot_time;
 extern void send_key(uint8_t scancode, bool is_keydown);
 
-
 uint64_t nr_inst = 0;
 uint64_t valid_inst = 0;
 int cmd_s(string steps){

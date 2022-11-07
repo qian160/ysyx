@@ -5,9 +5,9 @@ int main()
 	int z = 114;
 	if(z > 1)
 	{
-		z = 0;
+		halt(0);
 	}
 	else 
-		z = 1;
-	halt(z);
+		halt(1);
+	while(1);
 }

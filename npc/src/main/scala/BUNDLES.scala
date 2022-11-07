@@ -120,20 +120,5 @@ class Update_PredictorOp extends Bundle{
     val btb_index   =   UInt(12.W)
     val bpb_index   =   UInt(12.W)
     val target      =   UInt(64.W)
-}
-//subset of Update_PredictorOp
-class Jump_result extends Bundle{
-    val is_jump =   Bool()
-    val target  =   UInt(64.W)
-    val pc      =   UInt(64.W)
-    val btb_index   =   UInt(12.W)
-}
-
-class Branch_result extends Bundle{
-    val is_branch   =   Bool()
-    val prediction  =   Bool()
-    val bpb_index   =   UInt(12.W)
-    val pc          =   UInt(64.W)
-    val target      =   UInt(64.W)
-    val taken       =   UInt(64.W)
+    val predict_target  =   UInt(64.W)
 }
