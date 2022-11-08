@@ -257,12 +257,12 @@ static int decode_exec(Decode *D) {
         case(0x7):  D -> dnpc =          R(rs1) >=          R(rs2) ? target : D -> dnpc;  break;
         default:    panic("bad inst\n");
       }
-      //printf("(%lx): branch, target = %lx, %d\n", cpu.pc, target, D -> dnpc == target);
+      printf("(%lx): branch, target = %lx, %d\n", cpu.pc, target, D -> dnpc == target);
       break;
     }
 
-    case(JAL):    D->decInfo.type = TYPE_J;    R(rd) = linkAddr; D -> dnpc = D -> pc + immJ(inst); break;    //printf("(%lx): jump,   target = %lx, %d\n", cpu.pc, cpu.pc + immJ(inst), D->dnpc == cpu.pc + immJ(inst));break;
-    case(JALR):   D->decInfo.type = TYPE_I;    D -> dnpc = R(rs1) + immI(inst); R(rd) = linkAddr;  break;    //printf("(%lx): jump,   target = %lx, %d\n", cpu.pc, R(rs1) + immI(inst),  D->dnpc == R(rs1) + immI(inst));break;   //R(rd)=xxx must be execuated later!!!!!!!! or the jump target may be wrong(when rs1 = rd)
+    case(JAL):    D->decInfo.type = TYPE_J;    R(rd) = linkAddr; D -> dnpc = D -> pc + immJ(inst);   printf("(%lx): jump,   target = %lx, %d\n", cpu.pc, cpu.pc + immJ(inst), D->dnpc == cpu.pc + immJ(inst));break;
+    case(JALR):   D->decInfo.type = TYPE_I;    D -> dnpc = R(rs1) + immI(inst); R(rd) = linkAddr;    printf("(%lx): jump,   target = %lx, %d\n", cpu.pc, R(rs1) + immI(inst),  D->dnpc == R(rs1) + immI(inst));break;   //R(rd)=xxx must be execuated later!!!!!!!! or the jump target may be wrong(when rs1 = rd)
     case(AUIPC):  D->decInfo.type = TYPE_U;    R(rd) = D -> pc + immU(inst);  break;
     case(LUI):    D->decInfo.type = TYPE_U;    R(rd) = immU(inst);            break;
     case(SYS):{
@@ -295,11 +295,8 @@ static int decode_exec(Decode *D) {
       break;
     }
   }
-  R(0) = 0; // reset $zero to 0
-  if(opcode != STORE && opcode != BRANCH)
-  {
-    printf("(%lx):  [x%-2d] <=  %lx\n", cpu.pc, rd, R(rd));
-  }
+  R(0) = 0; // reset $zero to 
+  //if(opcode != STORE && opcode != BRANCH) printf("(%lx):  [x%-2d] <=  %lx\n", cpu.pc, rd, R(rd));
   Assert( D-> dnpc != D -> pc, "dead loop at 0x%lx\n", cpu.pc);
   //IFDEF(CONFIG_REF, Log("\nwdata = 0x%lx\npc = 0x%8lx, inst = 0x%08x,  rd = %d\n", opcode == BRANCH? 0: R(rd), D->pc, inst, rd));
   return 0;
