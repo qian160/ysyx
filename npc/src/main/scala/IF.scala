@@ -49,7 +49,6 @@ class IF extends Module{
     val opcode  =  OPCODE(io.inst_i)
 
     val prev_is_branch      =   io.update_PredictorOp_i.is_branch            // need to do something
-    val prev_is_jump        =   io.update_PredictorOp_i.is_jump
     val prev_taken          =   io.update_PredictorOp_i.taken
 
     val branch_target       =   io.update_PredictorOp_i.target
@@ -59,9 +58,8 @@ class IF extends Module{
 
     val pc_low      =   pc(11, 0)
     val hash_index  =   pc_low | history
-
-    val is_jump            =   opcode === JAL | opcode === JALR
-    val is_branch          =   opcode === BRANCH
+    // treat jump and branch the same way
+    val is_branch          =   opcode === BRANCH | opcode === JAL | opcode === JALR
     
     /* when prediction fails. There are 2 cases of failures:
         1. target mismatch
@@ -78,31 +76,26 @@ class IF extends Module{
     val btb_valid          =   BTB(hash_index).pc === pc
     val btb_target         =   BTB(hash_index).target
 
-    // sometimes jump target is not buffered in btb yet, although we know it must be taken, we still have to predict not taken 
+    // sometimes jump target is not buffered in btb yet, although we know it must be taken, we still have to predict not taken
+    // this is okay because ID will check the branch result and send predict_fail to IF, so that IF can update to correct target
+    // in fact we can't give out a correct prediction under the condition that we don't even know the address. So this jump must fail
     // if we consist on predicting taken, in the next cycle pc may become 0, which is the value stored in btb
-    val predict_taken  =   ( btb_valid & (is_branch & BPB(hash_index)(1)) | (is_jump))
+    val predict_taken  =   ( btb_valid & (is_branch & BPB(hash_index)(1)))
 
     val predict_target =   BTB(hash_index).target
-/*
-    test:
-        j test
-        nop
-    at first nop will be fetched, but not later
-*/
-//jump is implemented by inverting the prediction, making it always fails
+//---------------------------------------------------------
     pc :=   PriorityMux(Seq(
         (io.ctrl_i.stall,       pc),
         (prev_predict_fail,     correct_address),
         (predict_taken,         predict_target),
         (true.B,                pc + 4.U)
     ))
-
+//---------------------------------------------------------
     io.pc_o     :=  pc
     //io.inst_o   :=  inst_rom(pc >> 2)
     io.inst_o   :=  io.inst_i
 
     io.predict_result_o.is_branch   :=  is_branch
-    io.predict_result_o.is_jump     :=  is_jump
     io.predict_result_o.pc          :=  pc
     io.predict_result_o.bpb_index   :=  hash_index
     // btb: use hash_index or pc_low? It seems that barget has nothing to be with global behavior...
@@ -115,9 +108,8 @@ class IF extends Module{
 
     //in fact prev 2
 
-
     // branch
-    // flush is given by ID, just check whether the prediction is right and update the date structure
+    // flush is given by ID, here just check whether the prediction is right and update the some states
     // BTB should never buffer pc + 4(the not taken case)!!!!!
     // because BTB is used when branch/jump happens. If the value inside is the not taken case, then BTB doesn't turn out to be useful
     when(prev_is_branch & ~io.ctrl_i.stall){
@@ -134,21 +126,12 @@ class IF extends Module{
         )
     }
 
-    when(prev_is_jump & ~io.ctrl_i.stall){
-        BTB(btb_index)  :=  Cat(branch_pc, branch_target).asTypeOf(new BTB_entry)
-    }
-
     val success_cnt =   RegInit(0.U(64.W))
     when(~prev_predict_fail & prev_is_branch & ~io.ctrl_i.stall){
         success_cnt := success_cnt + 1.U
     }
     io.success_cnt_o    :=  success_cnt
-/*
-    when(prev_predict_fail & ~io.ctrl_i.stall)
-    {
-        printf("predict fail at %x. Taken should be %d\n", branch_pc, prev_taken)
-    }
-*/
+
     //when(prev_is_branch & ~io.ctrl_i.stall){printf("(%x):   branch, target = %x\n", branch_pc(31, 0), branch_target)}
     //when(prev_is_jump   & ~io.ctrl_i.stall){printf("(%x):   jump,   target = %x\n", branch_pc(31, 0), branch_target)}
 }

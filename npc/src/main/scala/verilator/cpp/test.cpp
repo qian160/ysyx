@@ -76,7 +76,7 @@ int main(int argc, char **argv)
 	IFDEF(TRACE_EN, tb.trace("./wave.vcd"));		//consumes too much memory
 	IFDEF(DIFFTEST_ENABLE, init_difftest());		//almost impossible to use now...
 	IFDEF(HAS_DEVICE, init_device());
-	tb.trace("./wave.vcd");
+	//tb.trace("./wave.vcd");
 	while(!Verilated::gotFinish()){
 		// IF's pc
 		cout << _green << "(0x" << top -> io_pc_o << ")" << normal;

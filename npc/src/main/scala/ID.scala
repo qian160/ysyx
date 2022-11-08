@@ -58,11 +58,10 @@ class ID extends Module{
     val actual_target   =   io.update_PredictorOp_o.target
     val predict_taken   =   io.predict_result_i.predict_taken
     val actual_taken    =   io.update_PredictorOp_o.taken
-    val is_jump         =   io.predict_result_i.is_jump
     val is_branch       =   io.predict_result_i.is_branch
     val direction_fail  =   actual_taken =/= predict_taken
     val target_fail     =   actual_target =/= predict_target
-    val predict_fail    =   ( (is_branch | is_jump) & (target_fail | direction_fail ) & ~io.stall_req_o)
+    val predict_fail    =   ((is_branch) & (target_fail | direction_fail) & ~io.stall_req_o)
     io.flush_req_o     :=   predict_fail
     // different types of inst have their different stall reasons. But all caused by load
     io.stall_req_o     :=   0.U
@@ -111,7 +110,7 @@ class ID extends Module{
         is(InstType.I){ //special cases: jalr, load. operands look like this: rd, imm(rs1)
             io.decInfo_o.writeOp.rf.wen    :=  Mux(io.stall_req_o, false.B, true.B)
             //val is_jalr =   opcode  === Opcode.JALR
-            val is_jalr =   io.predict_result_i.is_jump
+            val is_jalr =   io.predict_result_i.is_branch
 
             io.decInfo_o.aluOp.src1   :=  Mux(is_jalr, pc,        rs1Val)
             io.decInfo_o.aluOp.src2   :=  Mux(is_jalr, 4.U(64.W), imm_I(inst))
