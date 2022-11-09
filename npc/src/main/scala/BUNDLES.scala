@@ -114,8 +114,7 @@ class Ctrl extends Bundle{
 class Update_PredictorOp extends Bundle{
     val is_branch   =   Bool()
     val pc          =   UInt(64.W)
-    val btb_index   =   UInt(12.W)
-    val bpb_index   =   UInt(12.W)
+    val index       =   UInt(12.W)
     val target      =   UInt(64.W)
     val taken       =   Bool()
     val predict_taken   =   Bool()

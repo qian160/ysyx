@@ -68,12 +68,12 @@ class ID extends Module{
     val prev_is_load    =   io.fwd_i.prev_is_load
     val prev_rd         =   io.fwd_i.prev_rd
 
-    val decRes   = ListLookup(inst, DecTable.defaultDec, DecTable.decMap)     //returns list(instType,opt)
-    val instType = decRes(DecTable.TYPE)    //R I S B J U SYS
-    val op       = decRes(DecTable.OPT)     //sometimes useless,like InstType.B
+    val decRes   =  ListLookup(inst, DecTable.defaultDec, DecTable.decMap)     //returns list(instType,opt)
+    val instType =  decRes(DecTable.TYPE)    //R I S B J U SYS
+    val op       =  decRes(DecTable.OPT)     //sometimes useless,like InstType.B
 
-    val opcode  =   inst(6, 0)
-    val fct3    =   inst(14, 12)
+    val opcode   =  inst(6, 0)
+    val fct3     =  inst(14, 12)
 
     //default
     io.decInfo_o                    :=  0.U.asTypeOf(new DecodeInfo)
@@ -225,7 +225,6 @@ class ID extends Module{
                     }
                 }
             }
-
         }
     }
 
@@ -238,5 +237,4 @@ class ID extends Module{
     //printf(p"src1 = ${Hexadecimal(src1)}, src2 = ${Hexadecimal(src2)}\n")
     //printf("\npc = %x, inst = %x\n",pc, inst)
     //printf("src1 = %x, src2 = %x\n\n\n", io.decInfo_o.aluOp.src1, io.decInfo_o.aluOp.src2)
-
 }

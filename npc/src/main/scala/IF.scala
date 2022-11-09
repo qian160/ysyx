@@ -5,27 +5,19 @@ import Opcode._
 
 //usually branch result is known in EX, but here to make life easy I move it to ID
 
-    /*
-    remember that predict target could be wrong! Even if btb_valid is set. Consider these simple case below:
-        case1:    bnez x1, lable
-            when first execuated, assuming it it not taken, and we predict taken. As a result, BTB is set to be pc + 4 rather that that target
-        now it comes to a second execuation. This time it is taken, and we fetch the value from BTB. Which is not correct(pc + 4)
-        solution:   update BTB only when branch is taken
+/*
+    an overview on branch prediction:
+        1. calculate the index here using low bits of pc and histroy
+        2. fetch the predicted target and direction in BTB and BPB using that index
+        3. check if (btb.pc = pc). If not then that target should not be used by current inst
+        4. otherwise we treat that btb.target as our branch target(although it could be wrong). And bpb will decide the direction
+        5. in ID, we check the correctness of our previous prediction by comparing both direction and target. And send back newly calculated target to IF.
+            If any of them failed, flush the data in IF/ID(the incorrectly fetched inst)
+        6. IF checks the previous prediction. And use the newly calculated target from ID to update btb.
 
-        case2:  j x2
-            when first execuated, BTB is not ready and we have to predict not taken. After a cycle the correct target is updated to BTB and we rejump to there. OK so far.
-            But if this is execuated a second time later, and x2 is modified somewhere, we would jump to the wrong target. And since predict_taken == actual_taken, no fail would be detacted
-        
-        case3:  
-            this is a little tricky. Sometimes we predict not taken, while in fact taken. But (btb target = branch target). So we won't catch the failure
-
-    Based on these cases, maybe our previous strategy on telling a predict_fail only on (predict_taken =/= actual_taken) is not enough?
-
-    New attempt:    compare both target and taken to get predict_fail
-
-    Jump and branch should be treated the same way. THat is, our prediction is only based on BTB and BPB, not based on whether it's a branch or a jump
-
-    */
+    notes:  jump could be predicted not taken. Why? This is caused by btb miss, we can't give out a correct target under this situation.
+                So it makes no difference whichever direction we predict(since a fail will always happen), and thus we could treat jump the branch way. This reduces some code
+*/
 
 //@chiselName
 class IF extends Module{
@@ -46,7 +38,7 @@ class IF extends Module{
     val pc      =   RegInit(CONST.PC_INIT)
     val history =   RegInit(0.U(12.W))
 
-    val opcode  =  OPCODE(io.inst_i)
+    val opcode  =   OPCODE(io.inst_i)
 
     val prev_is_branch      =   io.update_PredictorOp_i.is_branch            // need to do something
     val prev_taken          =   io.update_PredictorOp_i.taken
@@ -57,32 +49,21 @@ class IF extends Module{
     val prev_predict_fail   =   io.update_PredictorOp_i.predict_fail
 
     val pc_low      =   pc(11, 0)
-    val hash_index  =   pc_low | history
+    val bp_index    =   pc_low | history
     // treat jump and branch the same way
-    val is_branch          =   opcode === BRANCH | opcode === JAL | opcode === JALR
+    val is_branch   =   opcode === BRANCH | opcode === JAL | opcode === JALR
     
-    /* when prediction fails. There are 2 cases of failures:
-        1. target mismatch
-        2. direction mismatch
-        Both conditions need to be checked
-    */
     val correct_address     =   Mux(prev_taken, branch_target, branch_pc + 4.U)
-    val btb_index   =   io.update_PredictorOp_i.btb_index
-    val bpb_index   =   io.update_PredictorOp_i.bpb_index
+    val prev_bp_index       =   io.update_PredictorOp_i.index
     // Branch Predict/Target Buffer
     val BTB =   Mem(1 << 12, (new BTB_entry))
     val BPB =   Mem(1 << 12, UInt(2.W))
 
-    val btb_valid          =   BTB(hash_index).pc === pc
-    val btb_target         =   BTB(hash_index).target
+    val btb_valid          =   BTB(bp_index).pc === pc
+    val btb_target         =   BTB(bp_index).target
 
-    // sometimes jump target is not buffered in btb yet, although we know it must be taken, we still have to predict not taken
-    // this is okay because ID will check the branch result and send predict_fail to IF, so that IF can update to correct target
-    // in fact we can't give out a correct prediction under the condition that we don't even know the address. So this jump must fail
-    // if we consist on predicting taken, in the next cycle pc may become 0, which is the value stored in btb
-    val predict_taken  =   ( btb_valid & (is_branch & BPB(hash_index)(1)))
-
-    val predict_target =   BTB(hash_index).target
+    val predict_taken  =   (btb_valid & (is_branch & BPB(bp_index)(1)))
+    val predict_target =   BTB(bp_index).target
 //---------------------------------------------------------
     pc :=   PriorityMux(Seq(
         (io.ctrl_i.stall,       pc),
@@ -92,37 +73,28 @@ class IF extends Module{
     ))
 //---------------------------------------------------------
     io.pc_o     :=  pc
-    //io.inst_o   :=  inst_rom(pc >> 2)
     io.inst_o   :=  io.inst_i
 
     io.predict_result_o.is_branch   :=  is_branch
     io.predict_result_o.pc          :=  pc
-    io.predict_result_o.bpb_index   :=  hash_index
-    // btb: use hash_index or pc_low? It seems that barget has nothing to be with global behavior...
-    io.predict_result_o.btb_index   :=  hash_index
+    // btb: use btb_index or pc_low? It seems that barget has nothing to be with global behavior...
+    io.predict_result_o.index       :=  bp_index
     io.predict_result_o.target      :=  DontCare
     io.predict_result_o.taken       :=  DontCare
     io.predict_result_o.predict_target  :=  predict_target
     io.predict_result_o.predict_fail    :=  DontCare
     io.predict_result_o.predict_taken   :=  predict_taken
 
-    //in fact prev 2
-
-    // branch
     // flush is given by ID, here just check whether the prediction is right and update the some states
     // BTB should never buffer pc + 4(the not taken case)!!!!!
     // because BTB is used when branch/jump happens. If the value inside is the not taken case, then BTB doesn't turn out to be useful
     when(prev_is_branch & ~io.ctrl_i.stall){
         history :=  (history << 1.U) | prev_taken
-        //if not taken, then correct_address = pc + 4. Things could go wrong when trying to use this value as a branch target next time
-        //pc + 4 is only useful as a recovery value when we predict taken, but in fact not. Not useful in providing a predict target
-        BTB(btb_index)  :=  Cat(branch_pc, branch_target).asTypeOf(new BTB_entry)
-        // 2-bit saturating counter. Jump doesn't need to update this
-        BPB(bpb_index)  :=  Mux(prev_taken,
-            //that branch was taken, and hopefully it will be taken again in the future
-            Mux(BPB(bpb_index) === 3.U, BPB(bpb_index), BPB(bpb_index) + 1.U),
-            //not taken
-            Mux(BPB(bpb_index) === 0.U, BPB(bpb_index), BPB(bpb_index) - 1.U)
+        BTB(prev_bp_index)  :=  Cat(branch_pc, branch_target).asTypeOf(new BTB_entry)
+        // 2-bit saturating counter
+        BPB(prev_bp_index)  :=  Mux(prev_taken,
+            Mux(BPB(prev_bp_index) === 3.U, BPB(prev_bp_index), BPB(prev_bp_index) + 1.U),
+            Mux(BPB(prev_bp_index) === 0.U, BPB(prev_bp_index), BPB(prev_bp_index) - 1.U)
         )
     }
 
@@ -143,4 +115,6 @@ class BTB_entry extends Bundle{
 
 class ICache_entry extends Bundle{
     //todo
+    //val tag     =   UInt()
+    //val insts   =   Vec()
 }
