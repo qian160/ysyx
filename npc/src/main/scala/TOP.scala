@@ -52,13 +52,13 @@ class TOP extends Module{
 
 //    IF.io.branchOp_i    :=  ID.io.decInfo_o.branchOp
     IF.io.inst_i        :=  Main_Memory.io.inst_o
-    IF.io.update_PredictorOp_i  :=  ID.io.update_PredictorOp_o
+    IF.io.predict_i     :=  ID.io.predict_o
 //    IF.io.id_jump_result_i      :=  ID.io.update_PredictorOp_o
 //    IF.io.ex_branch_result_i    :=  EX.io.update_PredictorOp_o
 
     IF_ID.io.inst_i     :=  IF.io.inst_o
     IF_ID.io.pc_i       :=  IF.io.pc_o
-    IF_ID.io.predict_result_i   :=  IF.io.predict_result_o
+    IF_ID.io.predict_i  :=  IF.io.predict_o
 
     IF_ID.io.inst_i     :=  IF.io.inst_o
     IF_ID.io.pc_i       :=  IF.io.pc_o
@@ -71,7 +71,7 @@ class TOP extends Module{
     ID.io.pc_i        :=  IF_ID.io.pc_o
     ID.io.csrData_i   :=  Csr.io.csrData_o
     ID.io.rfData_i    :=  Regfile.io.readRes_o
-    ID.io.predict_result_i  :=  IF_ID.io.predict_result_o
+    ID.io.predict_i   :=  IF_ID.io.predict_o
 
     //bypass
     ID.io.fwd_i.ex    :=  EX.io.ex_fwd_o

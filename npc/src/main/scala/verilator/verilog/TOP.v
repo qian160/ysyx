@@ -5,17 +5,17 @@ module IF(
   input  [31:0] io_inst_i,
   output [63:0] io_pc_o,
   output [31:0] io_inst_o,
-  input         io_update_PredictorOp_i_is_branch,
-  input  [63:0] io_update_PredictorOp_i_pc,
-  input  [11:0] io_update_PredictorOp_i_index,
-  input  [63:0] io_update_PredictorOp_i_target,
-  input         io_update_PredictorOp_i_taken,
-  input         io_update_PredictorOp_i_predict_fail,
-  output        io_predict_result_o_is_branch,
-  output [63:0] io_predict_result_o_pc,
-  output [11:0] io_predict_result_o_index,
-  output        io_predict_result_o_predict_taken,
-  output [63:0] io_predict_result_o_predict_target,
+  input         io_predict_i_is_branch,
+  input  [63:0] io_predict_i_pc,
+  input  [11:0] io_predict_i_index,
+  input  [63:0] io_predict_i_target,
+  input         io_predict_i_taken,
+  input         io_predict_i_predict_fail,
+  output        io_predict_o_is_branch,
+  output [63:0] io_predict_o_pc,
+  output [11:0] io_predict_o_index,
+  output        io_predict_o_predict_taken,
+  output [63:0] io_predict_o_predict_target,
   output [63:0] io_success_cnt_o
 );
 `ifdef RANDOMIZE_MEM_INIT
@@ -28,151 +28,151 @@ module IF(
   reg [31:0] _RAND_4;
   reg [63:0] _RAND_5;
 `endif // RANDOMIZE_REG_INIT
-  reg [63:0] BTB_pc [0:4095]; // @[IF.scala 67:20]
-  wire  BTB_pc_btb_valid_MPORT_en; // @[IF.scala 67:20]
-  wire [11:0] BTB_pc_btb_valid_MPORT_addr; // @[IF.scala 67:20]
-  wire [63:0] BTB_pc_btb_valid_MPORT_data; // @[IF.scala 67:20]
-  wire  BTB_pc_predict_target_MPORT_en; // @[IF.scala 67:20]
-  wire [11:0] BTB_pc_predict_target_MPORT_addr; // @[IF.scala 67:20]
-  wire [63:0] BTB_pc_predict_target_MPORT_data; // @[IF.scala 67:20]
-  wire [63:0] BTB_pc_MPORT_data; // @[IF.scala 67:20]
-  wire [11:0] BTB_pc_MPORT_addr; // @[IF.scala 67:20]
-  wire  BTB_pc_MPORT_mask; // @[IF.scala 67:20]
-  wire  BTB_pc_MPORT_en; // @[IF.scala 67:20]
-  reg [63:0] BTB_target [0:4095]; // @[IF.scala 67:20]
-  wire  BTB_target_btb_valid_MPORT_en; // @[IF.scala 67:20]
-  wire [11:0] BTB_target_btb_valid_MPORT_addr; // @[IF.scala 67:20]
-  wire [63:0] BTB_target_btb_valid_MPORT_data; // @[IF.scala 67:20]
-  wire  BTB_target_predict_target_MPORT_en; // @[IF.scala 67:20]
-  wire [11:0] BTB_target_predict_target_MPORT_addr; // @[IF.scala 67:20]
-  wire [63:0] BTB_target_predict_target_MPORT_data; // @[IF.scala 67:20]
-  wire [63:0] BTB_target_MPORT_data; // @[IF.scala 67:20]
-  wire [11:0] BTB_target_MPORT_addr; // @[IF.scala 67:20]
-  wire  BTB_target_MPORT_mask; // @[IF.scala 67:20]
-  wire  BTB_target_MPORT_en; // @[IF.scala 67:20]
-  reg [1:0] BPB [0:4095]; // @[IF.scala 68:20]
-  wire  BPB_predict_taken_MPORT_en; // @[IF.scala 68:20]
-  wire [11:0] BPB_predict_taken_MPORT_addr; // @[IF.scala 68:20]
-  wire [1:0] BPB_predict_taken_MPORT_data; // @[IF.scala 68:20]
-  wire  BPB_MPORT_2_en; // @[IF.scala 68:20]
-  wire [11:0] BPB_MPORT_2_addr; // @[IF.scala 68:20]
-  wire [1:0] BPB_MPORT_2_data; // @[IF.scala 68:20]
-  wire  BPB_MPORT_3_en; // @[IF.scala 68:20]
-  wire [11:0] BPB_MPORT_3_addr; // @[IF.scala 68:20]
-  wire [1:0] BPB_MPORT_3_data; // @[IF.scala 68:20]
-  wire  BPB_MPORT_4_en; // @[IF.scala 68:20]
-  wire [11:0] BPB_MPORT_4_addr; // @[IF.scala 68:20]
-  wire [1:0] BPB_MPORT_4_data; // @[IF.scala 68:20]
-  wire  BPB_MPORT_5_en; // @[IF.scala 68:20]
-  wire [11:0] BPB_MPORT_5_addr; // @[IF.scala 68:20]
-  wire [1:0] BPB_MPORT_5_data; // @[IF.scala 68:20]
-  wire  BPB_MPORT_6_en; // @[IF.scala 68:20]
-  wire [11:0] BPB_MPORT_6_addr; // @[IF.scala 68:20]
-  wire [1:0] BPB_MPORT_6_data; // @[IF.scala 68:20]
-  wire  BPB_MPORT_7_en; // @[IF.scala 68:20]
-  wire [11:0] BPB_MPORT_7_addr; // @[IF.scala 68:20]
-  wire [1:0] BPB_MPORT_7_data; // @[IF.scala 68:20]
-  wire [1:0] BPB_MPORT_1_data; // @[IF.scala 68:20]
-  wire [11:0] BPB_MPORT_1_addr; // @[IF.scala 68:20]
-  wire  BPB_MPORT_1_mask; // @[IF.scala 68:20]
-  wire  BPB_MPORT_1_en; // @[IF.scala 68:20]
-  reg [31:0] pc; // @[IF.scala 46:28]
-  reg [11:0] history; // @[IF.scala 47:28]
+  reg [63:0] BTB_pc [0:4095]; // @[IF.scala 62:20]
+  wire  BTB_pc_btb_valid_MPORT_en; // @[IF.scala 62:20]
+  wire [11:0] BTB_pc_btb_valid_MPORT_addr; // @[IF.scala 62:20]
+  wire [63:0] BTB_pc_btb_valid_MPORT_data; // @[IF.scala 62:20]
+  wire  BTB_pc_predict_target_MPORT_en; // @[IF.scala 62:20]
+  wire [11:0] BTB_pc_predict_target_MPORT_addr; // @[IF.scala 62:20]
+  wire [63:0] BTB_pc_predict_target_MPORT_data; // @[IF.scala 62:20]
+  wire [63:0] BTB_pc_MPORT_data; // @[IF.scala 62:20]
+  wire [11:0] BTB_pc_MPORT_addr; // @[IF.scala 62:20]
+  wire  BTB_pc_MPORT_mask; // @[IF.scala 62:20]
+  wire  BTB_pc_MPORT_en; // @[IF.scala 62:20]
+  reg [63:0] BTB_target [0:4095]; // @[IF.scala 62:20]
+  wire  BTB_target_btb_valid_MPORT_en; // @[IF.scala 62:20]
+  wire [11:0] BTB_target_btb_valid_MPORT_addr; // @[IF.scala 62:20]
+  wire [63:0] BTB_target_btb_valid_MPORT_data; // @[IF.scala 62:20]
+  wire  BTB_target_predict_target_MPORT_en; // @[IF.scala 62:20]
+  wire [11:0] BTB_target_predict_target_MPORT_addr; // @[IF.scala 62:20]
+  wire [63:0] BTB_target_predict_target_MPORT_data; // @[IF.scala 62:20]
+  wire [63:0] BTB_target_MPORT_data; // @[IF.scala 62:20]
+  wire [11:0] BTB_target_MPORT_addr; // @[IF.scala 62:20]
+  wire  BTB_target_MPORT_mask; // @[IF.scala 62:20]
+  wire  BTB_target_MPORT_en; // @[IF.scala 62:20]
+  reg [1:0] BPB [0:4095]; // @[IF.scala 63:20]
+  wire  BPB_predict_taken_MPORT_en; // @[IF.scala 63:20]
+  wire [11:0] BPB_predict_taken_MPORT_addr; // @[IF.scala 63:20]
+  wire [1:0] BPB_predict_taken_MPORT_data; // @[IF.scala 63:20]
+  wire  BPB_MPORT_2_en; // @[IF.scala 63:20]
+  wire [11:0] BPB_MPORT_2_addr; // @[IF.scala 63:20]
+  wire [1:0] BPB_MPORT_2_data; // @[IF.scala 63:20]
+  wire  BPB_MPORT_3_en; // @[IF.scala 63:20]
+  wire [11:0] BPB_MPORT_3_addr; // @[IF.scala 63:20]
+  wire [1:0] BPB_MPORT_3_data; // @[IF.scala 63:20]
+  wire  BPB_MPORT_4_en; // @[IF.scala 63:20]
+  wire [11:0] BPB_MPORT_4_addr; // @[IF.scala 63:20]
+  wire [1:0] BPB_MPORT_4_data; // @[IF.scala 63:20]
+  wire  BPB_MPORT_5_en; // @[IF.scala 63:20]
+  wire [11:0] BPB_MPORT_5_addr; // @[IF.scala 63:20]
+  wire [1:0] BPB_MPORT_5_data; // @[IF.scala 63:20]
+  wire  BPB_MPORT_6_en; // @[IF.scala 63:20]
+  wire [11:0] BPB_MPORT_6_addr; // @[IF.scala 63:20]
+  wire [1:0] BPB_MPORT_6_data; // @[IF.scala 63:20]
+  wire  BPB_MPORT_7_en; // @[IF.scala 63:20]
+  wire [11:0] BPB_MPORT_7_addr; // @[IF.scala 63:20]
+  wire [1:0] BPB_MPORT_7_data; // @[IF.scala 63:20]
+  wire [1:0] BPB_MPORT_1_data; // @[IF.scala 63:20]
+  wire [11:0] BPB_MPORT_1_addr; // @[IF.scala 63:20]
+  wire  BPB_MPORT_1_mask; // @[IF.scala 63:20]
+  wire  BPB_MPORT_1_en; // @[IF.scala 63:20]
+  reg [31:0] pc; // @[IF.scala 38:28]
+  reg [11:0] history; // @[IF.scala 39:28]
   wire [6:0] opcode = io_inst_i[6:0]; // @[HELPERS.scala 16:35]
-  wire [11:0] pc_low = pc[11:0]; // @[IF.scala 59:27]
-  wire  is_branch = opcode == 7'h63 | opcode == 7'h6f | opcode == 7'h67; // @[IF.scala 62:60]
-  wire [63:0] _correct_address_T_1 = io_update_PredictorOp_i_pc + 64'h4; // @[IF.scala 64:74]
-  wire [63:0] correct_address = io_update_PredictorOp_i_taken ? io_update_PredictorOp_i_target : _correct_address_T_1; // @[IF.scala 64:36]
-  wire [63:0] _GEN_9 = {{32'd0}, pc}; // @[IF.scala 70:49]
-  wire  btb_valid = BTB_pc_btb_valid_MPORT_data == _GEN_9; // @[IF.scala 70:49]
-  wire  predict_taken = btb_valid & (is_branch & BPB_predict_taken_MPORT_data[1]); // @[IF.scala 77:40]
-  wire [31:0] _pc_T_1 = pc + 32'h4; // @[IF.scala 85:36]
+  wire [11:0] pc_low = pc[11:0]; // @[IF.scala 54:27]
+  wire  is_branch = opcode == 7'h63 | opcode == 7'h6f | opcode == 7'h67; // @[IF.scala 57:60]
+  wire [63:0] _correct_address_T_1 = io_predict_i_pc + 64'h4; // @[IF.scala 59:74]
+  wire [63:0] correct_address = io_predict_i_taken ? io_predict_i_target : _correct_address_T_1; // @[IF.scala 59:36]
+  wire [63:0] _GEN_9 = {{32'd0}, pc}; // @[IF.scala 65:49]
+  wire  btb_valid = BTB_pc_btb_valid_MPORT_data == _GEN_9; // @[IF.scala 65:49]
+  wire  predict_taken = btb_valid & (is_branch & BPB_predict_taken_MPORT_data[1]); // @[IF.scala 68:39]
+  wire [31:0] _pc_T_1 = pc + 32'h4; // @[IF.scala 75:36]
   wire [63:0] _pc_T_2 = predict_taken ? BTB_target_predict_target_MPORT_data : {{32'd0}, _pc_T_1}; // @[Mux.scala 47:70]
-  wire [63:0] _pc_T_3 = io_update_PredictorOp_i_predict_fail ? correct_address : _pc_T_2; // @[Mux.scala 47:70]
+  wire [63:0] _pc_T_3 = io_predict_i_predict_fail ? correct_address : _pc_T_2; // @[Mux.scala 47:70]
   wire [63:0] _pc_T_4 = io_ctrl_i_stall ? {{32'd0}, pc} : _pc_T_3; // @[Mux.scala 47:70]
-  wire  _T = ~io_ctrl_i_stall; // @[IF.scala 106:27]
-  wire [12:0] _history_T = {history, 1'h0}; // @[IF.scala 107:30]
-  wire [12:0] _GEN_10 = {{12'd0}, io_update_PredictorOp_i_taken}; // @[IF.scala 107:38]
-  wire [12:0] _history_T_1 = _history_T | _GEN_10; // @[IF.scala 107:38]
-  wire [127:0] _T_2 = {io_update_PredictorOp_i_pc,io_update_PredictorOp_i_target}; // @[Cat.scala 31:58]
-  wire [1:0] _T_7 = BPB_MPORT_4_data + 2'h1; // @[IF.scala 114:84]
-  wire [1:0] _T_8 = BPB_MPORT_2_data == 2'h3 ? BPB_MPORT_3_data : _T_7; // @[IF.scala 114:16]
-  wire [1:0] _T_11 = BPB_MPORT_7_data - 2'h1; // @[IF.scala 116:84]
-  wire [1:0] _T_12 = BPB_MPORT_5_data == 2'h0 ? BPB_MPORT_6_data : _T_11; // @[IF.scala 116:16]
-  wire [12:0] _GEN_0 = io_update_PredictorOp_i_is_branch & ~io_ctrl_i_stall ? _history_T_1 : {{1'd0}, history}; // @[IF.scala 106:44 107:17 47:28]
-  reg [63:0] success_cnt; // @[IF.scala 120:32]
-  wire [63:0] _success_cnt_T_1 = success_cnt + 64'h1; // @[IF.scala 122:36]
-  wire [63:0] _GEN_11 = reset ? 64'h80000000 : _pc_T_4; // @[IF.scala 46:{28,28} 81:8]
-  wire [12:0] _GEN_12 = reset ? 13'h0 : _GEN_0; // @[IF.scala 47:{28,28}]
+  wire  _T = ~io_ctrl_i_stall; // @[IF.scala 94:27]
+  wire [12:0] _history_T = {history, 1'h0}; // @[IF.scala 95:30]
+  wire [12:0] _GEN_10 = {{12'd0}, io_predict_i_taken}; // @[IF.scala 95:38]
+  wire [12:0] _history_T_1 = _history_T | _GEN_10; // @[IF.scala 95:38]
+  wire [127:0] _T_2 = {io_predict_i_pc,io_predict_i_target}; // @[Cat.scala 31:58]
+  wire [1:0] _T_7 = BPB_MPORT_4_data + 2'h1; // @[IF.scala 99:84]
+  wire [1:0] _T_8 = BPB_MPORT_2_data == 2'h3 ? BPB_MPORT_3_data : _T_7; // @[IF.scala 99:16]
+  wire [1:0] _T_11 = BPB_MPORT_7_data - 2'h1; // @[IF.scala 100:84]
+  wire [1:0] _T_12 = BPB_MPORT_5_data == 2'h0 ? BPB_MPORT_6_data : _T_11; // @[IF.scala 100:16]
+  wire [12:0] _GEN_0 = io_predict_i_is_branch & ~io_ctrl_i_stall ? _history_T_1 : {{1'd0}, history}; // @[IF.scala 94:44 95:17 39:28]
+  reg [63:0] success_cnt; // @[IF.scala 104:32]
+  wire [63:0] _success_cnt_T_1 = success_cnt + 64'h1; // @[IF.scala 106:36]
+  wire [63:0] _GEN_11 = reset ? 64'h80000000 : _pc_T_4; // @[IF.scala 38:{28,28} 71:8]
+  wire [12:0] _GEN_12 = reset ? 13'h0 : _GEN_0; // @[IF.scala 39:{28,28}]
   assign BTB_pc_btb_valid_MPORT_en = 1'h1;
   assign BTB_pc_btb_valid_MPORT_addr = pc_low | history;
-  assign BTB_pc_btb_valid_MPORT_data = BTB_pc[BTB_pc_btb_valid_MPORT_addr]; // @[IF.scala 67:20]
+  assign BTB_pc_btb_valid_MPORT_data = BTB_pc[BTB_pc_btb_valid_MPORT_addr]; // @[IF.scala 62:20]
   assign BTB_pc_predict_target_MPORT_en = 1'h1;
   assign BTB_pc_predict_target_MPORT_addr = pc_low | history;
-  assign BTB_pc_predict_target_MPORT_data = BTB_pc[BTB_pc_predict_target_MPORT_addr]; // @[IF.scala 67:20]
+  assign BTB_pc_predict_target_MPORT_data = BTB_pc[BTB_pc_predict_target_MPORT_addr]; // @[IF.scala 62:20]
   assign BTB_pc_MPORT_data = _T_2[127:64];
-  assign BTB_pc_MPORT_addr = io_update_PredictorOp_i_index;
+  assign BTB_pc_MPORT_addr = io_predict_i_index;
   assign BTB_pc_MPORT_mask = 1'h1;
-  assign BTB_pc_MPORT_en = io_update_PredictorOp_i_is_branch & _T;
+  assign BTB_pc_MPORT_en = io_predict_i_is_branch & _T;
   assign BTB_target_btb_valid_MPORT_en = 1'h1;
   assign BTB_target_btb_valid_MPORT_addr = pc_low | history;
-  assign BTB_target_btb_valid_MPORT_data = BTB_target[BTB_target_btb_valid_MPORT_addr]; // @[IF.scala 67:20]
+  assign BTB_target_btb_valid_MPORT_data = BTB_target[BTB_target_btb_valid_MPORT_addr]; // @[IF.scala 62:20]
   assign BTB_target_predict_target_MPORT_en = 1'h1;
   assign BTB_target_predict_target_MPORT_addr = pc_low | history;
-  assign BTB_target_predict_target_MPORT_data = BTB_target[BTB_target_predict_target_MPORT_addr]; // @[IF.scala 67:20]
+  assign BTB_target_predict_target_MPORT_data = BTB_target[BTB_target_predict_target_MPORT_addr]; // @[IF.scala 62:20]
   assign BTB_target_MPORT_data = _T_2[63:0];
-  assign BTB_target_MPORT_addr = io_update_PredictorOp_i_index;
+  assign BTB_target_MPORT_addr = io_predict_i_index;
   assign BTB_target_MPORT_mask = 1'h1;
-  assign BTB_target_MPORT_en = io_update_PredictorOp_i_is_branch & _T;
+  assign BTB_target_MPORT_en = io_predict_i_is_branch & _T;
   assign BPB_predict_taken_MPORT_en = 1'h1;
   assign BPB_predict_taken_MPORT_addr = pc_low | history;
-  assign BPB_predict_taken_MPORT_data = BPB[BPB_predict_taken_MPORT_addr]; // @[IF.scala 68:20]
-  assign BPB_MPORT_2_en = io_update_PredictorOp_i_is_branch & _T;
-  assign BPB_MPORT_2_addr = io_update_PredictorOp_i_index;
-  assign BPB_MPORT_2_data = BPB[BPB_MPORT_2_addr]; // @[IF.scala 68:20]
-  assign BPB_MPORT_3_en = io_update_PredictorOp_i_is_branch & _T;
-  assign BPB_MPORT_3_addr = io_update_PredictorOp_i_index;
-  assign BPB_MPORT_3_data = BPB[BPB_MPORT_3_addr]; // @[IF.scala 68:20]
-  assign BPB_MPORT_4_en = io_update_PredictorOp_i_is_branch & _T;
-  assign BPB_MPORT_4_addr = io_update_PredictorOp_i_index;
-  assign BPB_MPORT_4_data = BPB[BPB_MPORT_4_addr]; // @[IF.scala 68:20]
-  assign BPB_MPORT_5_en = io_update_PredictorOp_i_is_branch & _T;
-  assign BPB_MPORT_5_addr = io_update_PredictorOp_i_index;
-  assign BPB_MPORT_5_data = BPB[BPB_MPORT_5_addr]; // @[IF.scala 68:20]
-  assign BPB_MPORT_6_en = io_update_PredictorOp_i_is_branch & _T;
-  assign BPB_MPORT_6_addr = io_update_PredictorOp_i_index;
-  assign BPB_MPORT_6_data = BPB[BPB_MPORT_6_addr]; // @[IF.scala 68:20]
-  assign BPB_MPORT_7_en = io_update_PredictorOp_i_is_branch & _T;
-  assign BPB_MPORT_7_addr = io_update_PredictorOp_i_index;
-  assign BPB_MPORT_7_data = BPB[BPB_MPORT_7_addr]; // @[IF.scala 68:20]
-  assign BPB_MPORT_1_data = io_update_PredictorOp_i_taken ? _T_8 : _T_12;
-  assign BPB_MPORT_1_addr = io_update_PredictorOp_i_index;
+  assign BPB_predict_taken_MPORT_data = BPB[BPB_predict_taken_MPORT_addr]; // @[IF.scala 63:20]
+  assign BPB_MPORT_2_en = io_predict_i_is_branch & _T;
+  assign BPB_MPORT_2_addr = io_predict_i_index;
+  assign BPB_MPORT_2_data = BPB[BPB_MPORT_2_addr]; // @[IF.scala 63:20]
+  assign BPB_MPORT_3_en = io_predict_i_is_branch & _T;
+  assign BPB_MPORT_3_addr = io_predict_i_index;
+  assign BPB_MPORT_3_data = BPB[BPB_MPORT_3_addr]; // @[IF.scala 63:20]
+  assign BPB_MPORT_4_en = io_predict_i_is_branch & _T;
+  assign BPB_MPORT_4_addr = io_predict_i_index;
+  assign BPB_MPORT_4_data = BPB[BPB_MPORT_4_addr]; // @[IF.scala 63:20]
+  assign BPB_MPORT_5_en = io_predict_i_is_branch & _T;
+  assign BPB_MPORT_5_addr = io_predict_i_index;
+  assign BPB_MPORT_5_data = BPB[BPB_MPORT_5_addr]; // @[IF.scala 63:20]
+  assign BPB_MPORT_6_en = io_predict_i_is_branch & _T;
+  assign BPB_MPORT_6_addr = io_predict_i_index;
+  assign BPB_MPORT_6_data = BPB[BPB_MPORT_6_addr]; // @[IF.scala 63:20]
+  assign BPB_MPORT_7_en = io_predict_i_is_branch & _T;
+  assign BPB_MPORT_7_addr = io_predict_i_index;
+  assign BPB_MPORT_7_data = BPB[BPB_MPORT_7_addr]; // @[IF.scala 63:20]
+  assign BPB_MPORT_1_data = io_predict_i_taken ? _T_8 : _T_12;
+  assign BPB_MPORT_1_addr = io_predict_i_index;
   assign BPB_MPORT_1_mask = 1'h1;
-  assign BPB_MPORT_1_en = io_update_PredictorOp_i_is_branch & _T;
-  assign io_pc_o = {{32'd0}, pc}; // @[IF.scala 88:17]
-  assign io_inst_o = io_inst_i; // @[IF.scala 90:17]
-  assign io_predict_result_o_is_branch = opcode == 7'h63 | opcode == 7'h6f | opcode == 7'h67; // @[IF.scala 62:60]
-  assign io_predict_result_o_pc = {{32'd0}, pc}; // @[IF.scala 93:37]
-  assign io_predict_result_o_index = pc_low | history; // @[IF.scala 60:32]
-  assign io_predict_result_o_predict_taken = btb_valid & (is_branch & BPB_predict_taken_MPORT_data[1]); // @[IF.scala 77:40]
-  assign io_predict_result_o_predict_target = BTB_target_predict_target_MPORT_data; // @[IF.scala 98:41]
-  assign io_success_cnt_o = success_cnt; // @[IF.scala 124:25]
+  assign BPB_MPORT_1_en = io_predict_i_is_branch & _T;
+  assign io_pc_o = {{32'd0}, pc}; // @[IF.scala 78:17]
+  assign io_inst_o = io_inst_i; // @[IF.scala 79:17]
+  assign io_predict_o_is_branch = opcode == 7'h63 | opcode == 7'h6f | opcode == 7'h67; // @[IF.scala 57:60]
+  assign io_predict_o_pc = {{32'd0}, pc}; // @[IF.scala 82:30]
+  assign io_predict_o_index = pc_low | history; // @[IF.scala 55:32]
+  assign io_predict_o_predict_taken = btb_valid & (is_branch & BPB_predict_taken_MPORT_data[1]); // @[IF.scala 68:39]
+  assign io_predict_o_predict_target = BTB_target_predict_target_MPORT_data; // @[IF.scala 87:34]
+  assign io_success_cnt_o = success_cnt; // @[IF.scala 108:25]
   always @(posedge clock) begin
     if (BTB_pc_MPORT_en & BTB_pc_MPORT_mask) begin
-      BTB_pc[BTB_pc_MPORT_addr] <= BTB_pc_MPORT_data; // @[IF.scala 67:20]
+      BTB_pc[BTB_pc_MPORT_addr] <= BTB_pc_MPORT_data; // @[IF.scala 62:20]
     end
     if (BTB_target_MPORT_en & BTB_target_MPORT_mask) begin
-      BTB_target[BTB_target_MPORT_addr] <= BTB_target_MPORT_data; // @[IF.scala 67:20]
+      BTB_target[BTB_target_MPORT_addr] <= BTB_target_MPORT_data; // @[IF.scala 62:20]
     end
     if (BPB_MPORT_1_en & BPB_MPORT_1_mask) begin
-      BPB[BPB_MPORT_1_addr] <= BPB_MPORT_1_data; // @[IF.scala 68:20]
+      BPB[BPB_MPORT_1_addr] <= BPB_MPORT_1_data; // @[IF.scala 63:20]
     end
-    pc <= _GEN_11[31:0]; // @[IF.scala 46:{28,28} 81:8]
-    history <= _GEN_12[11:0]; // @[IF.scala 47:{28,28}]
-    if (reset) begin // @[IF.scala 120:32]
-      success_cnt <= 64'h0; // @[IF.scala 120:32]
-    end else if (~io_update_PredictorOp_i_predict_fail & io_update_PredictorOp_i_is_branch & _T) begin // @[IF.scala 121:65]
-      success_cnt <= _success_cnt_T_1; // @[IF.scala 122:21]
+    pc <= _GEN_11[31:0]; // @[IF.scala 38:{28,28} 71:8]
+    history <= _GEN_12[11:0]; // @[IF.scala 39:{28,28}]
+    if (reset) begin // @[IF.scala 104:32]
+      success_cnt <= 64'h0; // @[IF.scala 104:32]
+    end else if (~io_predict_i_predict_fail & io_predict_i_is_branch & _T) begin // @[IF.scala 105:65]
+      success_cnt <= _success_cnt_T_1; // @[IF.scala 106:21]
     end
   end
 // Register and memory initialization
@@ -285,17 +285,17 @@ module ID(
   output [31:0] io_debug_o_inst,
   output [63:0] io_nr_branch_o,
   output [63:0] io_nr_taken_o,
-  input         io_predict_result_i_is_branch,
-  input  [63:0] io_predict_result_i_pc,
-  input  [11:0] io_predict_result_i_index,
-  input         io_predict_result_i_predict_taken,
-  input  [63:0] io_predict_result_i_predict_target,
-  output        io_update_PredictorOp_o_is_branch,
-  output [63:0] io_update_PredictorOp_o_pc,
-  output [11:0] io_update_PredictorOp_o_index,
-  output [63:0] io_update_PredictorOp_o_target,
-  output        io_update_PredictorOp_o_taken,
-  output        io_update_PredictorOp_o_predict_fail
+  input         io_predict_i_is_branch,
+  input  [63:0] io_predict_i_pc,
+  input  [11:0] io_predict_i_index,
+  input         io_predict_i_predict_taken,
+  input  [63:0] io_predict_i_predict_target,
+  output        io_predict_o_is_branch,
+  output [63:0] io_predict_o_pc,
+  output [11:0] io_predict_o_index,
+  output [63:0] io_predict_o_target,
+  output        io_predict_o_taken,
+  output        io_predict_o_predict_fail
 );
 `ifdef RANDOMIZE_REG_INIT
   reg [63:0] _RAND_0;
@@ -328,8 +328,8 @@ module ID(
   wire [63:0] _csrVal_T_3 = _csrVal_T_2 ? io_fwd_i_ex_csr_wdata : io_csrData_i_csrVal; // @[Mux.scala 47:70]
   wire [63:0] _csrVal_T_4 = _csrVal_T_1 ? io_fwd_i_mem_csr_wdata : _csrVal_T_3; // @[Mux.scala 47:70]
   wire [63:0] csrVal = _csrVal_T ? io_fwd_i_wb_csr_wdata : _csrVal_T_4; // @[Mux.scala 47:70]
-  wire  direction_fail = io_update_PredictorOp_o_taken != io_predict_result_i_predict_taken; // @[ID.scala 62:42]
-  wire  target_fail = io_update_PredictorOp_o_target != io_predict_result_i_predict_target; // @[ID.scala 63:43]
+  wire  direction_fail = io_predict_o_taken != io_predict_i_predict_taken; // @[ID.scala 62:42]
+  wire  target_fail = io_predict_o_target != io_predict_i_predict_target; // @[ID.scala 63:43]
   wire  _predict_fail_T_2 = ~io_stall_req_o; // @[ID.scala 64:77]
   wire [31:0] _decRes_T = io_inst_i & 32'hfe00707f; // @[Lookup.scala 31:38]
   wire  _decRes_T_1 = 32'h33 == _decRes_T; // @[Lookup.scala 31:38]
@@ -531,11 +531,11 @@ module ID(
   wire [63:0] _io_debug_o_a0_T_3 = _io_debug_o_a0_T_2 ? io_fwd_i_wb_rf_wdata : io_rfData_i_a0; // @[Mux.scala 47:70]
   wire [63:0] _io_debug_o_a0_T_4 = _io_debug_o_a0_T_1 ? io_fwd_i_mem_rf_wdata : _io_debug_o_a0_T_3; // @[Mux.scala 47:70]
   wire  _io_decInfo_o_writeOp_rf_wen_T = io_stall_req_o ? 1'h0 : 1'h1; // @[ID.scala 111:51]
-  wire [63:0] _io_decInfo_o_aluOp_src1_T = io_predict_result_i_is_branch ? io_pc_i : rs1Val; // @[ID.scala 115:46]
+  wire [63:0] _io_decInfo_o_aluOp_src1_T = io_predict_i_is_branch ? io_pc_i : rs1Val; // @[ID.scala 115:46]
   wire [11:0] _io_decInfo_o_aluOp_src2_T_2 = io_inst_i[31:20]; // @[HELPERS.scala 13:65]
   wire [63:0] _io_decInfo_o_aluOp_src2_T_4 = {{52{_io_decInfo_o_aluOp_src2_T_2[11]}},_io_decInfo_o_aluOp_src2_T_2}; // @[HELPERS.scala 13:80]
-  wire [63:0] _io_decInfo_o_aluOp_src2_T_5 = io_predict_result_i_is_branch ? 64'h4 : _io_decInfo_o_aluOp_src2_T_4; // @[ID.scala 116:46]
-  wire [63:0] _io_update_PredictorOp_o_target_T_6 = rs1Val + _io_decInfo_o_aluOp_src2_T_4; // @[ID.scala 118:56]
+  wire [63:0] _io_decInfo_o_aluOp_src2_T_5 = io_predict_i_is_branch ? 64'h4 : _io_decInfo_o_aluOp_src2_T_4; // @[ID.scala 116:46]
+  wire [63:0] _io_predict_o_target_T_6 = rs1Val + _io_decInfo_o_aluOp_src2_T_4; // @[ID.scala 118:45]
   wire [3:0] _io_decInfo_o_memOp_length_T_1 = 4'h1 << fct3[1:0]; // @[OneHot.scala 57:35]
   wire  _io_stall_req_o_T = io_fwd_i_prev_rd == rs1; // @[ID.scala 126:58]
   wire  _io_stall_req_o_T_5 = io_fwd_i_prev_is_load & (_io_stall_req_o_T | io_fwd_i_prev_rd == rs2); // @[ID.scala 133:46]
@@ -553,23 +553,20 @@ module ID(
   wire  _branch_T_19 = 3'h6 == fct3 ? _branch_T_8 : _branch_T_17; // @[Mux.scala 81:58]
   wire  _branch_T_21 = 3'h7 == fct3 ? _branch_T_9 : _branch_T_19; // @[Mux.scala 81:58]
   wire  branch = _branch_T_21 & _predict_fail_T_2; // @[ID.scala 146:16]
-  wire [12:0] _io_update_PredictorOp_o_target_T_13 = {io_inst_i[31],io_inst_i[7],io_inst_i[30:25],io_inst_i[11:8],1'h0}; // @[HELPERS.scala 13:65]
-  wire [63:0] _io_update_PredictorOp_o_target_T_15 = {{51{_io_update_PredictorOp_o_target_T_13[12]}},
-    _io_update_PredictorOp_o_target_T_13}; // @[HELPERS.scala 13:80]
-  wire [63:0] _io_update_PredictorOp_o_target_T_17 = io_pc_i + _io_update_PredictorOp_o_target_T_15; // @[ID.scala 149:68]
-  wire [63:0] _nr_taken_T_1 = nr_taken + 64'h1; // @[ID.scala 153:38]
-  wire [63:0] _GEN_0 = branch ? _nr_taken_T_1 : nr_taken; // @[ID.scala 152:25 153:26 34:32]
+  wire [12:0] _io_predict_o_target_T_13 = {io_inst_i[31],io_inst_i[7],io_inst_i[30:25],io_inst_i[11:8],1'h0}; // @[HELPERS.scala 13:65]
+  wire [63:0] _io_predict_o_target_T_15 = {{51{_io_predict_o_target_T_13[12]}},_io_predict_o_target_T_13}; // @[HELPERS.scala 13:80]
+  wire [63:0] _io_predict_o_target_T_17 = io_pc_i + _io_predict_o_target_T_15; // @[ID.scala 149:57]
+  wire [63:0] _nr_taken_T_1 = nr_taken + 64'h1; // @[ID.scala 153:42]
+  wire [63:0] _GEN_0 = branch ? _nr_taken_T_1 : nr_taken; // @[ID.scala 152:25 153:29 34:32]
   wire [63:0] _nr_branch_T_1 = nr_branch + 64'h1; // @[ID.scala 156:43]
   wire [63:0] _GEN_1 = _predict_fail_T_2 ? _nr_branch_T_1 : nr_branch; // @[ID.scala 155:34 156:29 33:32]
   wire [63:0] _io_decInfo_o_aluOp_src1_T_2 = opcode == 7'h37 ? 64'h0 : io_pc_i; // @[ID.scala 160:50]
   wire [19:0] _io_decInfo_o_aluOp_src2_T_8 = io_inst_i[31:12]; // @[HELPERS.scala 13:65]
   wire [63:0] _io_decInfo_o_aluOp_src2_T_10 = {{44{_io_decInfo_o_aluOp_src2_T_8[19]}},_io_decInfo_o_aluOp_src2_T_8}; // @[HELPERS.scala 13:80]
   wire [75:0] _io_decInfo_o_aluOp_src2_T_11 = {_io_decInfo_o_aluOp_src2_T_10, 12'h0}; // @[HELPERS.scala 24:55]
-  wire [20:0] _io_update_PredictorOp_o_target_T_24 = {io_inst_i[31],io_inst_i[19:12],io_inst_i[20],io_inst_i[30:21],1'h0
-    }; // @[HELPERS.scala 13:65]
-  wire [63:0] _io_update_PredictorOp_o_target_T_26 = {{43{_io_update_PredictorOp_o_target_T_24[20]}},
-    _io_update_PredictorOp_o_target_T_24}; // @[HELPERS.scala 13:80]
-  wire [63:0] _io_update_PredictorOp_o_target_T_28 = io_pc_i + _io_update_PredictorOp_o_target_T_26; // @[ID.scala 166:52]
+  wire [20:0] _io_predict_o_target_T_24 = {io_inst_i[31],io_inst_i[19:12],io_inst_i[20],io_inst_i[30:21],1'h0}; // @[HELPERS.scala 13:65]
+  wire [63:0] _io_predict_o_target_T_26 = {{43{_io_predict_o_target_T_24[20]}},_io_predict_o_target_T_24}; // @[HELPERS.scala 13:80]
+  wire [63:0] _io_predict_o_target_T_28 = io_pc_i + _io_predict_o_target_T_26; // @[ID.scala 166:41]
   wire [7:0] _io_decInfo_o_memOp_length_T_2 = 8'h1 << fct3; // @[OneHot.scala 57:35]
   wire [11:0] _io_decInfo_o_aluOp_src2_T_16 = {io_inst_i[31:25],io_inst_i[11:7]}; // @[HELPERS.scala 13:65]
   wire [63:0] _io_decInfo_o_aluOp_src2_T_18 = {{52{_io_decInfo_o_aluOp_src2_T_16[11]}},_io_decInfo_o_aluOp_src2_T_16}; // @[HELPERS.scala 13:80]
@@ -586,12 +583,12 @@ module ID(
   wire [63:0] _io_decInfo_o_writeOp_csr_wdata_T_8 = 3'h3 == fct3 ? _io_decInfo_o_writeOp_csr_wdata_T_2 :
     _io_decInfo_o_writeOp_csr_wdata_T_6; // @[Mux.scala 81:58]
   wire [1:0] inst_p2 = io_inst_i[21:20]; // @[ID.scala 206:37]
-  wire [63:0] _GEN_3 = 2'h0 == inst_p2 ? io_csrData_i_tvec : 64'h0; // @[ID.scala 207:32 217:57 86:37]
+  wire [63:0] _GEN_3 = 2'h0 == inst_p2 ? io_csrData_i_tvec : 64'h0; // @[ID.scala 207:32 217:46 86:26]
   wire [11:0] _GEN_6 = 2'h0 == inst_p2 ? 12'h305 : csrAddr; // @[ID.scala 207:32 220:57 84:37]
   wire [63:0] _GEN_7 = 2'h0 == inst_p2 ? io_pc_i : 64'h0; // @[ID.scala 207:32 221:57 79:37]
   wire  _GEN_8 = 2'h0 == inst_p2 ? 1'h0 : 2'h1 == inst_p2; // @[ID.scala 103:25 207:32]
-  wire [63:0] _GEN_9 = 2'h2 == inst_p2 ? io_csrData_i_epc : _GEN_3; // @[ID.scala 207:32 211:57]
-  wire  _GEN_10 = 2'h2 == inst_p2 | 2'h0 == inst_p2; // @[ID.scala 207:32 212:57]
+  wire [63:0] _GEN_9 = 2'h2 == inst_p2 ? io_csrData_i_epc : _GEN_3; // @[ID.scala 207:32 211:46]
+  wire  _GEN_10 = 2'h2 == inst_p2 | 2'h0 == inst_p2; // @[ID.scala 207:32 212:46]
   wire  _GEN_11 = 2'h2 == inst_p2 ? 1'h0 : 2'h0 == inst_p2; // @[ID.scala 207:32 79:37]
   wire [11:0] _GEN_12 = 2'h2 == inst_p2 ? csrAddr : _GEN_6; // @[ID.scala 207:32 84:37]
   wire [63:0] _GEN_13 = 2'h2 == inst_p2 ? 64'h0 : _GEN_7; // @[ID.scala 207:32 79:37]
@@ -600,14 +597,14 @@ module ID(
   wire [63:0] _GEN_17 = |fct3 ? 64'h0 : rs2Val; // @[ID.scala 189:27 193:45 81:37]
   wire [63:0] _GEN_18 = |fct3 ? _io_decInfo_o_writeOp_csr_wdata_T_8 : _GEN_13; // @[ID.scala 189:27 199:49]
   wire  _GEN_19 = |fct3 | _GEN_11; // @[ID.scala 189:27 204:49]
-  wire [63:0] _GEN_20 = |fct3 ? 64'h0 : _GEN_9; // @[ID.scala 189:27 86:37]
-  wire  _GEN_21 = |fct3 ? 1'h0 : _GEN_10; // @[ID.scala 189:27 87:37]
+  wire [63:0] _GEN_20 = |fct3 ? 64'h0 : _GEN_9; // @[ID.scala 189:27 86:26]
+  wire  _GEN_21 = |fct3 ? 1'h0 : _GEN_10; // @[ID.scala 189:27 87:26]
   wire [11:0] _GEN_22 = |fct3 ? csrAddr : _GEN_12; // @[ID.scala 189:27 84:37]
   wire  _GEN_23 = |fct3 ? 1'h0 : _GEN_14; // @[ID.scala 103:25 189:27]
   wire [63:0] _GEN_25 = 5'h6 == decRes_0 ? _GEN_16 : rs1Val; // @[ID.scala 106:21 80:37]
   wire [63:0] _GEN_26 = 5'h6 == decRes_0 ? _GEN_17 : rs2Val; // @[ID.scala 106:21 81:37]
   wire [63:0] _GEN_27 = 5'h6 == decRes_0 ? _GEN_18 : 64'h0; // @[ID.scala 106:21 79:37]
-  wire [63:0] _GEN_29 = 5'h6 == decRes_0 ? _GEN_20 : 64'h0; // @[ID.scala 106:21 86:37]
+  wire [63:0] _GEN_29 = 5'h6 == decRes_0 ? _GEN_20 : 64'h0; // @[ID.scala 106:21 86:26]
   wire [11:0] _GEN_31 = 5'h6 == decRes_0 ? _GEN_22 : csrAddr; // @[ID.scala 106:21 84:37]
   wire [4:0] _GEN_33 = 5'h5 == decRes_0 ? 5'h0 : io_inst_i[11:7]; // @[ID.scala 106:21 175:43 83:37]
   wire  _GEN_34 = 5'h5 == decRes_0 & _predict_fail_T_2; // @[ID.scala 106:21 177:43 79:37]
@@ -619,13 +616,13 @@ module ID(
   wire  _GEN_40 = 5'h5 == decRes_0 ? 1'h0 : 5'h6 == decRes_0 & _T_9; // @[ID.scala 106:21 79:37]
   wire [63:0] _GEN_41 = 5'h5 == decRes_0 ? 64'h0 : _GEN_27; // @[ID.scala 106:21 79:37]
   wire  _GEN_42 = 5'h5 == decRes_0 ? 1'h0 : 5'h6 == decRes_0 & _GEN_19; // @[ID.scala 106:21 79:37]
-  wire [63:0] _GEN_43 = 5'h5 == decRes_0 ? 64'h0 : _GEN_29; // @[ID.scala 106:21 86:37]
-  wire  _GEN_44 = 5'h5 == decRes_0 ? 1'h0 : 5'h6 == decRes_0 & _GEN_21; // @[ID.scala 106:21 87:37]
+  wire [63:0] _GEN_43 = 5'h5 == decRes_0 ? 64'h0 : _GEN_29; // @[ID.scala 106:21 86:26]
+  wire  _GEN_44 = 5'h5 == decRes_0 ? 1'h0 : 5'h6 == decRes_0 & _GEN_21; // @[ID.scala 106:21 87:26]
   wire [11:0] _GEN_45 = 5'h5 == decRes_0 ? csrAddr : _GEN_31; // @[ID.scala 106:21 84:37]
   wire  _GEN_46 = 5'h5 == decRes_0 ? 1'h0 : 5'h6 == decRes_0 & _GEN_23; // @[ID.scala 106:21 103:25]
-  wire  _GEN_47 = 5'h4 == decRes_0 | _GEN_40; // @[ID.scala 106:21 165:45]
-  wire [63:0] _GEN_48 = 5'h4 == decRes_0 ? _io_update_PredictorOp_o_target_T_28 : _GEN_43; // @[ID.scala 106:21 166:45]
-  wire  _GEN_49 = 5'h4 == decRes_0 | _GEN_44; // @[ID.scala 106:21 167:45]
+  wire  _GEN_47 = 5'h4 == decRes_0 | _GEN_40; // @[ID.scala 106:21 165:43]
+  wire [63:0] _GEN_48 = 5'h4 == decRes_0 ? _io_predict_o_target_T_28 : _GEN_43; // @[ID.scala 106:21 166:34]
+  wire  _GEN_49 = 5'h4 == decRes_0 | _GEN_44; // @[ID.scala 106:21 167:34]
   wire [63:0] _GEN_50 = 5'h4 == decRes_0 ? io_pc_i : _GEN_37; // @[ID.scala 106:21 170:43]
   wire [63:0] _GEN_51 = 5'h4 == decRes_0 ? 64'h4 : _GEN_38; // @[ID.scala 106:21 171:43]
   wire [4:0] _GEN_52 = 5'h4 == decRes_0 ? io_inst_i[11:7] : _GEN_33; // @[ID.scala 106:21 83:37]
@@ -640,8 +637,8 @@ module ID(
   wire [63:0] _GEN_61 = 5'h2 == decRes_0 ? _io_decInfo_o_aluOp_src1_T_2 : _GEN_50; // @[ID.scala 106:21 160:43]
   wire [75:0] _GEN_62 = 5'h2 == decRes_0 ? _io_decInfo_o_aluOp_src2_T_11 : {{12'd0}, _GEN_51}; // @[ID.scala 106:21 161:43]
   wire  _GEN_63 = 5'h2 == decRes_0 | _GEN_47; // @[ID.scala 106:21 162:43]
-  wire [63:0] _GEN_64 = 5'h2 == decRes_0 ? 64'h0 : _GEN_48; // @[ID.scala 106:21 86:37]
-  wire  _GEN_65 = 5'h2 == decRes_0 ? 1'h0 : _GEN_49; // @[ID.scala 106:21 87:37]
+  wire [63:0] _GEN_64 = 5'h2 == decRes_0 ? 64'h0 : _GEN_48; // @[ID.scala 106:21 86:26]
+  wire  _GEN_65 = 5'h2 == decRes_0 ? 1'h0 : _GEN_49; // @[ID.scala 106:21 87:26]
   wire [4:0] _GEN_66 = 5'h2 == decRes_0 ? io_inst_i[11:7] : _GEN_52; // @[ID.scala 106:21 83:37]
   wire  _GEN_67 = 5'h2 == decRes_0 ? 1'h0 : _GEN_53; // @[ID.scala 106:21 79:37]
   wire [7:0] _GEN_68 = 5'h2 == decRes_0 ? 8'h0 : _GEN_54; // @[ID.scala 106:21 79:37]
@@ -652,8 +649,8 @@ module ID(
   wire [11:0] _GEN_73 = 5'h2 == decRes_0 ? csrAddr : _GEN_59; // @[ID.scala 106:21 84:37]
   wire  _GEN_74 = 5'h2 == decRes_0 ? 1'h0 : _GEN_60; // @[ID.scala 106:21 103:25]
   wire [4:0] _GEN_75 = 5'h3 == decRes_0 ? 5'h0 : _GEN_66; // @[ID.scala 106:21 138:43]
-  wire  _GEN_76 = 5'h3 == decRes_0 ? branch : _GEN_65; // @[ID.scala 106:21 148:45]
-  wire [63:0] _GEN_77 = 5'h3 == decRes_0 ? _io_update_PredictorOp_o_target_T_17 : _GEN_64; // @[ID.scala 106:21 149:45]
+  wire  _GEN_76 = 5'h3 == decRes_0 ? branch : _GEN_65; // @[ID.scala 106:21 148:34]
+  wire [63:0] _GEN_77 = 5'h3 == decRes_0 ? _io_predict_o_target_T_17 : _GEN_64; // @[ID.scala 106:21 149:34]
   wire  _GEN_78 = 5'h3 == decRes_0 ? _io_stall_req_o_T_5 : _GEN_70; // @[ID.scala 106:21 150:29]
   wire [63:0] _GEN_79 = 5'h3 == decRes_0 ? _GEN_0 : nr_taken; // @[ID.scala 106:21 34:32]
   wire [63:0] _GEN_80 = 5'h3 == decRes_0 ? _GEN_1 : nr_branch; // @[ID.scala 106:21 33:32]
@@ -672,8 +669,8 @@ module ID(
   wire  _GEN_93 = 5'h0 == decRes_0 ? _io_decInfo_o_writeOp_rf_wen_T : _GEN_83; // @[ID.scala 106:21 131:43]
   wire  _GEN_94 = 5'h0 == decRes_0 ? io_fwd_i_prev_is_load & (_io_stall_req_o_T | io_fwd_i_prev_rd == rs2) : _GEN_78; // @[ID.scala 106:21 133:29]
   wire [4:0] _GEN_95 = 5'h0 == decRes_0 ? io_inst_i[11:7] : _GEN_75; // @[ID.scala 106:21 83:37]
-  wire  _GEN_96 = 5'h0 == decRes_0 ? 1'h0 : _GEN_76; // @[ID.scala 106:21 87:37]
-  wire [63:0] _GEN_97 = 5'h0 == decRes_0 ? 64'h0 : _GEN_77; // @[ID.scala 106:21 86:37]
+  wire  _GEN_96 = 5'h0 == decRes_0 ? 1'h0 : _GEN_76; // @[ID.scala 106:21 87:26]
+  wire [63:0] _GEN_97 = 5'h0 == decRes_0 ? 64'h0 : _GEN_77; // @[ID.scala 106:21 86:26]
   wire  _GEN_100 = 5'h0 == decRes_0 ? 1'h0 : _GEN_84; // @[ID.scala 106:21 79:37]
   wire [7:0] _GEN_101 = 5'h0 == decRes_0 ? 8'h0 : _GEN_85; // @[ID.scala 106:21 79:37]
   wire [63:0] _GEN_102 = 5'h0 == decRes_0 ? 64'h0 : _GEN_86; // @[ID.scala 106:21 79:37]
@@ -684,8 +681,8 @@ module ID(
   wire  _GEN_107 = 5'h1 == decRes_0 ? _io_decInfo_o_writeOp_rf_wen_T : _GEN_93; // @[ID.scala 106:21 111:44]
   wire [63:0] _GEN_108 = 5'h1 == decRes_0 ? _io_decInfo_o_aluOp_src1_T : _GEN_91; // @[ID.scala 106:21 115:39]
   wire [75:0] _GEN_109 = 5'h1 == decRes_0 ? {{12'd0}, _io_decInfo_o_aluOp_src2_T_5} : _GEN_92; // @[ID.scala 106:21 116:39]
-  wire [63:0] _GEN_110 = 5'h1 == decRes_0 ? _io_update_PredictorOp_o_target_T_6 : _GEN_97; // @[ID.scala 106:21 118:45]
-  wire  _GEN_111 = 5'h1 == decRes_0 ? _predict_fail_T_2 : _GEN_96; // @[ID.scala 106:21 119:45]
+  wire [63:0] _GEN_110 = 5'h1 == decRes_0 ? _io_predict_o_target_T_6 : _GEN_97; // @[ID.scala 106:21 118:34]
+  wire  _GEN_111 = 5'h1 == decRes_0 ? _predict_fail_T_2 : _GEN_96; // @[ID.scala 106:21 119:34]
   wire  _GEN_112 = 5'h1 == decRes_0 & (opcode == 7'h3 & _predict_fail_T_2); // @[ID.scala 106:21 121:43 79:37]
   wire [7:0] _GEN_113 = 5'h1 == decRes_0 ? {{4'd0}, _io_decInfo_o_memOp_length_T_1} : _GEN_101; // @[ID.scala 106:21 122:43]
   wire  _GEN_114 = 5'h1 == decRes_0 & fct3[2]; // @[ID.scala 106:21 124:43 79:37]
@@ -716,20 +713,19 @@ module ID(
   assign io_decInfo_o_memOp_length = _GEN_132[3:0];
   assign io_decInfo_o_memOp_sdata = 5'h7 == decRes_0 ? 64'h0 : _GEN_120; // @[ID.scala 106:21 79:37]
   assign io_stall_req_o = 5'h7 == decRes_0 ? 1'h0 : _GEN_115; // @[ID.scala 106:21 67:24]
-  assign io_flush_req_o = io_predict_result_i_is_branch & (target_fail | direction_fail) & ~io_stall_req_o; // @[ID.scala 64:75]
+  assign io_flush_req_o = io_predict_i_is_branch & (target_fail | direction_fail) & ~io_stall_req_o; // @[ID.scala 64:75]
   assign io_debug_o_exit = 5'h7 == decRes_0 ? &io_inst_i : _GEN_124; // @[ID.scala 106:21 108:31]
   assign io_debug_o_a0 = _io_debug_o_a0_T ? io_fwd_i_ex_rf_wdata : _io_debug_o_a0_T_4; // @[Mux.scala 47:70]
   assign io_debug_o_pc = io_pc_i; // @[ID.scala 95:25]
   assign io_debug_o_inst = io_inst_i; // @[ID.scala 96:25]
-  assign io_nr_branch_o = nr_branch; // @[ID.scala 232:21]
-  assign io_nr_taken_o = nr_taken; // @[ID.scala 233:21]
-  assign io_update_PredictorOp_o_is_branch = io_predict_result_i_is_branch; // @[ID.scala 86:37]
-  assign io_update_PredictorOp_o_pc = io_predict_result_i_pc; // @[ID.scala 86:37]
-  assign io_update_PredictorOp_o_index = io_predict_result_i_index; // @[ID.scala 86:37]
-  assign io_update_PredictorOp_o_target = 5'h7 == decRes_0 ? 64'h0 : _GEN_110; // @[ID.scala 106:21 86:37]
-  assign io_update_PredictorOp_o_taken = 5'h7 == decRes_0 ? 1'h0 : _GEN_111; // @[ID.scala 106:21 87:37]
-  assign io_update_PredictorOp_o_predict_fail = io_predict_result_i_is_branch & (target_fail | direction_fail) & ~
-    io_stall_req_o; // @[ID.scala 64:75]
+  assign io_nr_branch_o = nr_branch; // @[ID.scala 231:21]
+  assign io_nr_taken_o = nr_taken; // @[ID.scala 232:21]
+  assign io_predict_o_is_branch = io_predict_i_is_branch; // @[ID.scala 86:26]
+  assign io_predict_o_pc = io_predict_i_pc; // @[ID.scala 86:26]
+  assign io_predict_o_index = io_predict_i_index; // @[ID.scala 86:26]
+  assign io_predict_o_target = 5'h7 == decRes_0 ? 64'h0 : _GEN_110; // @[ID.scala 106:21 86:26]
+  assign io_predict_o_taken = 5'h7 == decRes_0 ? 1'h0 : _GEN_111; // @[ID.scala 106:21 87:26]
+  assign io_predict_o_predict_fail = io_predict_i_is_branch & (target_fail | direction_fail) & ~io_stall_req_o; // @[ID.scala 64:75]
   always @(posedge clock) begin
     if (reset) begin // @[ID.scala 33:32]
       nr_branch <= 64'h0; // @[ID.scala 33:32]
@@ -2024,16 +2020,16 @@ module IF_ID(
   input  [63:0] io_pc_i,
   output [31:0] io_inst_o,
   output [63:0] io_pc_o,
-  input         io_predict_result_i_is_branch,
-  input  [63:0] io_predict_result_i_pc,
-  input  [11:0] io_predict_result_i_index,
-  input         io_predict_result_i_predict_taken,
-  input  [63:0] io_predict_result_i_predict_target,
-  output        io_predict_result_o_is_branch,
-  output [63:0] io_predict_result_o_pc,
-  output [11:0] io_predict_result_o_index,
-  output        io_predict_result_o_predict_taken,
-  output [63:0] io_predict_result_o_predict_target
+  input         io_predict_i_is_branch,
+  input  [63:0] io_predict_i_pc,
+  input  [11:0] io_predict_i_index,
+  input         io_predict_i_predict_taken,
+  input  [63:0] io_predict_i_predict_target,
+  output        io_predict_o_is_branch,
+  output [63:0] io_predict_o_pc,
+  output [11:0] io_predict_o_index,
+  output        io_predict_o_predict_taken,
+  output [63:0] io_predict_o_predict_target
 );
 `ifdef RANDOMIZE_REG_INIT
   reg [63:0] _RAND_0;
@@ -2046,18 +2042,18 @@ module IF_ID(
 `endif // RANDOMIZE_REG_INIT
   reg [63:0] pc; // @[PIPELINE-REGISTERS.scala 17:28]
   reg [31:0] inst; // @[PIPELINE-REGISTERS.scala 18:28]
-  reg  predict_result_is_branch; // @[PIPELINE-REGISTERS.scala 19:36]
-  reg [63:0] predict_result_pc; // @[PIPELINE-REGISTERS.scala 19:36]
-  reg [11:0] predict_result_index; // @[PIPELINE-REGISTERS.scala 19:36]
-  reg  predict_result_predict_taken; // @[PIPELINE-REGISTERS.scala 19:36]
-  reg [63:0] predict_result_predict_target; // @[PIPELINE-REGISTERS.scala 19:36]
-  assign io_inst_o = inst; // @[PIPELINE-REGISTERS.scala 31:17]
-  assign io_pc_o = pc; // @[PIPELINE-REGISTERS.scala 32:17]
-  assign io_predict_result_o_is_branch = predict_result_is_branch; // @[PIPELINE-REGISTERS.scala 33:25]
-  assign io_predict_result_o_pc = predict_result_pc; // @[PIPELINE-REGISTERS.scala 33:25]
-  assign io_predict_result_o_index = predict_result_index; // @[PIPELINE-REGISTERS.scala 33:25]
-  assign io_predict_result_o_predict_taken = predict_result_predict_taken; // @[PIPELINE-REGISTERS.scala 33:25]
-  assign io_predict_result_o_predict_target = predict_result_predict_target; // @[PIPELINE-REGISTERS.scala 33:25]
+  reg  predict_is_branch; // @[PIPELINE-REGISTERS.scala 19:28]
+  reg [63:0] predict_pc; // @[PIPELINE-REGISTERS.scala 19:28]
+  reg [11:0] predict_index; // @[PIPELINE-REGISTERS.scala 19:28]
+  reg  predict_predict_taken; // @[PIPELINE-REGISTERS.scala 19:28]
+  reg [63:0] predict_predict_target; // @[PIPELINE-REGISTERS.scala 19:28]
+  assign io_inst_o = inst; // @[PIPELINE-REGISTERS.scala 31:18]
+  assign io_pc_o = pc; // @[PIPELINE-REGISTERS.scala 32:18]
+  assign io_predict_o_is_branch = predict_is_branch; // @[PIPELINE-REGISTERS.scala 33:18]
+  assign io_predict_o_pc = predict_pc; // @[PIPELINE-REGISTERS.scala 33:18]
+  assign io_predict_o_index = predict_index; // @[PIPELINE-REGISTERS.scala 33:18]
+  assign io_predict_o_predict_taken = predict_predict_taken; // @[PIPELINE-REGISTERS.scala 33:18]
+  assign io_predict_o_predict_target = predict_predict_target; // @[PIPELINE-REGISTERS.scala 33:18]
   always @(posedge clock) begin
     if (reset) begin // @[PIPELINE-REGISTERS.scala 17:28]
       pc <= 64'h0; // @[PIPELINE-REGISTERS.scala 17:28]
@@ -2073,40 +2069,40 @@ module IF_ID(
     end else if (!(io_ctrl_i_stall)) begin // @[PIPELINE-REGISTERS.scala 25:32]
       inst <= io_inst_i; // @[PIPELINE-REGISTERS.scala 18:28]
     end
-    if (reset) begin // @[PIPELINE-REGISTERS.scala 19:36]
-      predict_result_is_branch <= 1'h0; // @[PIPELINE-REGISTERS.scala 19:36]
+    if (reset) begin // @[PIPELINE-REGISTERS.scala 19:28]
+      predict_is_branch <= 1'h0; // @[PIPELINE-REGISTERS.scala 19:28]
     end else if (io_ctrl_i_flush) begin // @[PIPELINE-REGISTERS.scala 21:26]
-      predict_result_is_branch <= 1'h0; // @[PIPELINE-REGISTERS.scala 24:25]
+      predict_is_branch <= 1'h0; // @[PIPELINE-REGISTERS.scala 24:17]
     end else if (!(io_ctrl_i_stall)) begin // @[PIPELINE-REGISTERS.scala 25:32]
-      predict_result_is_branch <= io_predict_result_i_is_branch; // @[PIPELINE-REGISTERS.scala 19:36]
+      predict_is_branch <= io_predict_i_is_branch; // @[PIPELINE-REGISTERS.scala 19:28]
     end
-    if (reset) begin // @[PIPELINE-REGISTERS.scala 19:36]
-      predict_result_pc <= 64'h0; // @[PIPELINE-REGISTERS.scala 19:36]
+    if (reset) begin // @[PIPELINE-REGISTERS.scala 19:28]
+      predict_pc <= 64'h0; // @[PIPELINE-REGISTERS.scala 19:28]
     end else if (io_ctrl_i_flush) begin // @[PIPELINE-REGISTERS.scala 21:26]
-      predict_result_pc <= 64'h0; // @[PIPELINE-REGISTERS.scala 24:25]
+      predict_pc <= 64'h0; // @[PIPELINE-REGISTERS.scala 24:17]
     end else if (!(io_ctrl_i_stall)) begin // @[PIPELINE-REGISTERS.scala 25:32]
-      predict_result_pc <= io_predict_result_i_pc; // @[PIPELINE-REGISTERS.scala 19:36]
+      predict_pc <= io_predict_i_pc; // @[PIPELINE-REGISTERS.scala 19:28]
     end
-    if (reset) begin // @[PIPELINE-REGISTERS.scala 19:36]
-      predict_result_index <= 12'h0; // @[PIPELINE-REGISTERS.scala 19:36]
+    if (reset) begin // @[PIPELINE-REGISTERS.scala 19:28]
+      predict_index <= 12'h0; // @[PIPELINE-REGISTERS.scala 19:28]
     end else if (io_ctrl_i_flush) begin // @[PIPELINE-REGISTERS.scala 21:26]
-      predict_result_index <= 12'h0; // @[PIPELINE-REGISTERS.scala 24:25]
+      predict_index <= 12'h0; // @[PIPELINE-REGISTERS.scala 24:17]
     end else if (!(io_ctrl_i_stall)) begin // @[PIPELINE-REGISTERS.scala 25:32]
-      predict_result_index <= io_predict_result_i_index; // @[PIPELINE-REGISTERS.scala 19:36]
+      predict_index <= io_predict_i_index; // @[PIPELINE-REGISTERS.scala 19:28]
     end
-    if (reset) begin // @[PIPELINE-REGISTERS.scala 19:36]
-      predict_result_predict_taken <= 1'h0; // @[PIPELINE-REGISTERS.scala 19:36]
+    if (reset) begin // @[PIPELINE-REGISTERS.scala 19:28]
+      predict_predict_taken <= 1'h0; // @[PIPELINE-REGISTERS.scala 19:28]
     end else if (io_ctrl_i_flush) begin // @[PIPELINE-REGISTERS.scala 21:26]
-      predict_result_predict_taken <= 1'h0; // @[PIPELINE-REGISTERS.scala 24:25]
+      predict_predict_taken <= 1'h0; // @[PIPELINE-REGISTERS.scala 24:17]
     end else if (!(io_ctrl_i_stall)) begin // @[PIPELINE-REGISTERS.scala 25:32]
-      predict_result_predict_taken <= io_predict_result_i_predict_taken; // @[PIPELINE-REGISTERS.scala 19:36]
+      predict_predict_taken <= io_predict_i_predict_taken; // @[PIPELINE-REGISTERS.scala 19:28]
     end
-    if (reset) begin // @[PIPELINE-REGISTERS.scala 19:36]
-      predict_result_predict_target <= 64'h0; // @[PIPELINE-REGISTERS.scala 19:36]
+    if (reset) begin // @[PIPELINE-REGISTERS.scala 19:28]
+      predict_predict_target <= 64'h0; // @[PIPELINE-REGISTERS.scala 19:28]
     end else if (io_ctrl_i_flush) begin // @[PIPELINE-REGISTERS.scala 21:26]
-      predict_result_predict_target <= 64'h0; // @[PIPELINE-REGISTERS.scala 24:25]
+      predict_predict_target <= 64'h0; // @[PIPELINE-REGISTERS.scala 24:17]
     end else if (!(io_ctrl_i_stall)) begin // @[PIPELINE-REGISTERS.scala 25:32]
-      predict_result_predict_target <= io_predict_result_i_predict_target; // @[PIPELINE-REGISTERS.scala 19:36]
+      predict_predict_target <= io_predict_i_predict_target; // @[PIPELINE-REGISTERS.scala 19:28]
     end
   end
 // Register and memory initialization
@@ -2150,15 +2146,15 @@ initial begin
   _RAND_1 = {1{`RANDOM}};
   inst = _RAND_1[31:0];
   _RAND_2 = {1{`RANDOM}};
-  predict_result_is_branch = _RAND_2[0:0];
+  predict_is_branch = _RAND_2[0:0];
   _RAND_3 = {2{`RANDOM}};
-  predict_result_pc = _RAND_3[63:0];
+  predict_pc = _RAND_3[63:0];
   _RAND_4 = {1{`RANDOM}};
-  predict_result_index = _RAND_4[11:0];
+  predict_index = _RAND_4[11:0];
   _RAND_5 = {1{`RANDOM}};
-  predict_result_predict_taken = _RAND_5[0:0];
+  predict_predict_taken = _RAND_5[0:0];
   _RAND_6 = {2{`RANDOM}};
-  predict_result_predict_target = _RAND_6[63:0];
+  predict_predict_target = _RAND_6[63:0];
 `endif // RANDOMIZE_REG_INIT
   `endif // RANDOMIZE
 end // initial
@@ -3004,17 +3000,17 @@ module TOP(
   wire [31:0] IF_io_inst_i; // @[TOP.scala 37:31]
   wire [63:0] IF_io_pc_o; // @[TOP.scala 37:31]
   wire [31:0] IF_io_inst_o; // @[TOP.scala 37:31]
-  wire  IF_io_update_PredictorOp_i_is_branch; // @[TOP.scala 37:31]
-  wire [63:0] IF_io_update_PredictorOp_i_pc; // @[TOP.scala 37:31]
-  wire [11:0] IF_io_update_PredictorOp_i_index; // @[TOP.scala 37:31]
-  wire [63:0] IF_io_update_PredictorOp_i_target; // @[TOP.scala 37:31]
-  wire  IF_io_update_PredictorOp_i_taken; // @[TOP.scala 37:31]
-  wire  IF_io_update_PredictorOp_i_predict_fail; // @[TOP.scala 37:31]
-  wire  IF_io_predict_result_o_is_branch; // @[TOP.scala 37:31]
-  wire [63:0] IF_io_predict_result_o_pc; // @[TOP.scala 37:31]
-  wire [11:0] IF_io_predict_result_o_index; // @[TOP.scala 37:31]
-  wire  IF_io_predict_result_o_predict_taken; // @[TOP.scala 37:31]
-  wire [63:0] IF_io_predict_result_o_predict_target; // @[TOP.scala 37:31]
+  wire  IF_io_predict_i_is_branch; // @[TOP.scala 37:31]
+  wire [63:0] IF_io_predict_i_pc; // @[TOP.scala 37:31]
+  wire [11:0] IF_io_predict_i_index; // @[TOP.scala 37:31]
+  wire [63:0] IF_io_predict_i_target; // @[TOP.scala 37:31]
+  wire  IF_io_predict_i_taken; // @[TOP.scala 37:31]
+  wire  IF_io_predict_i_predict_fail; // @[TOP.scala 37:31]
+  wire  IF_io_predict_o_is_branch; // @[TOP.scala 37:31]
+  wire [63:0] IF_io_predict_o_pc; // @[TOP.scala 37:31]
+  wire [11:0] IF_io_predict_o_index; // @[TOP.scala 37:31]
+  wire  IF_io_predict_o_predict_taken; // @[TOP.scala 37:31]
+  wire [63:0] IF_io_predict_o_predict_target; // @[TOP.scala 37:31]
   wire [63:0] IF_io_success_cnt_o; // @[TOP.scala 37:31]
   wire  ID_clock; // @[TOP.scala 38:31]
   wire  ID_reset; // @[TOP.scala 38:31]
@@ -3064,17 +3060,17 @@ module TOP(
   wire [31:0] ID_io_debug_o_inst; // @[TOP.scala 38:31]
   wire [63:0] ID_io_nr_branch_o; // @[TOP.scala 38:31]
   wire [63:0] ID_io_nr_taken_o; // @[TOP.scala 38:31]
-  wire  ID_io_predict_result_i_is_branch; // @[TOP.scala 38:31]
-  wire [63:0] ID_io_predict_result_i_pc; // @[TOP.scala 38:31]
-  wire [11:0] ID_io_predict_result_i_index; // @[TOP.scala 38:31]
-  wire  ID_io_predict_result_i_predict_taken; // @[TOP.scala 38:31]
-  wire [63:0] ID_io_predict_result_i_predict_target; // @[TOP.scala 38:31]
-  wire  ID_io_update_PredictorOp_o_is_branch; // @[TOP.scala 38:31]
-  wire [63:0] ID_io_update_PredictorOp_o_pc; // @[TOP.scala 38:31]
-  wire [11:0] ID_io_update_PredictorOp_o_index; // @[TOP.scala 38:31]
-  wire [63:0] ID_io_update_PredictorOp_o_target; // @[TOP.scala 38:31]
-  wire  ID_io_update_PredictorOp_o_taken; // @[TOP.scala 38:31]
-  wire  ID_io_update_PredictorOp_o_predict_fail; // @[TOP.scala 38:31]
+  wire  ID_io_predict_i_is_branch; // @[TOP.scala 38:31]
+  wire [63:0] ID_io_predict_i_pc; // @[TOP.scala 38:31]
+  wire [11:0] ID_io_predict_i_index; // @[TOP.scala 38:31]
+  wire  ID_io_predict_i_predict_taken; // @[TOP.scala 38:31]
+  wire [63:0] ID_io_predict_i_predict_target; // @[TOP.scala 38:31]
+  wire  ID_io_predict_o_is_branch; // @[TOP.scala 38:31]
+  wire [63:0] ID_io_predict_o_pc; // @[TOP.scala 38:31]
+  wire [11:0] ID_io_predict_o_index; // @[TOP.scala 38:31]
+  wire [63:0] ID_io_predict_o_target; // @[TOP.scala 38:31]
+  wire  ID_io_predict_o_taken; // @[TOP.scala 38:31]
+  wire  ID_io_predict_o_predict_fail; // @[TOP.scala 38:31]
   wire  EX_io_decInfo_i_writeOp_rf_wen; // @[TOP.scala 39:31]
   wire [4:0] EX_io_decInfo_i_writeOp_rf_rd; // @[TOP.scala 39:31]
   wire  EX_io_decInfo_i_writeOp_csr_wen; // @[TOP.scala 39:31]
@@ -3239,16 +3235,16 @@ module TOP(
   wire [63:0] IF_ID_io_pc_i; // @[TOP.scala 48:27]
   wire [31:0] IF_ID_io_inst_o; // @[TOP.scala 48:27]
   wire [63:0] IF_ID_io_pc_o; // @[TOP.scala 48:27]
-  wire  IF_ID_io_predict_result_i_is_branch; // @[TOP.scala 48:27]
-  wire [63:0] IF_ID_io_predict_result_i_pc; // @[TOP.scala 48:27]
-  wire [11:0] IF_ID_io_predict_result_i_index; // @[TOP.scala 48:27]
-  wire  IF_ID_io_predict_result_i_predict_taken; // @[TOP.scala 48:27]
-  wire [63:0] IF_ID_io_predict_result_i_predict_target; // @[TOP.scala 48:27]
-  wire  IF_ID_io_predict_result_o_is_branch; // @[TOP.scala 48:27]
-  wire [63:0] IF_ID_io_predict_result_o_pc; // @[TOP.scala 48:27]
-  wire [11:0] IF_ID_io_predict_result_o_index; // @[TOP.scala 48:27]
-  wire  IF_ID_io_predict_result_o_predict_taken; // @[TOP.scala 48:27]
-  wire [63:0] IF_ID_io_predict_result_o_predict_target; // @[TOP.scala 48:27]
+  wire  IF_ID_io_predict_i_is_branch; // @[TOP.scala 48:27]
+  wire [63:0] IF_ID_io_predict_i_pc; // @[TOP.scala 48:27]
+  wire [11:0] IF_ID_io_predict_i_index; // @[TOP.scala 48:27]
+  wire  IF_ID_io_predict_i_predict_taken; // @[TOP.scala 48:27]
+  wire [63:0] IF_ID_io_predict_i_predict_target; // @[TOP.scala 48:27]
+  wire  IF_ID_io_predict_o_is_branch; // @[TOP.scala 48:27]
+  wire [63:0] IF_ID_io_predict_o_pc; // @[TOP.scala 48:27]
+  wire [11:0] IF_ID_io_predict_o_index; // @[TOP.scala 48:27]
+  wire  IF_ID_io_predict_o_predict_taken; // @[TOP.scala 48:27]
+  wire [63:0] IF_ID_io_predict_o_predict_target; // @[TOP.scala 48:27]
   wire  ID_EX_clock; // @[TOP.scala 49:27]
   wire  ID_EX_reset; // @[TOP.scala 49:27]
   wire  ID_EX_io_ctrl_i_stall; // @[TOP.scala 49:27]
@@ -3356,17 +3352,17 @@ module TOP(
     .io_inst_i(IF_io_inst_i),
     .io_pc_o(IF_io_pc_o),
     .io_inst_o(IF_io_inst_o),
-    .io_update_PredictorOp_i_is_branch(IF_io_update_PredictorOp_i_is_branch),
-    .io_update_PredictorOp_i_pc(IF_io_update_PredictorOp_i_pc),
-    .io_update_PredictorOp_i_index(IF_io_update_PredictorOp_i_index),
-    .io_update_PredictorOp_i_target(IF_io_update_PredictorOp_i_target),
-    .io_update_PredictorOp_i_taken(IF_io_update_PredictorOp_i_taken),
-    .io_update_PredictorOp_i_predict_fail(IF_io_update_PredictorOp_i_predict_fail),
-    .io_predict_result_o_is_branch(IF_io_predict_result_o_is_branch),
-    .io_predict_result_o_pc(IF_io_predict_result_o_pc),
-    .io_predict_result_o_index(IF_io_predict_result_o_index),
-    .io_predict_result_o_predict_taken(IF_io_predict_result_o_predict_taken),
-    .io_predict_result_o_predict_target(IF_io_predict_result_o_predict_target),
+    .io_predict_i_is_branch(IF_io_predict_i_is_branch),
+    .io_predict_i_pc(IF_io_predict_i_pc),
+    .io_predict_i_index(IF_io_predict_i_index),
+    .io_predict_i_target(IF_io_predict_i_target),
+    .io_predict_i_taken(IF_io_predict_i_taken),
+    .io_predict_i_predict_fail(IF_io_predict_i_predict_fail),
+    .io_predict_o_is_branch(IF_io_predict_o_is_branch),
+    .io_predict_o_pc(IF_io_predict_o_pc),
+    .io_predict_o_index(IF_io_predict_o_index),
+    .io_predict_o_predict_taken(IF_io_predict_o_predict_taken),
+    .io_predict_o_predict_target(IF_io_predict_o_predict_target),
     .io_success_cnt_o(IF_io_success_cnt_o)
   );
   ID ID ( // @[TOP.scala 38:31]
@@ -3418,17 +3414,17 @@ module TOP(
     .io_debug_o_inst(ID_io_debug_o_inst),
     .io_nr_branch_o(ID_io_nr_branch_o),
     .io_nr_taken_o(ID_io_nr_taken_o),
-    .io_predict_result_i_is_branch(ID_io_predict_result_i_is_branch),
-    .io_predict_result_i_pc(ID_io_predict_result_i_pc),
-    .io_predict_result_i_index(ID_io_predict_result_i_index),
-    .io_predict_result_i_predict_taken(ID_io_predict_result_i_predict_taken),
-    .io_predict_result_i_predict_target(ID_io_predict_result_i_predict_target),
-    .io_update_PredictorOp_o_is_branch(ID_io_update_PredictorOp_o_is_branch),
-    .io_update_PredictorOp_o_pc(ID_io_update_PredictorOp_o_pc),
-    .io_update_PredictorOp_o_index(ID_io_update_PredictorOp_o_index),
-    .io_update_PredictorOp_o_target(ID_io_update_PredictorOp_o_target),
-    .io_update_PredictorOp_o_taken(ID_io_update_PredictorOp_o_taken),
-    .io_update_PredictorOp_o_predict_fail(ID_io_update_PredictorOp_o_predict_fail)
+    .io_predict_i_is_branch(ID_io_predict_i_is_branch),
+    .io_predict_i_pc(ID_io_predict_i_pc),
+    .io_predict_i_index(ID_io_predict_i_index),
+    .io_predict_i_predict_taken(ID_io_predict_i_predict_taken),
+    .io_predict_i_predict_target(ID_io_predict_i_predict_target),
+    .io_predict_o_is_branch(ID_io_predict_o_is_branch),
+    .io_predict_o_pc(ID_io_predict_o_pc),
+    .io_predict_o_index(ID_io_predict_o_index),
+    .io_predict_o_target(ID_io_predict_o_target),
+    .io_predict_o_taken(ID_io_predict_o_taken),
+    .io_predict_o_predict_fail(ID_io_predict_o_predict_fail)
   );
   EX EX ( // @[TOP.scala 39:31]
     .io_decInfo_i_writeOp_rf_wen(EX_io_decInfo_i_writeOp_rf_wen),
@@ -3609,16 +3605,16 @@ module TOP(
     .io_pc_i(IF_ID_io_pc_i),
     .io_inst_o(IF_ID_io_inst_o),
     .io_pc_o(IF_ID_io_pc_o),
-    .io_predict_result_i_is_branch(IF_ID_io_predict_result_i_is_branch),
-    .io_predict_result_i_pc(IF_ID_io_predict_result_i_pc),
-    .io_predict_result_i_index(IF_ID_io_predict_result_i_index),
-    .io_predict_result_i_predict_taken(IF_ID_io_predict_result_i_predict_taken),
-    .io_predict_result_i_predict_target(IF_ID_io_predict_result_i_predict_target),
-    .io_predict_result_o_is_branch(IF_ID_io_predict_result_o_is_branch),
-    .io_predict_result_o_pc(IF_ID_io_predict_result_o_pc),
-    .io_predict_result_o_index(IF_ID_io_predict_result_o_index),
-    .io_predict_result_o_predict_taken(IF_ID_io_predict_result_o_predict_taken),
-    .io_predict_result_o_predict_target(IF_ID_io_predict_result_o_predict_target)
+    .io_predict_i_is_branch(IF_ID_io_predict_i_is_branch),
+    .io_predict_i_pc(IF_ID_io_predict_i_pc),
+    .io_predict_i_index(IF_ID_io_predict_i_index),
+    .io_predict_i_predict_taken(IF_ID_io_predict_i_predict_taken),
+    .io_predict_i_predict_target(IF_ID_io_predict_i_predict_target),
+    .io_predict_o_is_branch(IF_ID_io_predict_o_is_branch),
+    .io_predict_o_pc(IF_ID_io_predict_o_pc),
+    .io_predict_o_index(IF_ID_io_predict_o_index),
+    .io_predict_o_predict_taken(IF_ID_io_predict_o_predict_taken),
+    .io_predict_o_predict_target(IF_ID_io_predict_o_predict_target)
   );
   ID_EX ID_EX ( // @[TOP.scala 49:27]
     .clock(ID_EX_clock),
@@ -3778,12 +3774,12 @@ module TOP(
   assign IF_reset = reset;
   assign IF_io_ctrl_i_stall = Control_io_stall_o[0]; // @[TOP.scala 126:51]
   assign IF_io_inst_i = Main_Memory_io_inst_o; // @[TOP.scala 54:25]
-  assign IF_io_update_PredictorOp_i_is_branch = ID_io_update_PredictorOp_o_is_branch; // @[TOP.scala 55:33]
-  assign IF_io_update_PredictorOp_i_pc = ID_io_update_PredictorOp_o_pc; // @[TOP.scala 55:33]
-  assign IF_io_update_PredictorOp_i_index = ID_io_update_PredictorOp_o_index; // @[TOP.scala 55:33]
-  assign IF_io_update_PredictorOp_i_target = ID_io_update_PredictorOp_o_target; // @[TOP.scala 55:33]
-  assign IF_io_update_PredictorOp_i_taken = ID_io_update_PredictorOp_o_taken; // @[TOP.scala 55:33]
-  assign IF_io_update_PredictorOp_i_predict_fail = ID_io_update_PredictorOp_o_predict_fail; // @[TOP.scala 55:33]
+  assign IF_io_predict_i_is_branch = ID_io_predict_o_is_branch; // @[TOP.scala 55:25]
+  assign IF_io_predict_i_pc = ID_io_predict_o_pc; // @[TOP.scala 55:25]
+  assign IF_io_predict_i_index = ID_io_predict_o_index; // @[TOP.scala 55:25]
+  assign IF_io_predict_i_target = ID_io_predict_o_target; // @[TOP.scala 55:25]
+  assign IF_io_predict_i_taken = ID_io_predict_o_taken; // @[TOP.scala 55:25]
+  assign IF_io_predict_i_predict_fail = ID_io_predict_o_predict_fail; // @[TOP.scala 55:25]
   assign ID_clock = clock;
   assign ID_reset = reset;
   assign ID_io_inst_i = IF_ID_io_inst_o; // @[TOP.scala 70:23]
@@ -3808,11 +3804,11 @@ module TOP(
   assign ID_io_csrData_i_csrVal = Csr_io_csrData_o_csrVal; // @[TOP.scala 72:23]
   assign ID_io_csrData_i_epc = Csr_io_csrData_o_epc; // @[TOP.scala 72:23]
   assign ID_io_csrData_i_tvec = Csr_io_csrData_o_tvec; // @[TOP.scala 72:23]
-  assign ID_io_predict_result_i_is_branch = IF_ID_io_predict_result_o_is_branch; // @[TOP.scala 74:29]
-  assign ID_io_predict_result_i_pc = IF_ID_io_predict_result_o_pc; // @[TOP.scala 74:29]
-  assign ID_io_predict_result_i_index = IF_ID_io_predict_result_o_index; // @[TOP.scala 74:29]
-  assign ID_io_predict_result_i_predict_taken = IF_ID_io_predict_result_o_predict_taken; // @[TOP.scala 74:29]
-  assign ID_io_predict_result_i_predict_target = IF_ID_io_predict_result_o_predict_target; // @[TOP.scala 74:29]
+  assign ID_io_predict_i_is_branch = IF_ID_io_predict_o_is_branch; // @[TOP.scala 74:23]
+  assign ID_io_predict_i_pc = IF_ID_io_predict_o_pc; // @[TOP.scala 74:23]
+  assign ID_io_predict_i_index = IF_ID_io_predict_o_index; // @[TOP.scala 74:23]
+  assign ID_io_predict_i_predict_taken = IF_ID_io_predict_o_predict_taken; // @[TOP.scala 74:23]
+  assign ID_io_predict_i_predict_target = IF_ID_io_predict_o_predict_target; // @[TOP.scala 74:23]
   assign EX_io_decInfo_i_writeOp_rf_wen = ID_EX_io_decInfo_o_writeOp_rf_wen; // @[TOP.scala 95:25]
   assign EX_io_decInfo_i_writeOp_rf_rd = ID_EX_io_decInfo_o_writeOp_rf_rd; // @[TOP.scala 95:25]
   assign EX_io_decInfo_i_writeOp_csr_wen = ID_EX_io_decInfo_o_writeOp_csr_wen; // @[TOP.scala 95:25]
@@ -3887,11 +3883,11 @@ module TOP(
   assign IF_ID_io_ctrl_i_flush = Control_io_flush_o[1]; // @[TOP.scala 128:51]
   assign IF_ID_io_inst_i = IF_io_inst_o; // @[TOP.scala 63:25]
   assign IF_ID_io_pc_i = IF_io_pc_o; // @[TOP.scala 64:25]
-  assign IF_ID_io_predict_result_i_is_branch = IF_io_predict_result_o_is_branch; // @[TOP.scala 61:33]
-  assign IF_ID_io_predict_result_i_pc = IF_io_predict_result_o_pc; // @[TOP.scala 61:33]
-  assign IF_ID_io_predict_result_i_index = IF_io_predict_result_o_index; // @[TOP.scala 61:33]
-  assign IF_ID_io_predict_result_i_predict_taken = IF_io_predict_result_o_predict_taken; // @[TOP.scala 61:33]
-  assign IF_ID_io_predict_result_i_predict_target = IF_io_predict_result_o_predict_target; // @[TOP.scala 61:33]
+  assign IF_ID_io_predict_i_is_branch = IF_io_predict_o_is_branch; // @[TOP.scala 61:25]
+  assign IF_ID_io_predict_i_pc = IF_io_predict_o_pc; // @[TOP.scala 61:25]
+  assign IF_ID_io_predict_i_index = IF_io_predict_o_index; // @[TOP.scala 61:25]
+  assign IF_ID_io_predict_i_predict_taken = IF_io_predict_o_predict_taken; // @[TOP.scala 61:25]
+  assign IF_ID_io_predict_i_predict_target = IF_io_predict_o_predict_target; // @[TOP.scala 61:25]
   assign ID_EX_clock = clock;
   assign ID_EX_reset = reset;
   assign ID_EX_io_ctrl_i_stall = Control_io_stall_o[2]; // @[TOP.scala 132:51]

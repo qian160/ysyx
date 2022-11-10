@@ -111,7 +111,7 @@ class Ctrl extends Bundle{
     val flush   =   Bool()
 }
 
-class Update_PredictorOp extends Bundle{
+class PredictOp extends Bundle{
     val is_branch   =   Bool()
     val pc          =   UInt(64.W)
     val index       =   UInt(12.W)

@@ -29,8 +29,8 @@ class IF extends Module{
         val pc_o        =   Output(UInt(64.W))
         val inst_o      =   Output(UInt(32.W))
 
-        val update_PredictorOp_i    =   Input(new Update_PredictorOp)
-        val predict_result_o        =   Output(new Update_PredictorOp)
+        val predict_i   =   Input(new PredictOp)
+        val predict_o   =   Output(new PredictOp)
 
         val success_cnt_o   =   Output(UInt(64.W))
     })
@@ -40,13 +40,16 @@ class IF extends Module{
 
     val opcode  =   OPCODE(io.inst_i)
 
-    val prev_is_branch      =   io.update_PredictorOp_i.is_branch            // need to do something
-    val prev_taken          =   io.update_PredictorOp_i.taken
+    // total size of ICache = 8KB, 4KB per set. Block size = 32b(to fit inst size)
+    val ICacheSet1  =   Mem(1 << 8, new ICache_Line)
 
-    val branch_target       =   io.update_PredictorOp_i.target
-    val branch_pc           =   io.update_PredictorOp_i.pc                   // the pc of that b/j inst
+    val prev_is_branch      =   io.predict_i.is_branch            // need to do something
+    val prev_taken          =   io.predict_i.taken
 
-    val prev_predict_fail   =   io.update_PredictorOp_i.predict_fail
+    val branch_target       =   io.predict_i.target
+    val branch_pc           =   io.predict_i.pc                   // the pc of that b/j inst
+
+    val prev_predict_fail   =   io.predict_i.predict_fail
 
     val pc_low      =   pc(11, 0)
     val bp_index    =   pc_low | history
@@ -54,9 +57,9 @@ class IF extends Module{
     val is_branch   =   opcode === BRANCH | opcode === JAL | opcode === JALR
     
     val correct_address     =   Mux(prev_taken, branch_target, branch_pc + 4.U)
-    val prev_bp_index       =   io.update_PredictorOp_i.index
+    val prev_bp_index       =   io.predict_i.index
     // Branch Predict/Target Buffer
-    val BTB =   Mem(1 << 12, (new BTB_entry))
+    val BTB =   Mem(1 << 12, new BTB_entry)
     val BPB =   Mem(1 << 12, UInt(2.W))
 
     val btb_valid          =   BTB(bp_index).pc === pc
@@ -75,15 +78,15 @@ class IF extends Module{
     io.pc_o     :=  pc
     io.inst_o   :=  io.inst_i
 
-    io.predict_result_o.is_branch   :=  is_branch
-    io.predict_result_o.pc          :=  pc
+    io.predict_o.is_branch   :=  is_branch
+    io.predict_o.pc          :=  pc
     // btb: use btb_index or pc_low? It seems that barget has nothing to be with global behavior...
-    io.predict_result_o.index       :=  bp_index
-    io.predict_result_o.target      :=  DontCare
-    io.predict_result_o.taken       :=  DontCare
-    io.predict_result_o.predict_target  :=  predict_target
-    io.predict_result_o.predict_fail    :=  DontCare
-    io.predict_result_o.predict_taken   :=  predict_taken
+    io.predict_o.index       :=  bp_index
+    io.predict_o.target      :=  DontCare
+    io.predict_o.taken       :=  DontCare
+    io.predict_o.predict_target  :=  predict_target
+    io.predict_o.predict_fail    :=  DontCare
+    io.predict_o.predict_taken   :=  predict_taken
 
     // flush is given by ID, here just check whether the prediction is right and update the some states
     // BTB should never buffer pc + 4(the not taken case)!!!!!
@@ -109,12 +112,16 @@ class IF extends Module{
 }
 
 class BTB_entry extends Bundle{
+    //32 BIT IS ENOUGH?
     val pc      =   UInt(64.W)
     val target  =   UInt(64.W)
 }
 
-class ICache_entry extends Bundle{
-    //todo
-    //val tag     =   UInt()
-    //val insts   =   Vec()
+class ICache_Line extends Bundle{
+    // 32-bit pc = 2 offset + 8 line number + 22 tag
+    // #lines = 2 ^ 8 = 256, block size = 4B, each line contains 2 ^ 2 = 4 blocks, so 16B per line
+    val valid   =   Bool()
+    val tag     =   UInt(22.W)
+    val insts   =   Vec(4, UInt(32.W))
+    val used    =   Bool()      //lru replacement
 }

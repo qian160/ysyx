@@ -10,27 +10,27 @@ class IF_ID extends Module {
         val inst_o  =   Output(UInt(32.W))
         val pc_o    =   Output(UInt(64.W))
 
-        val predict_result_i    =   Input(new Update_PredictorOp)
-        val predict_result_o    =   Output(new Update_PredictorOp)
+        val predict_i    =   Input(new PredictOp)
+        val predict_o    =   Output(new PredictOp)
     })
 
     val pc      =   RegNext(io.pc_i, 0.U)
     val inst    =   RegNext(io.inst_i, 0.U)
-    val predict_result  =   RegNext(io.predict_result_i, 0.U.asTypeOf(new Update_PredictorOp))
+    val predict =   RegNext(io.predict_i, 0.U.asTypeOf(new PredictOp))
     //flush has high priority
     when(io.ctrl_i.flush){
         pc      :=  CONST.PC_INIT
         inst    :=  CONST.NOP
-        predict_result  :=  0.U.asTypeOf(new Update_PredictorOp)
+        predict :=  0.U.asTypeOf(new PredictOp)
     }.elsewhen(io.ctrl_i.stall){
         pc      :=  pc
         inst    :=  inst
-        predict_result  :=  predict_result
+        predict :=  predict
     }
 
-    io.inst_o   :=  inst
-    io.pc_o     :=  pc
-    io.predict_result_o :=  predict_result
+    io.inst_o    :=  inst
+    io.pc_o      :=  pc
+    io.predict_o :=  predict
 }
 
 class ID_EX extends Module {
@@ -44,21 +44,21 @@ class ID_EX extends Module {
         val decInfo_o   =   Output(new DecodeInfo)
         val debug_o     =   Output(new Debug_Bundle)
 
-//        val update_PredictorOp_i    =   Input(new Update_PredictorOp)
-//        val update_PredictorOp_o    =   Output(new Update_PredictorOp)
+//        val update_PredictorOp_i    =   Input(new PredictOP)
+//        val update_PredictorOp_o    =   Output(new PredictOP)
     })
     val decInfo =   RegNext(io.decInfo_i, 0.U.asTypeOf(new DecodeInfo))
     val debug   =   RegNext(io.debug_i, 0.U.asTypeOf(new Debug_Bundle))
     val stall   =   RegNext(io.id_is_stalled_i, false.B)
 
-//    val update_PredictorOp  =   RegNext(io.update_PredictorOp_i, 0.U.asTypeOf(new Update_PredictorOp))
+//    val update_PredictorOp  =   RegNext(io.update_PredictorOp_i, 0.U.asTypeOf(new PredictOP))
 
     when(io.ctrl_i.flush){
         decInfo :=  0.U.asTypeOf(new DecodeInfo)
         debug   :=  0.U.asTypeOf(new Debug_Bundle)
         stall   :=  0.U
 
-//        update_PredictorOp  :=  0.U.asTypeOf(new Update_PredictorOp)
+//        update_PredictorOp  :=  0.U.asTypeOf(new PredictOP)
     }.elsewhen(io.ctrl_i.stall){
         decInfo :=  decInfo
         debug   :=  debug
