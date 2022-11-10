@@ -41,7 +41,7 @@ class IF extends Module{
     val opcode  =   OPCODE(io.inst_i)
 
     // total size of ICache = 8KB, 4KB per set. Block size = 32b(to fit inst size)
-    val ICacheSet1  =   Mem(1 << 8, new ICache_Line)
+    val ICacheWay1  =   Mem(1 << 8, new ICache_Set)
 
     val prev_is_branch      =   io.predict_i.is_branch            // need to do something
     val prev_taken          =   io.predict_i.taken
@@ -117,7 +117,8 @@ class BTB_entry extends Bundle{
     val target  =   UInt(64.W)
 }
 
-class ICache_Line extends Bundle{
+class ICache_Set extends Bundle{
+    // one row
     // 32-bit pc = 2 offset + 8 line number + 22 tag
     // #lines = 2 ^ 8 = 256, block size = 4B, each line contains 2 ^ 2 = 4 blocks, so 16B per line
     val valid   =   Bool()
