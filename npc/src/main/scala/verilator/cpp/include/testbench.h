@@ -71,12 +71,14 @@ void TestBench<Module>::reset() noexcept{
 	dut -> reset = 0;
 
 	cout << "pc: reset at 0x" << hex << dut -> io_pc_o << endl;
+/*
 	boot_time = clock();		//init value
 	for(const auto iter : emojis){
 		cout << iter.second;
 	}
 	cout << endl;
 	cout << "😅😅😅😅😅😅😅😅😅😅😅😅😅😅😅😅😅😅😅😅" << endl;
+*/
 }
 
 template<class Module>

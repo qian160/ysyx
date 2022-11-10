@@ -2,6 +2,8 @@
 #include"include/macro.h"
 #include"include/sdb.h"
 
+extern char logo[];
+
 #include<verilated_vcd_c.h>
 #include"verilated_dpi.h"
 #include"VTOP__Dpi.h"
@@ -76,6 +78,7 @@ int main(int argc, char **argv)
 	IFDEF(TRACE_EN, tb.trace("./wave.vcd"));		//consumes too much memory
 	IFDEF(DIFFTEST_ENABLE, init_difftest());		//almost impossible to use now...
 	IFDEF(HAS_DEVICE, init_device());
+	cout << logo << endl;
 	//tb.trace("./wave.vcd");
 	while(!Verilated::gotFinish()){
 		// IF's pc

@@ -39,9 +39,13 @@ class IF extends Module{
     val history =   RegInit(0.U(12.W))
 
     val opcode  =   OPCODE(io.inst_i)
-
+    // 2-way set associated cahce
     // total size of ICache = 8KB, 4KB per set. Block size = 32b(to fit inst size)
-    val ICacheWay1  =   Mem(1 << 8, new ICache_Set)
+    val ICache_Way1  =   Mem(1 << 8, new ICache_Set)
+    val ICache_Way2  =   Mem(1 << 8, new ICache_Set)
+
+    //val ICache_metadata_Way1    =
+    //val ICache_metadata_Way2    =
 
     val prev_is_branch      =   io.predict_i.is_branch            // need to do something
     val prev_taken          =   io.predict_i.taken

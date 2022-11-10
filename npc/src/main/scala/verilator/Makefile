@@ -1,8 +1,10 @@
 .PHONY : run gen clean compile load test
 
 HOME   = $(shell pwd)
-VSRC   = $(addprefix $(HOME)/verilog/, $(shell ls ./verilog | grep \.\*v))
+VSRC   = $(addprefix $(HOME)/verilog/, $(shell ls ./verilog | grep \.\*v))   #.v or .sv
 CPPSRC = $(addprefix $(HOME)/cpp/, $(shell ls ./cpp | grep cpp))
+ASMSRC = $(addprefix $(HOME)/cpp/, $(shell ls ./cpp | grep \.S))
+LOGO   = $(HOME)/cpp/logo.o
 VFLAGS = --cc --exe --trace -Wno-lint --build --top TOP -LDFLAGS -ldl -LDFLAGS -lSDL2 -O3
 
 DEPS   = $(CPPSRC:.cpp=.d)
@@ -40,7 +42,7 @@ ifneq ($(img),)
 	@echo 
 	@./cpp/load $(img) > ../img_file
 endif
-	@verilator $(VSRC) $(CPPSRC) $(VFLAGS) $(CPPFLAGS)
+	@verilator $(VSRC) $(CPPSRC) $(VFLAGS) $(LOGO) $(CPPFLAGS)
 	@obj_dir/VTOP $(img)
 clean:
 	-rm  -rf obj_dir wave.vcd
