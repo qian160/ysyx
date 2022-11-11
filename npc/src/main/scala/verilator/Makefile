@@ -3,12 +3,13 @@
 HOME   = $(shell pwd)
 VSRC   = $(addprefix $(HOME)/verilog/, $(shell ls ./verilog | grep \.\*v))   #.v or .sv
 CPPSRC = $(addprefix $(HOME)/cpp/, $(shell ls ./cpp | grep cpp))
-ASMSRC = $(addprefix $(HOME)/cpp/, $(shell ls ./cpp | grep \.S))
 LOGO   = $(HOME)/cpp/logo.o
+LOGO_S = $(HOME)/cpp/logo.S
 VFLAGS = --cc --exe --trace -Wno-lint --build --top TOP -LDFLAGS -ldl -LDFLAGS -lSDL2 -O3
 
 DEPS   = $(CPPSRC:.cpp=.d)
 OBJS   = $(CPPSRC:.cpp=.o)	
+OBJS   +=
 CPPFLAGS    = -I./obj_dir -I./cpp/include -O3 #-std=c++17
 DIFFTEST    = $(NEMU_HOME)/build/riscv64-nemu-interpreter-so
  
@@ -35,8 +36,11 @@ COLOR_NONE  = \033[0m
 gen:
 	make -C ./asm gen
 
+$(LOGO): $(LOGO_S)
+	as $(LOGO_S) -o @@
+
 #usage: make run [img=xxx]
-run:
+run: $(LOGO)
 ifneq ($(img),)
 	@echo loading img $(img)...
 	@echo 

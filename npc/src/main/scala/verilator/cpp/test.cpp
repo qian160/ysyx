@@ -9,6 +9,7 @@ extern char logo[];
 #include"VTOP__Dpi.h"
 
 #include<signal.h>
+#include<iomanip>
 
 using namespace std;
 
@@ -43,18 +44,21 @@ extern int init_device();
 extern uint64_t nr_inst;
 extern uint64_t valid_inst;
 
+using ld = long double;
 void my_exit(int sig)
 {
 	SDL_Exit();
 	uint64_t & nr_branch  = top -> io_nr_branch_o;
 	uint64_t & nr_taken   = top -> io_nr_taken_o;
 	uint64_t & nr_success =	top -> io_success_cnt_o;
+	uint64_t & nr_icache_hit	= top -> io_nr_icache_hit_o;
 	cout.setf(ios_base::dec, ios_base::basefield);
-	cout << endl;
+	cout << setprecision(8) << endl;
 	cout << Green("total insts: ") << nr_inst << endl; 
-	cout << Green("        ipc: ") << (double)valid_inst / (double)nr_inst << endl;
-	cout << Green("branch rate: ") << (double)nr_taken / (double)nr_branch <<" (" << nr_taken << " / " << nr_branch << ")" << endl;
-	cout << Green("bp accuracy: ") << (double)nr_success / (double)nr_branch << " (" << nr_success << " / " << nr_branch << ")" << endl;
+	cout << Green("        ipc: ") << (ld)valid_inst / (ld)nr_inst << endl;
+	cout << Green("branch rate: ") << (ld)nr_taken   / (ld)nr_branch << " (" << (ld)nr_taken   << " / " << (ld)nr_branch << ")" << endl;
+	cout << Green("bp accuracy: ") << (ld)nr_success / (ld)nr_branch << " (" << (ld)nr_success << " / " << (ld)nr_branch << ")" << endl;
+	cout << Green("I-Cache hit: ") << (ld)nr_icache_hit / (ld)nr_inst << " (" << (ld)nr_icache_hit << " / " << (ld)nr_inst << ")" << endl;
 	//todo: add cache hit rate, branch predictor accuracy
 	exit(0);
     __asm__ volatile(
@@ -78,7 +82,7 @@ int main(int argc, char **argv)
 	IFDEF(TRACE_EN, tb.trace("./wave.vcd"));		//consumes too much memory
 	IFDEF(DIFFTEST_ENABLE, init_difftest());		//almost impossible to use now...
 	IFDEF(HAS_DEVICE, init_device());
-	cout << logo << endl;
+	cout << endl << logo << endl << endl;
 	//tb.trace("./wave.vcd");
 	while(!Verilated::gotFinish()){
 		// IF's pc

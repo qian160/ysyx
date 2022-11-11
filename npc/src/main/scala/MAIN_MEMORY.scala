@@ -13,6 +13,8 @@ class MAIN_MEMORY extends Module{
         val timer_i   = Input(UInt(64.W))       //from TOP(cpp Input). Ignored now
         val pc_i      = Input(UInt(64.W))       //from IF
         val memOp_i   = Input(new MemOp)
+        val icache_miss_i   =   Input(new ICacheMissInfo)
+        val icache_insert_o =   Output(new ICacheInsertInfo)
 
         val inst_o    = Output(UInt(32.W))
         val loadVal_o = Output(UInt(64.W))
@@ -116,5 +118,17 @@ class MAIN_MEMORY extends Module{
         4.U ->  Mux(unsigned, loadVal_temp, SEXT(loadVal_temp, 32, 64)),
         8.U ->  loadVal_temp,
     ))
+
+    val pc_aligned  =   Cat(io.icache_miss_i.pc(63, 2), 0.U(2.W))
+    val inst1       =   ram((pc_aligned - CONST.PC_INIT) >> 2)
+    val inst2       =   ram((pc_aligned + 1.U - CONST.PC_INIT) >> 2)
+    val inst3       =   ram((pc_aligned + 2.U - CONST.PC_INIT) >> 2)
+    val inst4       =   ram((pc_aligned + 3.U - CONST.PC_INIT) >> 2)
+    val cache_set   =   Cat(inst1, inst2, inst3, inst4).asTypeOf(Vec(4, UInt(32.W)))
+
+    io.icache_insert_o.valid  :=  io.icache_miss_i.miss
+    io.icache_insert_o.insts  :=  cache_set
+    io.icache_insert_o.index  :=  io.icache_miss_i.index
+    io.icache_insert_o.tag    :=  io.icache_miss_i.pc(31, 10)
 
 }

@@ -25,11 +25,10 @@ class TOP extends Module{
         val inst_o    = Output(UInt(32.W))  // set by cpp
         val o1        = Output(UInt(64.W))  // to avoid dce
         val o2        = Output(UInt(64.W))  // to avoid dce
-        val src1      = Output(UInt(64.W))
-        val src2      = Output(UInt(64.W))
 
         val nr_branch_o =   Output(UInt(64.W))
         val nr_taken_o  =   Output(UInt(64.W))
+        val nr_icache_hit_o =   Output(UInt(64.W))
         val success_cnt_o   =   Output(UInt(64.W))
 
     })
@@ -53,8 +52,7 @@ class TOP extends Module{
 //    IF.io.branchOp_i    :=  ID.io.decInfo_o.branchOp
     IF.io.inst_i        :=  Main_Memory.io.inst_o
     IF.io.predict_i     :=  ID.io.predict_o
-//    IF.io.id_jump_result_i      :=  ID.io.update_PredictorOp_o
-//    IF.io.ex_branch_result_i    :=  EX.io.update_PredictorOp_o
+    IF.io.icache_insert_i   :=  Main_Memory.io.icache_insert_o
 
     IF_ID.io.inst_i     :=  IF.io.inst_o
     IF_ID.io.pc_i       :=  IF.io.pc_o
@@ -66,6 +64,7 @@ class TOP extends Module{
     Main_Memory.io.pc_i     :=  IF.io.pc_o
     Main_Memory.io.timer_i  :=  io.timer_i
     Main_Memory.io.memOp_i  :=  MEM.io.memOp_i
+    Main_Memory.io.icache_miss_i    :=  IF.io.icache_miss_o
 
     ID.io.inst_i      :=  IF_ID.io.inst_o
     ID.io.pc_i        :=  IF_ID.io.pc_o
@@ -112,8 +111,7 @@ class TOP extends Module{
     //TOP module's output, for debug use and also to avoid dce
     io.o1       :=  WB.io.writeOp_o.rf.wdata
     io.o2       :=  WB.io.writeOp_o.csr.wdata
-    io.src1     :=  ID.io.decInfo_o.aluOp.src1
-    io.src2     :=  ID.io.decInfo_o.aluOp.src2
+
     io.inst_o   :=  IF.io.inst_o
     io.pc_o     :=  IF.io.pc_o
     io.regs     :=  Regfile.io.regs_o
@@ -149,8 +147,10 @@ class TOP extends Module{
     io.nr_taken_o   :=  ID.io.nr_taken_o
     io.nr_branch_o  :=  ID.io.nr_branch_o
     io.success_cnt_o    :=  IF.io.success_cnt_o
+    io.nr_icache_hit_o  :=  IF.io.nr_icache_hit_o
     dontTouch(io.nr_branch_o)
     dontTouch(io.nr_taken_o)
+    dontTouch(io.nr_icache_hit_o)
     dontTouch(io.stall_o)
     dontTouch(io.flush_o)
     //debug
@@ -170,4 +170,8 @@ object Gen {
         println(Green("Done"))
 
     }
+}
+
+class statistics extends Bundle{
+
 }

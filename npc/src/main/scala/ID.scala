@@ -123,6 +123,10 @@ class ID extends Module{
 
             io.decInfo_o.memOp.unsigned   :=  fct3(2)     //0 to 3 unsigned, signed when fct3 >= 4
 
+            when(is_jalr & ~io.stall_req_o){
+                nr_taken    :=  nr_taken + 1.U
+                nr_branch   :=  nr_branch + 1.U
+            }
             io.stall_req_o  :=  prev_is_load & (prev_rd  === rs1)
         }
         is(InstType.R){
@@ -169,6 +173,9 @@ class ID extends Module{
             //link address
             io.decInfo_o.aluOp.src1       :=  pc
             io.decInfo_o.aluOp.src2       :=  4.U(64.W)
+
+            nr_branch   :=  nr_branch + 1.U
+            nr_taken    :=  nr_taken + 1.U
         }
         is(InstType.S){
             //avoid incorrect bypass(imm being interpreted as rd)

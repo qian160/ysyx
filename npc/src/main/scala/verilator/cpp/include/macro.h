@@ -6,8 +6,8 @@
 // macro stringizing
 ///the # and ## operator is only avaliable at preprocess stage
 
-#define str_temp(x) #x
-#define str(x) str_temp(x)
+#define _str_temp(x) #x
+#define _str(x) str_temp(x)
 // strlen() for string constant
 #define STRLEN(CONST_STR) (sizeof(CONST_STR) - 1)       //== strlen lib function
 
@@ -52,7 +52,7 @@
 ///we do this by compare macro name and its value. eg if we use #define foo bar, then the macro name is not equal to its value
 // NOTE1: it ONLY works inside a function, since it calls `strcmp()`
 // NOTE2: macros defined to themselves (#define A A) will get wrong results. Since its name = its value, the test will be past
-#define isdef(macro) (strcmp("" #macro, "" str(macro)) != 0)
+#define isdef(macro) (strcmp("" #macro, "" _str(macro)) != 0)
 
 // simplification for conditional compilation
 #define __IGNORE(...)
@@ -87,27 +87,4 @@ those bits in the BITMASK's range will join the & computation. And since the bit
 //if we use a function, then the bit filed must be a const value, not variable
 #define SEXT(x, len) ({ struct { int64_t n : len; } __x = { .n = x }; (uint64_t)__x.n; })
 
-#define ROUNDUP(a, sz)   ((((uintptr_t)a) + (sz) - 1) & ~((sz) - 1))
-#define ROUNDDOWN(a, sz) ((((uintptr_t)a)) & ~((sz) - 1))
-
-#define PG_ALIGN __attribute((aligned(4096)))
-
-#if !defined(likely)
-#define likely(cond)   __builtin_expect(cond, 1)
-#define unlikely(cond) __builtin_expect(cond, 0)
 #endif
-
-#endif
-
-#define TRACE_STRINGIFY(item) "" #item
-#define TRACE(macro, message)                          \
-    do {                                               \
-        if (strcmp( #macro, TRACE_STRINGIFY(macro)))   \
-            printf("%s\n, "message);                   \
-    } while (0)
-
-/*generally, a macro's value is different from its name(from the view of string)
-  for things like #define foo bar, the argument of TRACE_STRINGIFY will be substituted by bar.
-  and for those macros not defined, the argument won't have the chance to be subsituted. So 2 string would be the same
-
-*/
