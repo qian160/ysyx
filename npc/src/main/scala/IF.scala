@@ -2,6 +2,7 @@ import chisel3._
 import chisel3.util._
 import Util._
 import Opcode._
+import CacheAddrField._
 
 //usually branch result is known in EX, but here to make life easy I move it to ID
 
@@ -17,6 +18,13 @@ import Opcode._
 
     notes:  jump could be predicted not taken. Why? This is caused by btb miss, we can't give out a correct target under this situation.
                 So it makes no difference whichever direction we predict(since a fail will always happen), and thus we could treat jump the branch way. This reduces some code
+
+    cache:
+        1. use the index field(11, 4) in pc to search both the 2 ways and get 2 sets(rows) of data
+        2. choosing the right set by comparing tag and also valid bit
+        3. if hit, then we can use the offset filed(3, 2 here, since block size = 4B, which is exactly what we want) to get the data from that set
+        4. otherwise, load a set of (16B aligned) data from main memory to cache
+
 */
 
 //@chiselName
@@ -24,7 +32,6 @@ class IF extends Module{
     val io = IO(new Bundle{
         //flush is not used here...
         val ctrl_i      =   Input(new Ctrl)
-        val inst_i      =   Input(UInt(32.W))       //from main memory
         val pc_o        =   Output(UInt(64.W))
         val inst_o      =   Output(UInt(32.W))
 
@@ -104,14 +111,13 @@ class IF extends Module{
         )
     }
 
-    // 2-way set associated cahce
-    // total size of ICache = 8KB, 4KB per set. Block size = 32b(to fit inst size)
-    // we could also split the cache's metadata and data and store them individually
+    // cache
     val ICache_Way1  =   Mem(1 << 8, new ICache_Set)
     val ICache_Way2  =   Mem(1 << 8, new ICache_Set)
-    val tag             =   pc(31, 10)
-    val cache_index     =   pc(9, 2)
-    val block_offset    =   (pc >> 2.U)(1, 0)
+    // [31: 12],    [11: 4],    [3: 0]
+    val tag             =   TAG(pc)
+    val cache_index     =   INDEX(pc)            // block address in fact
+    val block_offset    =   BLOCK_OFFSET(pc)     // a block is 4B
 
     val set1    =   ICache_Way1(cache_index)
     val set2    =   ICache_Way2(cache_index)
@@ -133,9 +139,8 @@ class IF extends Module{
 
     io.icache_miss_o.miss    :=  miss
     io.icache_miss_o.pc      :=  pc
-    io.icache_miss_o.index   :=  cache_index
 
-    inst    :=  Mux(miss, io.inst_i, inst_from_cache)
+    inst    :=  Mux(miss, io.icache_insert_i.insts(block_offset), inst_from_cache)
     val insert_insts    =   io.icache_insert_i.insts.asUInt
     val insert_tag      =   io.icache_insert_i.tag
     val insert_index    =   io.icache_insert_i.index
@@ -148,11 +153,14 @@ class IF extends Module{
 
     val set1_used       =   ICache_Way1(insert_index).used
     val set2_used       =   ICache_Way2(insert_index).used
+
     /*
-        1. if existS non-valid set, insert to that position first
+        1. if exists non-valid set, insert to that position first
         2. otherwise, consult LRU
     */
     when(io.icache_insert_i.valid){
+        val insts = io.icache_insert_i.insts
+        //printf("%x  %x  %x  %x", insts(0), insts(1), insts(2), insts(3))
         when(~set1_valid){
             ICache_Way1(insert_index)       :=  insert_set
             ICache_Way2(insert_index).used  :=  0.U
@@ -164,8 +172,7 @@ class IF extends Module{
                 ICache_Way1(insert_index)       :=  insert_set
                 ICache_Way2(insert_index).used  :=  0.U
             }.otherwise{
-                ICache_Way2(insert_index)       :=  insert_set
-                ICache_Way1(insert_index).used  :=  0.U
+                
             }
         }
     }
@@ -198,20 +205,48 @@ class ICache_Set extends Bundle{
     // 32-bit pc = 2 offset + 8 index + 22 tag
     // #lines = 2 ^ 8 = 256, block size = 4B, each line contains 2 ^ 2 = 4 blocks, so 16B per line
     val valid   =   Bool()
-    val tag     =   UInt(22.W)
+    val tag     =   UInt(TAG_LEN)
     val insts   =   Vec(4, UInt(32.W))
     val used    =   Bool()      //lru replacement
 }
 
 class ICacheMissInfo extends Bundle{
     val miss    =   Bool()
-    val index   =   UInt(8.W)
     val pc      =   UInt(64.W)
 }
 
 class ICacheInsertInfo extends Bundle{
     val valid   =   Bool()
     val insts   =   Vec(4, UInt(32.W))
-    val index   =   UInt(8.W)
-    val tag     =   UInt(22.W)
+    val index   =   UInt(INDEX_LEN)
+    val tag     =   UInt(TAG_LEN)
 }
+
+/*
+
+    2-way set associated cahce
+    total size of ICache = 8KB, 4KB per set. Block size = 32b(to fit inst size)
+    we could also split the cache's metadata and data and store them individually
+
+    capacity = 8KB / 4B = 2K insts
+
+    some explaination on the address field division:
+        each set(row) contains 16B data, so it should takes up 4 bits's address
+        the number of set = 256 -> 8 bit index
+        the rest 20 bits just for tag
+
+        db = data block, 4B per block 
+    metadata               data store
+    ___________     ________________________
+    | v | TAG |     | db1 | db2 | db3 | db4 |
+    |   |     |     |     |     |     |
+    |             ......
+    |
+    |                                        256 lines(sets)
+    .
+    .
+    .
+    |
+
+    I-Cache is easier because we don't need to consider writing the data back to lower level memory when a block is replaced
+*/

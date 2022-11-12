@@ -5,24 +5,23 @@ import chisel3.util.experimental._
 import Util._
 
 class MAIN_MEMORY extends Module{
-
     def bswap(a: UInt): UInt        =   Cat(a(7, 0), a(15, 8), a(23, 16), a(31, 24), a(39, 32), a(47, 40), a(55, 48), a(63, 56))
     def in_pmem(addr: UInt):Bool    =   (addr >= CONST.PMEM_START & addr <= CONST.PMEM_END)
-
     val io = IO(new Bundle{
         val timer_i   = Input(UInt(64.W))       //from TOP(cpp Input). Ignored now
-        val pc_i      = Input(UInt(64.W))       //from IF
         val memOp_i   = Input(new MemOp)
+        val sync_i          =   Input(new Sync)
+        val dcache_miss_i   =   Input(new DCacheMissInfo)
+        val dcache_insert_o =   Output(new DCacheInsertInfo)
         val icache_miss_i   =   Input(new ICacheMissInfo)
         val icache_insert_o =   Output(new ICacheInsertInfo)
 
-        val inst_o    = Output(UInt(32.W))
         val loadVal_o = Output(UInt(64.W))
     })
     //to make inst rom and data ram compatible and easy to initialize(loadMemoryFromFileInline), the width is set to be 32 bits
     val ram = Mem(1 << 20, UInt(32.W))  //hope this is enough
-    loadMemoryFromFileInline(ram, "/home/s081/Downloads/ysyx-workbench/npc/src/main/scala/img_file")
-    io.inst_o       :=  ram((io.pc_i - CONST.PC_INIT) >> 2)
+    loadMemoryFromFileInline(ram, CONST.IMG_FILE)
+
     io.loadVal_o    :=  0.U
 
     val is_store    =   io.memOp_i.is_store
@@ -39,33 +38,21 @@ class MAIN_MEMORY extends Module{
     MMIO_RW.io.read_en  :=  0.U
     MMIO_RW.io.write_en :=  0.U
 
-    val loadVal_temp =   Wire(UInt(64.W))   //without sext
-    //start accessing memory
+    val loadVal_temp =   Wire(UInt(64.W))   //before sext
     when(in_pmem(addr_i)){
-        /*
-        when(io.memOp_i.is_load | io.memOp_i.is_store){
-            printf("addr %x is in pmem\n", io.memOp_i.addr)
-        }*/
-        val addr        =   (io.memOp_i.addr - CONST.PMEM_START)  >> 2
-
-        //assuming that the address is aligned, little endian?
-        val dword       =   Cat(ram(addr + 1.U), ram(addr))     //the bits are already stored in small endian
-
+        val addr    =   (io.memOp_i.addr - CONST.PMEM_START)  >> 2
+        val dword   =   Cat(ram(addr + 1.U), ram(addr))
         val offset  =   io.memOp_i.addr(1, 0)   //mod by 4, get the byte offset in the 32-bit block
-        //chisel doesn't support partial assignment like ram(0)(7, 0) := foo, the LHS just produces a value, and is not assignable
-        //so we create a temp variable to manipulate with, and finally assign that temp variable to ram
+        // chisel doesn't support partial assignment like ram(0)(7, 0) := foo, the LHS just produces a value, and is not assignable
+        // so we create a temp variable to manipulate with, and finally assign that temp variable to ram
         val temp    =   dword.asTypeOf(Vec(8, UInt(8.W)))        //easy to manipulate, temp(0) starts at the right side
-        //dword may have bugs
-        dontTouch(temp)
         /*
-            notice that we load a 64-bit block like this:
                 ______________________________________________
-                |temp(7)   |   |   |   |   |   |   |temp(0)   |
-            and temp(0) in fact holds the msb. If we would like to write into address 0, temp(7) should be writen
+                |temp(7)   |   |   |   |   |   |   |temp(0)   | msb
 
+            If we want to write into address 0, temp(7) is the right target
         */
-        //data is stored with little endian, for example, ram(0)(7, 0) holds the 1st inst's lsb, and ram(0)(31,24) holds the msb
-        //but that doesn't seem to be important now. Maybe loading value from section .data will need this
+        // data is stored with little endian, for example, ram(0)(7, 0) holds the 1st inst's lsb, and ram(0)(31,24) holds the msb
         val byteMask    =   MuxLookup(length, 0.U, Seq(
             1.U ->  "h00000000000000ff".U,
             2.U ->  "h000000000000ffff".U,
@@ -90,23 +77,21 @@ class MAIN_MEMORY extends Module{
         //maybe lut is faster, we don't need to calculate every time
         //val store_en   =   ((1.U << (1.U << length)) - 1.U)
 
-        //if the address is unaligned, this may not work correctly..
-        //store with small endian
+        //if the address is unaligned, this may not work correctly... not sure about that
         when(is_store){
-            when(store_en(0) & (0.U + offset < 8.U))    {temp(0.U + offset) :=  sdata(7,  0 )}
-            when(store_en(1) & (1.U + offset < 8.U))    {temp(1.U + offset) :=  sdata(15, 8 )}    //consider endianess, may use Cat here
-            when(store_en(2) & (2.U + offset < 8.U))    {temp(2.U + offset) :=  sdata(23, 16)}
-            when(store_en(3) & (3.U + offset < 8.U))    {temp(3.U + offset) :=  sdata(31, 24)}
-            when(store_en(4) & (4.U + offset < 8.U))    {temp(4.U + offset) :=  sdata(39, 32)}
-            when(store_en(5) & (5.U + offset < 8.U))    {temp(5.U + offset) :=  sdata(47, 40)}
-            when(store_en(6) & (6.U + offset < 8.U))    {temp(6.U + offset) :=  sdata(55, 48)}
-            when(store_en(7) & (7.U + offset < 8.U))    {temp(7.U + offset) :=  sdata(63, 56)}
+            when(store_en(0)/* & (0.U + offset < 8.U)*/)    {temp(0.U + offset) :=  sdata( 7, 0 )}
+            when(store_en(1)/* & (1.U + offset < 8.U)*/)    {temp(1.U + offset) :=  sdata(15, 8 )}    //consider endianess, may use Cat here
+            when(store_en(2)/* & (2.U + offset < 8.U)*/)    {temp(2.U + offset) :=  sdata(23, 16)}
+            when(store_en(3)/* & (3.U + offset < 8.U)*/)    {temp(3.U + offset) :=  sdata(31, 24)}
+            when(store_en(4)/* & (4.U + offset < 8.U)*/)    {temp(4.U + offset) :=  sdata(39, 32)}
+            when(store_en(5)/* & (5.U + offset < 8.U)*/)    {temp(5.U + offset) :=  sdata(47, 40)}
+            when(store_en(6)/* & (6.U + offset < 8.U)*/)    {temp(6.U + offset) :=  sdata(55, 48)}
+            when(store_en(7)/* & (7.U + offset < 8.U)*/)    {temp(7.U + offset) :=  sdata(63, 56)}
 
             ram(addr + 1.U)     :=  temp.asTypeOf(UInt())(63, 32)
             ram(addr)           :=  temp.asTypeOf(UInt())(31, 0)
         }
     }.otherwise{
-        //SEXT?
         MMIO_RW.io.read_en  :=  is_load
         MMIO_RW.io.write_en :=  is_store
         loadVal_temp    :=  MMIO_RW.io.rdata
@@ -119,16 +104,26 @@ class MAIN_MEMORY extends Module{
         8.U ->  loadVal_temp,
     ))
 
-    val pc_aligned  =   Cat(io.icache_miss_i.pc(63, 2), 0.U(2.W))
-    val inst1       =   ram((pc_aligned - CONST.PC_INIT) >> 2)
-    val inst2       =   ram((pc_aligned + 1.U - CONST.PC_INIT) >> 2)
-    val inst3       =   ram((pc_aligned + 2.U - CONST.PC_INIT) >> 2)
-    val inst4       =   ram((pc_aligned + 3.U - CONST.PC_INIT) >> 2)
-    val cache_set   =   Cat(inst1, inst2, inst3, inst4).asTypeOf(Vec(4, UInt(32.W)))
+    // I-Cache. When a miss happens in IF, send the needed data to it
+    // 16B aligned, erase the low 4 bits
+    val pc_aligned  =   Cat(io.icache_miss_i.pc(63, 4), 0.U(4.W))
+    val base_index  =   (pc_aligned  - CONST.PC_INIT) >> 2
+    val inst1       =   ram(base_index)
+    val inst2       =   ram(base_index + 1.U)
+    val inst3       =   ram(base_index + 2.U)
+    val inst4       =   ram(base_index + 3.U)
+    val icache_set  =   Cat(inst4, inst3, inst2, inst1).asTypeOf(Vec(4, UInt(32.W)))
 
+
+    val miss_pc     =   io.icache_miss_i.pc
     io.icache_insert_o.valid  :=  io.icache_miss_i.miss
-    io.icache_insert_o.insts  :=  cache_set
-    io.icache_insert_o.index  :=  io.icache_miss_i.index
-    io.icache_insert_o.tag    :=  io.icache_miss_i.pc(31, 10)
+    io.icache_insert_o.insts  :=  icache_set
+    io.icache_insert_o.index  :=  CacheAddrField.INDEX(miss_pc)
+    io.icache_insert_o.tag    :=  CacheAddrField.TAG(miss_pc)
 
+    val miss_addr   =   io.dcache_miss_i.addr
+    io.dcache_insert_o.valid  :=  io.dcache_miss_i.miss
+    io.dcache_insert_o.blocks :=  0.U.asTypeOf( Vec(4, UInt(32.W)))
+    io.dcache_insert_o.index  :=  CacheAddrField.INDEX(miss_addr)
+    io.dcache_insert_o.tag    :=  CacheAddrField.TAG(miss_addr)
 }

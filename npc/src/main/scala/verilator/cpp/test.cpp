@@ -42,23 +42,28 @@ static inline cmd_info get_cmd()
 
 extern int init_device();
 extern uint64_t nr_inst;
+extern uint64_t nr_stall;
+extern uint64_t nr_flush;
 extern uint64_t valid_inst;
 
 using ld = long double;
 void my_exit(int sig)
 {
-	SDL_Exit();
-	uint64_t & nr_branch  = top -> io_nr_branch_o;
-	uint64_t & nr_taken   = top -> io_nr_taken_o;
-	uint64_t & nr_success =	top -> io_success_cnt_o;
-	uint64_t & nr_icache_hit	= top -> io_nr_icache_hit_o;
+	//SDL_Exit();
+	uint64_t & nr_branch  	 = top -> io_statistics_o_branch_cnt;
+	uint64_t & nr_taken   	 = top -> io_statistics_o_taken_cnt;
+	uint64_t & nr_success 	 = top -> io_statistics_o_bp_success_cnt;
+	uint64_t & nr_icache_hit = top -> io_statistics_o_icache_hit_cnt;
 	cout.setf(ios_base::dec, ios_base::basefield);
 	cout << setprecision(8) << endl;
 	cout << Green("total insts: ") << nr_inst << endl; 
+	cout << Green("stall times: ") << nr_stall << endl; 
+	cout << Green("flush times: ") << nr_flush << endl; 
 	cout << Green("        ipc: ") << (ld)valid_inst / (ld)nr_inst << endl;
 	cout << Green("branch rate: ") << (ld)nr_taken   / (ld)nr_branch << " (" << (ld)nr_taken   << " / " << (ld)nr_branch << ")" << endl;
 	cout << Green("bp accuracy: ") << (ld)nr_success / (ld)nr_branch << " (" << (ld)nr_success << " / " << (ld)nr_branch << ")" << endl;
 	cout << Green("I-Cache hit: ") << (ld)nr_icache_hit / (ld)nr_inst << " (" << (ld)nr_icache_hit << " / " << (ld)nr_inst << ")" << endl;
+	cout << Green("D-Cache hit: ") << endl;//(ld)nr_icache_hit / (ld)nr_inst << " (" << (ld)nr_icache_hit << " / " << (ld)nr_inst << ")" << endl;
 	//todo: add cache hit rate, branch predictor accuracy
 	exit(0);
     __asm__ volatile(
@@ -89,7 +94,7 @@ int main(int argc, char **argv)
 		cout << _green << "(0x" << top -> io_pc_o << ")" << normal;
 		cmd_info cmd = get_cmd();
 		if(!cmd.name) continue;
-
+		cmd.name |= 0x20;
 		if(cmd_table.find(cmd.name)!= cmd_table.end())
 			cmd_table[cmd.name].handler(cmd.args);
 		else

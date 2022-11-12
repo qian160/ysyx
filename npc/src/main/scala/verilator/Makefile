@@ -37,7 +37,7 @@ gen:
 	make -C ./asm gen
 
 $(LOGO): $(LOGO_S)
-	as $(LOGO_S) -o @@
+	as $< -o $@
 
 #usage: make run [img=xxx]
 run: $(LOGO)

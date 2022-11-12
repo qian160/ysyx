@@ -6,9 +6,23 @@ object CONST{
     val EBREAK  = "h100073".U(32.W)
     val M_SIZE  = 0x8000000
 
+    val IMG_FILE    = "/home/s081/Downloads/ysyx-workbench/npc/src/main/scala/img_file"
     val PMEM_START  = "h80000000".U
     val PMEM_END    = "h87ffffff".U
     val NOP         = "h00000013".U(32.W)
+}
+
+object CacheAddrField{
+    def TAG(addr: UInt) = addr(31, 12)
+    def INDEX(addr: UInt) = addr(11, 4)
+    def BYTE_OFFSET(addr: UInt) = addr(3, 0)
+    def BLOCK_OFFSET(addr: UInt) = addr(3, 2)
+
+    val OFF_LEN     =   4.W
+    val INDEX_LEN   =   8.W
+    val TAG_LEN     =   20.W
+    val BLOCK_SIZE  =   32.W
+    val BLOCK_NUM   =   4.W
 }
 
 object Fct3 {

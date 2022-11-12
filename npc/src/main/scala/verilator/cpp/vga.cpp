@@ -90,12 +90,16 @@ void vga_update_screen() {
     }
 }
 
+bool exited = false;
 void SDL_Exit(){
-    SDL_FreeSurface(surface);
-    SDL_DestroyRenderer(renderer);
-    SDL_DestroyTexture(texture);
-    SDL_DestroyWindow(window);
-    SDL_Quit();
+    if(!exited){
+        SDL_FreeSurface(surface);
+        SDL_DestroyRenderer(renderer);
+        SDL_DestroyTexture(texture);
+        SDL_DestroyWindow(window);
+        SDL_Quit();
+        exited = true;
+    }
 }
 
 #define FPS 60

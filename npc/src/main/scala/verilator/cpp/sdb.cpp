@@ -44,8 +44,10 @@ extern void vga_update_screen();
 extern uint64_t boot_time;
 extern void send_key(uint8_t scancode, bool is_keydown);
 
-uint64_t nr_inst = 0;
+uint64_t nr_inst    = 0;
 uint64_t valid_inst = 0;
+uint64_t nr_stall   = 0;
+uint64_t nr_flush   = 0;
 int cmd_s(string steps){
     size_t n = atoi(steps.c_str());
     n = n? n: 1;
@@ -56,7 +58,15 @@ int cmd_s(string steps){
         tb.tick();
         IFDEF(DIFFTEST_ENABLE, assert(difftest()));
         nr_inst++;
-        if(!top->io_stall_o & !top->io_flush_o) valid_inst++;
+        if(top->io_stall_o){
+            nr_stall ++;
+        }
+        else if(top -> io_flush_o){
+            nr_flush ++;
+        }
+        else{
+            valid_inst ++;
+        }
 #ifdef  HAS_DEVICE
         /*
 

@@ -9,6 +9,13 @@ import chisel3.experimental._
 import chisel3.stage._
 import Color._
 
+class statistics extends Bundle{
+    val branch_cnt       =   UInt(64.W)
+    val taken_cnt        =   UInt(64.W)
+    val icache_hit_cnt   =   UInt(64.W)
+    val bp_success_cnt   =   UInt(64.W)
+}
+
 class TOP extends Module{
     //to make tests easier, we expose the inst fetch ports in top, which can be used by verilator and chiseltest
     //now TOP acts like IF, and IF is useless, just passes the signal
@@ -26,11 +33,7 @@ class TOP extends Module{
         val o1        = Output(UInt(64.W))  // to avoid dce
         val o2        = Output(UInt(64.W))  // to avoid dce
 
-        val nr_branch_o =   Output(UInt(64.W))
-        val nr_taken_o  =   Output(UInt(64.W))
-        val nr_icache_hit_o =   Output(UInt(64.W))
-        val success_cnt_o   =   Output(UInt(64.W))
-
+        val statistics_o    =   Output(new statistics)
     })
     //comb logic, pipeline stages
     val IF          =   Module(new IF)
@@ -50,7 +53,6 @@ class TOP extends Module{
     val MEM_WB  =   Module(new MEM_WB)
 
 //    IF.io.branchOp_i    :=  ID.io.decInfo_o.branchOp
-    IF.io.inst_i        :=  Main_Memory.io.inst_o
     IF.io.predict_i     :=  ID.io.predict_o
     IF.io.icache_insert_i   :=  Main_Memory.io.icache_insert_o
 
@@ -61,10 +63,11 @@ class TOP extends Module{
     IF_ID.io.inst_i     :=  IF.io.inst_o
     IF_ID.io.pc_i       :=  IF.io.pc_o
 
-    Main_Memory.io.pc_i     :=  IF.io.pc_o
     Main_Memory.io.timer_i  :=  io.timer_i
     Main_Memory.io.memOp_i  :=  MEM.io.memOp_i
     Main_Memory.io.icache_miss_i    :=  IF.io.icache_miss_o
+    Main_Memory.io.dcache_miss_i    :=  MEM.io.dcache_miss_o
+    Main_Memory.io.sync_i           :=  MEM.io.sync_o
 
     ID.io.inst_i      :=  IF_ID.io.inst_o
     ID.io.pc_i        :=  IF_ID.io.pc_o
@@ -102,6 +105,8 @@ class TOP extends Module{
     MEM.io.writeOp_i    :=  EX_MEM.io.writeOp_o
     MEM.io.memOp_i      :=  EX_MEM.io.memOp_o
     MEM.io.loadVal_i    :=  Main_Memory.io.loadVal_o
+    MEM.io.dcache_insert_i   :=  Main_Memory.io.dcache_insert_o
+
 
     MEM_WB.io.writeOp_i :=  MEM.io.writeOp_o
     MEM_WB.io.debug_i   :=  MEM.io.debug_o
@@ -144,16 +149,13 @@ class TOP extends Module{
     io.stall_o  :=  Control.io.stall_o
     io.flush_o  :=  Control.io.flush_o
 
-    io.nr_taken_o   :=  ID.io.nr_taken_o
-    io.nr_branch_o  :=  ID.io.nr_branch_o
-    io.success_cnt_o    :=  IF.io.success_cnt_o
-    io.nr_icache_hit_o  :=  IF.io.nr_icache_hit_o
-    dontTouch(io.nr_branch_o)
-    dontTouch(io.nr_taken_o)
-    dontTouch(io.nr_icache_hit_o)
-    dontTouch(io.stall_o)
-    dontTouch(io.flush_o)
-    //debug
+    io.statistics_o.branch_cnt      :=  ID.io.nr_branch_o
+    io.statistics_o.taken_cnt       :=  ID.io.nr_taken_o
+    io.statistics_o.icache_hit_cnt  :=  IF.io.nr_icache_hit_o
+    io.statistics_o.bp_success_cnt  :=  IF.io.success_cnt_o
+
+    dontTouch(io.statistics_o)
+
     EX.io. debug_i  :=  ID_EX.io.debug_o
     MEM.io.debug_i  :=  EX_MEM.io.debug_o
     WB.io.debug_i   :=  MEM_WB.io.debug_o
@@ -168,10 +170,5 @@ object Gen {
         //(new chisel3.stage.ChiselStage).execute(my_args, Seq(ChiselGeneratorAnnotation(() => new TOP)))
 
         println(Green("Done"))
-
     }
-}
-
-class statistics extends Bundle{
-
 }
