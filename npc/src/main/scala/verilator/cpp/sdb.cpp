@@ -48,7 +48,7 @@ uint64_t nr_inst    = 0;
 uint64_t valid_inst = 0;
 uint64_t nr_stall   = 0;
 uint64_t nr_flush   = 0;
-int cmd_s(string steps){
+int cmd_s(string steps)  {
     size_t n = atoi(steps.c_str());
     n = n? n: 1;
     while(n-- && !Verilated::gotFinish()){
@@ -101,19 +101,19 @@ int cmd_s(string steps){
     return 0;
 }
 
-int cmd_c(string args){
+int cmd_c(string args)  {
     cmd_s("-1");
     return 0;
 }
 
-int cmd_h(string cmd){
+int cmd_h(string cmd)  {
     for(auto i :cmd_table){
         //cout.width(8);
         cout << i.first << " - " << i.second.description << " - " << i.second.Usage << endl;
     }
     return 0;
 }
-int cmd_q (string arg){
+int cmd_q (string arg)  {
     /*      
         iostream's iterator, treats the stream as an array.
 
@@ -126,7 +126,7 @@ int cmd_q (string arg){
     return 114514;
 }
 
-int cmd_i(string arg) {
+int cmd_i(string arg)  {
     memcpy((void *)&state, (void *)&top -> io_regs_0, 32 * sizeof(uint64_t));
     for(int i = 0; i < 32; i++){
         printf("\033[1;33m[%3s] = %-16lx%c\033[0m", regs[i], state.gpr[i], i & 0b1? '\n' : '\t');
@@ -140,14 +140,13 @@ int cmd_i(string arg) {
     return 0;
 }
 
-int cmd_b(string arg){
+int cmd_b(string arg)  {
     uint64_t addr;
     sscanf(arg.c_str(), "%lx", &addr);
     while(1)
     {
         if(top -> io_pc_o == addr)
             break;
-        cout << "cmd_b: pc = " << top -> io_pc_o << endl;
         cmd_s("1");
     }
     return 0;

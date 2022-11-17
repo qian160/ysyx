@@ -13,12 +13,12 @@ typedef struct{
 mmio_map maps[16]= {};
 static uint32_t nr_map = 0;
 
-void add_mmio_map(uint64_t begin, uint64_t end, void *mem, std::function<handler_t> handler){
+void add_mmio_map(uint64_t begin, uint64_t end, void *mem, std::function<handler_t> handler)  {
     assert(nr_map < 16);
     maps[nr_map++] = mmio_map{.begin = begin, .end = end, .mem = mem, .handler = handler};
 }
 
-static inline bool map_inside(mmio_map *map, uint64_t addr) {
+static inline bool map_inside(mmio_map *map, uint64_t addr)  {
     return (addr >= map -> begin && addr <= map -> end);
 }
 
@@ -31,14 +31,13 @@ static inline mmio_map* find_map_by_addr(uint64_t addr) {
     }
     return nullptr;
 }
-
 //the order:
 //callback  -> read
 //write     -> callback
 
 //dpic
 extern "C" {
-long long mmio_read(long long addr, int len){
+long long mmio_read(long long addr, int len)  {
     //let chisel do the sext
     mmio_map * map = find_map_by_addr(addr);
     Assert(map, "bad mmio addr: %llx\n", addr);
@@ -65,7 +64,7 @@ long long mmio_read(long long addr, int len){
 	return 114514;
 }
 
-void mmio_write(long long addr, int len, long long wdata){
+void mmio_write(long long addr, int len, long long wdata)  {
     //sscout << _pink << "mmio write:  addr = " << addr << normal << endl;
 	mmio_map * map = find_map_by_addr(addr);
     Assert(map, "bad mmio addr: %llx\n", addr);

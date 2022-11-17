@@ -1,13 +1,15 @@
 #include "trap.h"
+#define SIZEX 1024
+#define SIZEY 128
 
+volatile int a[SIZEY][SIZEX] __attribute__((unused));
 int main() {
-
-	int a[1024][1024];
-	for(int i = 0; i < 1024; i++){
-		for(int j = 0; j < 1024; j++){
-			a[j][i] = i + j;
+	// size = 4B x 1024 x 1024 = 4MB
+	for(int i = 0; i < SIZEX; i++){
+		for(int j = 0; j < SIZEY; j++)
+			a[j][i] = rand();
 	}
-	// data cache should catch bad hit rate
+	printf("%d\n", a[114][51]);
         return 0;
 }
 

@@ -13,6 +13,8 @@ class statistics extends Bundle{
     val branch_cnt       =   UInt(64.W)
     val taken_cnt        =   UInt(64.W)
     val icache_hit_cnt   =   UInt(64.W)
+    val dcache_hit_cnt   =   UInt(64.W)
+    val load_cnt         =   UInt(64.W)
     val bp_success_cnt   =   UInt(64.W)
 }
 
@@ -63,7 +65,6 @@ class TOP extends Module{
     IF_ID.io.inst_i     :=  IF.io.inst_o
     IF_ID.io.pc_i       :=  IF.io.pc_o
 
-    Main_Memory.io.timer_i  :=  io.timer_i
     Main_Memory.io.memOp_i  :=  MEM.io.memOp_i
     Main_Memory.io.icache_miss_i    :=  IF.io.icache_miss_o
     Main_Memory.io.dcache_miss_i    :=  MEM.io.dcache_miss_o
@@ -104,8 +105,8 @@ class TOP extends Module{
 
     MEM.io.writeOp_i    :=  EX_MEM.io.writeOp_o
     MEM.io.memOp_i      :=  EX_MEM.io.memOp_o
-    MEM.io.loadVal_i    :=  Main_Memory.io.loadVal_o
     MEM.io.dcache_insert_i   :=  Main_Memory.io.dcache_insert_o
+    MEM.io.qword_i      :=  Main_Memory.io.qword_o
 
 
     MEM_WB.io.writeOp_i :=  MEM.io.writeOp_o
@@ -140,9 +141,11 @@ class TOP extends Module{
     MEM_WB.io.ctrl_i.flush  :=  Control.io.flush_o(4)
     MEM_WB.io.ctrl_i.stall  :=  Control.io.stall_o(4)
 
-    Control.io.id_flush_req :=  ID.io.flush_req_o
-    Control.io.id_stall_req :=  ID.io.stall_req_o
-    Control.io.ex_stall_req :=  0.U
+    Control.io.id_flush_req_i   :=  ID.io.flush_req_o
+    Control.io.id_stall_req_i   :=  ID.io.stall_req_o
+    Control.io.if_stall_req_i   :=  IF.io.stall_req_o
+    Control.io.mem_stall_req_i  :=  MEM.io.stall_req_o
+    Control.io.ex_stall_req_i   :=  0.U
 
 
     //used to help calculating ipc
@@ -151,8 +154,10 @@ class TOP extends Module{
 
     io.statistics_o.branch_cnt      :=  ID.io.nr_branch_o
     io.statistics_o.taken_cnt       :=  ID.io.nr_taken_o
-    io.statistics_o.icache_hit_cnt  :=  IF.io.nr_icache_hit_o
     io.statistics_o.bp_success_cnt  :=  IF.io.success_cnt_o
+    io.statistics_o.icache_hit_cnt  :=  IF.io.nr_icache_hit_o
+    io.statistics_o.dcache_hit_cnt  :=  MEM.io.nr_dcache_hit_o
+    io.statistics_o.load_cnt        :=  MEM.io.nr_load_o
 
     dontTouch(io.statistics_o)
 

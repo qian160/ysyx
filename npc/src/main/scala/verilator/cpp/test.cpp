@@ -28,16 +28,18 @@ typedef  struct{
 	string args;
 }cmd_info;
 
-static inline cmd_info get_cmd()
+static inline unique_ptr<cmd_info> get_cmd() 
 {		
 	string s;
 	getline(cin, s);
 	s.erase(0, s.find_first_not_of(" "));	//remove the leading spaces
 
-	return cmd_info{
+	if(s.length() == 0) return nullptr;
+	unique_ptr<cmd_info> info (make_unique<cmd_info>(cmd_info{
 		.name = s[0],
-		.args = s.substr(1, s.size())
-	};
+		.args = s.substr(1, s.size()),
+	}));
+	return info;
 }
 
 extern int init_device();
@@ -47,13 +49,15 @@ extern uint64_t nr_flush;
 extern uint64_t valid_inst;
 
 using ld = long double;
-void my_exit(int sig)
+void my_exit(int sig) 
 {
 	//SDL_Exit();
 	uint64_t & nr_branch  	 = top -> io_statistics_o_branch_cnt;
 	uint64_t & nr_taken   	 = top -> io_statistics_o_taken_cnt;
 	uint64_t & nr_success 	 = top -> io_statistics_o_bp_success_cnt;
 	uint64_t & nr_icache_hit = top -> io_statistics_o_icache_hit_cnt;
+	uint64_t & nr_dcache_hit = top -> io_statistics_o_dcache_hit_cnt;
+	uint64_t & nr_load 		 = top -> io_statistics_o_load_cnt;
 	cout.setf(ios_base::dec, ios_base::basefield);
 	cout << setprecision(8) << endl;
 	cout << Green("total insts: ") << nr_inst << endl; 
@@ -63,7 +67,7 @@ void my_exit(int sig)
 	cout << Green("branch rate: ") << (ld)nr_taken   / (ld)nr_branch << " (" << (ld)nr_taken   << " / " << (ld)nr_branch << ")" << endl;
 	cout << Green("bp accuracy: ") << (ld)nr_success / (ld)nr_branch << " (" << (ld)nr_success << " / " << (ld)nr_branch << ")" << endl;
 	cout << Green("I-Cache hit: ") << (ld)nr_icache_hit / (ld)nr_inst << " (" << (ld)nr_icache_hit << " / " << (ld)nr_inst << ")" << endl;
-	cout << Green("D-Cache hit: ") << endl;//(ld)nr_icache_hit / (ld)nr_inst << " (" << (ld)nr_icache_hit << " / " << (ld)nr_inst << ")" << endl;
+	cout << Green("D-Cache hit: ") << (ld)nr_dcache_hit / (ld)nr_load << " (" << (ld)nr_dcache_hit << " / " << (ld)nr_load << ")" << endl;
 	//todo: add cache hit rate, branch predictor accuracy
 	exit(0);
     __asm__ volatile(
@@ -71,9 +75,10 @@ void my_exit(int sig)
         "xorl %edi, %edi\n\t"
         "syscall\n"
     );
+	exit(0);
 }
 
-int main(int argc, char **argv)
+int main(int argc, char **argv) 
 {
 	Verilated::commandArgs(argc, argv);
 	signal(SIGINT, my_exit);
@@ -88,17 +93,17 @@ int main(int argc, char **argv)
 	IFDEF(DIFFTEST_ENABLE, init_difftest());		//almost impossible to use now...
 	IFDEF(HAS_DEVICE, init_device());
 	cout << endl << logo << endl << endl;
-	//tb.trace("./wave.vcd");
+	tb.trace("./wave.vcd");
 	while(!Verilated::gotFinish()){
 		// IF's pc
 		cout << _green << "(0x" << top -> io_pc_o << ")" << normal;
-		cmd_info cmd = get_cmd();
-		if(!cmd.name) continue;
-		cmd.name |= 0x20;
-		if(cmd_table.find(cmd.name)!= cmd_table.end())
-			cmd_table[cmd.name].handler(cmd.args);
+		unique_ptr<cmd_info> cmd = get_cmd();
+		if(!cmd) continue;
+		cmd -> name |= 0x20;
+		if(cmd_table.find(cmd -> name)!= cmd_table.end())
+			cmd_table[cmd -> name].handler(cmd ->args);
 		else
-			cout << "unsupported command " << "'" << cmd.name << "'" << endl;
+			cout << "unsupported command " << "'" << cmd -> name << "'" << endl;
 	}
 	my_exit(114514);
 }

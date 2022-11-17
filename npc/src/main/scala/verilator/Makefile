@@ -42,9 +42,7 @@ $(LOGO): $(LOGO_S)
 #usage: make run [img=xxx]
 run: $(LOGO)
 ifneq ($(img),)
-	@echo loading img $(img)...
-	@echo 
-	@./cpp/load $(img) > ../img_file
+	@./cpp/load $(img) 
 endif
 	@verilator $(VSRC) $(CPPSRC) $(VFLAGS) $(LOGO) $(CPPFLAGS)
 	@obj_dir/VTOP $(img)

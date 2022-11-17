@@ -1,31 +1,69 @@
 #include<iostream>
 #include<stdio.h>
 #include<assert.h>
-#include<sys/stat.h>
+#include<memory>
+#include<initializer_list>
 
 using namespace std;
 
+#define MAX_SIZE 0x114514
+
 /* 	we can't simpliy just use objcopy, because Verilog will use redmemh to innitialize the memory,
-and raw binary file is ugly to him which can't be recognized. Only pure hex data is allowed.
-	And this program's job is to produce beautiful processed hex data from raw binary file, so that readmemh can recognize
+and raw binary file is ugly to him which can't be recognized. Only pure hex(or binary 0 1) data is allowed.
+	And this program's job is to convert raw object file to beautiful hex data, so that readmemh can recognize
 */
 int main(int argc, char **argv)
 {
-	//string img_file("/home/s081/Downloads/ysyx-workbench/npc/src/main/scala/img_file");
-	if(argc < 2)return 0;
-	string img_file = (string)"/home/s081/Downloads/ysyx-workbench/npc/src/main/scala/verilator/tests/build/" + (string)argv[1] + (string)"-riscv64-npc.bin";
-	unsigned int inst_rom[0x80000];
-	FILE * in  = fopen(img_file.c_str(), "rb");
-	assert(in);
-	fseek(in, 0, SEEK_END);
-	size_t size = ftell(in);
-	
-	fseek(in, 0, SEEK_SET);
-	int ret = fread(inst_rom, size, 1, in);
-	assert(ret);
-	for(int i = 0; i < size / 4; i++){
-		printf("%08x\n", inst_rom[i]);		//need to redirect this output
+	if(argc < 2){
+		printf("need an argument!\n");
+		return 0;
 	}
-	fclose(in);
+	printf("\33[0;33mloading img %s...\33[0m\n", argv[1]);
+	// these paths are personal...
+	// we put img_file here
+	string scala_source_path("/home/s081/Downloads/ysyx-workbench/npc/src/main/scala/");
+	// binary files for tests
+	string img_file((string)"/home/s081/Downloads/ysyx-workbench/npc/src/main/scala/verilator/tests/build/" + (string)argv[1] + (string)"-riscv64-npc.bin");
+	unsigned int inst_rom[MAX_SIZE];
 
+	unique_ptr<FILE> in(fopen(img_file.c_str(), "rb"));
+/*
+	// this will cause bugs, img4 is always empty... I don't know why
+	unique_ptr<FILE > img[4] = {
+		unique_ptr<FILE>(fopen((scala_source_path + "img_file1").c_str(), "w")),
+		unique_ptr<FILE>(fopen((scala_source_path + "img_file2").c_str(), "w")),
+		unique_ptr<FILE>(fopen((scala_source_path + "img_file3").c_str(), "w")),
+		unique_ptr<FILE>(fopen((scala_source_path + "img_file4").c_str(), "w")),
+	};
+*/
+
+	FILE * img[4] = {
+		fopen((scala_source_path + "img_file1").c_str(), "w"),
+		fopen((scala_source_path + "img_file2").c_str(), "w"),
+		fopen((scala_source_path + "img_file3").c_str(), "w"),
+		fopen((scala_source_path + "img_file4").c_str(), "w"),
+	};
+
+	assert(in);	assert(img[0]);	assert(img[1]);	assert(img[2]);	assert(img[3]);
+
+	fseek(in.get(), 0, SEEK_END);
+	size_t size = ftell(in.get());
+
+	fseek(in.get(), 0, SEEK_SET);
+	// can't simply use fscanf, seems that raw data won't be recognized
+	int ret = fread(inst_rom, size, 1, in.get());
+	assert(ret);
+	printf("img size = %ld\n", size);
+	assert(size < MAX_SIZE);
+
+	uint8_t cnt = 0;
+	// ram entry size = 32B, so divide size by 4
+	for(int i = 0; i < size / 4; i++){
+		fprintf(img[cnt], "%08x\n", inst_rom[i]);
+		cnt = (cnt + 1) % 4;
+	}
+	printf("\33[1;32mimg load success!\33[0m\n");
+
+	for(int i = 0; i < 4; i ++)
+		fclose(img[i]);
 }

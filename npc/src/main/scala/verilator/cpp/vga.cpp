@@ -18,13 +18,9 @@ extern void add_mmio_map(uint64_t begin, uint64_t end, void *mem, std::function<
 
 渲染的内容可以是点、线、各种图形以及图片，视频的各种组合。这些组合后的内容首先被存放到缓冲区中，最终SDL将缓冲区中的内容渲染到窗口中。
 
-所以渲染的基本流程如下：
+渲染的基本流程：
+创建窗口    ->  创建渲染器  ->  清空缓冲区  ->  绘制要显示的内容    ->  将缓冲区内容渲染到window窗口上。
 
-创建窗口
-创建渲染器
-清空缓冲区
-绘制要显示的内容
-最终将缓冲区内容渲染到window窗口上。
 */
 //frame buffer(in mmio space), or pixels. program just need to write into this space.
 //and when needed, renderer will extract the information from fb and sent it to screen
@@ -33,10 +29,7 @@ extern void add_mmio_map(uint64_t begin, uint64_t end, void *mem, std::function<
 static void * vga_fb  = nullptr;
 static void * vga_ctl = nullptr;
 
-//#define CTL_W       (*(uint16_t*((uint8_t*)vga_ctl + 2)))
-//#define CTL_H       (*(uint16_t*)vga_ctl)
-//#define CTL_SYNC    (*(uint32_t*)(((uint8_t*)(vga_ctl) + 4)))
-
+/*
 static SDL_Window   *window   = nullptr;
 //渲染器（SDL_Renderer, a buffer where temporarily holds the screen's image imformation but not updated to screen yet
 static SDL_Renderer *renderer = nullptr;
@@ -44,24 +37,29 @@ static SDL_Renderer *renderer = nullptr;
 static SDL_Texture  *texture  = nullptr;
 //
 static SDL_Surface  *surface  = nullptr;
+*/
+static SDL_Window   * window;
+static SDL_Renderer * renderer;
+static SDL_Texture  * texture;
+static SDL_Surface  * surface;
 
-static void init_screen() {
+static void init_screen()  {
     const char *title = "riscv64-npc";
     SDL_Init(SDL_INIT_VIDEO);
+    /*
     window   = SDL_CreateWindow(title, SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, VGA_W * 2, VGA_H * 2, SDL_WINDOW_SHOWN);
     renderer = SDL_CreateRenderer(window, 0, SDL_RENDERER_ACCELERATED);
-/*
-    SDL_CreateWindowAndRenderer(
-        VGA_W,
-        VGA_H,
-        0, &window, &renderer
-    );
-*/
-    //SDL_SetWindowTitle(window, title);
     texture = SDL_CreateTexture(renderer, SDL_PIXELFORMAT_ARGB8888,
         SDL_TEXTUREACCESS_STATIC, VGA_W, VGA_H);
-    
     surface = SDL_GetWindowSurface(window);
+    */
+    //window = make_unique<SDL_Window*, decltype(SDL_DestroyWindow)> \
+        (SDL_CreateWindow(title, SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, VGA_W * 2, VGA_H * 2, SDL_WINDOW_SHOWN), SDL_DestroyWindow);
+    window   = SDL_CreateWindow(title, SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, VGA_W * 2, VGA_H * 2, SDL_WINDOW_SHOWN);
+    renderer = SDL_CreateRenderer(window, 0, SDL_RENDERER_ACCELERATED);
+    texture  = SDL_CreateTexture(renderer, SDL_PIXELFORMAT_ARGB8888, SDL_TEXTUREACCESS_STATIC, VGA_W, VGA_H);
+    surface  = SDL_GetWindowSurface(window);
+
     SDL_Surface * temp = SDL_LoadBMP("./cpp/114514.bmp");
     assert(temp);
 
@@ -69,7 +67,7 @@ static void init_screen() {
     SDL_UpdateWindowSurface(window);
 }
 
-static inline void update_screen() {
+static inline void update_screen()  {
     SDL_UpdateTexture(texture, nullptr, vga_fb, VGA_W * sizeof(uint32_t));
     //clear up the renderer buffe
     SDL_RenderClear(renderer);
@@ -77,11 +75,10 @@ static inline void update_screen() {
     SDL_RenderCopy(renderer, texture, nullptr, nullptr);
     //将缓冲区中的内容展示到目标上，也就是 windows 窗口上。
     SDL_RenderPresent(renderer);
-    
 }
 
 //need to be called periodly. we do that in cmd_s
-void vga_update_screen() {
+void vga_update_screen()  {
     uint32_t * ctl = (uint32_t *)vga_ctl;
     uint32_t sync = ctl[1];
     if (sync) {
@@ -90,21 +87,17 @@ void vga_update_screen() {
     }
 }
 
-bool exited = false;
-void SDL_Exit(){
-    if(!exited){
-        SDL_FreeSurface(surface);
-        SDL_DestroyRenderer(renderer);
-        SDL_DestroyTexture(texture);
-        SDL_DestroyWindow(window);
-        SDL_Quit();
-        exited = true;
-    }
+void SDL_Exit()  {
+    SDL_FreeSurface(surface);
+    SDL_DestroyRenderer(renderer);
+    SDL_DestroyTexture(texture);
+    SDL_DestroyWindow(window);
+    SDL_Quit();
 }
 
 #define FPS 60
 extern uint64_t getTime();
-int vga_auto_update_thread(void * args)
+int vga_auto_update_thread(void * args) 
 {
     while(1)
     {
@@ -118,7 +111,7 @@ int vga_auto_update_thread(void * args)
     return 114514;
 }
 
-void init_vga() {
+void init_vga()  {
     vga_ctl = calloc(8, 1);
     add_mmio_map(VGACTL_ADDR, VGACTL_ADDR + 8, vga_ctl, nullptr);   //set handler = update?
     uint32_t * ctl = (uint32_t *)vga_ctl;

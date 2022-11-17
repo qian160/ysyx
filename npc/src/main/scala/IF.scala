@@ -41,6 +41,7 @@ class IF extends Module{
         val icache_insert_i =   Input(new ICacheInsertInfo)
         val icache_miss_o   =   Output(new ICacheMissInfo)
 
+        val stall_req_o     =   Output(Bool())        // I-Cache miss
         val success_cnt_o   =   Output(UInt(64.W))
         val nr_icache_hit_o =   Output(UInt(64.W))
     })
@@ -60,7 +61,9 @@ class IF extends Module{
     val prev_predict_fail   =   io.predict_i.predict_fail
 
     val pc_low      =   pc(11, 0)
-    val bp_index    =   pc_low | history
+    // '&'' seems to be better than '|'. One bad thing about '|' is that when branches keep happening, history will become 111....1, then
+    // our hash index will always be 111.....1, which means that all the branches are contending for the same entry
+    val bp_index    =   pc_low & history
     // treat jump and branch the same way. But for statistics reason we need to divide them
     val is_branch   =   opcode === BRANCH | opcode === JAL | opcode === JALR
     
@@ -130,6 +133,8 @@ class IF extends Module{
     val hit     =   hit1 | hit2
     val miss    =   ~hit
 
+    io.stall_req_o  :=  0.U// miss      // bug is that miss and insert info appear at the same time. So stall let pc miss the correct value in insert info
+
     val which_block =   PriorityMux(Seq(
         (hit1,      block1),
         (hit2,      block2),
@@ -141,25 +146,23 @@ class IF extends Module{
     io.icache_miss_o.pc      :=  pc
 
     inst    :=  Mux(miss, io.icache_insert_i.insts(block_offset), inst_from_cache)
-    val insert_insts    =   io.icache_insert_i.insts.asUInt
-    val insert_tag      =   io.icache_insert_i.tag
-    val insert_index    =   io.icache_insert_i.index
-
-    val set_val         =   Cat(1.U, insert_tag, insert_insts, 1.U)
-    val insert_set      =   set_val.asTypeOf(new ICache_Set)
-
-    val set1_valid      =   ICache_Way1(insert_index).valid
-    val set2_valid      =   ICache_Way2(insert_index).valid
-
-    val set1_used       =   ICache_Way1(insert_index).used
-    val set2_used       =   ICache_Way2(insert_index).used
-
     /*
         1. if exists non-valid set, insert to that position first
         2. otherwise, consult LRU
     */
     when(io.icache_insert_i.valid){
-        val insts = io.icache_insert_i.insts
+        val insert_insts    =   io.icache_insert_i.insts.asUInt
+        val insert_tag      =   io.icache_insert_i.tag
+        val insert_index    =   io.icache_insert_i.index
+
+        val set_val         =   Cat(1.U, insert_tag, insert_insts, 1.U)
+        val insert_set      =   set_val.asTypeOf(new ICache_Set)
+
+        val set1_valid      =   ICache_Way1(insert_index).valid
+        val set2_valid      =   ICache_Way2(insert_index).valid
+
+        val set1_used       =   ICache_Way1(insert_index).used
+        val set2_used       =   ICache_Way2(insert_index).used
         //printf("%x  %x  %x  %x", insts(0), insts(1), insts(2), insts(3))
         when(~set1_valid){
             ICache_Way1(insert_index)       :=  insert_set
