@@ -153,6 +153,7 @@ class ID extends Module{
             io.predict_o.target  :=  /*Mux(branch, */pc + imm_B(inst)/*, pc + 4.U)*/
             io.stall_req_o  :=  prev_is_load & (prev_rd  === rs1 | prev_rd === rs2)
 
+            printf("[%x] branch target = %x\nsrc1 = %x,  src2 = %x\n", pc(31, 0), io.predict_o.target, rs1Val, rs2Val)
             when(branch){
                 nr_taken    :=  nr_taken + 1.U
             }

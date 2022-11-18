@@ -229,7 +229,7 @@ static int decode_exec(Decode *D) {
         case(0x6):  R(rd) = Mr(R(rs1) + imm_I, 4);            IFDEF(CONFIG_REF, printf("(%lx):  lwu: [x%-2d] <=  0x%lx (Mem[%lx])\n", cpu.pc, rd, R(rd), R(rs1) + imm_I));  break;  //lwu
         default:    panic("bad inst\n");
       }
-      printf("load: mem[%lx] %lx\n", R(rs1)+ imm_I, R(rd));
+      //printf("load: mem[%lx] %lx\n", R(rs1)+ imm_I, R(rd));
       break;
     }
 
@@ -243,7 +243,7 @@ static int decode_exec(Decode *D) {
         case(0x3):  Mw(R(rs1) + imm_S, 8, R(rs2));  IFDEF(CONFIG_REF, printf("(%lx): sd: 0x%-lx   =>  Mem[0x%lx]\n", cpu.pc, R(rs2), R(rs1) + imm_S ));      break;
         default:    panic("bad inst\n");
       }
-      printf("store:  [%lx] %lx\n", R(rs1) + imm_S, R(rs2));
+      //printf("store:  [%lx] %lx\n", R(rs1) + imm_S, R(rs2));
       break;
     }
 
@@ -259,7 +259,7 @@ static int decode_exec(Decode *D) {
         case(0x7):  D -> dnpc =          R(rs1) >=          R(rs2) ? target : D -> dnpc;  break;
         default:    panic("bad inst\n");
       }
-      //printf("(%lx): branch, target = %lx, %d\n", cpu.pc, target, D -> dnpc == target);
+      printf("(%lx): branch, target = %lx\nsrc1 = %lx, src2 = %lx\n", cpu.pc, target, R(rs1), R(rs2));
       break;
     }
 
@@ -298,7 +298,7 @@ static int decode_exec(Decode *D) {
     }
   }
   R(0) = 0; // reset $zero to 
-  //if(opcode != STORE && opcode != BRANCH) printf("(%lx):  [x%-2d] <=  %lx\n", cpu.pc, rd, R(rd));
+  if(opcode != STORE && opcode != BRANCH) printf("(%lx):  [x%-2d] <=  %lx\n", cpu.pc, rd, R(rd));
   Assert( D-> dnpc != D -> pc, "dead loop at 0x%lx\n", cpu.pc);
   //IFDEF(CONFIG_REF, Log("\nwdata = 0x%lx\npc = 0x%8lx, inst = 0x%08x,  rd = %d\n", opcode == BRANCH? 0: R(rd), D->pc, inst, rd));
   return 0;

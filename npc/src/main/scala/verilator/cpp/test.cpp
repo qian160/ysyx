@@ -49,17 +49,26 @@ extern uint64_t nr_flush;
 extern uint64_t valid_inst;
 
 using ld = long double;
+extern uint64_t start_time;
 void my_exit(int sig) 
 {
 	//SDL_Exit();
+	uint64_t end_time = clock();
+	ld seconds = ((ld)end_time - (ld)start_time) / (ld)CLOCKS_PER_SEC;
+
+	char buf[128];
+	sprintf(buf, "finished in %Lf ms", seconds * 1000);
+	cout << endl << Yellow(buf) << setprecision(8) << endl;
+	cout << Yellow("frequency:  ") << (ld)nr_inst / seconds << " insts/s" << endl << endl;
+
 	uint64_t & nr_branch  	 = top -> io_statistics_o_branch_cnt;
 	uint64_t & nr_taken   	 = top -> io_statistics_o_taken_cnt;
 	uint64_t & nr_success 	 = top -> io_statistics_o_bp_success_cnt;
 	uint64_t & nr_icache_hit = top -> io_statistics_o_icache_hit_cnt;
 	uint64_t & nr_dcache_hit = top -> io_statistics_o_dcache_hit_cnt;
 	uint64_t & nr_load 		 = top -> io_statistics_o_load_cnt;
+
 	cout.setf(ios_base::dec, ios_base::basefield);
-	cout << setprecision(8) << endl;
 	cout << Green("total insts: ") << nr_inst << endl; 
 	cout << Green("stall times: ") << nr_stall << endl; 
 	cout << Green("flush times: ") << nr_flush << endl; 
@@ -68,14 +77,13 @@ void my_exit(int sig)
 	cout << Green("bp accuracy: ") << (ld)nr_success / (ld)nr_branch << " (" << (ld)nr_success << " / " << (ld)nr_branch << ")" << endl;
 	cout << Green("I-Cache hit: ") << (ld)nr_icache_hit / (ld)nr_inst << " (" << (ld)nr_icache_hit << " / " << (ld)nr_inst << ")" << endl;
 	cout << Green("D-Cache hit: ") << (ld)nr_dcache_hit / (ld)nr_load << " (" << (ld)nr_dcache_hit << " / " << (ld)nr_load << ")" << endl;
-	//todo: add cache hit rate, branch predictor accuracy
 	exit(0);
+	// this won't work correctly... why?
     __asm__ volatile(
         "movl $60,  %eax\n\t"
         "xorl %edi, %edi\n\t"
         "syscall\n"
     );
-	exit(0);
 }
 
 int main(int argc, char **argv) 

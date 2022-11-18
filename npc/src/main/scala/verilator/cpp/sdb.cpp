@@ -58,15 +58,12 @@ int cmd_s(string steps)  {
         tb.tick();
         IFDEF(DIFFTEST_ENABLE, assert(difftest()));
         nr_inst++;
-        if(top->io_stall_o){
+        if(top->io_stall_o)
             nr_stall ++;
-        }
-        else if(top -> io_flush_o){
+        if(top -> io_flush_o)
             nr_flush ++;
-        }
-        else{
+        if(!top -> io_stall_o && !top -> io_flush_o)
             valid_inst ++;
-        }
 #ifdef  HAS_DEVICE
         /*
 
@@ -101,7 +98,9 @@ int cmd_s(string steps)  {
     return 0;
 }
 
+uint64_t start_time;
 int cmd_c(string args)  {
+    start_time = clock();
     cmd_s("-1");
     return 0;
 }

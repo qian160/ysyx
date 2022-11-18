@@ -60,7 +60,7 @@ static void init_screen()  {
     texture  = SDL_CreateTexture(renderer, SDL_PIXELFORMAT_ARGB8888, SDL_TEXTUREACCESS_STATIC, VGA_W, VGA_H);
     surface  = SDL_GetWindowSurface(window);
 
-    SDL_Surface * temp = SDL_LoadBMP("./cpp/114514.bmp");
+    SDL_Surface * temp = SDL_LoadBMP("./cpp/1919810.bmp");
     assert(temp);
 
     SDL_BlitSurface(temp, 0, surface, 0);

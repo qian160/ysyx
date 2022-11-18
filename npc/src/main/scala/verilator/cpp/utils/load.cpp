@@ -53,7 +53,7 @@ int main(int argc, char **argv)
 	// can't simply use fscanf, seems that raw data won't be recognized
 	int ret = fread(inst_rom, size, 1, in.get());
 	assert(ret);
-	printf("img size = %ld\n", size);
+	printf("img size = %ldB\n", size);
 	assert(size < MAX_SIZE);
 
 	uint8_t cnt = 0;

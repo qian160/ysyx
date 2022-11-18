@@ -74,7 +74,7 @@ class EX extends Module{
         (stalled)
         mv x2, x1:                      IF      ID(mux) EX      MEM     WB
 
-        the 2nd inst need to be stalled. However, while stalling, the old value is also
+        the 2nd inst need to be stalled. However, while stalling, the old value(an address) is also
         passed to EX and being calculated. And the bypass from EX in the next cycle is thus incorrect
 
     */

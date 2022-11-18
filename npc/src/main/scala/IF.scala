@@ -52,7 +52,7 @@ class IF extends Module{
 
     val opcode  =   OPCODE(inst)
 
-    val prev_is_branch      =   io.predict_i.is_branch            // need to do something
+    val prev_is_branch      =   io.predict_i.is_branch            // to check the previous prediction
     val prev_taken          =   io.predict_i.taken
 
     val branch_target       =   io.predict_i.target
@@ -80,8 +80,8 @@ class IF extends Module{
     val predict_target =   BTB(bp_index).target
 //---------------------------------------------------------
     pc :=   PriorityMux(Seq(
-        (io.ctrl_i.stall,       pc),
         (prev_predict_fail,     correct_address),
+        (io.ctrl_i.stall,       pc),
         (predict_taken,         predict_target),
         (true.B,                pc + 4.U)
     ))
@@ -130,22 +130,24 @@ class IF extends Module{
     val valid2  =   ICache_Way2(cache_index).valid
     val hit1    =   tag === set1.tag & valid1
     val hit2    =   tag === set2.tag & valid2
-    val hit     =   hit1 | hit2
+    val hit3    =   (tag === io.icache_insert_i.tag) & (cache_index === io.icache_insert_i.index)
+    val hit     =   hit1 | hit2 | hit3
     val miss    =   ~hit
-
-    io.stall_req_o  :=  0.U// miss      // bug is that miss and insert info appear at the same time. So stall let pc miss the correct value in insert info
 
     val which_block =   PriorityMux(Seq(
         (hit1,      block1),
         (hit2,      block2),
+        (hit3,      io.icache_insert_i.insts),
         (true.B,    0.U.asTypeOf(Vec(4, UInt(32.W)))),
     ))
-    val inst_from_cache =   which_block(block_offset)
+    val inst_fetched =   which_block(block_offset)
 
     io.icache_miss_o.miss    :=  miss
     io.icache_miss_o.pc      :=  pc
 
-    inst    :=  Mux(miss, io.icache_insert_i.insts(block_offset), inst_from_cache)
+    inst    :=  Mux(miss, CONST.NOP, inst_fetched)
+
+    io.stall_req_o  :=  miss      // bug is that miss and insert info appear at the same time. So stall let pc miss the correct value in insert info
     /*
         1. if exists non-valid set, insert to that position first
         2. otherwise, consult LRU
@@ -175,7 +177,8 @@ class IF extends Module{
                 ICache_Way1(insert_index)       :=  insert_set
                 ICache_Way2(insert_index).used  :=  0.U
             }.otherwise{
-                
+                ICache_Way2(insert_index)       :=  insert_set
+                ICache_Way1(insert_index).used  :=  0.U
             }
         }
     }
