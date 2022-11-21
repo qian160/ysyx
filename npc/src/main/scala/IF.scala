@@ -78,6 +78,11 @@ class IF extends Module{
 
     val predict_taken  =   (btb_valid & (is_branch & BPB(bp_index)(1)))
     val predict_target =   BTB(bp_index).target
+    /*
+        2 reasons for IF's stall:
+            1. I-Cache miss
+            2. the other stages request for a stall, and IF is influenced also
+    */
 //---------------------------------------------------------
     pc :=   PriorityMux(Seq(
         (prev_predict_fail,     correct_address),

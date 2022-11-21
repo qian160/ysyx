@@ -18,12 +18,11 @@ int main(int argc, char **argv)
 		printf("need an argument!\n");
 		return 0;
 	}
+	string build_dir("/home/s081/Downloads/ysyx-workbench/npc/src/main/scala/verilator/tests/build/");
 	printf("\33[0;33mloading img %s...\33[0m\n", argv[1]);
-	// these paths are personal...
-	// we put img_file here
 	string scala_source_path("/home/s081/Downloads/ysyx-workbench/npc/src/main/scala/");
 	// binary files for tests
-	string img_file((string)"/home/s081/Downloads/ysyx-workbench/npc/src/main/scala/verilator/tests/build/" + (string)argv[1] + (string)"-riscv64-npc.bin");
+	string img_file(build_dir + argv[1]);
 	unsigned int inst_rom[MAX_SIZE];
 
 	unique_ptr<FILE> in(fopen(img_file.c_str(), "rb"));
@@ -36,7 +35,6 @@ int main(int argc, char **argv)
 		unique_ptr<FILE>(fopen((scala_source_path + "img_file4").c_str(), "w")),
 	};
 */
-
 	FILE * img[4] = {
 		fopen((scala_source_path + "img_file1").c_str(), "w"),
 		fopen((scala_source_path + "img_file2").c_str(), "w"),

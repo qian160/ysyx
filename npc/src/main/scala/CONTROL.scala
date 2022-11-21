@@ -33,5 +33,4 @@ class CONTROL extends RawModule{
     when(io.id_flush_req_i){        //branch or jump
         io.flush_o    :=  "b00011".U
     }
-
 }

@@ -7,10 +7,11 @@ LOGO   = $(HOME)/cpp/logo.o
 LOGO_S = $(HOME)/cpp/logo.S
 VFLAGS = --cc --exe --trace -Wno-lint --build --top TOP -LDFLAGS -ldl -LDFLAGS -lSDL2 -O3
 
+VTOP_ALL = $(HOME)/obj_dir/VTOP__ALL.a
 DEPS   = $(CPPSRC:.cpp=.d)
-OBJS   = $(CPPSRC:.cpp=.o)	
-OBJS   +=
-CPPFLAGS    = -I./obj_dir -I./cpp/include -O3 #-std=c++17
+OBJS   = $(CPPSRC:.cpp=.o)
+OBJS   += $(LOGO)
+CPPFLAGS    = -I./obj_dir -I./cpp/include -I$(VERILATOR_ROOT)/include/vltstd -O3 #-std=c++17
 DIFFTEST    = $(NEMU_HOME)/build/riscv64-nemu-interpreter-so
  
 LLVM_FLAGS += $(shell llvm-config --ldflags)
@@ -33,18 +34,19 @@ COLOR_NONE  = \033[0m
 	@echo [g++] $@
 	@g++ -c $@ -std=c++17 -03 #-o ./cpp/$@
 
-gen:
-	make -C ./asm gen
-
 $(LOGO): $(LOGO_S)
 	as $< -o $@
 
+echo:
+	@echo $(OBJS)
+
 #usage: make run [img=xxx]
-run: $(LOGO)
+run: $(OBJS) 
 ifneq ($(img),)
-	@./cpp/load $(img) 
+	@./cpp/utils/load_rs $(img) 
 endif
 	@verilator $(VSRC) $(CPPSRC) $(VFLAGS) $(LOGO) $(CPPFLAGS)
+#	@verilator $(VSRC) $(OBJS) $(VFLAGS) $(CPPFLAGS) $(VTOP__ALL)
 	@obj_dir/VTOP $(img)
 clean:
 	-rm  -rf obj_dir wave.vcd
