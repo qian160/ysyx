@@ -101,7 +101,7 @@ int main(int argc, char **argv)
 	IFDEF(DIFFTEST_ENABLE, init_difftest());		//almost impossible to use now...
 	IFDEF(HAS_DEVICE, init_device());
 	cout << endl << logo << endl << endl;
-	tb.trace("./wave.vcd");
+	//tb.trace("./wave.vcd");
 	while(!Verilated::gotFinish()){
 		// IF's pc
 		cout << _green << "(0x" << top -> io_pc_o << ")" << normal;

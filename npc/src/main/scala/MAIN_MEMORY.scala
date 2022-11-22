@@ -99,7 +99,8 @@ class MAIN_MEMORY extends Module{
     }
 
     val icache_insert_info  =   RegInit(0.U.asTypeOf(new ICacheInsertInfo))
-    val dcache_insert_info  =   RegInit(0.U.asTypeOf(new DCacheInsertInfo))
+//    val dcache_insert_info  =   RegInit(0.U.asTypeOf(new DCacheInsertInfo))
+    val dcache_insert_info  =   Wire((new DCacheInsertInfo))
 
     io.icache_insert_o  :=  icache_insert_info
     io.dcache_insert_o  :=  dcache_insert_info
@@ -129,7 +130,7 @@ class MAIN_MEMORY extends Module{
     }.otherwise{
         dcache_insert_info  :=  0.U.asTypeOf(new DCacheInsertInfo)
     }
-
+/*
     when(io.sync_i.valid){
         //addr data
         val sync_addr   =   io.sync_i.addr
@@ -140,4 +141,5 @@ class MAIN_MEMORY extends Module{
         ram3(row)       :=  new_data(2)
         ram4(row)       :=  new_data(3)
     }
+*/
 }

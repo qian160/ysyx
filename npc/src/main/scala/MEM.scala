@@ -64,9 +64,11 @@ class MEM extends Module{
     val used2   =   set2.used
     val hit2    =   tag === set2.tag & valid2
 
-    val hit3    =   (tag === io.dcache_insert_i.tag) & (index === io.dcache_insert_i.index)
-    val hit     =   use_cache & (hit1 | hit2 | hit3)
-    val miss    =   use_cache & ~hit1 & ~hit2 & ~hit3
+    //val hit3    =   (tag === io.dcache_insert_i.tag) & (index === io.dcache_insert_i.index)
+    //val hit     =   use_cache & (hit1 | hit2 | hit3)
+    val hit     =   use_cache & (hit1 | hit2)
+    //val miss    =   use_cache & ~hit1 & ~hit2 & ~hit3
+    val miss    =   use_cache & ~hit1 & ~hit2
     val loadVal             =   WireDefault(0.U(64.W))
     val loadVal_sext        =   WireDefault(0.U(64.W))
     val dword               =   WireDefault(0.U(64.W))
@@ -91,7 +93,8 @@ class MEM extends Module{
 //    when(is_load & hit){
 //        printf("[%x]:   load %x\n", io.debug_i.pc, loadVal_sext)
 //    }    
-    io.stall_req_o  :=  miss
+//    io.stall_req_o  :=  miss
+    io.stall_req_o  :=  0.U
     when(is_load){
         // mod 8, which byte should be the start of dword
         val offset  =   addr_i(2, 0)
@@ -99,7 +102,8 @@ class MEM extends Module{
         val which_block =   PriorityMux(Seq(
             (hit1,      block1),
             (hit2,      block2),
-            (hit3,      io.dcache_insert_i.blocks),     // from main memory
+            //(hit3,      io.dcache_insert_i.blocks),     // from main memory
+            (miss,      io.dcache_insert_i.blocks),     // from main memory
             (true.B,    0.U.asTypeOf(Vec(4, UInt(32.W)))),
         ))
         // something like mod 8. 8B aligned aword

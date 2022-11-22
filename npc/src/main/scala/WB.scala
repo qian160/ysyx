@@ -30,10 +30,10 @@ class WB extends Module{
     val wdata   =   io.writeOp_i.rf.wdata
     val rd      =   io.writeOp_i.rf.rd
     val pc      =   io.debug_i.pc
-    
+/*
     when(io.writeOp_i.rf.wen & io.debug_i.inst =/= CONST.NOP){
         printf("(%x):   [x%d]   <=  %x\n", pc(31, 0), rd, wdata)
     }
-    
+*/
     //(0 to 31).foreach( (idx: Int) => DEBUG.io.gpr(idx) := io.debug.gpr(idx))
 }

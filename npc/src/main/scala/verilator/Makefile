@@ -18,9 +18,10 @@ LLVM_FLAGS += $(shell llvm-config --ldflags)
 LLVM_FLAGS += $(shell llvm-config --cxxflags)
 LLVM_FLAGS += $(shell llvm-config --libs)
 
-COLOR_RED   = \033[1;31m
-COLOR_GREEN = \033[1;32m
-COLOR_NONE  = \033[0m
+COLOR_RED    = \033[1;31m
+COLOR_GREEN  = \033[1;32m
+COLOR_YELLOW = \033[1;33m
+COLOR_NONE   = \033[0m
 
 -include $(DEPS)	#this will trigger some execuations
 
@@ -43,7 +44,11 @@ echo:
 #usage: make run [img=xxx]
 run: $(OBJS) 
 ifneq ($(img),)
+	@printf "$(COLOR_GREEN)loading img $(img)... $(COLOR_NONE)\n"
+	@echo
 	@./cpp/utils/load_rs $(img) 
+	@printf "$(COLOR_YELLOW)[done]$(COLOR_NONE)\n"
+	@echo
 endif
 	@verilator $(VSRC) $(CPPSRC) $(VFLAGS) $(LOGO) $(CPPFLAGS)
 #	@verilator $(VSRC) $(OBJS) $(VFLAGS) $(CPPFLAGS) $(VTOP__ALL)
