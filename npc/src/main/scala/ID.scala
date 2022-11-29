@@ -15,8 +15,8 @@ import Util._
 */
 class ID extends Module{
     val io = IO(new Bundle{
-        val mem_is_load_i       =   Input(Bool())
-        val mem_need_stall_i    =   Input(Bool())
+//        val mem_is_load_i       =   Input(Bool())
+        val mem_need_stall_i    =   Input(Bool())           // load miss
 
         val is_stalled_i    =   Input(Bool())
         val inst_i          =   Input(UInt(32.W))
@@ -73,14 +73,15 @@ class ID extends Module{
 
     val id_is_in_stall  =   io.is_stalled_i             // for many reasons...
 
-    // load's rd in meme stage
+    // load's rd in mem stage
     val load_rd_in_mem      =   io.fwd_i.mem.rf.rd
-    // it's okay as long as we don't *use* them. And the only way to use for ID is branch/jump
-    // Sometimes we could take MEM's bypass while it is stalled. Which means that we are taking the wrong bypass
-    val load_is_stalled     =   io.mem_is_load_i & io.mem_need_stall_i
-    val load_hazard_exist   =   (rs1 === load_rd_in_mem) | (rs2 === load_rd_in_mem)
-    val operands_not_ready  =   (load_is_stalled & load_hazard_exist) | io.stall_req_o
-    dontTouch(operands_not_ready)
+    // operands are unusable when data hazard exists
+    // the word "unusable" means we can only pass but not give out any result based on the value 
+    // in fact only load could make the operands unusable: just read after load. Generally we could solve this by 
+    // stalling a cycle. But when load miss happens we need another cycle to stall
+    val load_miss           =   io.mem_need_stall_i
+    val data_hazard_exist   =   (rs1 === load_rd_in_mem) | (rs2 === load_rd_in_mem)
+    val operands_usable     =   ~((load_miss & data_hazard_exist) | io.stall_req_o)
 
     val predict_target  =   io.predict_i.predict_target
     val actual_target   =   io.predict_o.target
@@ -90,7 +91,7 @@ class ID extends Module{
     val direction_fail  =   actual_taken =/= predict_taken
     val target_fail     =   actual_target =/= predict_target
     // based on reliable information
-    val predict_fail    =   ((is_branch) & (target_fail | direction_fail) & ~operands_not_ready)
+    val predict_fail    =   ((is_branch) & (target_fail | direction_fail) & operands_usable)
 
     val prev_is_load    =   io.fwd_i.prev_is_load
     val prev_rd         =   io.fwd_i.prev_rd
@@ -194,7 +195,7 @@ class ID extends Module{
             io.predict_o.target  :=  pc + imm_B(inst)
             io.stall_req_o  :=  prev_is_load & (prev_rd  === rs1 | prev_rd === rs2)
 
-            //printf("[%x] branch target = %x\nsrc1 = %x,  src2 = %x, #%x\n", pc(31, 0), io.predict_o.target, rs1Val, rs2Val, nr_branch(9, 0))
+            //when(~io.stall_req_o & ~io.is_stalled_i){printf("[%x] branch target = %x\nsrc1 = %x,  src2 = %x, #%x\n", pc(31, 0), io.predict_o.target, rs1Val, rs2Val, nr_branch(9, 0))}
             when(branch){
                 nr_taken    :=  nr_taken + 1.U
             }

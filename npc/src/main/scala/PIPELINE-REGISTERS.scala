@@ -123,8 +123,8 @@ class MEM_WB extends Module {
     when(io.ctrl_i.flush){
         writeOp :=  0.U.asTypeOf(new WriteOp)
         debug   :=  0.U.asTypeOf(new Debug_Bundle)
-    }.elsewhen(io.ctrl_i.stall | io.stall_mem_i){
-    //}.elsewhen(io.ctrl_i.stall){
+//    }.elsewhen(io.ctrl_i.stall | io.stall_mem_i){
+    }.elsewhen(io.ctrl_i.stall){
         writeOp :=  writeOp
         debug   :=  debug
     }

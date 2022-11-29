@@ -79,7 +79,7 @@ class TOP extends Module{
     ID.io.predict_i     :=  IF_ID.io.predict_o
     ID.io.is_stalled_i  :=  IF_ID.io.id_is_stalled_o
     ID.io.mem_need_stall_i  :=  MEM.io.stall_req_o
-    ID.io.mem_is_load_i     :=  EX_MEM.io.memOp_o.is_load
+//    ID.io.mem_is_load_i     :=  EX_MEM.io.memOp_o.is_load
 
     //bypass
     ID.io.fwd_i.ex    :=  EX.io.ex_fwd_o

@@ -46,6 +46,7 @@ class MEM extends Module{
     val qword       =   io.qword_i
     val sdata       =   io.memOp_i.sdata
     val addr_i      =   io.memOp_i.addr
+    val rd          =   io.writeOp_i.rf.rd
 
     val mem_need_stall  =   io.stall_req_o
     val mem_is_stalled  =   io.is_stalled_i
@@ -94,6 +95,9 @@ class MEM extends Module{
     MMIO_RW.io.read_en  :=  not_in_pmem & is_load
     MMIO_RW.io.write_en :=  not_in_pmem & is_store
 
+//    when(MMIO_RW.io.read_en ){printf("[x%d]  <-  %x\n", rd, loadVal_sext)}
+//    when(MMIO_RW.io.write_en){printf("%x    ->  mem[%x]\n", sdata, addr_i)}
+
     // default values
     io.dcache_miss_o    :=  0.U.asTypeOf(new DCacheMissInfo)
     io.sync_o           :=  0.U.asTypeOf(new Sync)
@@ -103,37 +107,35 @@ class MEM extends Module{
         io.dcache_miss_o.addr   :=  addr_i
     }
 
-//    when(is_load & hit){
-//        printf("[%x]:   load %x\n", io.debug_i.pc, loadVal_sext)
-//    }    
     io.stall_req_o  :=  miss
 //    io.stall_req_o  :=  0.U
     when(is_load){
-        // mod 8, which byte should be the start of dword
-        val offset  =   addr_i(2, 0)
-        // choose blocks from the hit set
-        val which_block =   PriorityMux(Seq(
-            (hit1,      block1),
-            (hit2,      block2),
-//            (hit3,      io.dcache_insert_i.blocks),     // from main memory
-            (miss,      io.dcache_insert_i.blocks),     // from main memory
-            (true.B,    0.U.asTypeOf(Vec(4, UInt(32.W)))),
-        ))
-        // something like mod 8. 8B aligned aword
-        val on_the_right_half   =   addr_i(3)
-        val dword_from_cache    =   Mux(on_the_right_half, 
-            Cat(which_block(3), which_block(2)),
-            Cat(which_block(1), which_block(0))
-        )
-        val dword_from_main_memory  =   Mux(on_the_right_half, 
-            io.dcache_insert_i.blocks.asUInt(127, 64), 
-            io.dcache_insert_i.blocks.asUInt(63, 0)
-        )
-        load_cnt    :=  load_cnt + 1.U
         when(not_in_pmem){
             // don't use cache
             loadVal     :=  MMIO_RW.io.rdata
         }.otherwise{
+            // mod 8, which byte should be the start of dword
+            val offset  =   addr_i(2, 0)
+            // choose blocks from the hit set
+            val which_block =   PriorityMux(Seq(
+                (hit1,      block1),
+                (hit2,      block2),
+//            (hit3,      io.dcache_insert_i.blocks),     // from main memory
+                (miss,      io.dcache_insert_i.blocks),     // from main memory
+                (true.B,    0.U.asTypeOf(Vec(4, UInt(32.W)))),
+            ))
+            // something like mod 8. 8B aligned aword
+            val on_the_right_half   =   addr_i(3)
+            val dword_from_cache    =   Mux(on_the_right_half, 
+                Cat(which_block(3), which_block(2)),
+                Cat(which_block(1), which_block(0))
+            )
+            val dword_from_main_memory  =   Mux(on_the_right_half, 
+                io.dcache_insert_i.blocks.asUInt(127, 64), 
+                io.dcache_insert_i.blocks.asUInt(63, 0)
+            )
+            load_cnt    :=  load_cnt + 1.U
+
             dcache_hit_cnt  :=  Mux(hit, dcache_hit_cnt + 1.U, dcache_hit_cnt)
             dword           :=  Mux(false.B, dword_from_cache, dword_from_main_memory)
             /*
