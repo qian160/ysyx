@@ -8,7 +8,9 @@ import chisel3.util._
 import chisel3.experimental._
 import chisel3.stage._
 import Color._
-
+/*
+    Be careful to make any decision when stall happens. Because the operand may not be ready
+*/
 class statistics extends Bundle{
     val branch_cnt       =   UInt(64.W)
     val taken_cnt        =   UInt(64.W)
@@ -70,11 +72,14 @@ class TOP extends Module{
     Main_Memory.io.dcache_miss_i    :=  MEM.io.dcache_miss_o
     Main_Memory.io.sync_i           :=  MEM.io.sync_o
 
-    ID.io.inst_i      :=  IF_ID.io.inst_o
-    ID.io.pc_i        :=  IF_ID.io.pc_o
-    ID.io.csrData_i   :=  Csr.io.csrData_o
-    ID.io.rfData_i    :=  Regfile.io.readRes_o
-    ID.io.predict_i   :=  IF_ID.io.predict_o
+    ID.io.inst_i        :=  IF_ID.io.inst_o
+    ID.io.pc_i          :=  IF_ID.io.pc_o
+    ID.io.csrData_i     :=  Csr.io.csrData_o
+    ID.io.rfData_i      :=  Regfile.io.readRes_o
+    ID.io.predict_i     :=  IF_ID.io.predict_o
+    ID.io.is_stalled_i  :=  IF_ID.io.id_is_stalled_o
+    ID.io.mem_need_stall_i  :=  MEM.io.stall_req_o
+    ID.io.mem_is_load_i     :=  EX_MEM.io.memOp_o.is_load
 
     //bypass
     ID.io.fwd_i.ex    :=  EX.io.ex_fwd_o
@@ -86,8 +91,6 @@ class TOP extends Module{
 
     ID_EX.io.debug_i    :=  ID.io.debug_o
     ID_EX.io.decInfo_i  :=  ID.io.decInfo_o
-    ID_EX.io.id_is_stalled_i    :=  ID.io.stall_req_o
-    //ID_EX.io.update_PredictorOp_i   :=  ID.io.update_PredictorOp_o
 
     Regfile.io.readRfOp_i     :=  ID.io.readOp_o
     Regfile.io.writeRfOp_i    :=  WB.io.writeOp_o.rf
@@ -96,8 +99,7 @@ class TOP extends Module{
     Csr.io.writeOp_i    :=  WB.io.writeOp_o.csr
 
     EX.io.decInfo_i     :=  ID_EX.io.decInfo_o
-    EX.io.id_is_stalled_i   :=  ID_EX.io.id_is_stalled_o
-//    EX.io.update_PredictorOp_i  :=  ID_EX.io.update_PredictorOp_o
+    EX.io.ex_is_stalled_i   :=  ID_EX.io.ex_is_stalled_o
 
     EX_MEM.io.writeOp_i :=  EX.io.writeOp_o
     EX_MEM.io.memOp_i   :=  EX.io.memOp_o
@@ -107,10 +109,11 @@ class TOP extends Module{
     MEM.io.memOp_i      :=  EX_MEM.io.memOp_o
     MEM.io.dcache_insert_i   :=  Main_Memory.io.dcache_insert_o
     MEM.io.qword_i      :=  Main_Memory.io.qword_o
-
+    MEM.io.is_stalled_i :=  EX_MEM.io.mem_is_stalled_o
 
     MEM_WB.io.writeOp_i :=  MEM.io.writeOp_o
     MEM_WB.io.debug_i   :=  MEM.io.debug_o
+    MEM_WB.io.stall_mem_i   :=  MEM.io.wb_need_stall_o
 
     WB.io.writeOp_i     :=  MEM_WB.io.writeOp_o
 
@@ -141,12 +144,13 @@ class TOP extends Module{
     MEM_WB.io.ctrl_i.flush  :=  Control.io.flush_o(4)
     MEM_WB.io.ctrl_i.stall  :=  Control.io.stall_o(4)
 
+    // control
     Control.io.id_flush_req_i   :=  ID.io.flush_req_o
-    Control.io.id_stall_req_i   :=  ID.io.stall_req_o
     Control.io.if_stall_req_i   :=  IF.io.stall_req_o
     Control.io.mem_stall_req_i  :=  MEM.io.stall_req_o
-    Control.io.ex_stall_req_i   :=  0.U
+    Control.io.ex_stall_req_i   :=  EX.io.stall_req_o
 
+    Control.io.id_stall_req_i   :=  ID.io.stall_req_o
 
     //used to help calculating ipc
     io.stall_o  :=  Control.io.stall_o

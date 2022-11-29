@@ -7,14 +7,15 @@ import AluOPT._
 class EX extends Module{
     val io = IO(new Bundle{
         val decInfo_i   =   Input(new DecodeInfo)
-        //it may be a load inst, so use bypass from MEM(EX is dealing with the stalled operand, which is incorrect)
-        val id_is_stalled_i     =   Input(Bool())
+        //when load, use bypass from MEM(EX is dealing with the stalled operand, which is incorrect)
+        val ex_is_stalled_i     =   Input(Bool())
         val writeOp_o   =   Output(new WriteOp)
         val memOp_o     =   Output(new MemOp)
         val ex_fwd_o    =   Output(new Forward_Info)
 
         val debug_i     =   Input (new Debug_Bundle)
         val debug_o     =   Output(new Debug_Bundle)
+        val stall_req_o =   Output(Bool())
     })
 
     val src1 = io.decInfo_i.aluOp.src1
@@ -26,7 +27,7 @@ class EX extends Module{
         SLT     ->  Mux(src1.asSInt < src2.asSInt, 1.U, 0.U),
         SLTU    ->  Mux(src1 < src2, 1.U, 0.U),
         MUL     ->  (src1.asSInt * src2.asSInt).asUInt(63,0),
-        MULU    ->  src1  *src2,
+        MULU    ->  (src1  *src2)(63, 0),
         MULH    ->  (src1 * src2)(127,64),
         XOR     ->  (src1 ^ src2),
         OR      ->  (src1 | src2),
@@ -60,6 +61,9 @@ class EX extends Module{
     )
 
     dontTouch(aluRes)
+    io.stall_req_o  :=  0.U
+    val need_stall  =   io.stall_req_o
+    val is_stalled  =   io.ex_is_stalled_i
 
     io.writeOp_o          :=  io.decInfo_i.writeOp
     io.writeOp_o.rf.wdata :=  aluRes
@@ -70,15 +74,23 @@ class EX extends Module{
     //disable bypass at load or the 'read after load' hazard
     /*for example:
         ld x1, 0(x2):   IF      ID      EX      MEM     WB
-        mv x2, x1:              IF      ID  ->  EX(*)   MEM     WB
+        mv x2, x1:              IF      ID  ->  EX(*)   MEM     WB                  EX produced no valid information
         (stalled)
-        mv x2, x1:                      IF      ID(mux) EX      MEM     WB
+        mv x2, x1:                      IF      ID(mux) EX      MEM     WB          So don't choose EX's bypass here
 
-        the 2nd inst need to be stalled. However, while stalling, the old value(an address) is also
-        passed to EX and being calculated. And the bypass from EX in the next cycle is thus incorrect
+        the 2nd inst(mv, or addi) need to be stalled. 
+        However, while stalling, that addi is also sent to EX with operands not ready yet. 
+        and this will produce some invalid aluRes in EX. At this case we should disable the bypass
 
+        solution: We detect this case and set 1st mv's rd = 0 at ID
     */
-    io.ex_fwd_o.rf.rd       :=  Mux(io.memOp_o.is_load | io.id_is_stalled_i, 0.U,  io.decInfo_i.writeOp.rf.rd)
+    /*
+        1. EX just calculates address for load inst, so don't take this bypass
+        2. read after load. EX is calculating on an address
+        3. 
+    */
+
+    io.ex_fwd_o.rf.rd       :=  Mux(io.memOp_o.is_load, 0.U,  io.decInfo_i.writeOp.rf.rd)
     io.ex_fwd_o.rf.wdata    :=  aluRes
 
     io.ex_fwd_o.csr.addr    :=  io.writeOp_o.csr.waddr

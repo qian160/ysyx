@@ -25,7 +25,7 @@ class CONTROL extends RawModule{
     io.stall_o  :=  PriorityMux(Seq(
         (io.mem_stall_req_i,    "b01111".U),
         (io.ex_stall_req_i,     "b00111".U),
-        (io.id_stall_req_i,     "b00011".U),
+        (io.id_stall_req_i,     "b00011".U),            
         (io.if_stall_req_i,     "b00001".U),
         (true.B,                0.U)
     ))

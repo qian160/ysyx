@@ -67,14 +67,13 @@ object AluOPT {
     val SRL  = 8.U(5.W)
     val SRA  = 9.U(5.W)
 
-    val JALR = 10.U(5.W)
-
     val MUL    = 11.U(5.W)
     val MULH   = 12.U(5.W)
     val MULU   = 13.U(5.W)
     val MULHSU = 14.U(5.W)
     val MULHU  = 15.U(5.W)
-    //alu don't do division, but EX needs this information to stall so we just encode it here and pass 
+
+    //alu don't do division, but EX needs this information so we just encode it here
     val DIV    = 16.U(5.W)
     val REM    = 17.U(5.W)
     val DIVU   = 18.U(5.W)
@@ -92,33 +91,9 @@ object AluOPT {
     val SLLW = 27.U(5.W)
     val SRLW = 28.U(5.W)
     val SRAW = 29.U(5.W)
-
-    val LUI     = 30.U(5.W)
-    val AUIPC   = 31.U(5.W)
-
-    //not alu's job, funct3
-    //used in ID to specify a inst
-    val BEQ  = 0.U(3.W)
-    val BNE  = 1.U(3.W)
-    val BLT  = 4.U(3.W)
-    val BGE  = 5.U(3.W)
-    val BLTU = 6.U(3.W)
-    val BGEU = 7.U(3.W)
-
-    val LB   = 0.U(3.W)
-    val LH   = 1.U(3.W)
-    val LW   = 2.U(3.W)
-    val LD   = 3.U(3.W)
-    val LBU  = 4.U(3.W)
-    val LHU  = 5.U(3.W)
-    val LWU  = 6.U(3.W)
-
-    val SB   = 0.U(3.W)
-    val SH   = 1.U(3.W)
-    val SW   = 2.U(3.W)
-    val SD   = 3.U(3.W)
 }
 
+// special opcode
 object Opcode {
     val JAL     =   "b1101111".U
     val JALR    =   "b1100111".U
@@ -126,7 +101,6 @@ object Opcode {
     val AUIPC   =   "b0010111".U
 
     val LOAD    =   "b0000011".U
-    val ARITH_I =   "b0010011".U
 
     val BRANCH  =   "b1100011".U
 }
@@ -276,19 +250,19 @@ object DecTable {
         Insts.REM     ->  List(InstType.R, AluOPT.REM),
         Insts.REMU    ->  List(InstType.R, AluOPT.REMU),
 
-        //ex satge don't need its information however
-        Insts.BEQ     ->  List(InstType.B, AluOPT.BEQ),
-        Insts.BNE     ->  List(InstType.B, AluOPT.BNE),
-        Insts.BLT     ->  List(InstType.B, AluOPT.BLT),
-        Insts.BGE     ->  List(InstType.B, AluOPT.BGE),
-        Insts.BLTU    ->  List(InstType.B, AluOPT.BLTU),
-        Insts.BGEU    ->  List(InstType.B, AluOPT.BGEU),
+        // use aluRes to get the branch result
+        Insts.BEQ     ->  List(InstType.B, AluOPT.SUB),
+        Insts.BNE     ->  List(InstType.B, AluOPT.SUB),
+        Insts.BLT     ->  List(InstType.B, AluOPT.SUB),
+        Insts.BGE     ->  List(InstType.B, AluOPT.SUB),
+        Insts.BLTU    ->  List(InstType.B, AluOPT.SUB),
+        Insts.BGEU    ->  List(InstType.B, AluOPT.SUB),
 
         Insts.JAL     ->  List(InstType.J, AluOPT.ADD),
-        Insts.JALR    ->  List(InstType.I, AluOPT.JALR),
+        Insts.JALR    ->  List(InstType.I, AluOPT.ADD),
 
-        Insts.LUI     ->  List(InstType.U, AluOPT.LUI),
-        Insts.AUIPC   ->  List(InstType.U, AluOPT.AUIPC),
+        Insts.LUI     ->  List(InstType.U, AluOPT.ADD),
+        Insts.AUIPC   ->  List(InstType.U, AluOPT.ADD),
 
         Insts.SYS     ->  List(InstType.SYS, AluOPT.ADD), //ecall, csr, ebreak
 //RV64I
@@ -320,5 +294,5 @@ object DecTable {
     )
     // fields, list index
     val TYPE = 0
-    val OPT = 1
+    val OPT  = 1
 }

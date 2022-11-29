@@ -40,24 +40,25 @@ class CsrData extends Bundle {
 }
 
 class AluOp extends Bundle{
-    val src1    =   UInt(64.W)
-    val src2    =   UInt(64.W)
+    val src1    =   /*Valid*/(UInt(64.W))
+    val src2    =   /*Valid*/(UInt(64.W))
     val opt     =   UInt(5.W)
 }
 
 class DecodeInfo extends Bundle{
-    val instType    = UInt(5.W)
     val writeOp     = new WriteOp
     val aluOp       = new AluOp
-    //val branchOp    = new BranchOp
+//    val branchOp    = new BranchOp
     val memOp       = new MemOp
 }
-
+/*
 class BranchOp extends Bundle{
+    // alu calculates src1 - src2, 
     val happen  =   Bool()
-    val newPC   =   UInt(64.W)
+    val type    =   UInt(3.W)       // fct3
+    val target  =   UInt(64.W)      // calculated in ID
 }
-
+*/
 class MemOp extends Bundle{
     val is_load     =   Bool()
     val is_store    =   Bool()

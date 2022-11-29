@@ -36,10 +36,10 @@ int main(int argc, char **argv)
 	};
 */
 	FILE * img[4] = {
+		fopen((scala_source_path + "img_file0").c_str(), "w"),
 		fopen((scala_source_path + "img_file1").c_str(), "w"),
 		fopen((scala_source_path + "img_file2").c_str(), "w"),
 		fopen((scala_source_path + "img_file3").c_str(), "w"),
-		fopen((scala_source_path + "img_file4").c_str(), "w"),
 	};
 
 	assert(in);	assert(img[0]);	assert(img[1]);	assert(img[2]);	assert(img[3]);

@@ -1,30 +1,46 @@
+// rustc load.rs -o load_rs
 use std::fs::File;
 use std::io::prelude::*;
-fn main() {
-    let img_name = std::env::args().skip(1).next().expect("no img is given");
-    let build_dir = "/home/s081/Downloads/ysyx-workbench/npc/src/main/scala/verilator/tests/build/";
-    let img = format!("{}{}", &build_dir, &img_name);
+use std::io::SeekFrom;
+use std::thread::spawn;
+use std::thread;
 
-    let mut input = File::open(&img).expect("can't open file");
-    let mut img:Vec<File>  = Vec::new();
-    img.push(File::create("../img_file1").expect("can't create img1"));
-    img.push(File::create("../img_file2").expect("can't create img2"));
-    img.push(File::create("../img_file3").expect("can't create img3"));
-    img.push(File::create("../img_file4").expect("can't create img4"));
-    assert_eq!(img.len(), 4);
+//fn write_parallel(ptr: Arc<String>, mut output: File, offset: u64){
+fn write_parallel(id: u64){
+    let img_name  = std::env::args().skip(1).next().expect("no img is given");
+    const BUILD_DIR: &str = "/home/s081/Downloads/ysyx-workbench/npc/src/main/scala/verilator/tests/build/";
+    let input_img = format!("{}{}", &BUILD_DIR, &img_name);
 
-    let mut cnt:usize = 0;
+    const IMG_DIR: &str  = "/home/s081/Downloads/ysyx-workbench/npc/src/main/scala/";
+    let mut output = File::create(format!("{}img_file{}",&IMG_DIR, id)).expect("can't create output img");
+    let mut input  = File::open(input_img).expect("can't open file");
+    let offset = id * 4;
+    input.seek(SeekFrom::Start(offset)).unwrap();
+
     loop {
         let mut buf:Vec<u8> = vec![0;4];
         let n = input.read(&mut buf).expect("read failed");
         if n <= 0 {
             break;
         }
+        // 4B per inst. Step over 3 * 4 = 12B
+        input.seek(SeekFrom::Current(12)).unwrap();
         let s = format!("{:02x}{:02x}{:02x}{:02x}\n", buf[3], buf[2], buf[1], buf[0]);
-        img[cnt].write(&s.as_bytes()).expect("write failed");
-        cnt = match cnt{
-            3   =>  0,
-            _   =>  cnt + 1,
-        }
+        output.write(&s.as_bytes()).expect("write failed");
     }
+    println!("thread {:?} exited", thread::current().id());
+}
+fn main() {
+    let mut thread_handles = Vec::new();
+    for i in 0..4 {
+        thread_handles.push(spawn(
+                move || write_parallel(i)
+        ));
+    }
+
+    for handle in thread_handles{
+        handle.join().expect("some error");
+    }
+    println!("thread {:?} exited", thread::current().id());
+
 }

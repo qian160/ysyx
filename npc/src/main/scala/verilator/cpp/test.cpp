@@ -102,6 +102,7 @@ int main(int argc, char **argv)
 	IFDEF(HAS_DEVICE, init_device());
 	cout << endl << logo << endl << endl;
 	//tb.trace("./wave.vcd");
+	cmd_c("-1");
 	while(!Verilated::gotFinish()){
 		// IF's pc
 		cout << _green << "(0x" << top -> io_pc_o << ")" << normal;

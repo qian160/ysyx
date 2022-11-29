@@ -64,10 +64,10 @@ class MAIN_MEMORY extends Module{
     val ram3 = Mem(1 << 16, UInt(32.W))
     val ram4 = Mem(1 << 16, UInt(32.W))
 
-    loadMemoryFromFileInline(ram1, CONST.IMG_FILE + "1")
-    loadMemoryFromFileInline(ram2, CONST.IMG_FILE + "2")
-    loadMemoryFromFileInline(ram3, CONST.IMG_FILE + "3")
-    loadMemoryFromFileInline(ram4, CONST.IMG_FILE + "4")
+    loadMemoryFromFileInline(ram1, CONST.IMG_FILE + "0")
+    loadMemoryFromFileInline(ram2, CONST.IMG_FILE + "1")
+    loadMemoryFromFileInline(ram3, CONST.IMG_FILE + "2")
+    loadMemoryFromFileInline(ram4, CONST.IMG_FILE + "3")
 
     io.qword_o  :=  0.U
 
@@ -99,8 +99,8 @@ class MAIN_MEMORY extends Module{
     }
 
     val icache_insert_info  =   RegInit(0.U.asTypeOf(new ICacheInsertInfo))
-//    val dcache_insert_info  =   RegInit(0.U.asTypeOf(new DCacheInsertInfo))
-    val dcache_insert_info  =   Wire((new DCacheInsertInfo))
+    val dcache_insert_info  =   RegInit(0.U.asTypeOf(new DCacheInsertInfo))
+//    val dcache_insert_info  =   Wire((new DCacheInsertInfo))
 
     io.icache_insert_o  :=  icache_insert_info
     io.dcache_insert_o  :=  dcache_insert_info

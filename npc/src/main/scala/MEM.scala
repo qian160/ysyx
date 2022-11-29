@@ -3,10 +3,14 @@ import chisel3.util._
 
 import CacheAddrField._
 import Util._
-
+/*
+    problem: When MEM is stalled, we need to inform ID not to use the operands, the key is we should give out the miss signal correctly
+    MEM itself also need to be careful about using the not-ready data(currently MEM doesn't seem to use the data)
+*/
 class MEM extends Module{
     def is_in_pmem(addr: UInt):Bool    =   (addr >= CONST.PMEM_START & addr <= CONST.PMEM_END)
     val io = IO(new Bundle{
+        val is_stalled_i    =   Input(Bool())
         val writeOp_i   =   Input(new WriteOp)
         val memOp_i     =   Input(new MemOp)
         val qword_i     =   Input(UInt(128.W))
@@ -21,7 +25,8 @@ class MEM extends Module{
         val nr_dcache_hit_o =   Output(UInt(64.W))
         val nr_load_o       =   Output(UInt(64.W))
 
-        val stall_req_o =   Output(Bool())
+        val stall_req_o     =   Output(Bool())
+        val wb_need_stall_o =   Output(Bool())
 
         val debug_i     =   Input (new Debug_Bundle)
         val debug_o     =   Output(new Debug_Bundle)
@@ -42,14 +47,18 @@ class MEM extends Module{
     val sdata       =   io.memOp_i.sdata
     val addr_i      =   io.memOp_i.addr
 
-    val in_pmem         =   is_in_pmem(addr_i)
-    val not_in_pmem     =   ~in_pmem
+    val mem_need_stall  =   io.stall_req_o
+    val mem_is_stalled  =   io.is_stalled_i
+    
+    val in_pmem      =   is_in_pmem(addr_i)
+    val not_in_pmem  =   ~in_pmem
+    val use_cache    =   is_load & in_pmem        // when to use cache
+
     val tag             =   TAG(addr_i)
     val index           =   INDEX(addr_i)
     val byte_offset     =   BYTE_OFFSET(addr_i)
     val block_offset    =   BLOCK_OFFSET(addr_i)
     //val use_cache       =   (is_load | is_store) & in_pmem      // when to use cache
-    val use_cache       =   is_load & in_pmem      // when to use cache
 
     // a set contains a row of data, including valid, tag, index data blocks and used
     val set1    =   DCache_Way1(index)
@@ -64,15 +73,19 @@ class MEM extends Module{
     val used2   =   set2.used
     val hit2    =   tag === set2.tag & valid2
 
-    //val hit3    =   (tag === io.dcache_insert_i.tag) & (index === io.dcache_insert_i.index)
-    //val hit     =   use_cache & (hit1 | hit2 | hit3)
-    val hit     =   use_cache & (hit1 | hit2)
-    //val miss    =   use_cache & ~hit1 & ~hit2 & ~hit3
-    val miss    =   use_cache & ~hit1 & ~hit2
+    val hit3    =   (tag === io.dcache_insert_i.tag) & (index === io.dcache_insert_i.index)
+    val hit_at_least_one    =   hit1 | hit2 | hit3
+    val hit     =   use_cache & hit_at_least_one
+    //val hit     =   use_cache & (hit1 | hit2)
+    val miss    =   use_cache & ~hit_at_least_one
+    //val miss    =   use_cache & ~hit1 & ~hit2
     val loadVal             =   WireDefault(0.U(64.W))
     val loadVal_sext        =   WireDefault(0.U(64.W))
     val dword               =   WireDefault(0.U(64.W))
 
+//    val in_pmem         =   likely_in_pmem & ~need_stall
+//    val not_in_pmem     =   ~likely_in_pmem & ~need_stall
+//    val use_cache       =   likely_use_cache & ~need_stall
     // device
     val MMIO_RW = Module(new MMIO_RW)
     MMIO_RW.io.addr     :=  addr_i
@@ -93,8 +106,8 @@ class MEM extends Module{
 //    when(is_load & hit){
 //        printf("[%x]:   load %x\n", io.debug_i.pc, loadVal_sext)
 //    }    
-//    io.stall_req_o  :=  miss
-    io.stall_req_o  :=  0.U
+    io.stall_req_o  :=  miss
+//    io.stall_req_o  :=  0.U
     when(is_load){
         // mod 8, which byte should be the start of dword
         val offset  =   addr_i(2, 0)
@@ -102,7 +115,7 @@ class MEM extends Module{
         val which_block =   PriorityMux(Seq(
             (hit1,      block1),
             (hit2,      block2),
-            //(hit3,      io.dcache_insert_i.blocks),     // from main memory
+//            (hit3,      io.dcache_insert_i.blocks),     // from main memory
             (miss,      io.dcache_insert_i.blocks),     // from main memory
             (true.B,    0.U.asTypeOf(Vec(4, UInt(32.W)))),
         ))
@@ -268,13 +281,16 @@ class MEM extends Module{
     io.nr_load_o        :=  load_cnt
 
     io.debug_o      :=  io.debug_i
-    //disable bypass on store(wdata is just an address) and load miss
-    io.mem_fwd_o.rf.rd      :=  Mux(is_store | (is_load & io.stall_req_o), 0.U, io.writeOp_o.rf.rd)
+    // when stalled, latch the info to the next cycle where it could be used
+    // note that when load miss happens, ID should not use his 2 reg operands
+
+    io.mem_fwd_o.rf.rd      :=  io.writeOp_o.rf.rd
     io.mem_fwd_o.rf.wdata   :=  io.writeOp_o.rf.wdata
 
     io.mem_fwd_o.csr.addr   :=  io.writeOp_o.csr.waddr
     io.mem_fwd_o.csr.wdata  :=  io.writeOp_o.csr.wdata
 
+    io.wb_need_stall_o  :=  is_load & miss      // can't write
 }
 
 class DCache_Set extends Bundle{

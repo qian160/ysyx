@@ -1,26 +1,41 @@
 import chisel3._
 import chisel3.util._
 import Util._
+/*
+        When stalled, we can't give out valid information, it will be okay if we don't 'use' those invalid information, since
+    in the next cycle  we will update those information correctly.
+        However, if we try to 'use' those incorrectly decoded information when stalled, it could lead to problems
+        The only way to 'use' the decoded information here seems to be branch and jump
 
+        ID's stall has many causes. For example, ID can itself request for a stall in the next cycle. But remember when EX or MEM requests
+    for a stall, ID is also influenced.
+        If the stall is caused by ID itself, then we could know that ID must have met with a data hazard. Under this condition, we can't use the 
+    the decoded information. However, if the stall is not caused by ID itself, e.g. a D-Cache miss in MEM, 
+
+*/
 class ID extends Module{
     val io = IO(new Bundle{
-        val inst_i      =   Input(UInt(32.W))
-        val fwd_i       =   Input(new Forward)
-        val pc_i        =   Input(UInt(64.W))
-        val rfData_i    =   Input(new RegSource)
-        val csrData_i   =   Input(new CsrData)
+        val mem_is_load_i       =   Input(Bool())
+        val mem_need_stall_i    =   Input(Bool())
 
-        val readOp_o    =   Output(new ReadOp)
-        val decInfo_o   =   Output(new DecodeInfo)
-        val stall_req_o =   Output(Bool())
-        val flush_req_o =   Output(Bool())
+        val is_stalled_i    =   Input(Bool())
+        val inst_i          =   Input(UInt(32.W))
+        val fwd_i           =   Input(new Forward)
+        val pc_i            =   Input(UInt(64.W))
+        val rfData_i        =   Input(new RegSource)
+        val csrData_i       =   Input(new CsrData)
 
-        val debug_o     =   Output(new Debug_Bundle)
-        val nr_branch_o =   Output(UInt(64.W))
-        val nr_taken_o  =   Output(UInt(64.W))
+        val readOp_o        =   Output(new ReadOp)
+        val decInfo_o       =   Output(new DecodeInfo)
+        val stall_req_o     =   Output(Bool())              // because of data hazard
+        val flush_req_o     =   Output(Bool())
 
-        val predict_i   =   Input(new PredictOp)
-        val predict_o   =   Output(new PredictOp)
+        val debug_o         =   Output(new Debug_Bundle)
+        val nr_branch_o     =   Output(UInt(64.W))
+        val nr_taken_o      =   Output(UInt(64.W))
+
+        val predict_i       =   Input(new PredictOp)
+        val predict_o       =   Output(new PredictOp)
     })
     //alias
     val inst     =  io.inst_i
@@ -32,7 +47,8 @@ class ID extends Module{
 
     val nr_branch   =   RegInit(0.U(64.W))
     val nr_taken    =   RegInit(0.U(64.W))
-    //bypass
+    //bypass. Note: when a inst doesn't write the regfile, its bypass should be disabled
+    // add stricter control conditions here.
     val rs1Val   = PriorityMux(Seq(
         (rs1 === 0.U,                  0.U),
         (rs1 === io.fwd_i.ex.rf.rd,    io.fwd_i.ex.rf.wdata),
@@ -54,6 +70,18 @@ class ID extends Module{
         (csrAddr === io.fwd_i.ex.csr.addr,      io.fwd_i.ex.csr.wdata),
         (true.B,                                io.csrData_i.csrVal)
     ))
+
+    val id_is_in_stall  =   io.is_stalled_i             // for many reasons...
+
+    // load's rd in meme stage
+    val load_rd_in_mem      =   io.fwd_i.mem.rf.rd
+    // it's okay as long as we don't *use* them. And the only way to use for ID is branch/jump
+    // Sometimes we could take MEM's bypass while it is stalled. Which means that we are taking the wrong bypass
+    val load_is_stalled     =   io.mem_is_load_i & io.mem_need_stall_i
+    val load_hazard_exist   =   (rs1 === load_rd_in_mem) | (rs2 === load_rd_in_mem)
+    val operands_not_ready  =   (load_is_stalled & load_hazard_exist) | io.stall_req_o
+    dontTouch(operands_not_ready)
+
     val predict_target  =   io.predict_i.predict_target
     val actual_target   =   io.predict_o.target
     val predict_taken   =   io.predict_i.predict_taken
@@ -61,12 +89,24 @@ class ID extends Module{
     val is_branch       =   io.predict_i.is_branch
     val direction_fail  =   actual_taken =/= predict_taken
     val target_fail     =   actual_target =/= predict_target
-    val predict_fail    =   ((is_branch) & (target_fail | direction_fail) & ~io.stall_req_o)
-    io.flush_req_o     :=   predict_fail
-    // different types of inst have their different stall reasons. But all caused by load
-    io.stall_req_o     :=   0.U
+    // based on reliable information
+    val predict_fail    =   ((is_branch) & (target_fail | direction_fail) & ~operands_not_ready)
+
     val prev_is_load    =   io.fwd_i.prev_is_load
     val prev_rd         =   io.fwd_i.prev_rd
+    /*  consider something like this:
+        WB      lw      a5,220(a5) 
+        MEM     sw      a5,20(s0)
+        EX      lw      a0,0(s0)    -> assume I-Cache miss
+        ID      sext.w  a0,a0
+
+        the sext inst will stall for 2 cycles. 1st I-Cache miss, 2nd data hazard caused by load
+        What's more, that inst should take the bypass from MEM, if we just latch
+    */
+    // different types of inst have their different stall reasons. But all caused by load
+    io.stall_req_o     :=   0.U
+
+    io.flush_req_o     :=   predict_fail
 
     val decRes   =  ListLookup(inst, DecTable.defaultDec, DecTable.decMap)     //returns list(instType,opt)
     val instType =  decRes(DecTable.TYPE)    //R I S B J U SYS
@@ -79,10 +119,11 @@ class ID extends Module{
     io.decInfo_o                    :=  0.U.asTypeOf(new DecodeInfo)
     io.decInfo_o.aluOp.src1         :=  rs1Val
     io.decInfo_o.aluOp.src2         :=  rs2Val
-    io.decInfo_o.instType           :=  instType
-    io.decInfo_o.writeOp.rf.rd      :=  inst(11, 7)
+    // disable next inst's bypass(when read after load)
+    io.decInfo_o.writeOp.rf.rd      :=  Mux(io.stall_req_o, 0.U, inst(11, 7))
     io.decInfo_o.writeOp.csr.waddr  :=  csrAddr
     io.decInfo_o.aluOp.opt          :=  op
+
     io.predict_o         :=  io.predict_i
     io.predict_o.taken   :=  false.B
     io.predict_o.predict_fail    :=  predict_fail
@@ -105,7 +146,7 @@ class ID extends Module{
     //S and B dont write regfile. Set rd = 0 to avoid bypass
     switch(instType){//R I U S B J
         is(InstType.BAD){
-            io.debug_o.exit   :=  inst.andR     //not nop
+            io.debug_o.exit   :=  inst.orR     //not nop
         }
         is(InstType.I){ //special cases: jalr, load. operands look like this: rd, imm(rs1)
             io.decInfo_o.writeOp.rf.wen    :=  Mux(io.stall_req_o, false.B, true.B)
@@ -123,7 +164,7 @@ class ID extends Module{
 
             io.decInfo_o.memOp.unsigned   :=  fct3(2)     //0 to 3 unsigned, signed when fct3 >= 4
 
-            when(is_jalr & ~io.stall_req_o){
+            when(is_jalr & ~io.is_stalled_i){
                 nr_taken    :=  nr_taken + 1.U
                 nr_branch   :=  nr_branch + 1.U
             }
@@ -150,14 +191,14 @@ class ID extends Module{
             )) & ~io.stall_req_o
 
             io.predict_o.taken   :=  branch
-            io.predict_o.target  :=  /*Mux(branch, */pc + imm_B(inst)/*, pc + 4.U)*/
+            io.predict_o.target  :=  pc + imm_B(inst)
             io.stall_req_o  :=  prev_is_load & (prev_rd  === rs1 | prev_rd === rs2)
 
-            //printf("[%x] branch target = %x\nsrc1 = %x,  src2 = %x\n", pc(31, 0), io.predict_o.target, rs1Val, rs2Val)
+            //printf("[%x] branch target = %x\nsrc1 = %x,  src2 = %x, #%x\n", pc(31, 0), io.predict_o.target, rs1Val, rs2Val, nr_branch(9, 0))
             when(branch){
                 nr_taken    :=  nr_taken + 1.U
             }
-            when(~io.stall_req_o){
+            when(~io.is_stalled_i){
                 nr_branch   :=  nr_branch + 1.U
             }
         }
