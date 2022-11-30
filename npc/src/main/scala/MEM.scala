@@ -48,9 +48,6 @@ class MEM extends Module{
     val addr_i      =   io.memOp_i.addr
     val rd          =   io.writeOp_i.rf.rd
 
-    val mem_need_stall  =   io.stall_req_o
-    val mem_is_stalled  =   io.is_stalled_i
-    
     val in_pmem      =   is_in_pmem(addr_i)
     val not_in_pmem  =   ~in_pmem
     val use_cache    =   is_load & in_pmem        // when to use cache
@@ -94,9 +91,6 @@ class MEM extends Module{
     MMIO_RW.io.wdata    :=  sdata
     MMIO_RW.io.read_en  :=  not_in_pmem & is_load
     MMIO_RW.io.write_en :=  not_in_pmem & is_store
-
-//    when(MMIO_RW.io.read_en ){printf("[x%d]  <-  %x\n", rd, loadVal_sext)}
-//    when(MMIO_RW.io.write_en){printf("%x    ->  mem[%x]\n", sdata, addr_i)}
 
     // default values
     io.dcache_miss_o    :=  0.U.asTypeOf(new DCacheMissInfo)

@@ -130,7 +130,7 @@ class MAIN_MEMORY extends Module{
     }.otherwise{
         dcache_insert_info  :=  0.U.asTypeOf(new DCacheInsertInfo)
     }
-/*
+
     when(io.sync_i.valid){
         //addr data
         val sync_addr   =   io.sync_i.addr
@@ -141,5 +141,5 @@ class MAIN_MEMORY extends Module{
         ram3(row)       :=  new_data(2)
         ram4(row)       :=  new_data(3)
     }
-*/
+
 }

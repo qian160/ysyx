@@ -46,7 +46,7 @@ run: $(OBJS)
 ifneq ($(img),)
 	@echo
 	@printf "$(COLOR_YELLOW)loading img $(img)... $(COLOR_NONE)\n"
-	@$(HOME)/cpp/utils/load_rs $(img)
+	@$(HOME)/utils/load_cpp $(img)
 	@printf "$(COLOR_GREEN)[done]$(COLOR_NONE)\n"
 	@echo
 endif

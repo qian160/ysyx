@@ -1,4 +1,4 @@
-//use cpp to simulate this. So DPI-C is needed...
+//use DPI-C
 import chisel3._
 import chisel3.util._
 

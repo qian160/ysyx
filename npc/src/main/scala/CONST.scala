@@ -6,7 +6,7 @@ object CONST{
     val EBREAK  = "h100073".U(32.W)
     val M_SIZE  = 0x8000000
 
-    val IMG_FILE    = "/home/s081/Downloads/ysyx-workbench/npc/src/main/scala/img_file"
+    val IMG_FILE    = "/home/s081/Downloads/ysyx-workbench/npc/src/main/scala/IMG/img_file"
     val PMEM_START  = "h80000000".U
     val PMEM_END    = "h87ffffff".U
     val NOP         = "h00000013".U(32.W)
