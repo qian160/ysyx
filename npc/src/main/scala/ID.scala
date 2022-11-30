@@ -4,13 +4,18 @@ import Util._
 /*
         When stalled, we can't give out valid information, it will be okay if we don't 'use' those invalid information, since
     in the next cycle  we will update those information correctly.
-        However, if we try to 'use' those incorrectly decoded information when stalled, it could lead to problems
-        The only way to 'use' the decoded information here seems to be branch and jump
+        However, if we try to 'use' those incorrectly decoded information when stalled, it could cause problems
+        The only way to 'use' the decoded information in ID seems to be branch and jump
 
-        ID's stall has many causes. For example, ID can itself request for a stall in the next cycle. But remember when EX or MEM requests
-    for a stall, ID is also influenced.
-        If the stall is caused by ID itself, then we could know that ID must have met with a data hazard. Under this condition, we can't use the 
-    the decoded information. However, if the stall is not caused by ID itself, e.g. a D-Cache miss in MEM, 
+
+        MEM   lbu     a0,0(s0)
+        EX    addi    s0,s0,1
+*       ID    jal     ra,xxx
+
+        the jal is able to get its branch result in ID and know whether its previous prediction was wrong.
+    However, if load miss happens, then in the next cycle EX will be stalled thus kept addi. But ID's output will be nop
+    then in the next cycle, EX will be assigned to nop. Thus misses the jalr, the return address is not written
+    This is not so easy to be discoverd. Since it's okay when we flush a branch 
 
 */
 class ID extends Module{
@@ -95,19 +100,11 @@ class ID extends Module{
 
     val prev_is_load    =   io.fwd_i.prev_is_load
     val prev_rd         =   io.fwd_i.prev_rd
-    /*  consider something like this:
-        WB      lw      a5,220(a5) 
-        MEM     sw      a5,20(s0)
-        EX      lw      a0,0(s0)    -> assume I-Cache miss
-        ID      sext.w  a0,a0
 
-        the sext inst will stall for 2 cycles. 1st I-Cache miss, 2nd data hazard caused by load
-        What's more, that inst should take the bypass from MEM, if we just latch
-    */
     // different types of inst have their different stall reasons. But all caused by load
     io.stall_req_o     :=   0.U
-
-    io.flush_req_o     :=   predict_fail
+    // for insts like jal, when it meets a load miss, the link address could be flushed
+    io.flush_req_o     :=   predict_fail & ~io.mem_need_stall_i
 
     val decRes   =  ListLookup(inst, DecTable.defaultDec, DecTable.decMap)     //returns list(instType,opt)
     val instType =  decRes(DecTable.TYPE)    //R I S B J U SYS
@@ -195,7 +192,7 @@ class ID extends Module{
             io.predict_o.target  :=  pc + imm_B(inst)
             io.stall_req_o  :=  prev_is_load & (prev_rd  === rs1 | prev_rd === rs2)
 
-            //when(~io.stall_req_o & ~io.is_stalled_i){printf("[%x] branch target = %x\nsrc1 = %x,  src2 = %x, #%x\n", pc(31, 0), io.predict_o.target, rs1Val, rs2Val, nr_branch(9, 0))}
+            //when(operands_usable){printf("[%x] branch target = %x\nsrc1 = %x,  src2 = %x, #%x\n", pc(31, 0), io.predict_o.target, rs1Val, rs2Val, nr_branch(9, 0))}
             when(branch){
                 nr_taken    :=  nr_taken + 1.U
             }

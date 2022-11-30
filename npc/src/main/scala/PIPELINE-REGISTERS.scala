@@ -20,6 +20,12 @@ class IF_ID extends Module {
     val predict =   RegNext(io.predict_i,       0.U.asTypeOf(new PredictOp))
     val stall   =   RegNext(io.ctrl_i.stall,    false.B)
     //flush has high priority
+    /*
+            at first we may think stall should has higher priority than flush, because
+        when ID wants to be stalled it means that its operands are not ready yet and can't
+        make a judgement. This is true sometimes. However stall has many other causes. 
+        If the stall is not caused by ID, then the flush is valid
+    */
     when(io.ctrl_i.flush){
         pc      :=  CONST.PC_INIT
         inst    :=  CONST.NOP
