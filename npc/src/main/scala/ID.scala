@@ -17,11 +17,13 @@ import Util._
     then in the next cycle, EX will be assigned to nop. Thus misses the jalr, the return address is not written
     This is not so easy to be discoverd. Since it's okay when we flush a branch 
 
+    When ID want to be flushed, we still wish to pass the data to EX however. Because we may need to set the link address(ra)
+    Sadly, when MEM requests for a stall at the same time, ID's information could be lost
 */
 class ID extends Module{
     val io = IO(new Bundle{
 //        val mem_is_load_i       =   Input(Bool())
-        val mem_need_stall_i    =   Input(Bool())           // load miss
+        val mem_miss_i      =   Input(Bool())                   // load miss
 
         val is_stalled_i    =   Input(Bool())
         val inst_i          =   Input(UInt(32.W))
@@ -32,7 +34,7 @@ class ID extends Module{
 
         val readOp_o        =   Output(new ReadOp)
         val decInfo_o       =   Output(new DecodeInfo)
-        val stall_req_o     =   Output(Bool())              // because of data hazard
+        val stall_req_o     =   Output(Bool())                  // because of data hazard
         val flush_req_o     =   Output(Bool())
 
         val debug_o         =   Output(new Debug_Bundle)
@@ -52,8 +54,7 @@ class ID extends Module{
 
     val nr_branch   =   RegInit(0.U(64.W))
     val nr_taken    =   RegInit(0.U(64.W))
-    //bypass. Note: when a inst doesn't write the regfile, its bypass should be disabled
-    // add stricter control conditions here.
+    // bypass. Note: when an inst doesn't write the regfile, its bypass should be disabled. This is done by setting rd = 0
     val rs1Val   = PriorityMux(Seq(
         (rs1 === 0.U,                  0.U),
         (rs1 === io.fwd_i.ex.rf.rd,    io.fwd_i.ex.rf.wdata),
@@ -84,9 +85,10 @@ class ID extends Module{
     // the word "unusable" means we can only pass but not give out any result based on the value 
     // in fact only load could make the operands unusable: just read after load. Generally we could solve this by 
     // stalling a cycle. But when load miss happens we need another cycle to stall
-    val load_miss           =   io.mem_need_stall_i
-    val data_hazard_exist   =   (rs1 === load_rd_in_mem) | (rs2 === load_rd_in_mem)
-    val operands_usable     =   ~((load_miss & data_hazard_exist) | io.stall_req_o)
+    val mem_miss            =   io.mem_miss_i
+//    val rd_relevaent        =   (rs1 === load_rd_in_mem) | (rs2 === load_rd_in_mem)
+//    val operands_usable     =   ~((mem_miss & rd_relevaent) | io.stall_req_o)
+    val operands_usable     =   ~(mem_miss | io.stall_req_o)
 
     val predict_target  =   io.predict_i.predict_target
     val actual_target   =   io.predict_o.target
@@ -96,6 +98,7 @@ class ID extends Module{
     val direction_fail  =   actual_taken =/= predict_taken
     val target_fail     =   actual_target =/= predict_target
     // based on reliable information
+    // this avoid link address not written(being flushed at stall caused by load miss) and something else
     val predict_fail    =   ((is_branch) & (target_fail | direction_fail) & operands_usable)
 
     val prev_is_load    =   io.fwd_i.prev_is_load
@@ -104,7 +107,8 @@ class ID extends Module{
     // different types of inst have their different stall reasons. But all caused by load
     io.stall_req_o     :=   0.U
     // for insts like jal, when it meets a load miss, the link address could be flushed
-    io.flush_req_o     :=   predict_fail & ~io.mem_need_stall_i
+    // this is very important and not so easy to handle with...
+    io.flush_req_o     :=   predict_fail & ~mem_miss
 
     val decRes   =  ListLookup(inst, DecTable.defaultDec, DecTable.decMap)     //returns list(instType,opt)
     val instType =  decRes(DecTable.TYPE)    //R I S B J U SYS
@@ -167,6 +171,7 @@ class ID extends Module{
                 nr_branch   :=  nr_branch + 1.U
             }
             io.stall_req_o  :=  prev_is_load & (prev_rd  === rs1)
+            //when(operands_usable & is_jalr){printf("[%x] jalr target = %x\nsrc1 = %x,  src2 = %x, #%x\n", pc(31, 0), io.predict_o.target, rs1Val, rs2Val, nr_branch(9, 0))}
         }
         is(InstType.R){
             io.decInfo_o.aluOp.src1       :=  rs1Val
@@ -193,6 +198,7 @@ class ID extends Module{
             io.stall_req_o  :=  prev_is_load & (prev_rd  === rs1 | prev_rd === rs2)
 
             //when(operands_usable){printf("[%x] branch target = %x\nsrc1 = %x,  src2 = %x, #%x\n", pc(31, 0), io.predict_o.target, rs1Val, rs2Val, nr_branch(9, 0))}
+    
             when(branch){
                 nr_taken    :=  nr_taken + 1.U
             }

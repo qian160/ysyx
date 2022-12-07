@@ -69,14 +69,14 @@ void my_exit(int sig)
 	uint64_t & nr_load 		 = top -> io_statistics_o_load_cnt;
 
 	cout.setf(ios_base::dec, ios_base::basefield);
-	cout << Green("total insts: ") << nr_inst << endl; 
-	cout << Green("stall times: ") << nr_stall << endl; 
-	cout << Green("flush times: ") << nr_flush << endl; 
-	cout << Green("        ipc: ") << (ld)valid_inst / (ld)nr_inst << endl;
-	cout << Green("branch rate: ") << (ld)nr_taken   / (ld)nr_branch << " (" << (ld)nr_taken   << " / " << (ld)nr_branch << ")" << endl;
-	cout << Green("bp accuracy: ") << (ld)nr_success / (ld)nr_branch << " (" << (ld)nr_success << " / " << (ld)nr_branch << ")" << endl;
-	cout << Green("I-Cache hit: ") << (ld)nr_icache_hit / (ld)nr_inst << " (" << (ld)nr_icache_hit << " / " << (ld)nr_inst << ")" << endl;
-	cout << Green("D-Cache hit: ") << (ld)nr_dcache_hit / (ld)nr_load << " (" << (ld)nr_dcache_hit << " / " << (ld)nr_load << ")" << endl;
+	cout << Magenta("total insts: ") << nr_inst << endl; 
+	cout << Magenta("stall times: ") << nr_stall << endl; 
+	cout << Magenta("flush times: ") << nr_flush << endl; 
+	cout << Magenta("        ipc: ") << (ld)valid_inst / (ld)nr_inst << endl;
+	cout << Magenta("branch rate: ") << (ld)nr_taken   / (ld)nr_branch << " (" << (ld)nr_taken   << " / " << (ld)nr_branch << ")" << endl;
+	cout << Magenta("bp accuracy: ") << (ld)nr_success / (ld)nr_branch << " (" << (ld)nr_success << " / " << (ld)nr_branch << ")" << endl;
+	cout << Magenta("I-Cache hit: ") << (ld)nr_icache_hit / (ld)nr_inst << " (" << (ld)nr_icache_hit << " / " << (ld)nr_inst << ")" << endl;
+	cout << Magenta("D-Cache hit: ") << (ld)nr_dcache_hit / (ld)nr_load << " (" << (ld)nr_dcache_hit << " / " << (ld)nr_load << ")" << endl;
 	exit(0);
 	// this won't work correctly... why?
     __asm__ volatile(
@@ -100,7 +100,7 @@ int main(int argc, char **argv)
 	IFDEF(TRACE_EN, tb.trace("./wave.vcd"));		//consumes too much memory
 	IFDEF(DIFFTEST_ENABLE, init_difftest());		//almost impossible to use now...
 	IFDEF(HAS_DEVICE, init_device());
-	cout << endl << logo << endl << endl;
+	//cout << endl << logo << endl << endl;
 	//tb.trace("./wave.vcd");
 	cmd_c("-1");
 	while(!Verilated::gotFinish()){

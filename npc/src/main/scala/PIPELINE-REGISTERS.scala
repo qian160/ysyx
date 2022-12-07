@@ -53,20 +53,19 @@ class ID_EX extends Module {
         val decInfo_o   =   Output(new DecodeInfo)
         val debug_o     =   Output(new Debug_Bundle)
 
-//        val update_PredictorOp_i    =   Input(new PredictOP)
-//        val update_PredictorOp_o    =   Output(new PredictOP)
     })
     val decInfo =   RegNext(io.decInfo_i, 0.U.asTypeOf(new DecodeInfo))
     val debug   =   RegNext(io.debug_i, 0.U.asTypeOf(new Debug_Bundle))
     val stall   =   RegNext(io.ctrl_i.stall, false.B)
-
-//    val update_PredictorOp  =   RegNext(io.update_PredictorOp_i, 0.U.asTypeOf(new PredictOP))
 
     when(io.ctrl_i.flush){
         decInfo :=  0.U.asTypeOf(new DecodeInfo)
         debug   :=  0.U.asTypeOf(new Debug_Bundle)
         stall   :=  0.U
 
+    //}.elsewhen(io.ctrl_i.stall & ~io.has_linkAddr_i){
+    // the thought is good, but there have bugs... Although we do no longer miss link addr, 
+    // we miss other insts instead, because this in fact disables stall
     }.elsewhen(io.ctrl_i.stall){
         decInfo :=  decInfo
         debug   :=  debug
@@ -75,8 +74,6 @@ class ID_EX extends Module {
     io.decInfo_o        :=  decInfo
     io.debug_o          :=  debug
     io.ex_is_stalled_o  :=  stall
-
-//    io.update_PredictorOp_o :=  update_PredictorOp
 }
 
 class EX_MEM extends Module {
@@ -116,7 +113,7 @@ class EX_MEM extends Module {
 
 class MEM_WB extends Module {
     val io = IO(new Bundle {
-        val stall_mem_i =   Input(Bool())       // load stall, wdata is not ready
+        val mem_miss_i  =   Input(Bool())
         val ctrl_i      =   Input(new Ctrl)
         val writeOp_i   =   Input(new WriteOp)
         val debug_i     =   Input(new Debug_Bundle)
@@ -129,12 +126,10 @@ class MEM_WB extends Module {
     when(io.ctrl_i.flush){
         writeOp :=  0.U.asTypeOf(new WriteOp)
         debug   :=  0.U.asTypeOf(new Debug_Bundle)
-//    }.elsewhen(io.ctrl_i.stall | io.stall_mem_i){
-    }.elsewhen(io.ctrl_i.stall){
+    }.elsewhen(io.ctrl_i.stall | io.mem_miss_i){
         writeOp :=  writeOp
         debug   :=  debug
     }
-
     io.writeOp_o    :=  writeOp
     io.debug_o      :=  debug
 }

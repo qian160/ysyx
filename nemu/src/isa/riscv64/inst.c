@@ -10,6 +10,11 @@ extern void update_ftrace(bool is_ret, word_t addr, word_t pc, const char * name
 extern char * getFuncName(word_t addr);
 extern int depth; //ftrace
 
+//#define SHOW_LOAD   1
+//#define SHOW_STORE  1
+#define SHOW_WB 1
+#define SHOW_BRANCH 1
+//#define SHOW_JUMP   1
 enum {
   TYPE_I, TYPE_U, TYPE_S, TYPE_J, TYPE_R, TYPE_B, TYPE_SYS,
   TYPE_N, // none
@@ -220,13 +225,13 @@ static int decode_exec(Decode *D) {
       word_t imm_I = immI(inst);
       switch(fct3){
         //#define CONFIG_REF 1
-        case(0x0):  R(rd) = SEXT(Mr(R(rs1) + imm_I, 1), 8);   IFDEF(CONFIG_REF, printf("(%lx):  lb:  [x%-2d] <=  0x%lx (Mem[%lx])\n", cpu.pc, rd, R(rd), R(rs1) + imm_I));  break;  //lb
-        case(0x1):  R(rd) = SEXT(Mr(R(rs1) + imm_I, 2), 16);  IFDEF(CONFIG_REF, printf("(%lx):  lh:  [x%-2d] <=  0x%lx (Mem[%lx])\n", cpu.pc, rd, R(rd), R(rs1) + imm_I));  break;  //lh
-        case(0x2):  R(rd) = SEXT(Mr(R(rs1) + imm_I, 4), 32);  IFDEF(CONFIG_REF, printf("(%lx):  lw:  [x%-2d] <=  0x%lx (Mem[%lx])\n", cpu.pc, rd, R(rd), R(rs1) + imm_I));  break;  //lw
-        case(0x3):  R(rd) = Mr(R(rs1) + imm_I, 8);            IFDEF(CONFIG_REF, printf("(%lx):  ld:  [x%-2d] <=  0x%lx (Mem[%lx])\n", cpu.pc, rd, R(rd), R(rs1) + imm_I));  break;  //ld
-        case(0x4):  R(rd) = Mr(R(rs1) + imm_I, 1);            IFDEF(CONFIG_REF, printf("(%lx):  lbu: [x%-2d] <=  0x%lx (Mem[%lx])\n", cpu.pc, rd, R(rd), R(rs1) + imm_I));  break;  //lbu
-        case(0x5):  R(rd) = Mr(R(rs1) + imm_I, 2);            IFDEF(CONFIG_REF, printf("(%lx):  lhu: [x%-2d] <=  0x%lx (Mem[%lx])\n", cpu.pc, rd, R(rd), R(rs1) + imm_I));  break;  //lhu
-        case(0x6):  R(rd) = Mr(R(rs1) + imm_I, 4);            IFDEF(CONFIG_REF, printf("(%lx):  lwu: [x%-2d] <=  0x%lx (Mem[%lx])\n", cpu.pc, rd, R(rd), R(rs1) + imm_I));  break;  //lwu
+        case(0x0):  R(rd) = SEXT(Mr(R(rs1) + imm_I, 1), 8);   IFDEF(SHOW_LOAD, printf("(%lx):  lb:  [x%-2d] <=  %lx (Mem[%lx])\n", cpu.pc, rd, R(rd), R(rs1) + imm_I));  break;  //lb
+        case(0x1):  R(rd) = SEXT(Mr(R(rs1) + imm_I, 2), 16);  IFDEF(SHOW_LOAD, printf("(%lx):  lh:  [x%-2d] <=  %lx (Mem[%lx])\n", cpu.pc, rd, R(rd), R(rs1) + imm_I));  break;  //lh
+        case(0x2):  R(rd) = SEXT(Mr(R(rs1) + imm_I, 4), 32);  IFDEF(SHOW_LOAD, printf("(%lx):  lw:  [x%-2d] <=  %lx (Mem[%lx])\n", cpu.pc, rd, R(rd), R(rs1) + imm_I));  break;  //lw
+        case(0x3):  R(rd) = Mr(R(rs1) + imm_I, 8);            IFDEF(SHOW_LOAD, printf("(%lx):  ld:  [x%-2d] <=  %lx (Mem[%lx])\n", cpu.pc, rd, R(rd), R(rs1) + imm_I));  break;  //ld
+        case(0x4):  R(rd) = Mr(R(rs1) + imm_I, 1);            IFDEF(SHOW_LOAD, printf("(%lx):  lbu: [x%-2d] <=  %lx (Mem[%lx])\n", cpu.pc, rd, R(rd), R(rs1) + imm_I));  break;  //lbu
+        case(0x5):  R(rd) = Mr(R(rs1) + imm_I, 2);            IFDEF(SHOW_LOAD, printf("(%lx):  lhu: [x%-2d] <=  %lx (Mem[%lx])\n", cpu.pc, rd, R(rd), R(rs1) + imm_I));  break;  //lhu
+        case(0x6):  R(rd) = Mr(R(rs1) + imm_I, 4);            IFDEF(SHOW_LOAD, printf("(%lx):  lwu: [x%-2d] <=  %lx (Mem[%lx])\n", cpu.pc, rd, R(rd), R(rs1) + imm_I));  break;  //lwu
         default:    panic("bad inst\n");
       }
       //printf("load: mem[%lx] %lx\n", R(rs1)+ imm_I, R(rd));
@@ -237,10 +242,10 @@ static int decode_exec(Decode *D) {
       D -> decInfo.type = TYPE_S;
       word_t imm_S = immS(inst);
       switch(fct3){
-        case(0x0):  Mw(R(rs1) + imm_S, 1, R(rs2));  IFDEF(CONFIG_REF, printf("(%lx): sb: 0x%-lx   =>  Mem[0x%lx]\n", cpu.pc, R(rs2), R(rs1) + imm_S ));      break;
-        case(0x1):  Mw(R(rs1) + imm_S, 2, R(rs2));  IFDEF(CONFIG_REF, printf("(%lx): sh: 0x%-lx   =>  Mem[0x%lx]\n", cpu.pc, R(rs2), R(rs1) + imm_S ));      break;
-        case(0x2):  Mw(R(rs1) + imm_S, 4, R(rs2));  IFDEF(CONFIG_REF, printf("(%lx): sw: 0x%-lx   =>  Mem[0x%lx]\n", cpu.pc, R(rs2), R(rs1) + imm_S ));      break;
-        case(0x3):  Mw(R(rs1) + imm_S, 8, R(rs2));  IFDEF(CONFIG_REF, printf("(%lx): sd: 0x%-lx   =>  Mem[0x%lx]\n", cpu.pc, R(rs2), R(rs1) + imm_S ));      break;
+        case(0x0):  Mw(R(rs1) + imm_S, 1, R(rs2));  IFDEF(SHOW_STORE, printf("(%lx): sb: %-lx   =>  Mem[%lx]\n", cpu.pc, R(rs2), R(rs1) + imm_S ));      break;
+        case(0x1):  Mw(R(rs1) + imm_S, 2, R(rs2));  IFDEF(SHOW_STORE, printf("(%lx): sh: %-lx   =>  Mem[%lx]\n", cpu.pc, R(rs2), R(rs1) + imm_S ));      break;
+        case(0x2):  Mw(R(rs1) + imm_S, 4, R(rs2));  IFDEF(SHOW_STORE, printf("(%lx): sw: %-lx   =>  Mem[%lx]\n", cpu.pc, R(rs2), R(rs1) + imm_S ));      break;
+        case(0x3):  Mw(R(rs1) + imm_S, 8, R(rs2));  IFDEF(SHOW_STORE, printf("(%lx): sd: %-lx   =>  Mem[%lx]\n", cpu.pc, R(rs2), R(rs1) + imm_S ));      break;
         default:    panic("bad inst\n");
       }
       //printf("store:  [%lx] %lx\n", R(rs1) + imm_S, R(rs2));
@@ -259,12 +264,12 @@ static int decode_exec(Decode *D) {
         case(0x7):  D -> dnpc =          R(rs1) >=          R(rs2) ? target : D -> dnpc;  break;
         default:    panic("bad inst\n");
       }
-      printf("(%lx): branch, target = %lx\nsrc1 = %lx, src2 = %lx\n", cpu.pc, target, R(rs1), R(rs2));
+      IFDEF(SHOW_BRANCH, printf("(%lx): branch, target = %lx\nsrc1 = %lx, src2 = %lx\n", cpu.pc, target, R(rs1), R(rs2)));
       break;
     }
 
-    case(JAL):    D->decInfo.type = TYPE_J;    R(rd) = linkAddr; D -> dnpc = D -> pc + immJ(inst);   break;//printf("(%lx): jump,   target = %lx, %d\n", cpu.pc, cpu.pc + immJ(inst), D->dnpc == cpu.pc + immJ(inst));break;
-    case(JALR):   D->decInfo.type = TYPE_I;    D -> dnpc = R(rs1) + immI(inst); R(rd) = linkAddr;    break;//printf("(%lx): jump,   target = %lx, %d\n", cpu.pc, R(rs1) + immI(inst),  D->dnpc == R(rs1) + immI(inst));break;   //R(rd)=xxx must be execuated later!!!!!!!! or the jump target may be wrong(when rs1 = rd)
+    case(JAL):    D->decInfo.type = TYPE_J;    R(rd) = linkAddr; D -> dnpc = D -> pc + immJ(inst);   IFDEF(SHOW_JUMP, printf("(%lx): jump,   target = %lx, %d\n", cpu.pc, cpu.pc + immJ(inst), D->dnpc == cpu.pc + immJ(inst)));break;
+    case(JALR):   D->decInfo.type = TYPE_I;    D -> dnpc = R(rs1) + immI(inst); R(rd) = linkAddr;    IFDEF(SHOW_JUMP, printf("(%lx): jump,   target = %lx, %d\n", cpu.pc, R(rs1) + immI(inst),  D->dnpc == R(rs1) + immI(inst)));break;   //R(rd)=xxx must be execuated later!!!!!!!! or the jump target may be wrong(when rs1 = rd)
     case(AUIPC):  D->decInfo.type = TYPE_U;    R(rd) = D -> pc + immU(inst);  break;
     case(LUI):    D->decInfo.type = TYPE_U;    R(rd) = immU(inst);            break;
     case(SYS):{
@@ -298,7 +303,7 @@ static int decode_exec(Decode *D) {
     }
   }
   R(0) = 0; // reset $zero to 
-  if(opcode != STORE && opcode != BRANCH) printf("(%lx):  [x%-2d] <=  %lx\n", cpu.pc, rd, R(rd));
+  IFDEF(SHOW_WB,  if(opcode != STORE && opcode != BRANCH) printf("(%lx):  [x%-2d] <=  %lx\n", cpu.pc, rd, R(rd)));
   Assert( D-> dnpc != D -> pc, "dead loop at 0x%lx\n", cpu.pc);
   //IFDEF(CONFIG_REF, Log("\nwdata = 0x%lx\npc = 0x%8lx, inst = 0x%08x,  rd = %d\n", opcode == BRANCH? 0: R(rd), D->pc, inst, rd));
   return 0;

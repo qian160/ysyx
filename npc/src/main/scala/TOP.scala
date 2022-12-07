@@ -56,7 +56,6 @@ class TOP extends Module{
     val EX_MEM  =   Module(new EX_MEM)
     val MEM_WB  =   Module(new MEM_WB)
 
-//    IF.io.branchOp_i    :=  ID.io.decInfo_o.branchOp
     IF.io.predict_i     :=  ID.io.predict_o
     IF.io.icache_insert_i   :=  Main_Memory.io.icache_insert_o
 
@@ -78,8 +77,7 @@ class TOP extends Module{
     ID.io.rfData_i      :=  Regfile.io.readRes_o
     ID.io.predict_i     :=  IF_ID.io.predict_o
     ID.io.is_stalled_i  :=  IF_ID.io.id_is_stalled_o
-    ID.io.mem_need_stall_i  :=  MEM.io.stall_req_o
-//    ID.io.mem_is_load_i     :=  EX_MEM.io.memOp_o.is_load
+    ID.io.mem_miss_i    :=  MEM.io.mem_miss_o
 
     //bypass
     ID.io.fwd_i.ex    :=  EX.io.ex_fwd_o
@@ -111,9 +109,9 @@ class TOP extends Module{
     MEM.io.qword_i      :=  Main_Memory.io.qword_o
     MEM.io.is_stalled_i :=  EX_MEM.io.mem_is_stalled_o
 
-    MEM_WB.io.writeOp_i :=  MEM.io.writeOp_o
-    MEM_WB.io.debug_i   :=  MEM.io.debug_o
-    MEM_WB.io.stall_mem_i   :=  MEM.io.wb_need_stall_o
+    MEM_WB.io.writeOp_i     :=  MEM.io.writeOp_o
+    MEM_WB.io.debug_i       :=  MEM.io.debug_o
+    MEM_WB.io.mem_miss_i    :=  MEM.io.mem_miss_o
 
     WB.io.writeOp_i     :=  MEM_WB.io.writeOp_o
 
