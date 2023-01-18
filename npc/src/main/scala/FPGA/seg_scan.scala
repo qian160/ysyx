@@ -1,6 +1,7 @@
 import chisel3._
 import chisel3.util._
 /*
+    bad implementation,don't use...
     note: My FPGA has 8 segs, but it's converted from 6 segs.
             so 2 segs are additional. And the pins number(for segsel) become:
             2, 3, 4, 5, 6, 7, 1, 0
